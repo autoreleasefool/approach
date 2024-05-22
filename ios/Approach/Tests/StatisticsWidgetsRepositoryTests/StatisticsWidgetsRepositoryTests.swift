@@ -23,7 +23,7 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 		let widget2 = StatisticsWidget.Database.mock(id: UUID(1), created: Date(timeIntervalSince1970: 2), priority: 2)
 		let widget3 = StatisticsWidget.Database.mock(id: UUID(2), created: Date(timeIntervalSince1970: 3), priority: 3)
 		let widget4 = StatisticsWidget.Database.mock(id: UUID(3), created: Date(timeIntervalSince1970: 4), priority: 4)
-		let db = try initializeDatabase(withStatisticsWidgets: .custom([widget1, widget2, widget3, widget4]))
+		let db = try initializeApproachDatabase(withStatisticsWidgets: .custom([widget1, widget2, widget3, widget4]))
 
 		// Fetching the widgets
 		let widgets = withDependencies {
@@ -50,7 +50,7 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 		let widget2 = StatisticsWidget.Database.mock(id: UUID(1), created: Date(timeIntervalSince1970: 2), context: "other", priority: 2)
 		let widget3 = StatisticsWidget.Database.mock(id: UUID(2), created: Date(timeIntervalSince1970: 3), context: "context", priority: 3)
 		let widget4 = StatisticsWidget.Database.mock(id: UUID(3), created: Date(timeIntervalSince1970: 4), context: "other", priority: 4)
-		let db = try initializeDatabase(withStatisticsWidgets: .custom([widget1, widget2, widget3, widget4]))
+		let db = try initializeApproachDatabase(withStatisticsWidgets: .custom([widget1, widget2, widget3, widget4]))
 
 		// Fetching the widgets
 		let widgets = withDependencies {
@@ -74,7 +74,7 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 		let widget1 = StatisticsWidget.Database.mock(id: UUID(0), created: Date(timeIntervalSince1970: 1), priority: 2)
 		let widget2 = StatisticsWidget.Database.mock(id: UUID(1), created: Date(timeIntervalSince1970: 2), priority: 1)
 		let widget3 = StatisticsWidget.Database.mock(id: UUID(2), created: Date(timeIntervalSince1970: 3), priority: 3)
-		let db = try initializeDatabase(withStatisticsWidgets: .custom([widget1, widget2, widget3]))
+		let db = try initializeApproachDatabase(withStatisticsWidgets: .custom([widget1, widget2, widget3]))
 
 		// Fetching the widgets
 		let widgets = withDependencies {
@@ -139,7 +139,7 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 		let widget1 = StatisticsWidget.Database.mock(id: UUID(0), created: Date(timeIntervalSince1970: 1), priority: 1)
 		let widget2 = StatisticsWidget.Database.mock(id: UUID(1), created: Date(timeIntervalSince1970: 2), priority: 2)
 		let widget3 = StatisticsWidget.Database.mock(id: UUID(2), created: Date(timeIntervalSince1970: 3), priority: 3)
-		let db = try initializeDatabase(withStatisticsWidgets: .custom([widget1, widget2, widget3]))
+		let db = try initializeApproachDatabase(withStatisticsWidgets: .custom([widget1, widget2, widget3]))
 
 		// Updating the priorities
 		try await withDependencies {
@@ -164,7 +164,7 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 		// Given a database with widgets with different contexts
 		let widget1 = StatisticsWidget.Database.mock(id: UUID(0), created: Date(timeIntervalSince1970: 1), context: "context", priority: 1)
 		let widget2 = StatisticsWidget.Database.mock(id: UUID(1), created: Date(timeIntervalSince1970: 2), context: "other", priority: 2)
-		let db = try initializeDatabase(withStatisticsWidgets: .custom([widget1, widget2]))
+		let db = try initializeApproachDatabase(withStatisticsWidgets: .custom([widget1, widget2]))
 
 		// Updating the priorities throws an error
 		await assertThrowsError(ofType: StatisticsWidget.ContextError.self) {
@@ -182,7 +182,7 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 	func testCreate_WhenWidgetExists_ThrowsError() async throws {
 		// Given a database with an existing widget
 		let widget1 = StatisticsWidget.Database.mock(id: UUID(0), created: Date(timeIntervalSince1970: 1), priority: 1)
-		let db = try initializeDatabase(withStatisticsWidgets: .custom([widget1]))
+		let db = try initializeApproachDatabase(withStatisticsWidgets: .custom([widget1]))
 
 		// Create the widget
 		await assertThrowsError(ofType: DatabaseError.self) {
@@ -208,7 +208,7 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 
 	func testCreate_WhenWidgetNotExists_CreatesWidget() async throws {
 		// Given a database with no widgets
-		let db = try initializeDatabase(withBowlers: .default, withStatisticsWidgets: nil)
+		let db = try initializeApproachDatabase(withBowlers: .default, withStatisticsWidgets: nil)
 
 		// Creating a widget
 		let create = StatisticsWidget.Create(id: UUID(0), created: Date(), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average Pins Left on Deck", context: "", priority: 0)
@@ -236,7 +236,7 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 		// Given a database with 2 bowlers
 		let widget1 = StatisticsWidget.Database.mock(id: UUID(0), created: Date(timeIntervalSince1970: 1), context: "context", priority: 1)
 		let widget2 = StatisticsWidget.Database.mock(id: UUID(1), created: Date(timeIntervalSince1970: 2), context: "other", priority: 2)
-		let db = try initializeDatabase(withStatisticsWidgets: .custom([widget1, widget2]))
+		let db = try initializeApproachDatabase(withStatisticsWidgets: .custom([widget1, widget2]))
 
 		// Deleting the first bowler
 		try await withDependencies {
@@ -258,7 +258,7 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 	func testDelete_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1 widget
 		let widget1 = StatisticsWidget.Database.mock(id: UUID(0), created: Date(timeIntervalSince1970: 1), context: "context", priority: 1)
-		let db = try initializeDatabase(withStatisticsWidgets: .custom([widget1]))
+		let db = try initializeApproachDatabase(withStatisticsWidgets: .custom([widget1]))
 
 		// Deleting a non-existent widget
 		try await withDependencies {

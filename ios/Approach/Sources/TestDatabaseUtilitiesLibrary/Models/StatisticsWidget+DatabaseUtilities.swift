@@ -2,6 +2,7 @@ import DatabaseModelsLibrary
 import Dependencies
 import Foundation
 import GRDB
+import GRDBDatabaseTestUtilitiesPackageLibrary
 import ModelsLibrary
 
 extension StatisticsWidget.Database {

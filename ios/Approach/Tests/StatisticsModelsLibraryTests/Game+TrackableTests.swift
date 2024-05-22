@@ -14,7 +14,7 @@ final class GameTrackableTests: XCTestCase {
 
 		let frame = Frame.Database.mock(gameId: UUID(0), index: 0, roll0: nil, roll1: nil, roll2: nil, ball0: nil, ball1: nil, ball2: nil)
 
-		let database = try initializeDatabase(
+		let database = try initializeApproachDatabase(
 			withGames: .custom([game]),
 			withGameGear: .zero,
 			withFrames: .custom([frame])
@@ -40,7 +40,7 @@ final class GameTrackableTests: XCTestCase {
 		let frame2 = Frame.Database.mock(index: 1, ball1: UUID(1))
 		let frame3 = Frame.Database.mock(index: 2, ball0: UUID(2), ball1: UUID(2), ball2: UUID(2))
 
-		let database = try initializeDatabase(
+		let database = try initializeApproachDatabase(
 			withGear: .custom([ball1, ball2, ball3]),
 			withGames: .custom([game]),
 			withGameLanes: .zero,

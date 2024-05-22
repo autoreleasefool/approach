@@ -19,7 +19,7 @@ final class FramesRepositoryTests: XCTestCase {
 		let frame1 = Frame.Database
 			.mock(gameId: UUID(0), index: 0, roll0: "110100", roll1: "011000", ball0: UUID(0), ball1: UUID(1))
 		let frame2 = Frame.Database.mock(gameId: UUID(1), index: 0)
-		let db = try initializeDatabase(withFrames: .custom([frame1, frame2]))
+		let db = try initializeApproachDatabase(withFrames: .custom([frame1, frame2]))
 
 		// Editing the frames
 		let frames = withDependencies {
@@ -60,7 +60,7 @@ final class FramesRepositoryTests: XCTestCase {
 		// Given a database with frames
 		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0, roll0: "000101")
 		let frame2 = Frame.Database.mock(gameId: UUID(0), index: 1)
-		let db = try initializeDatabase(withFrames: .custom([frame1, frame2]))
+		let db = try initializeApproachDatabase(withFrames: .custom([frame1, frame2]))
 
 		// Editing the frames
 		let frames = withDependencies {
@@ -89,7 +89,7 @@ final class FramesRepositoryTests: XCTestCase {
 
 	func testObserve_WhenGameNotExists_ReturnsEmptyArray() async throws {
 		// Given a database with no frames
-		let db = try initializeDatabase(withFrames: nil)
+		let db = try initializeApproachDatabase(withFrames: nil)
 
 		// Editing the game
 		let frames = withDependencies {
@@ -111,7 +111,7 @@ final class FramesRepositoryTests: XCTestCase {
 	func testUpdate_WhenFrameExists_UpdatesFrame() async throws {
 		// Given a database with a frame
 		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0)
-		let db = try initializeDatabase(withFrames: .custom([frame1]))
+		let db = try initializeApproachDatabase(withFrames: .custom([frame1]))
 
 		// Editing the frame
 		let editable = Frame.Edit(
@@ -150,7 +150,7 @@ final class FramesRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenFrameNotExists_ThrowError() async throws {
 		// Given a database with no frames
-		let db = try initializeDatabase(withFrames: nil)
+		let db = try initializeApproachDatabase(withFrames: nil)
 
 		// Updating a frame
 		await assertThrowsError(ofType: RecordError.self) {

@@ -1,6 +1,7 @@
 import DatabaseModelsLibrary
 import Foundation
 import GRDB
+import GRDBDatabaseTestUtilitiesPackageLibrary
 import ModelsLibrary
 
 func insert(

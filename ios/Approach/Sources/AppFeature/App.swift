@@ -11,6 +11,7 @@ import AppInfoPackageService
 import BundlePackageService
 import FeatureFlagsPackageService
 import FileManagerPackageService
+import GRDBDatabasePackageService
 import PasteboardPackageService
 import SentryErrorReportingPackageService
 import StoreReviewPackageService

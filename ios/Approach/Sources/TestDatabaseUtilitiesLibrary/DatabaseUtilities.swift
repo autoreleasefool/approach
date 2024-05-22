@@ -1,17 +1,13 @@
-import DatabaseLibrary
+import DatabaseMigrationsLibrary
 import DatabaseModelsLibrary
 import Dependencies
 import Foundation
 import GRDB
+import GRDBDatabasePackageLibrary
+import GRDBDatabaseTestUtilitiesPackageLibrary
 import ModelsLibrary
 
-public enum InitialValue<T> {
-	case `default`
-	case custom([T])
-	case zero
-}
-
-public func initializeDatabase(
+public func initializeApproachDatabase(
 	withAvatars: InitialValue<Avatar.Database>? = nil,
 	withLocations: InitialValue<Location.Database>? = nil,
 	withAlleys: InitialValue<Alley.Database>? = nil,
@@ -29,16 +25,6 @@ public func initializeDatabase(
 	withBowlerPreferredGear: InitialValue<BowlerPreferredGear.Database>? = nil,
 	to db: (any DatabaseWriter)? = nil
 ) throws -> any DatabaseWriter {
-	let dbQueue: any DatabaseWriter
-	if let db {
-		dbQueue = db
-	} else {
-		dbQueue = try DatabaseQueue()
-		var migrator = DatabaseMigrator()
-		migrator.registerDBMigrations()
-		try migrator.migrate(dbQueue)
-	}
-
 	let statisticsWidgets = withStatisticsWidgets
 	let matchPlays = withMatchPlays
 	let frames = withFrames
@@ -55,8 +41,7 @@ public func initializeDatabase(
 	let gameGear = coallesce(withGameGear, ifHasAllOf: games, gear)
 	let bowlerPreferredGear = coallesce(withBowlerPreferredGear, ifHasAllOf: bowlers, gear)
 
-	#if DEBUG
-	try dbQueue.write {
+	let dbQueue = try initializeDatabase(migrations: Migrations.approachMigrations) {
 		try insert(avatars: avatars, into: $0)
 		try insert(locations: locations, into: $0)
 		try insert(alleys: alleys, into: $0)
@@ -73,7 +58,6 @@ public func initializeDatabase(
 		try insert(statisticsWidgets: statisticsWidgets, into: $0)
 		try insert(bowlerPreferredGear: bowlerPreferredGear, into: $0)
 	}
-	#endif
 
 	return dbQueue
 }

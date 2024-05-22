@@ -49,7 +49,7 @@ final class StatisticsRepositoryWidgetSourcesTests: XCTestCase {
 
 	func testLoadsDefaultWidgetSources_WithOneBowler_ReturnsBowler() async throws {
 		let bowler1 = Bowler.Database.mock(id: UUID(0), name: "Joseph")
-		let db = try initializeDatabase(withBowlers: .custom([bowler1]))
+		let db = try initializeApproachDatabase(withBowlers: .custom([bowler1]))
 
 		let sources = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
@@ -65,7 +65,7 @@ final class StatisticsRepositoryWidgetSourcesTests: XCTestCase {
 	}
 
 	func testLoadsDefaultWidgetSources_WithNoBowlers_ReturnsNil() async throws {
-		let db = try initializeDatabase(withBowlers: .zero)
+		let db = try initializeApproachDatabase(withBowlers: .zero)
 
 		let sources = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
@@ -80,7 +80,7 @@ final class StatisticsRepositoryWidgetSourcesTests: XCTestCase {
 	func testLoadsDefaultWidgetSources_WithTwoBowlers_ReturnsNil() async throws {
 		let bowler1 = Bowler.Database.mock(id: UUID(0), name: "Joseph")
 		let bowler2 = Bowler.Database.mock(id: UUID(1), name: "Sarah")
-		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
+		let db = try initializeApproachDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		let sources = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
@@ -95,7 +95,7 @@ final class StatisticsRepositoryWidgetSourcesTests: XCTestCase {
 	func testLoadsDefaultWidgetSources_WithOpponent_ReturnsBowler() async throws {
 		let bowler1 = Bowler.Database.mock(id: UUID(0), name: "Joseph")
 		let bowler2 = Bowler.Database.mock(id: UUID(1), name: "Sarah", kind: .opponent)
-		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
+		let db = try initializeApproachDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		let sources = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }

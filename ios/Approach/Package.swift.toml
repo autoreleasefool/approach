@@ -12,7 +12,7 @@ supported = [ "\"17.0\"" ]
 [features.App]
 features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
 services = [ "Launch" ]
-dependencies = [ "AnalyticsPackageService", "AppInfoPackageService", "BundlePackageService", "FeatureFlagsPackageService", "FileManagerPackageService", "PasteboardPackageService", "SentryErrorReportingPackageService", "StoreReviewPackageService", "TelemetryDeckAnalyticsPackageService", "UserDefaultsPackageService" ]
+dependencies = [ "AnalyticsPackageService", "AppInfoPackageService", "BundlePackageService", "FeatureFlagsPackageService", "FileManagerPackageService", "GRDBDatabasePackageService", "PasteboardPackageService", "SentryErrorReportingPackageService", "StoreReviewPackageService", "TelemetryDeckAnalyticsPackageService", "UserDefaultsPackageService" ]
 
 [features.AccessoriesOverview]
 features = [ "AlleysList", "GearList" ]
@@ -244,12 +244,10 @@ dependencies = [ "ExtensionsPackageLibrary" ]
 libraries = [ "ModelsViews" ]
 
 [services.Database]
-libraries = [ "Database" ]
-services = [ "Analytics" ]
-dependencies = [ "FileManagerPackageServiceInterface" ]
+libraries = [ "DatabaseMigrations" ]
 [services.Database.interface]
 suitable_for_dependents_matching = "\\w+Repository$"
-dependencies = [ "GRDB" ]
+dependencies = [ "DependenciesMacros", "GRDB", "GRDBDatabasePackageServiceInterface" ]
 
 [services.DatabaseMocking]
 skip_tests = true
@@ -319,9 +317,10 @@ dependencies = [ "Dependencies" ]
 [libraries.Constants.resources]
 processed = [ "Resources" ]
 
-[libraries.Database]
+[libraries.DatabaseMigrations]
+skip_tests = true
 libraries = [ "ScoreKeeper" ]
-dependencies = [ "Dependencies", "ErrorReportingClientPackageLibrary", "GRDB" ]
+dependencies = [ "Dependencies", "ErrorReportingClientPackageLibrary", "GRDB", "GRDBDatabasePackageLibrary" ]
 
 [libraries.DatabaseModels]
 skip_tests = true
@@ -416,7 +415,8 @@ libraries = [ "StatisticsChartsMocks" ]
 [libraries.TestDatabaseUtilities]
 suitable_for_dependents_matching = "\\w+Tests$"
 skip_tests = true
-libraries = [ "Database", "DatabaseModels" ]
+libraries = [ "DatabaseMigrations", "DatabaseModels" ]
+dependencies = [ "GRDBDatabaseTestUtilitiesPackageLibrary" ]
 
 [libraries.Tips]
 libraries = [ "Views" ]
@@ -545,6 +545,18 @@ sharedRef = "SwiftUtilities"
 sharedRef = "SwiftUtilities"
 
 [dependencies.FileManagerPackageServiceInterface]
+sharedRef = "SwiftUtilities"
+
+[dependencies.GRDBDatabasePackageLibrary]
+sharedRef = "SwiftUtilities"
+
+[dependencies.GRDBDatabasePackageService]
+sharedRef = "SwiftUtilities"
+
+[dependencies.GRDBDatabasePackageServiceInterface]
+sharedRef = "SwiftUtilities"
+
+[dependencies.GRDBDatabaseTestUtilitiesPackageLibrary]
 sharedRef = "SwiftUtilities"
 
 [dependencies.PasteboardPackageService]

@@ -25,7 +25,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, score: 456)
 		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 1, score: 123)
 
-		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3]), withGames: .custom([game1, game2, game3, game4]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2, series3]), withGames: .custom([game1, game2, game3, game4]))
 
 		// Fetching the series
 		let series = withDependencies {
@@ -54,7 +54,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, score: 456)
 		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 1, score: 123)
 
-		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3, game4]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3, game4]))
 
 		// Fetching the series by league
 		let series = withDependencies {
@@ -86,7 +86,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let game6 = Game.Database.mock(seriesId: UUID(2), id: UUID(5), index: 1, score: 321)
 		let game7 = Game.Database.mock(seriesId: UUID(2), id: UUID(6), index: 0, score: 0)
 
-		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3]), withGames: .custom([game1, game2, game3, game4, game5, game6, game7]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2, series3]), withGames: .custom([game1, game2, game3, game4, game5, game6, game7]))
 
 		// Fetching the series
 		let series = withDependencies {
@@ -120,7 +120,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let game6 = Game.Database.mock(seriesId: UUID(2), id: UUID(5), index: 1, score: 321)
 		let game7 = Game.Database.mock(seriesId: UUID(2), id: UUID(6), index: 0, score: 0)
 
-		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3]), withGames: .custom([game1, game2, game3, game4, game5, game6, game7]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2, series3]), withGames: .custom([game1, game2, game3, game4, game5, game6, game7]))
 
 		// Fetching the series
 		let series = withDependencies {
@@ -154,7 +154,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let game6 = Game.Database.mock(seriesId: UUID(2), id: UUID(5), index: 1, score: 321)
 		let game7 = Game.Database.mock(seriesId: UUID(2), id: UUID(6), index: 0, score: 0)
 
-		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3]), withGames: .custom([game1, game2, game3, game4, game5, game6, game7]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2, series3]), withGames: .custom([game1, game2, game3, game4, game5, game6, game7]))
 
 		// Fetching the series
 		let series = withDependencies {
@@ -190,7 +190,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let game7 = Game.Database.mock(seriesId: UUID(2), id: UUID(6), index: 0, score: 0)
 		let game8 = Game.Database.mock(seriesId: UUID(3), id: UUID(7), index: 0, score: 3)
 
-		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3, series4]), withGames: .custom([game1, game2, game3, game4, game5, game6, game7, game8]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2, series3, series4]), withGames: .custom([game1, game2, game3, game4, game5, game6, game7, game8]))
 
 		// Fetching the series
 		let series = withDependencies {
@@ -227,7 +227,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let game7 = Game.Database.mock(seriesId: UUID(2), id: UUID(6), index: 0, score: 0)
 		let game8 = Game.Database.mock(seriesId: UUID(3), id: UUID(7), index: 0, score: 3)
 
-		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3, series4]), withGames: .custom([game1, game2, game3, game4, game5, game6, game7, game8]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2, series3, series4]), withGames: .custom([game1, game2, game3, game4, game5, game6, game7, game8]))
 
 		// Fetching the series
 		let series = withDependencies {
@@ -256,7 +256,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000))
 		let series3 = Series.Database.mock(id: UUID(2), date: Date(timeIntervalSince1970: 123_456_000), archivedOn: Date())
 
-		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2, series3]))
 
 		// Fetching the series
 		let series = withDependencies {
@@ -282,7 +282,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let series3 = Series.Database.mock(id: UUID(2), date: Date(timeIntervalSince1970: 123_456_006), appliedDate: Date(timeIntervalSince1970: 123_456_003))
 		let series4 = Series.Database.mock(id: UUID(3), date: Date(timeIntervalSince1970: 123_456_004))
 
-		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3, series4]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2, series3, series4]))
 
 		// Fetching the series
 		let series = withDependencies {
@@ -308,7 +308,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
 		let series2 = Series.Database.mock(leagueId: UUID(1), id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000))
 
-		let db = try initializeDatabase(withSeries: .custom([series1, series2]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2]))
 
 		// Fetching the series by league
 		let series = withDependencies {
@@ -330,7 +330,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_002))
 		let series3 = Series.Database.mock(id: UUID(2), date: Date(timeIntervalSince1970: 123_456_000))
 
-		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2, series3]))
 
 		// Fetching the series
 		let series = withDependencies {
@@ -360,7 +360,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let series4 = Series.Database.mock(id: UUID(3), date: Date(timeIntervalSince1970: 123_456_002), appliedDate: Date(timeIntervalSince1970: 123_456_000), preBowl: .preBowl)
 		let series5 = Series.Database.mock(id: UUID(4), date: Date(timeIntervalSince1970: 123_456_001), preBowl: .preBowl)
 
-		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3, series4, series5]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2, series3, series4, series5]))
 
 		// Fetching the series
 		let series = withDependencies {
@@ -393,7 +393,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0)
 		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 0)
 
-		let db = try initializeDatabase(
+		let db = try initializeApproachDatabase(
 			withSeries: .custom([series1, series2, series3, series4]),
 			withGames: .custom([game1, game2, game3, game4])
 		)
@@ -420,7 +420,7 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testUsePreBowl_WhenSeriesNotExists_ThrowsError() async throws {
 		// Given a database with no existing series
-		let db = try initializeDatabase(withSeries: .zero)
+		let db = try initializeApproachDatabase(withSeries: .zero)
 
 		// Updating the series throws an error
 		await assertThrowsError(ofType: FetchableError.self) {
@@ -440,7 +440,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	func testUsePreBowl_WhenIsExcluded_UpdatesToInclude() async throws {
 		// Given a database with a pre-bowl
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), preBowl: .preBowl, excludeFromStatistics: .exclude)
-		let db = try initializeDatabase(withSeries: .custom([series1]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1]))
 
 		// Updating the series
 		try await withDependencies {
@@ -463,7 +463,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, excludeFromStatistics: .exclude)
 		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, excludeFromStatistics: .exclude)
 		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, excludeFromStatistics: .exclude)
-		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3]))
 
 		// Updating the series
 		try await withDependencies {
@@ -487,7 +487,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	func testUsePreBowl_UpdatesAppliedDate() async throws {
 		// Given a database with a pre-bowl
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), preBowl: .preBowl, excludeFromStatistics: .exclude)
-		let db = try initializeDatabase(withSeries: .custom([series1]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1]))
 
 		// Updating the series
 		try await withDependencies {
@@ -509,7 +509,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	func testGameHost_WhenSeriesExists_ReturnsSeries() async throws {
 		// Given a database with an existing series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000))
-		let db = try initializeDatabase(withSeries: .custom([series1]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1]))
 
 		// Fetching the series
 		let series = try await withDependencies {
@@ -533,7 +533,7 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testGameHost_WhenSeriesNotExists_ThrowsError() async throws {
 		// Given a database with no seroes
-		let db = try initializeDatabase(withSeries: .zero)
+		let db = try initializeApproachDatabase(withSeries: .zero)
 
 		// Fetching the series throws an error
 		await assertThrowsError(ofType: FetchableError.self) {
@@ -551,7 +551,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	func testCreate_WhenSeriesExists_ThrowsError() async throws {
 		// Given a database with an existing series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
-		let db = try initializeDatabase(withSeries: .custom([series1]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1]))
 
 		// Creating the series throws an error
 		await assertThrowsError(ofType: DatabaseError.self) {
@@ -583,7 +583,7 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testCreate_WhenSeriesNotExists_CreatesSeries() async throws {
 		// Given a database with no series
-		let db = try initializeDatabase(withLeagues: .default, withSeries: nil)
+		let db = try initializeApproachDatabase(withLeagues: .default, withSeries: nil)
 
 		// Creating the series throws an error
 		let create = Series.Create(
@@ -614,7 +614,7 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testCreate_WhenSeriesNotExists_CreatesGames() async throws {
 		// Given a database with no series
-		let db = try initializeDatabase(withLeagues: .default, withSeries: nil)
+		let db = try initializeApproachDatabase(withLeagues: .default, withSeries: nil)
 
 		// Creating the series throws an error
 		let create = Series.Create(
@@ -643,7 +643,7 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testCreate_WhenSeriesNotExists_WithPreferredGear_AddsPreferredGear() async throws {
 		// Given a database with no series
-		let db = try initializeDatabase(withGear: .default, withLeagues: .default, withSeries: nil, withBowlerPreferredGear: .default)
+		let db = try initializeApproachDatabase(withGear: .default, withLeagues: .default, withSeries: nil, withBowlerPreferredGear: .default)
 
 		// Creating the series
 		let create = Series.Create(
@@ -669,7 +669,7 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testCreate_WhenSeriesNotExists_WithManualScores_CreatesGamesWithScores() async throws {
 		// Given a database with no series
-		let db = try initializeDatabase(withLeagues: .default, withSeries: nil)
+		let db = try initializeApproachDatabase(withLeagues: .default, withSeries: nil)
 
 		// Creating the series
 		let create = Series.Create(
@@ -705,7 +705,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	func testUpdate_WhenSeriesExists_UpdatesSeries() async throws {
 		// Given a database with an existing series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
-		let db = try initializeDatabase(withSeries: .custom([series1]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1]))
 
 		// Editing the series
 		let editable = Series.Edit(
@@ -737,7 +737,7 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenSeriesNotExists_ThrowsError() async throws {
 		// Given a database with no series
-		let db = try initializeDatabase(withSeries: nil)
+		let db = try initializeApproachDatabase(withSeries: nil)
 
 		// Updating a series
 		let editable = Series.Edit(
@@ -771,7 +771,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000))
 		let game1 = Game.Database.mock(id: UUID(0), index: 0)
 		let game2 = Game.Database.mock(id: UUID(1), index: 1)
-		let db = try initializeDatabase(withSeries: .custom([series1]), withGames: .custom([game1, game2]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1]), withGames: .custom([game1, game2]))
 
 		// Adding games to the series
 		try await withDependencies {
@@ -803,7 +803,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	func testAddGamesToSeries_WhenSeriesExists_HasNoGames_AddsGames() async throws {
 		// Given a database with one series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000))
-		let db = try initializeDatabase(withSeries: .custom([series1]), withGames: .zero)
+		let db = try initializeApproachDatabase(withSeries: .custom([series1]), withGames: .zero)
 
 		// Adding games to the series
 		try await withDependencies {
@@ -833,7 +833,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		// Given a database with one series and one game
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000))
 		let game1 = Game.Database.mock(id: UUID(0), index: 0)
-		let db = try initializeDatabase(withSeries: .custom([series1]), withGames: .custom([game1]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1]), withGames: .custom([game1]))
 
 		// Adding a game to the series
 		try await withDependencies {
@@ -858,7 +858,7 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testAddGamesToSeries_WhenSeriesNotExists_ThrowsError() async throws {
 		// Given a database with no series
-		let db = try initializeDatabase(withSeries: nil)
+		let db = try initializeApproachDatabase(withSeries: nil)
 
 		// Editing the series
 		await assertThrowsError(ofType: FetchableError.self) {
@@ -876,7 +876,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	func testEdit_WhenSeriesExists_ReturnsSeries() async throws {
 		// Given a database with one series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000))
-		let db = try initializeDatabase(withSeries: .custom([series1]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1]))
 
 		// Editing the series
 		let series = try await withDependencies {
@@ -905,7 +905,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	func testEdit_WhenSeriesExists_WhenAlleyExists_ReturnsSeriesWithAlley() async throws {
 		// Given a database with one series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000), alleyId: UUID(0))
-		let db = try initializeDatabase(withSeries: .custom([series1]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1]))
 
 		// Editing the series
 		let series = try await withDependencies {
@@ -946,7 +946,7 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testEdit_WhenSeriesNotExists_ThrowsError() async throws {
 		// Given a database with no series
-		let db = try initializeDatabase(withSeries: nil)
+		let db = try initializeApproachDatabase(withSeries: nil)
 
 		// Editing the series
 		await assertThrowsError(ofType: FetchableError.self) {
@@ -965,7 +965,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		// Given a database with 2 series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), archivedOn: nil)
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123), archivedOn: nil)
-		let db = try initializeDatabase(withSeries: .custom([series1, series2]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2]))
 
 		// Archiving the first series
 		try await withDependencies {
@@ -995,7 +995,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	func testArchive_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1 series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), archivedOn: nil)
-		let db = try initializeDatabase(withSeries: .custom([series1]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1]))
 
 		// Archiving a non-existent series
 		try await withDependencies {
@@ -1020,7 +1020,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		// Given a database with 2 series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), archivedOn: Date(timeIntervalSince1970: 124))
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123), archivedOn: Date(timeIntervalSince1970: 124))
-		let db = try initializeDatabase(withSeries: .custom([series1, series2]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2]))
 
 		// Unarchiving the first series
 		try await withDependencies {
@@ -1050,7 +1050,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	func testUnarchive_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1 series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), archivedOn: Date(timeIntervalSince1970: 123))
-		let db = try initializeDatabase(withSeries: .custom([series1]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1]))
 
 		// Unarchiving a non-existent series
 		try await withDependencies {

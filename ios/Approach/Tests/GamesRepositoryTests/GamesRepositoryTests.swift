@@ -20,7 +20,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let game1 = Game.Database.mock(id: UUID(0), index: 0)
 		let game2 = Game.Database.mock(id: UUID(1), index: 1)
 		let game3 = Game.Database.mock(id: UUID(2), index: 2, archivedOn: Date())
-		let db = try initializeDatabase(withGames: .custom([game1, game2, game3]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1, game2, game3]))
 
 		// Fetching the games
 		let games = withDependencies {
@@ -43,7 +43,7 @@ final class GamesRepositoryTests: XCTestCase {
 		// Given a database with two games
 		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0)
 		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), index: 1)
-		let db = try initializeDatabase(withGames: .custom([game1, game2]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1, game2]))
 
 		// Fetching the games by series
 		let games = withDependencies {
@@ -65,7 +65,7 @@ final class GamesRepositoryTests: XCTestCase {
 		// Given a database with two games
 		let game1 = Game.Database.mock(id: UUID(0), index: 1)
 		let game2 = Game.Database.mock(id: UUID(1), index: 0)
-		let db = try initializeDatabase(withGames: .custom([game1, game2]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1, game2]))
 
 		// Fetching the games
 		let games = withDependencies {
@@ -91,7 +91,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let game1 = Game.Database.mock(id: UUID(0), index: 0)
 		let game2 = Game.Database.mock(id: UUID(1), index: 1)
 		let game3 = Game.Database.mock(id: UUID(2), index: 2, archivedOn: Date())
-		let db = try initializeDatabase(withGames: .custom([game1, game2, game3]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1, game2, game3]))
 
 		// Fetching the games
 		let games = withDependencies {
@@ -114,7 +114,7 @@ final class GamesRepositoryTests: XCTestCase {
 		// Given a database with two games
 		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0)
 		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), index: 1)
-		let db = try initializeDatabase(withGames: .custom([game1, game2]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1, game2]))
 
 		// Fetching the games by series
 		let games = withDependencies {
@@ -136,7 +136,7 @@ final class GamesRepositoryTests: XCTestCase {
 		// Given a database with two games
 		let game1 = Game.Database.mock(id: UUID(0), index: 1)
 		let game2 = Game.Database.mock(id: UUID(1), index: 0)
-		let db = try initializeDatabase(withGames: .custom([game1, game2]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1, game2]))
 
 		// Fetching the games
 		let games = withDependencies {
@@ -164,7 +164,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let game3 = Game.Database.mock(seriesId: UUID(0), id: UUID(2), index: 0, archivedOn: Date(timeIntervalSince1970: 3))
 		let game4 = Game.Database.mock(seriesId: UUID(0), id: UUID(3), index: 0, archivedOn: Date(timeIntervalSince1970: 2))
 
-		let db = try initializeDatabase(
+		let db = try initializeApproachDatabase(
 			withGames: .custom([game1, game2, game3, game4])
 		)
 
@@ -197,7 +197,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let matchPlay1 = MatchPlay.Database.mock(gameId: UUID(0), id: UUID(0), opponentId: UUID(0), opponentScore: 1, result: .won)
 		let matchPlay2 = MatchPlay.Database.mock(gameId: UUID(1), id: UUID(1), opponentId: UUID(1), opponentScore: 2, result: .lost)
 		let matchPlay3 = MatchPlay.Database.mock(gameId: UUID(3), id: UUID(2), opponentId: UUID(1), opponentScore: 2, result: .lost)
-		let db = try initializeDatabase(
+		let db = try initializeApproachDatabase(
 			withGames: .custom([game1, game2, game3, game4]),
 			withMatchPlays: .custom([matchPlay1, matchPlay2, matchPlay3])
 		)
@@ -227,7 +227,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let matchPlay1 = MatchPlay.Database.mock(gameId: UUID(0), id: UUID(0), opponentId: UUID(0), opponentScore: 1, result: .won)
 		let matchPlay2 = MatchPlay.Database.mock(gameId: UUID(1), id: UUID(1), opponentId: UUID(0), opponentScore: 2, result: .lost)
 		let matchPlay3 = MatchPlay.Database.mock(gameId: UUID(2), id: UUID(2), opponentId: UUID(0), opponentScore: 3, result: .tied)
-		let db = try initializeDatabase(
+		let db = try initializeApproachDatabase(
 			withSeries: .custom([series1, series2, series3]),
 			withGames: .custom([game1, game2, game3]),
 			withMatchPlays: .custom([matchPlay1, matchPlay2, matchPlay3])
@@ -260,7 +260,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0, roll0: "000100", roll1: "111000", roll2: "000011", ball1: UUID(0))
 		let frame2 = Frame.Database.mock(gameId: UUID(0), index: 1, roll0: "001111", roll1: "000000", roll2: "010000", ball0: UUID(0))
 		let frame3 = Frame.Database.mock(gameId: UUID(1), index: 0, roll0: "000100", roll1: "011000", roll2: "000011", ball0: UUID(0))
-		let db = try initializeDatabase(withGames: .custom([game1, game2]), withGameLanes: .zero, withGameGear: .zero, withFrames: .custom([frame1, frame2, frame3]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1, game2]), withGameLanes: .zero, withGameGear: .zero, withFrames: .custom([frame1, frame2, frame3]))
 
 		// Fetching the games
 		let games = try await withDependencies {
@@ -333,7 +333,7 @@ final class GamesRepositoryTests: XCTestCase {
 	func testShareGames_WhenGamesNotExist_ThrowsError() async throws {
 		// Given a database with one game
 		let game1 = Game.Database.mock(id: UUID(0), index: 0, score: 123)
-		let db = try initializeDatabase(withGames: .custom([game1]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1]))
 
 		// Fetching the games throws an error
 		await assertThrowsError(ofType: FetchableError.self) {
@@ -357,7 +357,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0, roll0: "000100", roll1: "111000", roll2: "000011", ball1: UUID(0))
 		let frame2 = Frame.Database.mock(gameId: UUID(0), index: 1, roll0: "001111", roll1: "000000", roll2: "010000", ball0: UUID(0))
 		let frame3 = Frame.Database.mock(gameId: UUID(1), index: 0, roll0: "000100", roll1: "011000", roll2: "000011", ball0: UUID(0))
-		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2]), withGameLanes: .zero, withGameGear: .zero, withFrames: .custom([frame1, frame2, frame3]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2]), withGameLanes: .zero, withGameGear: .zero, withFrames: .custom([frame1, frame2, frame3]))
 
 		// Fetching the games
 		let games = try await withDependencies {
@@ -403,7 +403,7 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testShareSeries_WhenSeriesNotExists_ThrowsError() async throws {
 		// Given a database with no series
-		let db = try initializeDatabase(withSeries: .zero)
+		let db = try initializeApproachDatabase(withSeries: .zero)
 
 		// Fetching the series throws an error
 		await assertThrowsError(ofType: FetchableError.self) {
@@ -421,7 +421,7 @@ final class GamesRepositoryTests: XCTestCase {
 	func testObserve_WhenGameExists_ReturnsGame() async throws {
 		// Given a database with one game
 		let game1 = Game.Database.mock(id: UUID(0), index: 0)
-		let db = try initializeDatabase(withGames: .custom([game1]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1]))
 
 		// Editing the game
 		let game = withDependencies {
@@ -471,7 +471,7 @@ final class GamesRepositoryTests: XCTestCase {
 			opponentScore: 123,
 			result: .lost
 		)
-		let db = try initializeDatabase(withGames: .custom([game1]), withMatchPlays: .custom([matchPlay1]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1]), withMatchPlays: .custom([matchPlay1]))
 
 		// Editing the game
 		let game = withDependencies {
@@ -525,7 +525,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let gear3 = Gear.Database.mock(id: UUID(2), name: "Other", kind: .other)
 		let gameGear1 = GameGear.Database(gameId: UUID(0), gearId: UUID(0))
 		let gameGear2 = GameGear.Database(gameId: UUID(0), gearId: UUID(1))
-		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3]), withGames: .custom([game1]), withGameGear: .custom([gameGear1, gameGear2]), withBowlerPreferredGear: .zero)
+		let db = try initializeApproachDatabase(withGear: .custom([gear1, gear2, gear3]), withGames: .custom([game1]), withGameGear: .custom([gameGear1, gameGear2]), withBowlerPreferredGear: .zero)
 
 		// Editing the game
 		let game = withDependencies {
@@ -578,7 +578,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let gameLane1 = GameLane.Database(gameId: UUID(0), laneId: UUID(0))
 		let gameLane2 = GameLane.Database(gameId: UUID(0), laneId: UUID(1))
 		let gameLane3 = GameLane.Database(gameId: UUID(0), laneId: UUID(2))
-		let db = try initializeDatabase(withLanes: .custom([lane1, lane2, lane3, lane4]), withGames: .custom([game1]), withGameLanes: .custom([gameLane1, gameLane2, gameLane3]))
+		let db = try initializeApproachDatabase(withLanes: .custom([lane1, lane2, lane3, lane4]), withGames: .custom([game1]), withGameLanes: .custom([gameLane1, gameLane2, gameLane3]))
 
 		// Editing the game
 		let game = withDependencies {
@@ -624,7 +624,7 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testEdit_WhenGameNotExists_ReturnsNil() async throws {
 		// Given a database with no games
-		let db = try initializeDatabase(withGames: nil)
+		let db = try initializeApproachDatabase(withGames: nil)
 
 		// Editing the game
 		let game = withDependencies {
@@ -646,7 +646,7 @@ final class GamesRepositoryTests: XCTestCase {
 	func testFindIndex_WhenGameExists_ReturnsIndex() async throws {
 		// Given a database with 1 game
 		let game1 = Game.Database.mock(id: UUID(0), index: 23)
-		let db = try initializeDatabase(withGames: .custom([game1]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1]))
 
 		// Fetching the game
 		let game = try await withDependencies {
@@ -661,7 +661,7 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testFindIndex_WhenGameNotExists_ReturnsNil() async throws {
 		// Given a database with no games
-		let db = try initializeDatabase(withGames: nil)
+		let db = try initializeApproachDatabase(withGames: nil)
 
 		// Fetching the game
 		let game = try await withDependencies {
@@ -680,7 +680,7 @@ final class GamesRepositoryTests: XCTestCase {
 	func testUpdate_WhenGameExists_UpdatesGame() async throws {
 		// Given a database with a game
 		let game1 = Game.Database.mock(id: UUID(0), index: 0)
-		let db = try initializeDatabase(withGames: .custom([game1]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1]))
 
 		// Editing the game
 		let editable = Game.Edit(
@@ -728,7 +728,7 @@ final class GamesRepositoryTests: XCTestCase {
 		// Given a database with a game and a match play
 		let game1 = Game.Database.mock(id: UUID(0), index: 0)
 		let matchPlay1 = MatchPlay.Database(gameId: UUID(0), id: UUID(0), opponentId: UUID(0), opponentScore: 123, result: nil)
-		let db = try initializeDatabase(withGames: .custom([game1]), withMatchPlays: .custom([matchPlay1]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1]), withMatchPlays: .custom([matchPlay1]))
 
 		// Editing the game
 		let editable = Game.Edit(
@@ -789,7 +789,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let gear1 = Gear.Database.mock(id: UUID(0), name: "Towel", kind: .towel)
 		let gear2 = Gear.Database.mock(id: UUID(1), name: "Shoes", kind: .shoes)
 		let gameGear1 = GameGear.Database(gameId: UUID(0), gearId: UUID(0))
-		let db = try initializeDatabase(withGear: .custom([gear1, gear2]), withGames: .custom([game1]), withGameGear: .custom([gameGear1]), withBowlerPreferredGear: .zero)
+		let db = try initializeApproachDatabase(withGear: .custom([gear1, gear2]), withGames: .custom([game1]), withGameGear: .custom([gameGear1]), withBowlerPreferredGear: .zero)
 
 		// Editing the game with a different gear
 		let editable = Game.Edit(
@@ -834,7 +834,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let lane1 = Lane.Database(alleyId: UUID(0), id: UUID(0), label: "1", position: .leftWall)
 		let lane2 = Lane.Database(alleyId: UUID(0), id: UUID(1), label: "2", position: .noWall)
 		let gameLane1 = GameLane.Database(gameId: UUID(0), laneId: UUID(0))
-		let db = try initializeDatabase(withLanes: .custom([lane1, lane2]), withGames: .custom([game1]), withGameLanes: .custom([gameLane1]))
+		let db = try initializeApproachDatabase(withLanes: .custom([lane1, lane2]), withGames: .custom([game1]), withGameLanes: .custom([gameLane1]))
 
 		// Editing the game with a different gear
 		let editable = Game.Edit(
@@ -875,7 +875,7 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenGameNotExists_ThrowError() async throws {
 		// Given a database with no games
-		let db = try initializeDatabase(withGames: nil)
+		let db = try initializeApproachDatabase(withGames: nil)
 
 		// Updating a game
 		await assertThrowsError(ofType: RecordError.self) {
@@ -919,7 +919,7 @@ final class GamesRepositoryTests: XCTestCase {
 		// Given a database with 2 games
 		let game1 = Game.Database.mock(id: UUID(0), index: 0, archivedOn: nil)
 		let game2 = Game.Database.mock(id: UUID(1), index: 1, archivedOn: nil)
-		let db = try initializeDatabase(withGames: .custom([game1, game2]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1, game2]))
 
 		// Archiving the first game
 		try await withDependencies {
@@ -952,7 +952,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let game1 = Game.Database.mock(id: UUID(0), index: 0, archivedOn: nil)
 		let game2 = Game.Database.mock(id: UUID(1), index: 1, archivedOn: nil)
 		let game3 = Game.Database.mock(id: UUID(2), index: 2, archivedOn: nil)
-		let db = try initializeDatabase(withGames: .custom([game1, game2, game3]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1, game2, game3]))
 
 		// Archiving the second game
 		try await withDependencies {
@@ -979,7 +979,7 @@ final class GamesRepositoryTests: XCTestCase {
 		// Given a database with 2 games
 		let game1 = Game.Database.mock(id: UUID(0), index: 0, archivedOn: nil)
 		let game2 = Game.Database.mock(id: UUID(1), index: 1, archivedOn: nil)
-		let db = try initializeDatabase(withGames: .custom([game1, game2]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1, game2]))
 
 		// Archiving the games
 		try await withDependencies {
@@ -1004,7 +1004,7 @@ final class GamesRepositoryTests: XCTestCase {
 	func testArchive_WhenIdNotExists_ThrowsError() async throws {
 		// Given a database with 1 game
 		let game1 = Game.Database.mock(id: UUID(0), index: 0, archivedOn: nil)
-		let db = try initializeDatabase(withGames: .custom([game1]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1]))
 
 		// Archiving a non-existent game
 		await assertThrowsError(ofType: FetchableError.self) {
@@ -1031,7 +1031,7 @@ final class GamesRepositoryTests: XCTestCase {
 		// Given a database with 2 games
 		let game1 = Game.Database.mock(id: UUID(0), index: 0, archivedOn: Date(timeIntervalSince1970: 124))
 		let game2 = Game.Database.mock(id: UUID(1), index: 1, archivedOn: Date(timeIntervalSince1970: 124))
-		let db = try initializeDatabase(withGames: .custom([game1, game2]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1, game2]))
 
 		// Unarchiving the first game
 		try await withDependencies {
@@ -1064,7 +1064,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let game2 = Game.Database.mock(id: UUID(1), index: 0, archivedOn: nil)
 		let game3 = Game.Database.mock(id: UUID(2), index: 1, archivedOn: nil)
 		let game4 = Game.Database.mock(id: UUID(3), index: 2, archivedOn: nil)
-		let db = try initializeDatabase(withGames: .custom([game1, game2, game3, game4]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1, game2, game3, game4]))
 
 		// Unarchiving the first game
 		try await withDependencies {
@@ -1084,7 +1084,7 @@ final class GamesRepositoryTests: XCTestCase {
 	func testUnarchive_WhenNoOtherGameExists_MovesGameToZeroIndex() async throws {
 		// Given a database with 3 games
 		let game1 = Game.Database.mock(id: UUID(0), index: -1, archivedOn: Date())
-		let db = try initializeDatabase(withGames: .custom([game1]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1]))
 
 		// Unarchiving the first game
 		try await withDependencies {
@@ -1104,7 +1104,7 @@ final class GamesRepositoryTests: XCTestCase {
 	func testUnarchive_WhenIdNotExists_ThrowsError() async throws {
 		// Given a database with 1 game
 		let game1 = Game.Database.mock(id: UUID(0), index: 0, archivedOn: Date(timeIntervalSince1970: 124))
-		let db = try initializeDatabase(withGames: .custom([game1]))
+		let db = try initializeApproachDatabase(withGames: .custom([game1]))
 
 		// Unarchiving a non-existent game
 		await assertThrowsError(ofType: FetchableError.self) {
@@ -1130,7 +1130,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let game1 = Game.Database.mock(id: UUID(0), index: 0)
 		let game2 = Game.Database.mock(id: UUID(1), index: 1)
 		let game3 = Game.Database.mock(id: UUID(2), index: 2)
-		let db = try initializeDatabase(withLanes: .default, withGames: .custom([game1, game2, game3]), withGameLanes: .zero)
+		let db = try initializeApproachDatabase(withLanes: .default, withGames: .custom([game1, game2, game3]), withGameLanes: .zero)
 
 		try await withDependencies {
 			$0[DatabaseService.self].writer = { @Sendable in db }
@@ -1149,7 +1149,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let game3 = Game.Database.mock(id: UUID(2), index: 2)
 		let gameLane1 = GameLane.Database(gameId: UUID(0), laneId: UUID(0))
 		let gameLane2 = GameLane.Database(gameId: UUID(0), laneId: UUID(1))
-		let db = try initializeDatabase(withLanes: .default, withGames: .custom([game1, game2, game3]), withGameLanes: .custom([gameLane1, gameLane2]))
+		let db = try initializeApproachDatabase(withLanes: .default, withGames: .custom([game1, game2, game3]), withGameLanes: .custom([gameLane1, gameLane2]))
 
 		try await withDependencies {
 			$0[DatabaseService.self].writer = { @Sendable in db }
@@ -1181,7 +1181,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let gameLane1 = GameLane.Database(gameId: UUID(0), laneId: UUID(0))
 		let gameLane2 = GameLane.Database(gameId: UUID(1), laneId: UUID(1))
 		let gameLane3 = GameLane.Database(gameId: UUID(2), laneId: UUID(1))
-		let db = try initializeDatabase(withLanes: .default, withGames: .custom([game1, game2, game3]), withGameLanes: .custom([gameLane1, gameLane2, gameLane3]))
+		let db = try initializeApproachDatabase(withLanes: .default, withGames: .custom([game1, game2, game3]), withGameLanes: .custom([gameLane1, gameLane2, gameLane3]))
 
 		try await withDependencies {
 			$0[DatabaseService.self].writer = { @Sendable in db }
@@ -1212,7 +1212,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let game2 = Game.Database.mock(id: UUID(1), index: 1)
 		let game3 = Game.Database.mock(id: UUID(2), index: 2)
 		let game4 = Game.Database.mock(id: UUID(3), index: 4)
-		let db = try initializeDatabase(withSeries: .custom([series1]), withGames: .custom([game1, game2, game3, game4]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1]), withGames: .custom([game1, game2, game3, game4]))
 
 		// Changing the order
 		try await withDependencies {
@@ -1235,7 +1235,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let game2 = Game.Database.mock(id: UUID(1), index: 1)
 		let game3 = Game.Database.mock(id: UUID(2), index: 2)
 		let game4 = Game.Database.mock(id: UUID(3), index: 4)
-		let db = try initializeDatabase(withSeries: .custom([series1]), withGames: .custom([game1, game2, game3, game4]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1]), withGames: .custom([game1, game2, game3, game4]))
 
 		// Changing the order throws an error
 		await assertThrowsError(ofType: GamesRepositoryError.self) {
@@ -1260,7 +1260,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let game2 = Game.Database.mock(id: UUID(1), index: 1)
 		let game3 = Game.Database.mock(id: UUID(2), index: 2)
 		let game4 = Game.Database.mock(id: UUID(3), index: 4)
-		let db = try initializeDatabase(withSeries: .custom([series1]), withGames: .custom([game1, game2, game3, game4]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1]), withGames: .custom([game1, game2, game3, game4]))
 
 		// Changing the order throws an error
 		await assertThrowsError(ofType: GamesRepositoryError.self) {
@@ -1285,7 +1285,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let game2 = Game.Database.mock(id: UUID(1), index: 1)
 		let game3 = Game.Database.mock(id: UUID(2), index: 2)
 		let game4 = Game.Database.mock(id: UUID(3), index: 4)
-		let db = try initializeDatabase(withSeries: .custom([series1]), withGames: .custom([game1, game2, game3, game4]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1]), withGames: .custom([game1, game2, game3, game4]))
 
 		// Changing the order throws an error
 		await assertThrowsError(ofType: GamesRepositoryError.self) {
@@ -1315,7 +1315,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, locked: .locked)
 		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 2, locked: .open)
 		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 3, locked: .locked)
-		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3, game4]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3, game4]))
 
 		// Locking stale games
 		try await withDependencies {
@@ -1343,7 +1343,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, locked: .locked)
 		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 2, locked: .open)
 		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 3, locked: .locked)
-		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3, game4]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3, game4]))
 
 		// Locking stale games
 		try await withDependencies {

@@ -21,7 +21,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let league2 = League.Database.mock(id: UUID(1), name: "Minors")
 		let league3 = League.Database.mock(id: UUID(2), name: "Ursa", archivedOn: Date())
 
-		let db = try initializeDatabase(withLeagues: .custom([league1, league2, league3]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1, league2, league3]))
 
 		// Fetching the leagues
 		let leagues = withDependencies {
@@ -44,7 +44,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// Given a database with two leagues
 		let league1 = League.Database.mock(id: UUID(0), name: "Majors", recurrence: .once)
 		let league2 = League.Database.mock(id: UUID(1), name: "Minors", recurrence: .repeating)
-		let db = try initializeDatabase(withLeagues: .custom([league1, league2]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1, league2]))
 
 		// Fetching the leagues by recurrence
 		let leagues = withDependencies {
@@ -64,7 +64,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// Given a database with two leagues
 		let league1 = League.Database.mock(bowlerId: UUID(0), id: UUID(0), name: "Majors")
 		let league2 = League.Database.mock(bowlerId: UUID(1), id: UUID(1), name: "Minors")
-		let db = try initializeDatabase(withLeagues: .custom([league1, league2]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1, league2]))
 
 		// Fetching the leagues by bowler
 		let leagues = withDependencies {
@@ -85,7 +85,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let league1 = League.Database.mock(id: UUID(0), name: "B League")
 		let league2 = League.Database.mock(id: UUID(1), name: "A League")
 		let league3 = League.Database.mock(id: UUID(2), name: "C League")
-		let db = try initializeDatabase(withLeagues: .custom([league1, league2, league3]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1, league2, league3]))
 
 		// Fetching the leagues
 		let leagues = withDependencies {
@@ -109,7 +109,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// Given a database with two leagues
 		let league1 = League.Database.mock(id: UUID(0), name: "B League")
 		let league2 = League.Database.mock(id: UUID(1), name: "A League")
-		let db = try initializeDatabase(withLeagues: .custom([league1, league2]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1, league2]))
 
 		// Given an ordering of ids
 		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
@@ -142,7 +142,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, score: 200)
 		let game3 = Game.Database.mock(seriesId: UUID(2), id: UUID(2), index: 0, score: 250)
 		let game4 = Game.Database.mock(seriesId: UUID(2), id: UUID(3), index: 1, score: 300)
-		let db = try initializeDatabase(
+		let db = try initializeApproachDatabase(
 			withLeagues: .custom([league1, league2]),
 			withGames: .custom([game1, game2, game3, game4])
 		)
@@ -175,7 +175,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 100)
 		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), index: 1, score: 200)
 		let game3 = Game.Database.mock(seriesId: UUID(2), id: UUID(2), index: 2, score: 300)
-		let db = try initializeDatabase(
+		let db = try initializeApproachDatabase(
 			withLeagues: .custom([league1]),
 			withSeries: .custom([series1, series2, series3]),
 			withGames: .custom([game1, game2, game3])
@@ -206,7 +206,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// and 1 game each
 		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 100, excludeFromStatistics: .include)
 		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), index: 1, score: 200, excludeFromStatistics: .exclude)
-		let db = try initializeDatabase(
+		let db = try initializeApproachDatabase(
 			withLeagues: .custom([league1]),
 			withSeries: .custom([series1, series2]),
 			withGames: .custom([game1, game2])
@@ -234,7 +234,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// Given a database with two leagues
 		let league1 = League.Database.mock(id: UUID(0), name: "Majors")
 		let league2 = League.Database.mock(id: UUID(1), name: "Minors")
-		let db = try initializeDatabase(withLeagues: .custom([league1, league2]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1, league2]))
 
 		// Fetching the leagues
 		let leagues = withDependencies {
@@ -257,7 +257,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// Given a database with two leagues
 		let league1 = League.Database.mock(id: UUID(0), name: "Majors", recurrence: .once)
 		let league2 = League.Database.mock(id: UUID(1), name: "Minors", recurrence: .repeating)
-		let db = try initializeDatabase(withLeagues: .custom([league1, league2]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1, league2]))
 
 		// Fetching the leagues by recurrence
 		let leagues = withDependencies {
@@ -277,7 +277,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// Given a database with two leagues
 		let league1 = League.Database.mock(bowlerId: UUID(0), id: UUID(0), name: "Majors")
 		let league2 = League.Database.mock(bowlerId: UUID(1), id: UUID(1), name: "Minors")
-		let db = try initializeDatabase(withLeagues: .custom([league1, league2]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1, league2]))
 
 		// Fetching the leagues by bowler
 		let leagues = withDependencies {
@@ -298,7 +298,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let league1 = League.Database.mock(id: UUID(0), name: "B League")
 		let league2 = League.Database.mock(id: UUID(1), name: "A League")
 		let league3 = League.Database.mock(id: UUID(2), name: "C League")
-		let db = try initializeDatabase(withLeagues: .custom([league1, league2, league3]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1, league2, league3]))
 
 		// Fetching the leagues
 		let leagues = withDependencies {
@@ -322,7 +322,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// Given a database with two leagues
 		let league1 = League.Database.mock(id: UUID(0), name: "B League")
 		let league2 = League.Database.mock(id: UUID(1), name: "A League")
-		let db = try initializeDatabase(withLeagues: .custom([league1, league2]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1, league2]))
 
 		// Given an ordering of ids
 		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
@@ -369,7 +369,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let game7 = Game.Database.mock(seriesId: UUID(3), id: UUID(6), index: 0)
 		let game8 = Game.Database.mock(seriesId: UUID(3), id: UUID(7), index: 0)
 
-		let db = try initializeDatabase(
+		let db = try initializeApproachDatabase(
 			withLeagues: .custom([league1, league2, league3, league4]),
 			withSeries: .custom([series1, series2, series3, series4]),
 			withGames: .custom([game1, game2, game3, game4, game5, game6, game7, game8])
@@ -398,7 +398,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 	func testSeriesHost_WhenLeagueExists_ReturnsLeague() async throws {
 		// Given a database with one league
 		let league1 = League.Database.mock(id: UUID(0), name: "Majors")
-		let db = try initializeDatabase(withLeagues: .custom([league1]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1]))
 
 		// Fetching the league
 		let league = try await withDependencies {
@@ -424,7 +424,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testSeriesHost_WhenLeagueNotExists_ThrowsError() async throws {
 		// Given a database with no leagues
-		let db = try initializeDatabase(withLeagues: nil)
+		let db = try initializeApproachDatabase(withLeagues: nil)
 
 		// Fetching the league
 		await assertThrowsError(ofType: FetchableError.self) {
@@ -442,7 +442,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 	func testCreate_WhenLeagueExists_ThrowsError() async throws {
 		// Given a database with an existing league
 		let league1 = League.Database.mock(id: UUID(0), name: "Majors", additionalPinfall: nil, additionalGames: nil)
-		let db = try initializeDatabase(withLeagues: .custom([league1]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1]))
 
 		// Creating the league
 		let new = League.Create(
@@ -476,7 +476,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testCreate_WhenLeagueNotExists_CreatesLeague() async throws {
 		// Given a database with no leagues
-		let db = try initializeDatabase(withAlleys: .default, withBowlers: .default, withLeagues: nil)
+		let db = try initializeApproachDatabase(withAlleys: .default, withBowlers: .default, withLeagues: nil)
 
 		// Creating a league
 		let new = League.Create(
@@ -511,7 +511,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testCreate_WhenLeagueRepeats_DoesNotCreateGames() async throws {
 		// Given a database with no leagues
-		let db = try initializeDatabase(withAlleys: .default, withBowlers: .default, withLeagues: nil)
+		let db = try initializeApproachDatabase(withAlleys: .default, withBowlers: .default, withLeagues: nil)
 
 		// Creating a league
 		let new = League.Create(
@@ -546,7 +546,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testCreate_WhenLeagueRepeats_WithPreferredGear_InsertsGear() async throws {
 		// Given a database with no leagues
-		let db = try initializeDatabase(withAlleys: .default, withBowlers: .default, withGear: .default, withLeagues: nil, withBowlerPreferredGear: .default)
+		let db = try initializeApproachDatabase(withAlleys: .default, withBowlers: .default, withGear: .default, withLeagues: nil, withBowlerPreferredGear: .default)
 
 		// Creating a league
 		let new = League.Create(
@@ -575,7 +575,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testCreate_WhenLeagueDoesNotRepeat_CreatesGames() async throws {
 		// Given a database with no leagues
-		let db = try initializeDatabase(withAlleys: .default, withBowlers: .default, withLeagues: nil)
+		let db = try initializeApproachDatabase(withAlleys: .default, withBowlers: .default, withLeagues: nil)
 
 		// Creating a league
 		let new = League.Create(
@@ -613,7 +613,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 	func testUpdate_WhenLeagueExists_UpdatesLeague() async throws {
 		// Given a database with an existing league
 		let league1 = League.Database.mock(id: UUID(0), name: "Majors", additionalPinfall: nil, additionalGames: nil)
-		let db = try initializeDatabase(withLeagues: .custom([league1]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1]))
 
 		// Editing the league
 		let existing = League.Edit(
@@ -644,7 +644,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenLeagueNotExists_ThrowsError() async throws {
 		// Given a database with no leagues
-		let db = try initializeDatabase(withLeagues: nil)
+		let db = try initializeApproachDatabase(withLeagues: nil)
 
 		// Editing a league
 		let existing = League.Edit(
@@ -679,7 +679,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 	func testEdit_WhenLeagueExists_ReturnsLeague() async throws {
 		// Given a database with one league
 		let league1 = League.Database.mock(id: UUID(0), name: "Majors")
-		let db = try initializeDatabase(withLeagues: .custom([league1]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1]))
 
 		// Editing the league
 		let league = try await withDependencies {
@@ -706,7 +706,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testEdit_WhenLeagueNotExists_ThrowsError() async throws {
 		// Given a database with no leagues
-		let db = try initializeDatabase(withLeagues: nil)
+		let db = try initializeApproachDatabase(withLeagues: nil)
 
 		// Editing the league
 		await assertThrowsError(ofType: FetchableError.self) {
@@ -725,7 +725,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// Given a database with 2 leagues
 		let league1 = League.Database.mock(id: UUID(0), name: "Majors", archivedOn: nil)
 		let league2 = League.Database.mock(id: UUID(1), name: "Minors", archivedOn: nil)
-		let db = try initializeDatabase(withLeagues: .custom([league1, league2]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1, league2]))
 
 		// Archiving the first league
 		try await withDependencies {
@@ -756,7 +756,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 	func testArchive_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1 league
 		let league1 = League.Database.mock(id: UUID(0), name: "Majors", archivedOn: nil)
-		let db = try initializeDatabase(withLeagues: .custom([league1]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1]))
 
 		// Archiving a non-existent league
 		try await withDependencies {
@@ -781,7 +781,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// Given a database with 2 leagues
 		let league1 = League.Database.mock(id: UUID(0), name: "Majors", archivedOn: Date(timeIntervalSince1970: 124))
 		let league2 = League.Database.mock(id: UUID(1), name: "Minors", archivedOn: Date(timeIntervalSince1970: 124))
-		let db = try initializeDatabase(withLeagues: .custom([league1, league2]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1, league2]))
 
 		// Unarchiving the first league
 		try await withDependencies {
@@ -812,7 +812,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 	func testUnarchive_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1 league
 		let league1 = League.Database.mock(id: UUID(0), name: "Majors", archivedOn: nil)
-		let db = try initializeDatabase(withLeagues: .custom([league1]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1]))
 
 		// Unarchiving a non-existent league
 		try await withDependencies {

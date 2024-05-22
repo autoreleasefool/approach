@@ -48,7 +48,7 @@ final class TrackableFiltersTests: XCTestCase {
 	let matchPlay8 = MatchPlay.Database.mock(gameId: UUID(7), id: UUID(7), result: .won)
 
 	func getDatabase() throws -> any DatabaseWriter {
-		try initializeDatabase(
+		try initializeApproachDatabase(
 			withBowlers: .custom([bowler]),
 			withGear: .zero,
 			withLeagues: .custom([league1, league2]),
@@ -105,7 +105,7 @@ final class TrackableFiltersTests: XCTestCase {
 	}
 
 	func testBuildInitialQueries_WithBowlerSource_WhenBowlerMissing_ThrowsError() async throws {
-		let database = try initializeDatabase(withBowlers: .zero)
+		let database = try initializeApproachDatabase(withBowlers: .zero)
 
 		let filter = TrackableFilter(source: .bowler(UUID(0)))
 
@@ -159,7 +159,7 @@ final class TrackableFiltersTests: XCTestCase {
 	}
 
 	func testBuildInitialQueries_WithLeagueSource_WhenLeagueMissing_ThrowsError() async throws {
-		let database = try initializeDatabase(withLeagues: .zero)
+		let database = try initializeApproachDatabase(withLeagues: .zero)
 
 		let filter = TrackableFilter(source: .league(UUID(0)))
 
@@ -213,7 +213,7 @@ final class TrackableFiltersTests: XCTestCase {
 	}
 
 	func testBuildInitialQueries_WithSeriesSource_WhenSeriesMissing_ThrowsError() async throws {
-		let database = try initializeDatabase(withSeries: .zero)
+		let database = try initializeApproachDatabase(withSeries: .zero)
 
 		let filter = TrackableFilter(source: .series(UUID(0)))
 
@@ -267,7 +267,7 @@ final class TrackableFiltersTests: XCTestCase {
 	}
 
 	func testBuildInitialQueries_WithGameSource_WhenGameMissing_ThrowsError() async throws {
-		let database = try initializeDatabase(withGames: .zero)
+		let database = try initializeApproachDatabase(withGames: .zero)
 
 		let filter = TrackableFilter(source: .game(UUID(0)))
 
@@ -335,7 +335,7 @@ final class TrackableFiltersTests: XCTestCase {
 	}
 
 	func testBuildTrackableQueries_WithBowlerSource_WhenBowlerMissing_ThrowsError() async throws {
-		let database = try initializeDatabase(withBowlers: .zero)
+		let database = try initializeApproachDatabase(withBowlers: .zero)
 
 		let filter = TrackableFilter(source: .bowler(UUID(0)))
 
@@ -400,7 +400,7 @@ final class TrackableFiltersTests: XCTestCase {
 	}
 
 	func testBuildTrackableQueries_WithLeagueSource_WhenLeagueMissing_ThrowsError() async throws {
-		let database = try initializeDatabase(withLeagues: .zero)
+		let database = try initializeApproachDatabase(withLeagues: .zero)
 
 		let filter = TrackableFilter(source: .league(UUID(0)))
 
@@ -465,7 +465,7 @@ final class TrackableFiltersTests: XCTestCase {
 	}
 
 	func testBuildTrackableQueries_WithSeriesSource_WhenSeriesMissing_ThrowsError() async throws {
-		let database = try initializeDatabase(withSeries: .zero)
+		let database = try initializeApproachDatabase(withSeries: .zero)
 
 		let filter = TrackableFilter(source: .series(UUID(0)))
 
@@ -530,7 +530,7 @@ final class TrackableFiltersTests: XCTestCase {
 	}
 
 	func testBuildTrackableQueries_WithGameSource_WhenGameMissing_ThrowsError() async throws {
-		let database = try initializeDatabase(withGames: .zero)
+		let database = try initializeApproachDatabase(withGames: .zero)
 
 		let filter = TrackableFilter(source: .game(UUID(0)))
 

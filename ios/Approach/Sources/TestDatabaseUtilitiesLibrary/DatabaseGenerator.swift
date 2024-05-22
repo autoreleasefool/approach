@@ -1,4 +1,3 @@
-import DatabaseLibrary
 import DatabaseModelsLibrary
 import Dependencies
 import Foundation
@@ -78,7 +77,7 @@ public func generatePopulatedDatabase(db: (any DatabaseWriter)? = nil) throws ->
 	let matchPlays = generateMatchPlay(forGames: games)
 	let bowlerPreferredGear = generateBowlerPreferredGear(forBowlers: bowlers, withGear: gear)
 
-	return try initializeDatabase(
+	return try initializeApproachDatabase(
 		withAvatars: .custom(avatars),
 		withLocations: .custom(locations),
 		withAlleys: .custom(alleys),

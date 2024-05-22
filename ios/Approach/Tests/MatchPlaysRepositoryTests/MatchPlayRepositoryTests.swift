@@ -23,7 +23,7 @@ final class MatchPlaysRepositoryTests: XCTestCase {
 			opponentScore: 123,
 			result: .lost
 		)
-		let db = try initializeDatabase(withMatchPlays: .custom([matchPlay]))
+		let db = try initializeApproachDatabase(withMatchPlays: .custom([matchPlay]))
 
 		// Creating the match play
 		await assertThrowsError(ofType: DatabaseError.self) {
@@ -49,7 +49,7 @@ final class MatchPlaysRepositoryTests: XCTestCase {
 
 	func testCreate_WhenMatchPlayNotExists_CreatesMatchPlay() async throws {
 		// Given a database with no match plays
-		let db = try initializeDatabase(withGames: .default, withMatchPlays: nil)
+		let db = try initializeApproachDatabase(withGames: .default, withMatchPlays: nil)
 
 		// Creating a match play
 		let create = MatchPlay.Create(gameId: UUID(0), id: UUID(1), opponent: nil, opponentScore: 456, result: .tied)
@@ -82,7 +82,7 @@ final class MatchPlaysRepositoryTests: XCTestCase {
 			opponentScore: 123,
 			result: .lost
 		)
-		let db = try initializeDatabase(withMatchPlays: .custom([matchPlay]))
+		let db = try initializeApproachDatabase(withMatchPlays: .custom([matchPlay]))
 
 		// Updating the match play
 		let edit = MatchPlay.Edit(gameId: UUID(0), id: UUID(1), opponent: nil, opponentScore: 456, result: .tied)
@@ -106,7 +106,7 @@ final class MatchPlaysRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenMatchPlayNotExists_ThrowsError() async throws {
 		// Given a database with no match plays
-		let db = try initializeDatabase(withMatchPlays: nil)
+		let db = try initializeApproachDatabase(withMatchPlays: nil)
 
 		// Updating a match play
 		await assertThrowsError(ofType: RecordError.self) {
@@ -142,7 +142,7 @@ final class MatchPlaysRepositoryTests: XCTestCase {
 			opponentScore: 123,
 			result: .lost
 		)
-		let db = try initializeDatabase(withMatchPlays: .custom([matchPlay1, matchPlay2]))
+		let db = try initializeApproachDatabase(withMatchPlays: .custom([matchPlay1, matchPlay2]))
 
 		// Deleting the first match play
 		try await withDependencies {
@@ -170,7 +170,7 @@ final class MatchPlaysRepositoryTests: XCTestCase {
 			opponentScore: nil,
 			result: .tied
 		)
-		let db = try initializeDatabase(withMatchPlays: .custom([matchPlay1]))
+		let db = try initializeApproachDatabase(withMatchPlays: .custom([matchPlay1]))
 
 		// Deleting a non-existent match play
 		try await withDependencies {

@@ -19,7 +19,7 @@ final class GearRepositoryTests: XCTestCase {
 		// Given a database with two gear
 		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow")
 		let gear2 = Gear.Database.mock(id: UUID(1), name: "Blue")
-		let db = try initializeDatabase(withAvatars: .default, withGear: .custom([gear1, gear2]), withBowlerPreferredGear: .zero)
+		let db = try initializeApproachDatabase(withAvatars: .default, withGear: .custom([gear1, gear2]), withBowlerPreferredGear: .zero)
 
 		// Fetching the gear
 		let gear = withDependencies {
@@ -42,7 +42,7 @@ final class GearRepositoryTests: XCTestCase {
 		// Given a database with two gear
 		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall)
 		let gear2 = Gear.Database.mock(id: UUID(1), name: "Blue", kind: .towel)
-		let db = try initializeDatabase(withGear: .custom([gear1, gear2]), withBowlerPreferredGear: .zero)
+		let db = try initializeApproachDatabase(withGear: .custom([gear1, gear2]), withBowlerPreferredGear: .zero)
 
 		// Fetching the gear
 		let gear = withDependencies {
@@ -64,7 +64,7 @@ final class GearRepositoryTests: XCTestCase {
 		// Given a database with two gear
 		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
 		let gear2 = Gear.Database.mock(id: UUID(1), name: "Blue", kind: .towel, bowlerId: UUID(1))
-		let db = try initializeDatabase(withGear: .custom([gear1, gear2]), withBowlerPreferredGear: .zero)
+		let db = try initializeApproachDatabase(withGear: .custom([gear1, gear2]), withBowlerPreferredGear: .zero)
 
 		// Fetching the gear
 		let gear = withDependencies {
@@ -87,7 +87,7 @@ final class GearRepositoryTests: XCTestCase {
 		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
 		let gear2 = Gear.Database.mock(id: UUID(1), name: "Blue", kind: .towel, bowlerId: UUID(1))
 		let gear3 = Gear.Database.mock(id: UUID(2), name: "Green", kind: .towel, bowlerId: UUID(1))
-		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3]), withBowlerPreferredGear: .zero)
+		let db = try initializeApproachDatabase(withGear: .custom([gear1, gear2, gear3]), withBowlerPreferredGear: .zero)
 
 		// Given an ordering of ids
 		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
@@ -125,7 +125,7 @@ final class GearRepositoryTests: XCTestCase {
 		let bowlerGear2 = BowlerPreferredGear.Database(bowlerId: UUID(0), gearId: UUID(1))
 		let bowlerGear3 = BowlerPreferredGear.Database(bowlerId: UUID(1), gearId: UUID(1))
 		let bowlerGear4 = BowlerPreferredGear.Database(bowlerId: UUID(1), gearId: UUID(2))
-		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]), withGear: .custom([gear1, gear2, gear3]), withBowlerPreferredGear: .custom([bowlerGear1, bowlerGear2, bowlerGear3, bowlerGear4]))
+		let db = try initializeApproachDatabase(withBowlers: .custom([bowler1, bowler2]), withGear: .custom([gear1, gear2, gear3]), withBowlerPreferredGear: .custom([bowlerGear1, bowlerGear2, bowlerGear3, bowlerGear4]))
 
 		// Fetching the gear
 		let gear = try await withDependencies {
@@ -150,7 +150,7 @@ final class GearRepositoryTests: XCTestCase {
 		let gear2 = Gear.Database.mock(id: UUID(1), name: "Blue", kind: .towel, bowlerId: UUID(1))
 		let gear3 = Gear.Database.mock(id: UUID(2), name: "Green", kind: .other, bowlerId: UUID(0))
 		let gear4 = Gear.Database.mock(id: UUID(3), name: "Red", kind: .shoes, bowlerId: UUID(1))
-		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3, gear4]), withBowlerPreferredGear: .zero)
+		let db = try initializeApproachDatabase(withGear: .custom([gear1, gear2, gear3, gear4]), withBowlerPreferredGear: .zero)
 
 		// Given an ordering of ids
 		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
@@ -181,7 +181,7 @@ final class GearRepositoryTests: XCTestCase {
 		let gear2 = Gear.Database.mock(id: UUID(1), name: "Blue", kind: .towel, bowlerId: UUID(1))
 		let gear3 = Gear.Database.mock(id: UUID(2), name: "Green", kind: .other, bowlerId: UUID(0))
 		let gear4 = Gear.Database.mock(id: UUID(3), name: "Red", kind: .shoes, bowlerId: UUID(1))
-		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3, gear4]), withBowlerPreferredGear: .zero)
+		let db = try initializeApproachDatabase(withGear: .custom([gear1, gear2, gear3, gear4]), withBowlerPreferredGear: .zero)
 
 		// Given an ordering of ids
 		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
@@ -212,7 +212,7 @@ final class GearRepositoryTests: XCTestCase {
 		let gear2 = Gear.Database.mock(id: UUID(1), name: "Blue", kind: .towel, bowlerId: UUID(1))
 		let gear3 = Gear.Database.mock(id: UUID(2), name: "Green", kind: .other, bowlerId: UUID(0))
 		let gear4 = Gear.Database.mock(id: UUID(3), name: "Red", kind: .shoes, bowlerId: UUID(1))
-		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3, gear4]), withBowlerPreferredGear: .zero)
+		let db = try initializeApproachDatabase(withGear: .custom([gear1, gear2, gear3, gear4]), withBowlerPreferredGear: .zero)
 
 		// Given an ordering of ids
 		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
@@ -241,7 +241,7 @@ final class GearRepositoryTests: XCTestCase {
 		let gear2 = Gear.Database.mock(id: UUID(1), name: "Blue", kind: .towel, bowlerId: UUID(1))
 		let gear3 = Gear.Database.mock(id: UUID(2), name: "Green", kind: .other, bowlerId: UUID(0))
 		let gear4 = Gear.Database.mock(id: UUID(3), name: "Red", kind: .shoes, bowlerId: UUID(1))
-		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3, gear4]), withBowlerPreferredGear: .zero)
+		let db = try initializeApproachDatabase(withGear: .custom([gear1, gear2, gear3, gear4]), withBowlerPreferredGear: .zero)
 
 		// Given an ordering of ids
 		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
@@ -269,7 +269,7 @@ final class GearRepositoryTests: XCTestCase {
 	func testCreate_WhenGearExists_ThrowsError() async throws {
 		// Given a database with an existing gear
 		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow")
-		let db = try initializeDatabase(withGear: .custom([gear1]), withBowlerPreferredGear: .zero)
+		let db = try initializeApproachDatabase(withGear: .custom([gear1]), withBowlerPreferredGear: .zero)
 
 		// Create the gear
 		await assertThrowsError(ofType: DatabaseError.self) {
@@ -296,7 +296,7 @@ final class GearRepositoryTests: XCTestCase {
 
 	func testCreate_WhenGearNotExists_CreatesGear() async throws {
 		// Given a database with no gear
-		let db = try initializeDatabase(withGear: nil)
+		let db = try initializeApproachDatabase(withGear: nil)
 
 		// Creating a gear
 		let create = Gear.Create(id: UUID(0), name: "Yellow", kind: .bowlingBall, owner: nil, avatar: .mock(id: UUID(0)))
@@ -320,7 +320,7 @@ final class GearRepositoryTests: XCTestCase {
 
 	func testCreate_WhenGearHasAvatar_CreatesAvatar() async throws {
 		// Given a database with no gear
-		let db = try initializeDatabase(withGear: nil)
+		let db = try initializeApproachDatabase(withGear: nil)
 
 		// Creating a gear
 		let create = Gear.Create(id: UUID(0), name: "Yellow", kind: .bowlingBall, owner: nil, avatar: .init(id: UUID(0), value: .mock))
@@ -346,7 +346,7 @@ final class GearRepositoryTests: XCTestCase {
 	func testUpdate_WhenGearExists_UpdatesGear() async throws {
 		// Given a database with an existing gear
 		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: nil)
-		let db = try initializeDatabase(withGear: .custom([gear1]), withBowlerPreferredGear: .zero)
+		let db = try initializeApproachDatabase(withGear: .custom([gear1]), withBowlerPreferredGear: .zero)
 
 		// Editing the gear
 		let editable = Gear.Edit(id: UUID(0), kind: .bowlingBall, name: "Blue", owner: .init(id: UUID(0), name: "Sarah"), avatar: .mock(id: UUID(0)))
@@ -372,7 +372,7 @@ final class GearRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenGearNotExists_ThrowError() async throws {
 		// Given a database with no gear
-		let db = try initializeDatabase(withGear: nil)
+		let db = try initializeApproachDatabase(withGear: nil)
 
 		// Updating a gear
 		await assertThrowsError(ofType: RecordError.self) {
@@ -394,7 +394,7 @@ final class GearRepositoryTests: XCTestCase {
 		// Given a database with an existing gear
 		let avatar1 = Avatar.Database.mock(id: UUID(0))
 		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", avatarId: UUID(0))
-		let db = try initializeDatabase(withAvatars: .custom([avatar1]), withGear: .custom([gear1]), withBowlerPreferredGear: .zero)
+		let db = try initializeApproachDatabase(withAvatars: .custom([avatar1]), withGear: .custom([gear1]), withBowlerPreferredGear: .zero)
 
 		// Editing the gear
 		let editable = Gear.Edit(id: UUID(0), kind: .bowlingBall, name: "Blue", owner: .init(id: UUID(0), name: "Sarah"), avatar: .init(id: UUID(0), value: .text("Bl", .rgb(.init(0, 0, 1)))))
@@ -422,7 +422,7 @@ final class GearRepositoryTests: XCTestCase {
 	func testEdit_WhenGearExists_ReturnsGear() async throws {
 		// Given a database with a gear
 		let gear = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0), avatarId: UUID(0))
-		let db = try initializeDatabase(withAvatars: .default, withGear: .custom([gear]), withBowlerPreferredGear: .zero)
+		let db = try initializeApproachDatabase(withAvatars: .default, withGear: .custom([gear]), withBowlerPreferredGear: .zero)
 
 		// Editing the gear
 		let editable = try await withDependencies {
@@ -441,7 +441,7 @@ final class GearRepositoryTests: XCTestCase {
 
 	func testEdit_WhenGearNotExists_ThrowsError() async throws {
 		// Given a database with no gear
-		let db = try initializeDatabase(withGear: nil)
+		let db = try initializeApproachDatabase(withGear: nil)
 
 		// Editing a gear
 		await assertThrowsError(ofType: FetchableError.self) {
@@ -460,7 +460,7 @@ final class GearRepositoryTests: XCTestCase {
 		// Given a database with 2 gear
 		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow")
 		let gear2 = Gear.Database.mock(id: UUID(1), name: "Blue")
-		let db = try initializeDatabase(withGear: .custom([gear1, gear2]), withBowlerPreferredGear: .zero)
+		let db = try initializeApproachDatabase(withGear: .custom([gear1, gear2]), withBowlerPreferredGear: .zero)
 
 		// Deleting the first gear
 		try await withDependencies {
@@ -482,7 +482,7 @@ final class GearRepositoryTests: XCTestCase {
 	func testDelete_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1
 		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow")
-		let db = try initializeDatabase(withGear: .custom([gear1]), withBowlerPreferredGear: .zero)
+		let db = try initializeApproachDatabase(withGear: .custom([gear1]), withBowlerPreferredGear: .zero)
 
 		// Deleting a non-existent gear
 		try await withDependencies {

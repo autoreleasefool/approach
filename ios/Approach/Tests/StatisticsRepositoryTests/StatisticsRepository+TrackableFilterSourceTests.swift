@@ -18,7 +18,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 
 	func testBowler_WithEmptyDatabase_ReturnsNoValues() async throws {
 		let bowler = Bowler.Database.mock(id: UUID(0), name: "Joseph")
-		let db = try initializeDatabase(withBowlers: .custom([bowler]))
+		let db = try initializeApproachDatabase(withBowlers: .custom([bowler]))
 
 		let statistics = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
@@ -40,7 +40,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 
 	func testLeague_WithEmptyDatabase_ReturnsNoValues() async throws {
 		let league = League.Database.mock(id: UUID(0), name: "Majors")
-		let db = try initializeDatabase(withLeagues: .custom([league]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league]))
 
 		let statistics = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
@@ -62,7 +62,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 
 	func testSeries_WithEmptyDatabase_ReturnsNoValues() async throws {
 		let series = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123))
-		let db = try initializeDatabase(withSeries: .custom([series]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series]))
 
 		let statistics = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
@@ -83,7 +83,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 
 	func testGame_WithEmptyDatabase_ReturnsNoValues() async throws {
 		let game = Game.Database.mock(id: UUID(0), index: 0)
-		let db = try initializeDatabase(withGames: .custom([game]))
+		let db = try initializeApproachDatabase(withGames: .custom([game]))
 
 		let statistics = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }

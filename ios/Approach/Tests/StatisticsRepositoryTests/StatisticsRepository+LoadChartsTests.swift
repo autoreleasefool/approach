@@ -17,7 +17,7 @@ final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 
 	func testBowler_WithEmptyDatabase_ReturnsNoValues() async throws {
 		let bowler = Bowler.Database.mock(id: UUID(0), name: "Joseph")
-		let db = try initializeDatabase(withBowlers: .custom([bowler]))
+		let db = try initializeApproachDatabase(withBowlers: .custom([bowler]))
 		let expectedResults: [((first: Entry?, last: Entry?))] = [
 			(nil, nil),
 			(nil, nil),
@@ -37,7 +37,7 @@ final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 
 	func testLeague_WithEmptyDatabase_ReturnsNoValues() async throws {
 		let league = League.Database.mock(id: UUID(0), name: "Majors")
-		let db = try initializeDatabase(withLeagues: .custom([league]))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league]))
 		let expectedResults: [((first: Entry?, last: Entry?))] = [
 			(nil, nil),
 			(nil, nil),
@@ -57,7 +57,7 @@ final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 
 	func testSeries_WithEmptyDatabase_ReturnsNoValues() async throws {
 		let series = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123))
-		let db = try initializeDatabase(withSeries: .custom([series]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series]))
 		let expectedResults: [((first: Entry?, last: Entry?))] = [
 			(nil, nil),
 			(nil, nil),
@@ -77,7 +77,7 @@ final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 
 	func testGame_WithEmptyDatabase_ReturnsNoValues() async throws {
 		let game = Game.Database.mock(id: UUID(0), index: 0)
-		let db = try initializeDatabase(withGames: .custom([game]))
+		let db = try initializeApproachDatabase(withGames: .custom([game]))
 		let expectedResults: [((first: Entry?, last: Entry?))] = [
 			(nil, nil),
 			(nil, nil),

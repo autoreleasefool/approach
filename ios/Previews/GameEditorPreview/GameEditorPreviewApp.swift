@@ -25,7 +25,7 @@ public struct GameEditorPreviewApp: App {
 					.dependency(\.database, {
 						let db: any DatabaseWriter
 						do {
-							db = try initializeDatabase(
+							db = try initializeApproachDatabase(
 								withLocations: .default,
 								withAlleys: .default,
 								withLanes: .default,

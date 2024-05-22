@@ -14,7 +14,7 @@ final class BowlerTrackableTests: XCTestCase {
 
 		let leagues = generateBaseLeagues()
 
-		let database = try initializeDatabase(withLeagues: .custom(leagues))
+		let database = try initializeApproachDatabase(withLeagues: .custom(leagues))
 
 		let result = try await database.read {
 			try bowler
@@ -31,7 +31,7 @@ final class BowlerTrackableTests: XCTestCase {
 		let league1 = League.Database.mock(id: UUID(0), name: "Majors", recurrence: .once)
 		let league2 = League.Database.mock(id: UUID(1), name: "Minors", recurrence: .repeating)
 
-		let database = try initializeDatabase(withLeagues: .custom([league1, league2]))
+		let database = try initializeApproachDatabase(withLeagues: .custom([league1, league2]))
 
 		let result = try await database.read {
 			try bowler
@@ -50,7 +50,7 @@ final class BowlerTrackableTests: XCTestCase {
 		let leagues = generateBaseLeagues()
 		let series = generateSeries(forLeagues: leagues)
 
-		let database = try initializeDatabase(
+		let database = try initializeApproachDatabase(
 			withLeagues: .custom(leagues),
 			withSeries: .custom(series)
 		)
@@ -73,7 +73,7 @@ final class BowlerTrackableTests: XCTestCase {
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 1))
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 0))
 
-		let database = try initializeDatabase(withSeries: .custom([series1, series2]))
+		let database = try initializeApproachDatabase(withSeries: .custom([series1, series2]))
 
 		let result = try await database.read {
 			try bowler
@@ -93,7 +93,7 @@ final class BowlerTrackableTests: XCTestCase {
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 0))
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 1))
 
-		let database = try initializeDatabase(withSeries: .custom([series1, series2]))
+		let database = try initializeApproachDatabase(withSeries: .custom([series1, series2]))
 
 		let result = try await database.read {
 			try bowler
@@ -115,7 +115,7 @@ final class BowlerTrackableTests: XCTestCase {
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 0), alleyId: UUID(0))
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 1), alleyId: nil)
 
-		let database = try initializeDatabase(withAlleys: .custom([alley]), withSeries: .custom([series1, series2]))
+		let database = try initializeApproachDatabase(withAlleys: .custom([alley]), withSeries: .custom([series1, series2]))
 
 		let result = try await database.read {
 			try bowler
@@ -138,7 +138,7 @@ final class BowlerTrackableTests: XCTestCase {
 		let series = generateSeries(forLeagues: leagues)
 		let games = generateGames(forSeries: series)
 
-		let database = try initializeDatabase(
+		let database = try initializeApproachDatabase(
 			withLeagues: .custom(leagues),
 			withSeries: .custom(series),
 			withGames: .custom(games)
@@ -174,7 +174,7 @@ final class BowlerTrackableTests: XCTestCase {
 		let matchPlay1 = MatchPlay.Database.mock(gameId: UUID(0), id: UUID(0), opponentId: UUID(1))
 		let matchPlay2 = MatchPlay.Database.mock(gameId: UUID(1), id: UUID(1), opponentId: nil)
 
-		let database = try initializeDatabase(
+		let database = try initializeApproachDatabase(
 			withBowlers: .custom([bowler, opponent]),
 			withLeagues: .custom([league]),
 			withSeries: .custom([series]),
@@ -215,7 +215,7 @@ final class BowlerTrackableTests: XCTestCase {
 		let gameGear1 = GameGear.Database(gameId: UUID(0), gearId: UUID(0))
 		let gameGear2 = GameGear.Database(gameId: UUID(1), gearId: UUID(1))
 
-		let database = try initializeDatabase(
+		let database = try initializeApproachDatabase(
 			withBowlers: .custom([bowler, opponent]),
 			withGear: .custom([gear1, gear2]),
 			withLeagues: .custom([league]),
@@ -261,7 +261,7 @@ final class BowlerTrackableTests: XCTestCase {
 		let gameLane2 = GameLane.Database(gameId: UUID(1), laneId: UUID(1))
 		let gameLane3 = GameLane.Database(gameId: UUID(2), laneId: UUID(2))
 
-		let database = try initializeDatabase(
+		let database = try initializeApproachDatabase(
 			withAlleys: .custom([alley]),
 			withLanes: .custom([lane1, lane2, lane3]),
 			withLeagues: .custom([league]),
@@ -306,7 +306,7 @@ final class BowlerTrackableTests: XCTestCase {
 		let gameLane2 = GameLane.Database(gameId: UUID(1), laneId: UUID(1))
 		let gameLane3 = GameLane.Database(gameId: UUID(2), laneId: UUID(2))
 
-		let database = try initializeDatabase(
+		let database = try initializeApproachDatabase(
 			withAlleys: .custom([alley]),
 			withLanes: .custom([lane1, lane2, lane3]),
 			withLeagues: .custom([league]),
@@ -340,7 +340,7 @@ final class BowlerTrackableTests: XCTestCase {
 		let games = generateGames(forSeries: series)
 		let frames = generateFrames(forGames: games)
 
-		let database = try initializeDatabase(
+		let database = try initializeApproachDatabase(
 			withLeagues: .custom(leagues),
 			withSeries: .custom(series),
 			withGames: .custom(games),
@@ -382,7 +382,7 @@ final class BowlerTrackableTests: XCTestCase {
 		let frame2 = Frame.Database.mock(index: 1, ball1: UUID(1))
 		let frame3 = Frame.Database.mock(index: 2, ball0: UUID(2), ball1: UUID(2), ball2: UUID(2))
 
-		let database = try initializeDatabase(
+		let database = try initializeApproachDatabase(
 			withGear: .custom([ball1, ball2, ball3]),
 			withLeagues: .custom([league]),
 			withSeries: .custom([series]),
@@ -440,7 +440,7 @@ final class BowlerTrackableTests: XCTestCase {
 
 		let matchPlay = MatchPlay.Database.mock(gameId: UUID(0), id: UUID(0), opponentId: UUID(1))
 
-		let database = try initializeDatabase(
+		let database = try initializeApproachDatabase(
 			withAlleys: .custom([alley]),
 			withLanes: .custom([lane]),
 			withBowlers: .custom([bowler, opponent]),

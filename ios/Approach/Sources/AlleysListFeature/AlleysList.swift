@@ -49,7 +49,7 @@ public struct AlleysList: Reducer {
 			)
 
 			@Dependency(\.featureFlags) var featureFlags
-			self.isAlleyAndGearAveragesEnabled = try featureFlags.isFlagEnabled(.alleyAndGearAverages)
+			self.isAlleyAndGearAveragesEnabled = featureFlags.isFlagEnabled(.alleyAndGearAverages)
 		}
 	}
 

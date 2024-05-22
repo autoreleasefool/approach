@@ -116,7 +116,7 @@ let package = Package(
 		.library(name: "AssetsLibrary", targets: ["AssetsLibrary"]),
 		.library(name: "ComposableExtensionsLibrary", targets: ["ComposableExtensionsLibrary"]),
 		.library(name: "ConstantsLibrary", targets: ["ConstantsLibrary"]),
-		.library(name: "DatabaseLibrary", targets: ["DatabaseLibrary"]),
+		.library(name: "DatabaseMigrationsLibrary", targets: ["DatabaseMigrationsLibrary"]),
 		.library(name: "DatabaseModelsLibrary", targets: ["DatabaseModelsLibrary"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "FeatureActionLibrary", targets: ["FeatureActionLibrary"]),
@@ -256,6 +256,7 @@ let package = Package(
 				.product(name: "BundlePackageService", package: "swift-utilities"),
 				.product(name: "FeatureFlagsPackageService", package: "swift-utilities"),
 				.product(name: "FileManagerPackageService", package: "swift-utilities"),
+				.product(name: "GRDBDatabasePackageService", package: "swift-utilities"),
 				.product(name: "PasteboardPackageService", package: "swift-utilities"),
 				.product(name: "SentryErrorReportingPackageService", package: "swift-utilities"),
 				.product(name: "StoreReviewPackageService", package: "swift-utilities"),
@@ -1220,9 +1221,7 @@ let package = Package(
 		.target(
 			name: "DatabaseService",
 			dependencies: [
-				.product(name: "FileManagerPackageServiceInterface", package: "swift-utilities"),
-				"AnalyticsServiceInterface",
-				"DatabaseLibrary",
+				"DatabaseMigrationsLibrary",
 				"DatabaseServiceInterface",
 			]
 		),
@@ -1230,7 +1229,9 @@ let package = Package(
 			name: "DatabaseServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "DependenciesMacros", package: "swift-dependencies"),
 				.product(name: "GRDB", package: "GRDB.swift"),
+				.product(name: "GRDBDatabasePackageServiceInterface", package: "swift-utilities"),
 			]
 		),
 		.testTarget(
@@ -1497,19 +1498,13 @@ let package = Package(
 			]
 		),
 		.target(
-			name: "DatabaseLibrary",
+			name: "DatabaseMigrationsLibrary",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "ErrorReportingClientPackageLibrary", package: "swift-utilities"),
 				.product(name: "GRDB", package: "GRDB.swift"),
+				.product(name: "GRDBDatabasePackageLibrary", package: "swift-utilities"),
 				"ScoreKeeperLibrary",
-			]
-		),
-		.testTarget(
-			name: "DatabaseLibraryTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"DatabaseLibrary",
 			]
 		),
 		.target(
@@ -1814,7 +1809,8 @@ let package = Package(
 		.target(
 			name: "TestDatabaseUtilitiesLibrary",
 			dependencies: [
-				"DatabaseLibrary",
+				.product(name: "GRDBDatabaseTestUtilitiesPackageLibrary", package: "swift-utilities"),
+				"DatabaseMigrationsLibrary",
 				"DatabaseModelsLibrary",
 			]
 		),

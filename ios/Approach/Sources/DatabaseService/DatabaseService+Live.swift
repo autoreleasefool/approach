@@ -1,40 +1,39 @@
-import AnalyticsServiceInterface
-import DatabaseLibrary
+import DatabaseMigrationsLibrary
 import DatabaseServiceInterface
 import Dependencies
-import ErrorReportingClientPackageLibrary
-import FileManagerPackageServiceInterface
+import Foundation
 import GRDB
+import GRDBDatabasePackageLibrary
+import GRDBDatabasePackageServiceInterface
 
 extension DatabaseService: DependencyKey {
 	public static var liveValue: Self {
-		@Dependency(\.fileManager) var fileManager
-		let writer: any DatabaseWriter
+#if DEBUG
+		let eraseDatabaseSchemaOnChange = true
+#else
+		let eraseDatabaseSchemaOnChange = false
+#endif
 
+		@Dependency(\.grdb) var grdb
 		do {
-			let folderUrl = try fileManager
-				.getUserDirectory()
-				.appending(path: "database", directoryHint: .isDirectory)
-
-			try fileManager.createDirectory(folderUrl)
-
-			let dbUrl = folderUrl.appending(path: "db.sqlite")
-			let dbPool = try DatabasePool(path: dbUrl.path())
-			writer = dbPool
-
-			var migrator = DatabaseMigrator()
-			migrator.registerDBMigrations()
-			try migrator.migrate(writer)
+			try grdb.initialize(
+				migrations: Migrations.approachMigrations,
+				eraseDatabaseOnSchemaChange: eraseDatabaseSchemaOnChange
+			)
 		} catch {
 			// FIXME: should notify user of failure to open DB
-			@Dependency(\.errors) var errors
-			errors.captureError(error)
-			fatalError("Unable to access database service: \(error)")
+			fatalError("Unable to initialize database: \(error)")
 		}
 
 		return Self(
-			reader: { writer },
-			writer: { writer }
+			reader: {
+				@Dependency(\.grdb) var grdb
+				return grdb.reader()
+			},
+			writer: {
+				@Dependency(\.grdb) var grdb
+				return grdb.writer()
+			}
 		)
 	}
 }
