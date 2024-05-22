@@ -120,7 +120,6 @@ extension SeriesRepository: DependencyKey {
 				@Dependency(DatabaseService.self) var database
 
 				return try await database.reader().read {
-					let lanesAlias = TableAlias(name: "lanes")
 					return try Series.Database
 						.filter(id: id)
 						.including(
