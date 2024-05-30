@@ -61,19 +61,3 @@ public func initializeApproachDatabase(
 
 	return dbQueue
 }
-
-func coallesce<T>(_ value: InitialValue<T>?, ifHasAllOf: Any?...) -> InitialValue<T>? {
-	if ifHasAllOf.compactMap({ $0 }).count < ifHasAllOf.count {
-		return value
-	} else {
-		return value == nil ? .default : value
-	}
-}
-
-func coallesce<T>(_ value: InitialValue<T>?, ifHasOneOf: Any?...) -> InitialValue<T>? {
-	if ifHasOneOf.compactMap({ $0 }).isEmpty {
-		return value
-	} else {
-		return value == nil ? .default : value
-	}
-}
