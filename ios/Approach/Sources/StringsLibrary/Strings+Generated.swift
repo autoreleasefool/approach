@@ -1489,10 +1489,8 @@ public enum Strings {
       public static let title = Strings.tr("Localizable", "sharing.style.title", fallback: "Style")
     }
     public enum Watermark {
-      /// Made with Approach
-      public static let madeWithApproach = Strings.tr("Localizable", "sharing.watermark.madeWithApproach", fallback: "Made with Approach")
-      /// tryapproach.app
-      public static let tryApproach = Strings.tr("Localizable", "sharing.watermark.tryApproach", fallback: "tryapproach.app")
+      /// Made with tryapproach.app
+      public static let madeWithApproach = Strings.tr("Localizable", "sharing.watermark.madeWithApproach", fallback: "Made with tryapproach.app")
     }
   }
   public enum SortOrder {

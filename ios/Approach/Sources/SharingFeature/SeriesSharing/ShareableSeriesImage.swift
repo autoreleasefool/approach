@@ -80,7 +80,7 @@ public struct ShareableSeriesImage: View {
 	}
 
 	private var tagline: some View {
-		Text("\(Strings.Sharing.Watermark.madeWithApproach)\n\(Strings.Sharing.Watermark.tryApproach)")
+		Text(Strings.Sharing.Watermark.madeWithApproach)
 			.font(.system(size: 8))
 			.monospaced()
 	}

@@ -491,8 +491,7 @@
 "sharing.colorScheme.title" = "Appearance";
 "sharing.colorScheme.light" = "Light";
 "sharing.colorScheme.dark" = "Dark";
-"sharing.watermark.madeWithApproach" = "Made with Approach";
-"sharing.watermark.tryApproach" = "tryapproach.app";
+"sharing.watermark.madeWithApproach" = "Made with tryapproach.app";
 
 "sharing.sharingGame" = "Share Game";
 "sharing.sharingGames" = "Share Games";

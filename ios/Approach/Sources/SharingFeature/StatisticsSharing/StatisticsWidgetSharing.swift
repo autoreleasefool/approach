@@ -203,7 +203,7 @@ private extension StatisticsWidget.Configuration {
 			leagueId: leagueId,
 			timeline: timeline,
 			statistic: statistic,
-			subtitle: "\(Strings.Sharing.Watermark.madeWithApproach) - \(Strings.Sharing.Watermark.tryApproach)"
+			subtitle: Strings.Sharing.Watermark.madeWithApproach
 		)
 	}
 }

@@ -19,7 +19,7 @@ extension UIDeviceNotifications: DependencyKey {
 							continuation.yield(UIDevice.current.orientation)
 						}
 					}
-					
+
 					continuation.onTermination = { _ in task.cancel() }
 				}
 			}
