@@ -149,6 +149,7 @@ let package = Package(
 	dependencies: [
 		.package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.0"),
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.0"),
+		.package(url: "https://github.com/apple/swift-collections.git", from: "1.1.0"),
 		.package(url: "https://github.com/autoreleasefool/swift-utilities.git", branch: "main"),
 		.package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.4"),
 		.package(url: "https://github.com/elai950/AlertToast.git", from: "1.3.9"),
@@ -220,6 +221,7 @@ let package = Package(
 		.target(
 			name: "AlleysListFeature",
 			dependencies: [
+				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
 				"AlleyEditorFeature",
 				"FeatureFlagsLibrary",
 				"ResourceListLibrary",
@@ -406,7 +408,6 @@ let package = Package(
 				"FramesRepositoryInterface",
 				"GearRepositoryInterface",
 				"LanesRepositoryInterface",
-				"RecentlyUsedServiceInterface",
 				"SharingFeature",
 				"StatisticsDetailsFeature",
 			]
@@ -572,6 +573,7 @@ let package = Package(
 		.target(
 			name: "OpponentsListFeature",
 			dependencies: [
+				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
 				"FeatureFlagsLibrary",
 				"ModelsViewsLibrary",
 				"OpponentDetailsFeature",
@@ -674,6 +676,7 @@ let package = Package(
 		.target(
 			name: "StatisticsDetailsFeature",
 			dependencies: [
+				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
 				"BowlersRepositoryInterface",
 				"ErrorsFeature",
 				"GamesRepositoryInterface",
@@ -682,6 +685,7 @@ let package = Package(
 				"NotificationsServiceInterface",
 				"PickableModelsLibrary",
 				"PreferenceServiceInterface",
+				"RecentlyUsedServiceInterface",
 				"SeriesRepositoryInterface",
 				"StatisticsRepositoryInterface",
 				"TipsServiceInterface",
@@ -1055,6 +1059,7 @@ let package = Package(
 				"DatabaseServiceInterface",
 				"FeatureFlagsLibrary",
 				"PreferenceServiceInterface",
+				"RecentlyUsedServiceInterface",
 				"RepositoryLibrary",
 				"StatisticsModelsLibrary",
 				"StatisticsRepositoryInterface",
@@ -1063,6 +1068,7 @@ let package = Package(
 		.target(
 			name: "StatisticsRepositoryInterface",
 			dependencies: [
+				.product(name: "Collections", package: "swift-collections"),
 				"StatisticsWidgetsLibrary",
 			]
 		),
@@ -1396,6 +1402,7 @@ let package = Package(
 		.target(
 			name: "RecentlyUsedService",
 			dependencies: [
+				.product(name: "Algorithms", package: "swift-algorithms"),
 				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
 				"RecentlyUsedServiceInterface",
 			]
@@ -1404,6 +1411,7 @@ let package = Package(
 			name: "RecentlyUsedServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
+				"StatisticsLibrary",
 			]
 		),
 		.testTarget(
@@ -1832,7 +1840,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "AlertToast", package: "AlertToast"),
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
 				"AssetsLibrary",
 			]
 		),

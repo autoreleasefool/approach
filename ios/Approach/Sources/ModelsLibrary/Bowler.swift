@@ -15,7 +15,7 @@ extension Bowler {
 }
 
 extension Bowler {
-	public struct Summary: Identifiable, Codable, Equatable {
+	public struct Summary: Identifiable, Codable, Hashable {
 		public let id: Bowler.ID
 		public let name: String
 

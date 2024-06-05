@@ -1743,6 +1743,8 @@ public enum Strings {
       }
     }
     public enum Overview {
+      /// Recents
+      public static let recents = Strings.tr("Localizable", "statistics.overview.recents", fallback: "Recents")
       /// View Detailed Statistics
       public static let viewDetailedStatistics = Strings.tr("Localizable", "statistics.overview.viewDetailedStatistics", fallback: "View Detailed Statistics")
       public enum GetAnOverviewHint {

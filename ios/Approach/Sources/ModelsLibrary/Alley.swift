@@ -117,7 +117,7 @@ extension Alley {
 }
 
 extension Alley {
-	public struct Named: Identifiable, Codable, Equatable {
+	public struct Named: Identifiable, Codable, Hashable {
 		public let id: Alley.ID
 		public let name: String
 

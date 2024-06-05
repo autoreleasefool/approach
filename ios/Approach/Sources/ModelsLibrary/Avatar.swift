@@ -63,7 +63,7 @@ extension Avatar.Background {
 }
 
 extension Avatar {
-	public struct Summary: Sendable, Identifiable, Codable, Equatable {
+	public struct Summary: Sendable, Identifiable, Codable, Hashable {
 		public let id: Avatar.ID
 		public let value: Value
 

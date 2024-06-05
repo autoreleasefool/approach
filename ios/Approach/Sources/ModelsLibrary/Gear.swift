@@ -18,7 +18,7 @@ extension Gear {
 }
 
 extension Gear {
-	public struct Summary: Sendable, Identifiable, Codable, Equatable {
+	public struct Summary: Sendable, Identifiable, Codable, Hashable {
 		public let id: Gear.ID
 		public let name: String
 		public let kind: Kind

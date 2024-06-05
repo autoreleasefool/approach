@@ -1,3 +1,4 @@
+import Collections
 import Dependencies
 import Foundation
 import ModelsLibrary
@@ -9,6 +10,7 @@ public struct StatisticsRepository: Sendable {
 	public var loadSources: @Sendable (TrackableFilter.Source) async throws -> TrackableFilter.Sources
 	public var loadDefaultSources: @Sendable () async throws -> TrackableFilter.Sources?
 	public var saveLastUsedSource: @Sendable (TrackableFilter.Source) async -> Void
+	public var observeRecentlyUsedFilters: @Sendable () -> AsyncThrowingStream<OrderedDictionary<TrackableFilter, TrackableFilter.Sources>, Error>
 	public var loadValues: @Sendable (TrackableFilter) async throws -> [Statistics.ListEntryGroup]
 	public var loadChart: @Sendable (Statistic.Type, TrackableFilter) async throws -> Statistics.ChartContent
 	public var loadWidgetSources: @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources
@@ -20,6 +22,7 @@ public struct StatisticsRepository: Sendable {
 		loadSources: @escaping @Sendable (TrackableFilter.Source) async throws -> TrackableFilter.Sources,
 		loadDefaultSources: @escaping @Sendable () async throws -> TrackableFilter.Sources?,
 		saveLastUsedSource: @escaping @Sendable (TrackableFilter.Source) async -> Void,
+		observeRecentlyUsedFilters: @escaping @Sendable () -> AsyncThrowingStream<OrderedDictionary<TrackableFilter, TrackableFilter.Sources>, Error>,
 		loadValues: @escaping @Sendable (TrackableFilter) async throws -> [Statistics.ListEntryGroup],
 		loadChart: @escaping @Sendable (Statistic.Type, TrackableFilter) async throws -> Statistics.ChartContent,
 		loadWidgetSources: @escaping @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources,
@@ -30,6 +33,7 @@ public struct StatisticsRepository: Sendable {
 		self.loadSources = loadSources
 		self.loadDefaultSources = loadDefaultSources
 		self.saveLastUsedSource = saveLastUsedSource
+		self.observeRecentlyUsedFilters = observeRecentlyUsedFilters
 		self.loadValues = loadValues
 		self.loadChart = loadChart
 		self.loadWidgetSources = loadWidgetSources
@@ -52,6 +56,7 @@ extension StatisticsRepository: TestDependencyKey {
 		loadSources: { _ in unimplemented("\(Self.self).loadSources") },
 		loadDefaultSources: { unimplemented("\(Self.self).loadDefaultSource") },
 		saveLastUsedSource: { _ in unimplemented("\(Self.self).saveLastUsedSource") },
+		observeRecentlyUsedFilters: { unimplemented("\(Self.self).observeRecentlyUsedFilters") },
 		loadValues: { _ in unimplemented("\(Self.self).loadValues") },
 		loadChart: { _, _ in unimplemented("\(Self.self).loadChart") },
 		loadWidgetSources: { _ in unimplemented("\(Self.self).loadWidgetSources") },

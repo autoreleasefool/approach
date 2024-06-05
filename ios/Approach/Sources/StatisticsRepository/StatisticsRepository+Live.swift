@@ -1,4 +1,5 @@
 // swiftlint:disable file_length
+import Collections
 import DatabaseModelsLibrary
 import DatabaseServiceInterface
 import Dependencies
@@ -7,6 +8,7 @@ import Foundation
 import GRDB
 import ModelsLibrary
 import PreferenceServiceInterface
+import RecentlyUsedServiceInterface
 import StatisticsLibrary
 import StatisticsRepositoryInterface
 import StatisticsWidgetsLibrary
@@ -214,6 +216,30 @@ extension StatisticsRepository: DependencyKey {
 				}
 
 				preferences.setString(forKey: .statisticsLastUsedTrackableFilterSource, to: lastUsed)
+			},
+			observeRecentlyUsedFilters: {
+				@Dependency(\.recentlyUsedTrackableFilters) var recentlyUsed
+				return recentlyUsed.observeRecentlyUsed()
+					.map { filters in
+						let sources = try await withThrowingTaskGroup(
+							of: TrackableFilter.Sources.self,
+							returning: [TrackableFilter.Sources].self
+						) { taskGroup in
+							for filter in filters {
+								taskGroup.addTask { try await loadSources(source: filter.source) }
+							}
+
+							return try await taskGroup.reduce(into: []) { partialResults, source in
+								partialResults.append(source)
+							}
+						}
+
+						return zip(filters, sources).reduce(into: OrderedDictionary()) { partialResults, filterAndSource in
+							let (filter, source) = filterAndSource
+							partialResults[filter] = source
+						}
+					}
+					.eraseToThrowingStream()
 			},
 			loadValues: { filter in
 				@Dependency(DatabaseService.self) var database

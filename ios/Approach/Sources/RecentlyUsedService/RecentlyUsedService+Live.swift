@@ -1,6 +1,8 @@
+import Algorithms
 import Dependencies
 import Foundation
 import RecentlyUsedServiceInterface
+import StatisticsLibrary
 import UserDefaultsPackageServiceInterface
 
 extension Notification.Name {
@@ -79,24 +81,24 @@ extension RecentlyUsedService: DependencyKey {
 				}
 			},
 			observeRecentlyUsedIds: { category in
-					.init { continuation in
-						let categoryKey = key(forCategory: category)
+				.init { continuation in
+					let categoryKey = key(forCategory: category)
 
-						continuation.yield(
-							(entries(forCategory: category).map(\.id))
-						)
+					continuation.yield(
+						(entries(forCategory: category).map(\.id))
+					)
 
-						let cancellable = NotificationCenter.default
-							.publisher(for: .RecentlyUsed.didChange)
-							.filter { ($0.object as? String) == categoryKey }
-							.sink { _ in
-								continuation.yield(
-									(entries(forCategory: category).map(\.id))
-								)
-							}
+					let cancellable = NotificationCenter.default
+						.publisher(for: .RecentlyUsed.didChange)
+						.filter { ($0.object as? String) == categoryKey }
+						.sink { _ in
+							continuation.yield(
+								(entries(forCategory: category).map(\.id))
+							)
+						}
 
-						continuation.onTermination = { _ in cancellable.cancel() }
-					}
+					continuation.onTermination = { _ in cancellable.cancel() }
+				}
 			},
 			resetRecentlyUsed: { category in
 				@Dependency(\.userDefaults) var userDefaults
@@ -104,6 +106,59 @@ extension RecentlyUsedService: DependencyKey {
 				let categoryKey = key(forCategory: category)
 				userDefaults.remove(key: categoryKey)
 				NotificationCenter.default.post(name: .RecentlyUsed.didChange, object: categoryKey)
+			}
+		)
+	}
+}
+
+extension RecentlyUsedTrackableFilterService: DependencyKey {
+	private static var userDefaultsKey = "RecentlyUsedTrackableFilter.TrackableFilter"
+
+	public static var liveValue: Self {
+		// FIXME: Replace with a @Dependency
+		let decoder = JSONDecoder()
+
+		@Sendable func entries() -> [TrackableFilter] {
+			@Dependency(\.userDefaults) var userDefaults
+
+			let string = userDefaults.string(forKey: Self.userDefaultsKey) ?? "[]"
+			guard let data = string.data(using: .utf8),
+						let recentlyUsed = try? decoder.decode([TrackableFilter].self, from: data) else {
+				return []
+			}
+
+			return recentlyUsed
+		}
+
+		return Self(
+			didRecentlyUse: { filter in
+				@Dependency(\.userDefaults) var userDefaults
+				let recentlyUsed = ([filter] + entries())
+					.prefix(RecentlyUsedService.maximumEntries - 1)
+					.uniqued()
+
+				@Dependency(JSONEncoderService.self) var encoder
+				guard let recentlyUsedData = try? encoder.encode(Array(recentlyUsed)),
+							let recentlyUsedString = String(data: recentlyUsedData, encoding: .utf8) else {
+					return
+				}
+
+				userDefaults.setString(forKey: Self.userDefaultsKey, to: recentlyUsedString)
+				NotificationCenter.default.post(name: .RecentlyUsed.didChange, object: Self.userDefaultsKey)
+			},
+			observeRecentlyUsed: {
+				.init { continuation in
+					continuation.yield(entries())
+
+					let cancellable = NotificationCenter.default
+						.publisher(for: .RecentlyUsed.didChange)
+						.filter { ($0.object as? String) == Self.userDefaultsKey }
+						.sink { _ in
+							continuation.yield(entries())
+						}
+
+					continuation.onTermination = { _ in cancellable.cancel() }
+				}
 			}
 		)
 	}

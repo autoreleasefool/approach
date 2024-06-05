@@ -20,11 +20,7 @@ public struct StatisticsOverviewView: View {
 		List {
 			if store.isShowingOverviewTip {
 				Section {
-					// TODO: URGENT Remove `isDismissable: false` to allow this tip to be dismissed
-					BasicTipView(
-						tip: .statisticsOverview,
-						isDismissable: false
-					) {
+					BasicTipView(tip: .statisticsOverview) {
 						send(.didTapDismissOverviewTip, animation: .default)
 					}
 				}
@@ -32,11 +28,7 @@ public struct StatisticsOverviewView: View {
 
 			if store.isShowingDetailsTip {
 				Section {
-					// TODO: URGENT Remove `isDismissable: false` to allow this tip to be dismissed
-					BasicTipView(
-						tip: .statisticsDetails,
-						isDismissable: false
-					) {
+					BasicTipView(tip: .statisticsDetails) {
 						send(.didTapDismissDetailsTip, animation: .default)
 					}
 				}
@@ -48,9 +40,24 @@ public struct StatisticsOverviewView: View {
 				}
 				.buttonStyle(.navigation)
 			}
+
+			if !store.recentlyUsedFilters.isEmpty {
+				ForEach(store.recentlyUsedFilters.elements, id: \.key) { filter in
+					Section {
+						Button { send(.didTapFilter(filter.key)) } label: {
+							TrackableFilterView(
+								filter: filter.key,
+								sources: filter.value
+							)
+						}
+						.buttonStyle(.navigation)
+					}
+				}
+			}
 		}
 		.navigationTitle(Strings.Statistics.title)
 		.onAppear { send(.onAppear) }
+		.task { await send(.task).finish() }
 		.sheet(
 			item: $store.scope(state: \.destination?.sourcePicker, action: \.internal.destination.sourcePicker),
 			onDismiss: { send(.sourcePickerDidDismiss) },

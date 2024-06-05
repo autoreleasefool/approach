@@ -325,6 +325,7 @@
 "statistics.overview.viewMoreDetailsHint.title" = "View more detailed statistics";
 "statistics.overview.viewMoreDetailsHint.message" = "You can look up detailed statistics for bowlers, leagues, and more. Select the filters you're interested in exploring and see how your bowling improves over time, and what you need to focus on.";
 "statistics.overview.viewDetailedStatistics" = "View Detailed Statistics";
+"statistics.overview.recents" = "Recents";
 "statistics.details.filter.source" = "Source";
 "statistics.charts.unavailable" = "There doesn't seem to be any data available.";
 "statistics.charts.unavailable.description" = "You may not have bowled enough games yet, or your filters are excluding too many games.";

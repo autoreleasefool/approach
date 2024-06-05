@@ -4,6 +4,7 @@ import ErrorsFeature
 import FeatureActionLibrary
 import NotificationsServiceInterface
 import PreferenceServiceInterface
+import RecentlyUsedServiceInterface
 import StatisticsChartsLibrary
 import StatisticsLibrary
 import StatisticsRepositoryInterface
@@ -120,6 +121,7 @@ public struct StatisticsDetails: Reducer {
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date
 	@Dependency(\.preferences) var preferences
+	@Dependency(\.recentlyUsedTrackableFilters) var recentlyUsed
 	@Dependency(StatisticsRepository.self) var statistics
 	@Dependency(UIDeviceNotifications.self) var uiDevice
 
@@ -139,7 +141,7 @@ public struct StatisticsDetails: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .onAppear:
-					return .none
+					return .run { [filter = state.filter] _ in recentlyUsed.didRecentlyUse(filter) }
 
 				case .didFirstAppear:
 					let loadingChartEffect: Effect<Action>

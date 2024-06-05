@@ -46,6 +46,12 @@ extension Game {
 		public let id: Game.ID
 		public let index: Int
 		public let score: Int
+
+		public init(id: Game.ID, index: Int, score: Int) {
+			self.id = id
+			self.index = index
+			self.score = score
+		}
 	}
 }
 

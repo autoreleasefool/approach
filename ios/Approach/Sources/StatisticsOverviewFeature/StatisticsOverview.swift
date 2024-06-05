@@ -1,6 +1,8 @@
 import AnalyticsServiceInterface
+import Collections
 import ComposableArchitecture
 import FeatureActionLibrary
+import RecentlyUsedServiceInterface
 import StatisticsDetailsFeature
 import StatisticsLibrary
 import StatisticsRepositoryInterface
@@ -15,6 +17,8 @@ public struct StatisticsOverview: Reducer {
 		public var isShowingOverviewTip: Bool
 		public var isShowingDetailsTip: Bool
 
+		public var recentlyUsedFilters = OrderedDictionary<TrackableFilter, TrackableFilter.Sources>()
+
 		public var filter: TrackableFilter?
 		@Presents public var destination: Destination.State?
 
@@ -28,13 +32,17 @@ public struct StatisticsOverview: Reducer {
 	public enum Action: FeatureAction, ViewAction {
 		@CasePathable public enum View {
 			case onAppear
+			case task
 			case didTapDismissOverviewTip
 			case didTapDismissDetailsTip
 			case didTapViewDetailedStatistics
 			case sourcePickerDidDismiss
+			case didTapFilter(TrackableFilter)
 		}
 		@CasePathable public enum Delegate { case doNothing }
 		@CasePathable public enum Internal {
+			case didLoadRecentlyUsedFilters(Result<OrderedDictionary<TrackableFilter, TrackableFilter.Sources>, Error>)
+
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -62,6 +70,19 @@ public struct StatisticsOverview: Reducer {
 				case .onAppear:
 					return .none
 
+				case .task:
+					return .run { send in
+						for try await filters in statistics.observeRecentlyUsedFilters() {
+							await send(.internal(.didLoadRecentlyUsedFilters(.success(filters))), animation: .default)
+						}
+					} catch: { error, send in
+						await send(.internal(.didLoadRecentlyUsedFilters(.failure(error))))
+					}
+
+				case let .didTapFilter(filter):
+					state.destination = .details(.init(filter: filter))
+					return .none
+
 				case .sourcePickerDidDismiss:
 					guard let filter = state.filter else { return .none }
 					state.destination = .details(.init(filter: filter))
@@ -83,6 +104,14 @@ public struct StatisticsOverview: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .didLoadRecentlyUsedFilters(.success(filters)):
+					state.recentlyUsedFilters = filters
+					return .none
+
+				case .didLoadRecentlyUsedFilters(.failure):
+					// TODO: Handle errors
+					return .none
+
 				case let .destination(.presented(.sourcePicker(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didChangeSource(source):

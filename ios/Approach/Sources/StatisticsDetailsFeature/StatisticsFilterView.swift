@@ -11,6 +11,12 @@ public struct StatisticsFilterView: View {
 	let filter: TrackableFilter
 	let size: Size
 
+	public init(sources: TrackableFilter.Sources, filter: TrackableFilter, size: Size) {
+		self.sources = sources
+		self.filter = filter
+		self.size = size
+	}
+
 	public var body: some View {
 		ScrollView(.horizontal, showsIndicators: false) {
 			HStack(alignment: .top, spacing: .smallSpacing) {

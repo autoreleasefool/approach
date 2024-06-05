@@ -1,5 +1,6 @@
 import Dependencies
 import Foundation
+import StatisticsLibrary
 
 public struct RecentlyUsedService: Sendable {
 	public var didRecentlyUseResource: @Sendable (Resource, UUID) -> Void
@@ -20,6 +21,19 @@ public struct RecentlyUsedService: Sendable {
 		self.observeRecentlyUsed = observeRecentlyUsed
 		self.observeRecentlyUsedIds = observeRecentlyUsedIds
 		self.resetRecentlyUsed = resetRecentlyUsed
+	}
+}
+
+public struct RecentlyUsedTrackableFilterService: Sendable {
+	public var didRecentlyUse: @Sendable (TrackableFilter) -> Void
+	public var observeRecentlyUsed: @Sendable () -> AsyncStream<[TrackableFilter]>
+
+	public init(
+		didRecentlyUse: @escaping @Sendable (TrackableFilter) -> Void,
+		observeRecentlyUsed: @escaping @Sendable () -> AsyncStream<[TrackableFilter]>
+	) {
+		self.didRecentlyUse = didRecentlyUse
+		self.observeRecentlyUsed = observeRecentlyUsed
 	}
 }
 
@@ -54,4 +68,23 @@ extension RecentlyUsedService: TestDependencyKey {
 		observeRecentlyUsedIds: { _ in unimplemented("\(Self.self).observeRecentlyUsedIds") },
 		resetRecentlyUsed: { _ in unimplemented("\(Self.self).resetRecentlyUsed") }
 	)
+}
+
+extension RecentlyUsedTrackableFilterService: TestDependencyKey {
+	public static var testValue = Self(
+		didRecentlyUse: { _ in unimplemented("\(Self.self).didRecentlyUse") },
+		observeRecentlyUsed: { unimplemented("\(Self.self).observeRecentlyUsed") }
+	)
+}
+
+extension DependencyValues {
+	public var recentlyUsed: RecentlyUsedService {
+		get { self[RecentlyUsedService.self] }
+		set { self[RecentlyUsedService.self] = newValue }
+	}
+
+	public var recentlyUsedTrackableFilters: RecentlyUsedTrackableFilterService {
+		get { self[RecentlyUsedTrackableFilterService.self] }
+		set { self[RecentlyUsedTrackableFilterService.self] = newValue }
+	}
 }

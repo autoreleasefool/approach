@@ -32,6 +32,7 @@ libraries = [ "ModelsViews" ]
 [features.AlleysList]
 features = [ "AlleyEditor" ]
 libraries = [ "FeatureFlags", "ResourceList" ]
+dependencies = [ "ExtensionsPackageLibrary" ]
 
 [features.Announcements]
 services = [ "Announcements" ]
@@ -68,7 +69,7 @@ features = [ "Errors" ]
 [features.GamesEditor]
 features = [ "Sharing", "StatisticsDetails" ]
 repositories = [ "Frames", "Gear", "Lanes" ]
-services = [ "Avatar", "RecentlyUsed" ]
+services = [ "Avatar" ]
 libraries = [ "FeatureFlags" ]
 dependencies = [ "StoreReviewPackageServiceInterface" ]
 
@@ -112,6 +113,7 @@ libraries = [ "ResourceList" ]
 features = [ "OpponentDetails" ]
 services = [ "RecentlyUsed" ]
 libraries = [ "FeatureFlags", "ModelsViews", "SortOrder" ]
+dependencies = [ "ExtensionsPackageLibrary" ]
 
 [features.Onboarding]
 repositories = [ "Bowlers" ]
@@ -148,8 +150,9 @@ features = [ "StatisticsDetails" ]
 [features.StatisticsDetails]
 features = [ "Errors" ]
 repositories = [ "Bowlers", "Leagues", "Games", "Series", "Statistics" ]
-services = [ "Notifications", "Preference", "Tips" ]
+services = [ "Notifications", "RecentlyUsed", "Preference", "Tips" ]
 libraries = [ "ModelsViews", "PickableModels" ]
+dependencies = [ "ExtensionsPackageLibrary" ]
 
 [features.StatisticsWidgetsLayout]
 features = [ "StatisticsDetails" ]
@@ -204,11 +207,12 @@ repositories = [ "Frames", "Games" ]
 [repositories.Series.interface]
 
 [repositories.Statistics]
-services = [ "Preference" ]
+services = [ "Preference", "RecentlyUsed" ]
 libraries = [ "FeatureFlags", "StatisticsModels" ]
 dependencies = [ "UserDefaultsPackageServiceInterface" ]
 [repositories.Statistics.interface]
 libraries = [ "StatisticsWidgets" ]
+dependencies = [ "Collections" ]
 
 [repositories.StatisticsWidgets]
 [repositories.StatisticsWidgets.interface]
@@ -282,7 +286,9 @@ dependencies = [ "BundlePackageServiceInterface", "RevenueCat" ]
 libraries = [ "Products" ]
 
 [services.RecentlyUsed]
-dependencies = [ "UserDefaultsPackageServiceInterface" ]
+dependencies = [ "Algorithms", "UserDefaultsPackageServiceInterface" ]
+[services.RecentlyUsed.interface]
+libraries = [ "Statistics" ]
 
 [services.Tips]
 dependencies = [ "UserDefaultsPackageServiceInterface" ]
@@ -423,7 +429,7 @@ libraries = [ "Views" ]
 
 [libraries.Toast]
 libraries = [ "Assets" ]
-dependencies = [ "AlertToast", "ComposableArchitecture", "ExtensionsPackageLibrary" ]
+dependencies = [ "AlertToast", "ComposableArchitecture" ]
 
 [libraries.Views]
 libraries = [ "Assets", "Strings" ]
@@ -459,9 +465,9 @@ from = "3.8.4"
 url = "https://github.com/CocoaLumberjack/CocoaLumberjack.git"
 from = "3.8.4"
 
-[dependencies.GRDB]
-url = "https://github.com/groue/GRDB.swift.git"
-from = "6.25.0"
+[dependencies.Collections]
+url = "https://github.com/apple/swift-collections.git"
+from = "1.1.0"
 
 [dependencies.ComposableArchitecture]
 url = "https://github.com/pointfreeco/swift-composable-architecture.git"
@@ -471,6 +477,10 @@ from = "1.9.2"
 sharedRef = "Dependencies"
 [dependencies.DependenciesMacros]
 sharedRef = "Dependencies"
+
+[dependencies.GRDB]
+url = "https://github.com/groue/GRDB.swift.git"
+from = "6.25.0"
 
 [dependencies.IdentifiedCollections]
 url = "https://github.com/pointfreeco/swift-identified-collections.git"
