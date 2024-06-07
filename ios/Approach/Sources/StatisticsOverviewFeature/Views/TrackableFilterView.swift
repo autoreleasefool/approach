@@ -1,32 +1,126 @@
 import AssetsLibrary
+import DateTimeLibrary
 import StatisticsDetailsFeature
 import StatisticsLibrary
+import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsPackageLibrary
+import ViewsLibrary
 
 public struct TrackableFilterView: View {
-	public let filter: TrackableFilter
-	public let sources: TrackableFilter.Sources
+	let filter: TrackableFilter
+	let sources: TrackableFilter.Sources
+	let configuration: Configuration
+
+	init(filter: TrackableFilter, sources: TrackableFilter.Sources) {
+		self.filter = filter
+		self.sources = sources
+		self.configuration = filter.source.configuration
+	}
 
 	public var body: some View {
-		HStack {
-			Image(systemSymbol: filter.source.systemSymbol)
+		HStack(alignment: sources.subtitles.isEmpty ? .center : .top, spacing: .standardSpacing) {
+			Image(systemSymbol: configuration.primarySymbol)
+				.resizable()
+				.scaledToFit()
+				.frame(width: .extraTinyIcon, height: .extraTinyIcon)
+				.padding(.smallSpacing)
+				.background(
+					Circle()
+						.stroke(.black.opacity(0.2))
+				)
 
 			VStack(alignment: .leading) {
-				Text(sources.bowler.name)
+				Text(sources.primaryTitle)
 					.font(.headline)
+
+				ForEach(sources.subtitles, id: \.self) {
+					Text($0)
+						.font(.caption)
+				}
 			}
+
+			Spacer()
+
+			VStack(alignment: .trailing) {
+				if let from = filter.seriesFilter.startDate,
+					 let until = filter.seriesFilter.endDate {
+					BadgeView("\(from.shortFormat) — \(until.shortFormat)", style: .primary)
+				} else if let from = filter.seriesFilter.startDate {
+					BadgeView("Starting \(from.shortFormat)", style: .primary)
+				} else if let until = filter.seriesFilter.endDate {
+					BadgeView("Ending \(until.shortFormat)", style: .primary)
+				}
+			}
+			.font(.caption)
 		}
+		.padding(.standardSpacing)
+		.foregroundColor(configuration.foreground)
+		.background(configuration.background)
+	}
+}
+
+extension TrackableFilterView {
+	struct Configuration {
+		let primarySymbol: SFSymbol
+		let background: Color
+		let foreground: Color
 	}
 }
 
 extension TrackableFilter.Source {
-	var systemSymbol: SFSymbol {
+	var configuration: TrackableFilterView.Configuration {
 		switch self {
-		case .bowler: .personFill
-		case .league: .listBullet
-		case .series: .calendar
-		case .game: .numbersign
+		case .bowler:
+			TrackableFilterView.Configuration(
+				primarySymbol: .personFill,
+				background: Asset.Colors.TrackableFilters.bowler.swiftUIColor,
+				foreground: Asset.Colors.TrackableFilters.Text.onBowler.swiftUIColor
+			)
+		case .league:
+			TrackableFilterView.Configuration(
+				primarySymbol: .listBullet,
+				background: Asset.Colors.TrackableFilters.league.swiftUIColor,
+				foreground: Asset.Colors.TrackableFilters.Text.onLeague.swiftUIColor
+			)
+		case .series:
+			TrackableFilterView.Configuration(
+				primarySymbol: .calendar,
+				background: Asset.Colors.TrackableFilters.series.swiftUIColor,
+				foreground: Asset.Colors.TrackableFilters.Text.onSeries.swiftUIColor
+			)
+		case .game:
+			TrackableFilterView.Configuration(
+				primarySymbol: .numbersign,
+				background: Asset.Colors.TrackableFilters.game.swiftUIColor,
+				foreground: Asset.Colors.TrackableFilters.Text.onGame.swiftUIColor
+			)
+		}
+	}
+}
+
+extension TrackableFilter.Sources {
+	var primaryTitle: String {
+		if let game {
+			Strings.Game.titleWithOrdinal(game.index + 1)
+		} else if let series {
+			series.date.longFormat
+		} else if let league {
+			league.name
+		} else {
+			bowler.name
+		}
+	}
+
+	var subtitles: [String] {
+		if game != nil {
+			[bowler.name, league?.name, series?.date.longFormat].compactMap { $0 }
+		} else if series != nil {
+			[bowler.name, league?.name].compactMap { $0 }
+		} else if league != nil {
+			[bowler.name]
+		} else {
+			[]
 		}
 	}
 }
@@ -35,35 +129,38 @@ extension TrackableFilter.Source {
 	let list: [(TrackableFilter, TrackableFilter.Sources)] = [
 		(
 			TrackableFilter(
-				source: .bowler(UUID(0))
+				source: .bowler(UUID(0)),
+				seriesFilter: .init(startDate: Date(), endDate: Date())
 			),
 			TrackableFilter.Sources(
 				bowler: .init(id: UUID(0), name: "Joseph"),
-				league: .init(id: UUID(0), name: "Majors, 2024"),
-				series: .init(id: UUID(0), date: Date()),
-				game: .init(id: UUID(0), index: 0, score: 450)
+				league: nil,
+				series: nil,
+				game: nil
 			)
 		),
 		(
 			TrackableFilter(
-				source: .league(UUID(0))
+				source: .league(UUID(0)),
+				seriesFilter: .init(startDate: Date())
 			),
 			TrackableFilter.Sources(
 				bowler: .init(id: UUID(0), name: "Joseph"),
 				league: .init(id: UUID(0), name: "Majors, 2024"),
-				series: .init(id: UUID(0), date: Date()),
-				game: .init(id: UUID(0), index: 0, score: 450)
+				series: nil,
+				game: nil
 			)
 		),
 		(
 			TrackableFilter(
-				source: .series(UUID(0))
+				source: .series(UUID(0)),
+				seriesFilter: .init(endDate: Date())
 			),
 			TrackableFilter.Sources(
 				bowler: .init(id: UUID(0), name: "Joseph"),
 				league: .init(id: UUID(0), name: "Majors, 2024"),
 				series: .init(id: UUID(0), date: Date()),
-				game: .init(id: UUID(0), index: 0, score: 450)
+				game: nil
 			)
 		),
 		(
@@ -88,8 +185,9 @@ extension TrackableFilter.Source {
 						sources: item.1
 					)
 				}
-				.buttonStyle(.navigation)
+				.buttonStyle(.plain)
 			}
+			.listRowInsets(EdgeInsets())
 		}
 	}
 }

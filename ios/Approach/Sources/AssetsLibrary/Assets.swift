@@ -181,6 +181,18 @@ public enum Asset {
       public static let onSecondaryBackground = ColorAsset(name: "Text/OnSecondaryBackground")
       public static let onSuccess = ColorAsset(name: "Text/OnSuccess")
     }
+    public enum TrackableFilters {
+      public static let bowler = ColorAsset(name: "TrackableFilters/Bowler")
+      public static let game = ColorAsset(name: "TrackableFilters/Game")
+      public static let league = ColorAsset(name: "TrackableFilters/League")
+      public static let series = ColorAsset(name: "TrackableFilters/Series")
+      public enum Text {
+        public static let onBowler = ColorAsset(name: "TrackableFilters/Text/OnBowler")
+        public static let onGame = ColorAsset(name: "TrackableFilters/Text/OnGame")
+        public static let onLeague = ColorAsset(name: "TrackableFilters/Text/OnLeague")
+        public static let onSeries = ColorAsset(name: "TrackableFilters/Text/OnSeries")
+      }
+    }
     public enum Warning {
       public static let `default` = ColorAsset(name: "Warning/Default")
     }

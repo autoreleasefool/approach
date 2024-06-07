@@ -50,8 +50,9 @@ public struct StatisticsOverviewView: View {
 								sources: filter.value
 							)
 						}
-						.buttonStyle(.navigation)
+						.buttonStyle(.plain)
 					}
+					.listRowInsets(EdgeInsets())
 				}
 			}
 		}
