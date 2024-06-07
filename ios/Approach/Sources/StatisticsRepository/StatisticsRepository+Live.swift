@@ -234,8 +234,8 @@ extension StatisticsRepository: DependencyKey {
 							}
 						}
 
-						return zip(filters, sources).reduce(into: OrderedDictionary()) { partialResults, filterAndSource in
-							let (filter, source) = filterAndSource
+						return filters.reduce(into: OrderedDictionary()) { partialResults, filter in
+							let source = sources.first { $0.primaryId == filter.source.id }
 							partialResults[filter] = source
 						}
 					}

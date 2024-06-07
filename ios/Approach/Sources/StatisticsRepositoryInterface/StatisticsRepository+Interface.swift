@@ -10,7 +10,8 @@ public struct StatisticsRepository: Sendable {
 	public var loadSources: @Sendable (TrackableFilter.Source) async throws -> TrackableFilter.Sources
 	public var loadDefaultSources: @Sendable () async throws -> TrackableFilter.Sources?
 	public var saveLastUsedSource: @Sendable (TrackableFilter.Source) async -> Void
-	public var observeRecentlyUsedFilters: @Sendable () -> AsyncThrowingStream<OrderedDictionary<TrackableFilter, TrackableFilter.Sources>, Error>
+	public var observeRecentlyUsedFilters: @Sendable () ->
+		AsyncThrowingStream<OrderedDictionary<TrackableFilter, TrackableFilter.Sources>, Error>
 	public var loadValues: @Sendable (TrackableFilter) async throws -> [Statistics.ListEntryGroup]
 	public var loadChart: @Sendable (Statistic.Type, TrackableFilter) async throws -> Statistics.ChartContent
 	public var loadWidgetSources: @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources
@@ -22,7 +23,8 @@ public struct StatisticsRepository: Sendable {
 		loadSources: @escaping @Sendable (TrackableFilter.Source) async throws -> TrackableFilter.Sources,
 		loadDefaultSources: @escaping @Sendable () async throws -> TrackableFilter.Sources?,
 		saveLastUsedSource: @escaping @Sendable (TrackableFilter.Source) async -> Void,
-		observeRecentlyUsedFilters: @escaping @Sendable () -> AsyncThrowingStream<OrderedDictionary<TrackableFilter, TrackableFilter.Sources>, Error>,
+		observeRecentlyUsedFilters: @escaping @Sendable () ->
+			AsyncThrowingStream<OrderedDictionary<TrackableFilter, TrackableFilter.Sources>, Error>,
 		loadValues: @escaping @Sendable (TrackableFilter) async throws -> [Statistics.ListEntryGroup],
 		loadChart: @escaping @Sendable (Statistic.Type, TrackableFilter) async throws -> Statistics.ChartContent,
 		loadWidgetSources: @escaping @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources,

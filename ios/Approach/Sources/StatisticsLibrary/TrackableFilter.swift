@@ -44,6 +44,13 @@ extension TrackableFilter {
 		case league(League.ID)
 		case series(Series.ID)
 		case game(Game.ID)
+
+		public var id: UUID {
+			switch self {
+			case let .bowler(id), let .league(id), let .series(id), let .game(id):
+				return id
+			}
+		}
 	}
 }
 
@@ -59,6 +66,10 @@ extension TrackableFilter {
 			self.league = league
 			self.series = series
 			self.game = game
+		}
+
+		public var primaryId: UUID {
+			game?.id ?? series?.id ?? league?.id ?? bowler.id
 		}
 	}
 }
