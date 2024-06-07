@@ -405,11 +405,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "StoreReviewPackageServiceInterface", package: "swift-utilities"),
 				"AvatarServiceInterface",
-				"FeatureFlagsLibrary",
 				"FramesRepositoryInterface",
 				"GearRepositoryInterface",
 				"LanesRepositoryInterface",
-				"SharingFeature",
 				"StatisticsDetailsFeature",
 			]
 		),
@@ -677,18 +675,11 @@ let package = Package(
 		.target(
 			name: "StatisticsDetailsFeature",
 			dependencies: [
-				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
-				"BowlersRepositoryInterface",
-				"ErrorsFeature",
-				"GamesRepositoryInterface",
-				"LeaguesRepositoryInterface",
-				"ModelsViewsLibrary",
+				"FeatureFlagsLibrary",
 				"NotificationsServiceInterface",
-				"PickableModelsLibrary",
 				"PreferenceServiceInterface",
 				"RecentlyUsedServiceInterface",
-				"SeriesRepositoryInterface",
-				"StatisticsRepositoryInterface",
+				"SharingFeature",
 				"TipsServiceInterface",
 			]
 		),
