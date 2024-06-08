@@ -19,7 +19,7 @@ public struct TrackableFilterView: View {
 	}
 
 	public var body: some View {
-		HStack(alignment: sources.subtitles.isEmpty ? .center : .top, spacing: .standardSpacing) {
+		HStack(alignment: sources.subtitles.isEmpty ? .center : .top, spacing: 0) {
 			Image(systemSymbol: configuration.primarySymbol)
 				.resizable()
 				.scaledToFit()
@@ -39,6 +39,7 @@ public struct TrackableFilterView: View {
 						.font(.caption)
 				}
 			}
+			.padding(.horizontal, .standardSpacing)
 
 			Spacer()
 

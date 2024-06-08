@@ -18,7 +18,6 @@ public struct ShareableStatisticsImage: View {
 			configuration: configuration.widget,
 			chartContent: configuration.chart
 		)
-		.aspectRatio(2, contentMode: .fit)
 	}
 }
 
