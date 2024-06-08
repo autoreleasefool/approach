@@ -555,7 +555,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 225)
 		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, score: 300)
 		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, score: 225)
-		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3]))
+		let db = try initializeApproachDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3]))
 
 		// Fetching the series
 		let series = try await withDependencies {
@@ -583,7 +583,7 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testShareable_WhenSeriesNotExists_ThrowsError() async throws {
 		// Given a database with no series
-		let db = try initializeDatabase(withSeries: .zero)
+		let db = try initializeApproachDatabase(withSeries: .zero)
 
 		// Fetching the series throws an error
 		await assertThrowsError(ofType: FetchableError.self) {

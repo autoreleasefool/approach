@@ -36,7 +36,7 @@ public struct ScoreSheet: View {
 
 	public var body: some View {
 		ScrollViewReader { proxy in
-//			ScrollView(.horizontal, showsIndicators: false) {
+			ScrollView(.horizontal, showsIndicators: false) {
 				Grid(horizontalSpacing: 0, verticalSpacing: 0) {
 					GridRow {
 						ForEach(game.frames, id: \.index) { frame in
@@ -58,7 +58,7 @@ public struct ScoreSheet: View {
 						}
 					}
 				}
-//			}
+			}
 			.cornerRadius(.standardRadius)
 			.onChange(of: selection) {
 				withAnimation(.easeInOut(duration: 300)) {
@@ -220,8 +220,8 @@ struct ScoreSheetPreviews: PreviewProvider {
 							index: $0,
 							rolls: [
 								.init(index: 0, displayValue: "HP", didFoul: true, isSecondary: false),
-								.init(index: 0, displayValue: "10", didFoul: false, isSecondary: false),
-								.init(index: 0, displayValue: "-", didFoul: false, isSecondary: false),
+								.init(index: 1, displayValue: "10", didFoul: false, isSecondary: false),
+								.init(index: 2, displayValue: "-", didFoul: false, isSecondary: false),
 							],
 							score: 255
 						)
