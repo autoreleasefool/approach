@@ -35,6 +35,7 @@ public struct GamesSharing: Reducer {
 			guard let games, games.count == scores.count else { return nil }
 			return .init(
 				scores: games.compactMap { scores[$0.id] },
+				scoreSheetConfiguration: .default,
 				displayScale: displayScale,
 				colorScheme: preferredAppearance.colorScheme
 			)

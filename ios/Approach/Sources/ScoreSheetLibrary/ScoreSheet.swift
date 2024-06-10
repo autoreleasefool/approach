@@ -5,13 +5,20 @@ import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 public struct ScoreSheet: View {
-	@State private var contentSize: CGSize = .zero
-
 	let game: ScoredGame
+	let configuration: Configuration
+	let contentSize: CGSize
 	@Binding var selection: Selection
 
-	public init(game: ScoredGame, selection: Binding<Selection>) {
+	public init(
+		game: ScoredGame,
+		configuration: Configuration,
+		contentSize: CGSize,
+		selection: Binding<Selection>
+	) {
 		self.game = game
+		self.configuration = configuration
+		self.contentSize = contentSize
 		self._selection = selection
 	}
 
@@ -35,43 +42,28 @@ public struct ScoreSheet: View {
 	}
 
 	public var body: some View {
-		ScrollViewReader { proxy in
-			ScrollView(.horizontal, showsIndicators: false) {
-				Grid(horizontalSpacing: 0, verticalSpacing: 0) {
-					GridRow {
-						ForEach(game.frames, id: \.index) { frame in
-							rollViews(forFrame: frame)
-						}
-					}
+		Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+			GridRow {
+				ForEach(game.frames, id: \.index) { frame in
+					rollViews(forFrame: frame)
+				}
+			}
 
-					GridRow {
-						ForEach(game.frames, id: \.index) { frame in
-							frameView(forFrame: frame)
-								.gridCellColumns(Frame.NUMBER_OF_ROLLS)
-						}
-					}
+			GridRow {
+				ForEach(game.frames, id: \.index) { frame in
+					frameView(forFrame: frame)
+						.gridCellColumns(Frame.NUMBER_OF_ROLLS)
+				}
+			}
 
-					GridRow {
-						ForEach(game.frames, id: \.index) { frame in
-							railView(forFrame: frame)
-								.gridCellColumns(Frame.NUMBER_OF_ROLLS)
-						}
-					}
+			GridRow {
+				ForEach(game.frames, id: \.index) { frame in
+					railView(forFrame: frame)
+						.gridCellColumns(Frame.NUMBER_OF_ROLLS)
 				}
 			}
-			.cornerRadius(.standardRadius)
-			.onChange(of: selection) {
-				withAnimation(.easeInOut(duration: 300)) {
-					proxy.scrollTo(selection.frameId, anchor: selection.isLast ? .trailing : .leading)
-				}
-			}
-			.onAppear {
-				withAnimation(.easeInOut(duration: 300)) {
-					proxy.scrollTo(selection.frameId, anchor: selection.isLast ? .trailing : .leading)
-				}
-			}
-			.measure(key: ContentSizeKey.self, to: $contentSize)
 		}
+		.cornerRadius(.standardRadius)
 	}
 
 	private func frameView(forFrame frame: ScoredFrame) -> some View {
@@ -84,7 +76,7 @@ public struct ScoreSheet: View {
 		}
 		.id(FrameID(frameIndex: frame.index))
 		.buttonStyle(TappableElement())
-		.border(edges: frame.index == 0 ? [] : [.leading])
+		.border(edges: frame.index == 0 ? [] : [.leading], color: configuration.border)
 	}
 
 	private func rollViews(forFrame frame: ScoredFrame) -> some View {
@@ -117,7 +109,8 @@ public struct ScoreSheet: View {
 					.bottom,
 					Frame.isLastRoll(roll.index) ? nil : .trailing,
 					frame.index != 0 && roll.index == 0 ? .leading : nil,
-				].compactMap { $0 }
+				].compactMap { $0 },
+				color: configuration.border
 			)
 		}
 	}
@@ -129,7 +122,7 @@ public struct ScoreSheet: View {
 			.padding(.vertical, .unitSpacing)
 			.foregroundColor(foreground(forRailInFrame: frame.index))
 			.background(background(forRailInFrame: frame.index))
-			.border(edges: frame.index == 0 ? [] : [.leading])
+			.border(edges: frame.index == 0 ? [] : [.leading], color: configuration.border)
 			.roundCorners(
 				bottomLeading: frame.index == 0,
 				bottomTrailing: Frame.isLast(frame.index)
@@ -140,17 +133,17 @@ public struct ScoreSheet: View {
 
 	private func foreground(forFrameIndex: Int) -> ColorAsset {
 		if selection.frameIndex == forFrameIndex {
-			return Asset.Colors.ScoreSheet.Text.OnBackground.highlight
+			configuration.foregroundHighlight
 		} else {
-			return Asset.Colors.ScoreSheet.Text.OnBackground.default
+			configuration.foreground
 		}
 	}
 
 	private func background(forFrameIndex: Int) -> ColorAsset {
 		if selection.frameIndex == forFrameIndex {
-			return Asset.Colors.ScoreSheet.Background.highlight
+			configuration.backgroundHighlight
 		} else {
-			return Asset.Colors.ScoreSheet.Background.default
+			configuration.background
 		}
 	}
 
@@ -161,50 +154,108 @@ public struct ScoreSheet: View {
 		isSecondary: Bool
 	) -> ColorAsset {
 		if isSecondary {
-			return Asset.Colors.ScoreSheet.Text.OnBackground.secondary
-		}
-
-		if selection.frameIndex == inFrame && selection.rollIndex == forRollIndex {
+			configuration.foregroundSecondary
+		} else if selection.frameIndex == inFrame && selection.rollIndex == forRollIndex {
 			if didFoul {
-				return Asset.Colors.ScoreSheet.Text.OnBackground.highlightFoul
+				configuration.foregroundFoulHighlight
 			} else {
-				return Asset.Colors.ScoreSheet.Text.OnBackground.highlight
+				configuration.foregroundHighlight
 			}
 		} else {
 			if didFoul {
-				return Asset.Colors.ScoreSheet.Text.OnBackground.foul
+				configuration.foregroundFoul
 			} else {
-				return Asset.Colors.ScoreSheet.Text.OnBackground.default
+				configuration.foreground
 			}
 		}
 	}
 
 	private func background(forRollIndex: Int, inFrame: Int) -> ColorAsset {
 		if selection.frameIndex == inFrame && selection.rollIndex == forRollIndex {
-			return Asset.Colors.ScoreSheet.Background.highlight
+			configuration.background
 		} else {
-			return Asset.Colors.ScoreSheet.Background.default
+			configuration.backgroundHighlight
 		}
 	}
 
 	private func foreground(forRailInFrame: Int) -> ColorAsset {
 		if selection.frameIndex == forRailInFrame {
-			return Asset.Colors.ScoreSheet.Text.OnRail.highlight
+			configuration.railForegroundHighlight
 		} else {
-			return Asset.Colors.ScoreSheet.Text.OnRail.default
+			configuration.railForeground
 		}
 	}
 
 	private func background(forRailInFrame: Int) -> ColorAsset {
 		if selection.frameIndex == forRailInFrame {
-			return Asset.Colors.ScoreSheet.Rail.highlight
+			configuration.railBackgroundHighlight
 		} else {
-			return Asset.Colors.ScoreSheet.Rail.default
+			configuration.railBackground
 		}
 	}
 }
 
-private struct ContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
+extension ScoreSheet {
+	public struct Configuration: Equatable {
+		public let foreground: ColorAsset
+		public let foregroundHighlight: ColorAsset
+		public let foregroundSecondary: ColorAsset
+		public let foregroundFoul: ColorAsset
+		public let foregroundFoulHighlight: ColorAsset
+		public let background: ColorAsset
+		public let backgroundHighlight: ColorAsset
+		public let railForeground: ColorAsset
+		public let railForegroundHighlight: ColorAsset
+		public let railBackground: ColorAsset
+		public let railBackgroundHighlight: ColorAsset
+		public let border: ColorAsset
+
+		public init(
+			foreground: ColorAsset,
+			foregroundHighlight: ColorAsset,
+			foregroundSecondary: ColorAsset,
+			foregroundFoul: ColorAsset,
+			foregroundFoulHighlight: ColorAsset,
+			background: ColorAsset,
+			backgroundHighlight: ColorAsset,
+			railForeground: ColorAsset,
+			railForegroundHighlight: ColorAsset,
+			railBackground: ColorAsset,
+			railBackgroundHighlight: ColorAsset,
+			border: ColorAsset
+		) {
+			self.foreground = foreground
+			self.foregroundHighlight = foregroundHighlight
+			self.foregroundSecondary = foregroundSecondary
+			self.foregroundFoul = foregroundFoul
+			self.foregroundFoulHighlight = foregroundFoulHighlight
+			self.background = background
+			self.backgroundHighlight = backgroundHighlight
+			self.railForeground = railForeground
+			self.railForegroundHighlight = railForegroundHighlight
+			self.railBackground = railBackground
+			self.railBackgroundHighlight = railBackgroundHighlight
+			self.border = border
+		}
+
+		public static var `default`: Configuration {
+			Configuration(
+				foreground: Asset.Colors.ScoreSheet.Text.OnBackground.default,
+				foregroundHighlight: Asset.Colors.ScoreSheet.Text.OnBackground.highlight,
+				foregroundSecondary: Asset.Colors.ScoreSheet.Text.OnBackground.secondary,
+				foregroundFoul: Asset.Colors.ScoreSheet.Text.OnBackground.foul,
+				foregroundFoulHighlight: Asset.Colors.ScoreSheet.Text.OnBackground.highlightFoul,
+				background: Asset.Colors.ScoreSheet.Background.default,
+				backgroundHighlight: Asset.Colors.ScoreSheet.Background.highlight,
+				railForeground: Asset.Colors.ScoreSheet.Text.OnRail.default,
+				railForegroundHighlight: Asset.Colors.ScoreSheet.Text.OnRail.highlight,
+				railBackground: Asset.Colors.ScoreSheet.Rail.default,
+				railBackgroundHighlight: Asset.Colors.ScoreSheet.Rail.highlight,
+				border: Asset.Colors.ScoreSheet.Border.default
+			)
+		}
+	}
+}
 
 #if DEBUG
 struct ScoreSheetPreviews: PreviewProvider {
@@ -225,7 +276,10 @@ struct ScoreSheetPreviews: PreviewProvider {
 							],
 							score: 255
 						)
-					}),
+					}
+				),
+				configuration: .default,
+				contentSize: CGSize(width: 400, height: 200),
 				selection: .constant(.init(frameIndex: 0, rollIndex: 0))
 			)
 			Spacer()

@@ -6,6 +6,12 @@ extension ImageAsset: Equatable {
 	}
 }
 
+extension ColorAsset: Equatable {
+	public static func == (lhs: ColorAsset, rhs: ColorAsset) -> Bool {
+		lhs.name == rhs.name
+	}
+}
+
 extension View {
 	public func background(_ asset: ColorAsset) -> some View {
 		self.background(asset.swiftUIColor)
