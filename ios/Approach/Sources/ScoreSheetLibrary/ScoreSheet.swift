@@ -192,9 +192,9 @@ public struct ScoreSheet: View {
 
 	private func background(forRollIndex: Int, inFrame: Int) -> ColorAsset {
 		if selection.frameIndex == inFrame && selection.rollIndex == forRollIndex {
-			configuration.background
-		} else {
 			configuration.backgroundHighlight
+		} else {
+			configuration.background
 		}
 	}
 
