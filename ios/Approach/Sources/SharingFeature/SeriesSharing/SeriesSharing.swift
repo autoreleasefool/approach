@@ -215,13 +215,13 @@ public struct SeriesSharingView: View {
 				GridRow {
 					ChipButton(
 						icon: .calendar,
-						title: Strings.Sharing.Details.date,
+						title: Strings.Sharing.Series.Details.date,
 						isOn: $store.isShowingSeriesDate.animation(.easeInOut(duration: 0.2))
 					)
 
 					ChipButton(
 						icon: .listDash,
-						title: Strings.Sharing.Details.scoreSummary,
+						title: Strings.Sharing.Series.Details.scoreSummary,
 						isOn: $store.isShowingSeriesSummary.animation(.easeInOut(duration: 0.2))
 					)
 				}
@@ -229,13 +229,13 @@ public struct SeriesSharingView: View {
 				GridRow {
 					ChipButton(
 						icon: .personFill,
-						title: Strings.Sharing.Details.bowlerName,
+						title: Strings.Sharing.Series.Details.bowlerName,
 						isOn: $store.isShowingBowlerName.animation(.easeInOut(duration: 0.2))
 					)
 
 					ChipButton(
 						icon: .repeat,
-						title: Strings.Sharing.Details.leagueName,
+						title: Strings.Sharing.Series.Details.leagueName,
 						isOn: $store.isShowingLeagueName.animation(.easeInOut(duration: 0.2))
 					)
 				}
@@ -243,13 +243,13 @@ public struct SeriesSharingView: View {
 				GridRow {
 					ChipButton(
 						icon: .personFill,
-						title: Strings.Sharing.Details.highScore,
+						title: Strings.Sharing.Series.Details.highScore,
 						isOn: $store.isLabellingHighestScore.animation(.easeInOut(duration: 0.2))
 					)
 
 					ChipButton(
 						icon: .repeat,
-						title: Strings.Sharing.Details.lowScore,
+						title: Strings.Sharing.Series.Details.lowScore,
 						isOn: $store.isLabellingLowestScore.animation(.easeInOut(duration: 0.2))
 					)
 				}
@@ -261,7 +261,7 @@ public struct SeriesSharingView: View {
 	}
 
 	private var domainSection: some View {
-		Section(Strings.Sharing.Chart.Range.title) {
+		Section(Strings.Sharing.Series.Chart.Range.title) {
 			DisclosureGroup(
 				content: {
 					HStack {
@@ -289,7 +289,7 @@ public struct SeriesSharingView: View {
 					}
 				},
 				label: {
-					Text("\(store.scoreLowerBound) to \(store.scoreUpperBound)")
+					Text(Strings.Sharing.Series.Chart.Range.description(store.scoreLowerBound, store.scoreUpperBound))
 				}
 			)
 		}

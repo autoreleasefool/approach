@@ -10,7 +10,7 @@ struct AppearancePicker: View {
 
 	var body: some View {
 		Picker(
-			Strings.Sharing.ColorScheme.title,
+			Strings.Sharing.Common.ColorScheme.title,
 			selection: $appearance
 		) {
 			ForEach(Appearance.allCases) { appearance in

@@ -16,8 +16,8 @@ public enum Appearance: CaseIterable, Hashable, Identifiable {
 
 	var title: String {
 		switch self {
-		case .light: Strings.Sharing.ColorScheme.light
-		case .dark: Strings.Sharing.ColorScheme.dark
+		case .light: Strings.Sharing.Common.ColorScheme.light
+		case .dark: Strings.Sharing.Common.ColorScheme.dark
 		}
 	}
 }
