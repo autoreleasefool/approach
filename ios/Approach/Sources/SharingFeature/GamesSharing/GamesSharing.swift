@@ -169,27 +169,27 @@ public struct GamesSharing: Reducer {
 					return .none
 				}
 			}
-			.onChange(of: \.configuration) { _, configuration in
-				Reduce<State, Action> { _, _ in
-					return .run { @MainActor send in
-						guard let configuration else {  return }
-						let imageRenderer = ImageRenderer(
-							content: ShareableGamesImage(configuration: configuration)
-								.frame(minWidth: 900)
-								.environment(\.colorScheme, configuration.colorScheme)
-						)
-						imageRenderer.scale = configuration.displayScale
+		}
+		.onChange(of: \.configuration) { _, configuration in
+			Reduce<State, Action> { _, _ in
+				return .run { @MainActor send in
+					guard let configuration else {  return }
+					let imageRenderer = ImageRenderer(
+						content: ShareableGamesImage(configuration: configuration)
+							.frame(minWidth: 900)
+							.environment(\.colorScheme, configuration.colorScheme)
+					)
+					imageRenderer.scale = configuration.displayScale
 
-						guard let image = imageRenderer.uiImage else {
-							return
-						}
-
-						guard !Task.isCancelled else { return }
-
-						send(.delegate(.imageRendered(image)))
+					guard let image = imageRenderer.uiImage else {
+						return
 					}
-					.cancellable(id: CancelID.imageRenderer, cancelInFlight: true)
+
+					guard !Task.isCancelled else { return }
+
+					send(.delegate(.imageRendered(image)))
 				}
+				.cancellable(id: CancelID.imageRenderer, cancelInFlight: true)
 			}
 		}
 
