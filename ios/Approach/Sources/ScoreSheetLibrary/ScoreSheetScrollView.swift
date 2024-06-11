@@ -1,3 +1,4 @@
+import AssetsLibrary
 import ModelsLibrary
 import SwiftUI
 import SwiftUIExtensionsPackageLibrary
@@ -18,6 +19,7 @@ public struct ScoreSheetScrollView: View {
 		ScrollViewReader { proxy in
 			ScrollView(.horizontal, showsIndicators: false) {
 				ScoreSheet(game: game, configuration: configuration, contentSize: contentSize, selection: $selection)
+					.cornerRadius(.standardRadius)
 			}
 			.onChange(of: selection) {
 				withAnimation(.easeInOut(duration: 300)) {

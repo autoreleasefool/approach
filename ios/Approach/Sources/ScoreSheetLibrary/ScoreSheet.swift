@@ -43,6 +43,15 @@ public struct ScoreSheet: View {
 
 	public var body: some View {
 		Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+			if configuration.railOnTop {
+				GridRow {
+					ForEach(game.frames, id: \.index) { frame in
+						railView(forFrame: frame)
+							.gridCellColumns(Frame.NUMBER_OF_ROLLS)
+					}
+				}
+			}
+
 			GridRow {
 				ForEach(game.frames, id: \.index) { frame in
 					rollViews(forFrame: frame)
@@ -56,14 +65,15 @@ public struct ScoreSheet: View {
 				}
 			}
 
-			GridRow {
-				ForEach(game.frames, id: \.index) { frame in
-					railView(forFrame: frame)
-						.gridCellColumns(Frame.NUMBER_OF_ROLLS)
+			if !configuration.railOnTop {
+				GridRow {
+					ForEach(game.frames, id: \.index) { frame in
+						railView(forFrame: frame)
+							.gridCellColumns(Frame.NUMBER_OF_ROLLS)
+					}
 				}
 			}
 		}
-		.cornerRadius(.standardRadius)
 	}
 
 	private func frameView(forFrame frame: ScoredFrame) -> some View {
@@ -73,6 +83,12 @@ public struct ScoreSheet: View {
 				.padding(.smallSpacing)
 				.foregroundColor(foreground(forFrameIndex: frame.index))
 				.background(background(forFrameIndex: frame.index))
+				.roundCorners(
+					topLeading: configuration.roundTopFrameCorners && frame.index == 0,
+					topTrailing: configuration.roundTopFrameCorners && Frame.isLast(frame.index),
+					bottomLeading: configuration.roundBottomFrameCorners && frame.index == 0,
+					bottomTrailing: configuration.roundBottomFrameCorners && Frame.isLast(frame.index)
+				)
 		}
 		.id(FrameID(frameIndex: frame.index))
 		.buttonStyle(TappableElement())
@@ -98,8 +114,10 @@ public struct ScoreSheet: View {
 					)
 					.background(background(forRollIndex: roll.index, inFrame: frame.index))
 					.roundCorners(
-						topLeading: frame.index == 0 && roll.index == 0,
-						topTrailing: Frame.isLast(frame.index) && Frame.isLastRoll(roll.index)
+						topLeading: configuration.roundTopRollCorners && frame.index == 0 && roll.index == 0,
+						topTrailing: configuration.roundTopRollCorners && Frame.isLast(frame.index) && Frame.isLastRoll(roll.index),
+						bottomLeading: configuration.roundBottomRollCorners && frame.index == 0 && roll.index == 0,
+						bottomTrailing: configuration.roundBottomRollCorners && Frame.isLast(frame.index) && Frame.isLastRoll(roll.index)
 					)
 			}
 			.id(Selection(frameIndex: frame.index, rollIndex: roll.index))
@@ -124,8 +142,10 @@ public struct ScoreSheet: View {
 			.background(background(forRailInFrame: frame.index))
 			.border(edges: frame.index == 0 ? [] : [.leading], color: configuration.border)
 			.roundCorners(
-				bottomLeading: frame.index == 0,
-				bottomTrailing: Frame.isLast(frame.index)
+				topLeading: configuration.roundTopRailCorners && frame.index == 0,
+				topTrailing: configuration.roundTopRailCorners && Frame.isLast(frame.index),
+				bottomLeading: configuration.roundBottomRailCorners && frame.index == 0,
+				bottomTrailing: configuration.roundBottomRailCorners && Frame.isLast(frame.index)
 			)
 	}
 
@@ -209,6 +229,9 @@ extension ScoreSheet {
 		public let railBackground: ColorAsset
 		public let railBackgroundHighlight: ColorAsset
 		public let border: ColorAsset
+		public let allowTopRounding: Bool
+		public let allowBottomRounding: Bool
+		public let railOnTop: Bool
 
 		public init(
 			foreground: ColorAsset,
@@ -222,7 +245,10 @@ extension ScoreSheet {
 			railForegroundHighlight: ColorAsset,
 			railBackground: ColorAsset,
 			railBackgroundHighlight: ColorAsset,
-			border: ColorAsset
+			border: ColorAsset,
+			allowTopRounding: Bool,
+			allowBottomRounding: Bool,
+			railOnTop: Bool
 		) {
 			self.foreground = foreground
 			self.foregroundHighlight = foregroundHighlight
@@ -236,6 +262,33 @@ extension ScoreSheet {
 			self.railBackground = railBackground
 			self.railBackgroundHighlight = railBackgroundHighlight
 			self.border = border
+			self.allowTopRounding = allowTopRounding
+			self.allowBottomRounding = allowBottomRounding
+			self.railOnTop = railOnTop
+		}
+
+		var roundTopRailCorners: Bool {
+			railOnTop && allowTopRounding
+		}
+
+		var roundBottomRailCorners: Bool {
+			!railOnTop && allowBottomRounding
+		}
+
+		var roundTopRollCorners: Bool {
+			!railOnTop && allowTopRounding
+		}
+
+		var roundBottomRollCorners: Bool {
+			false
+		}
+
+		var roundTopFrameCorners: Bool {
+			false
+		}
+
+		var roundBottomFrameCorners: Bool {
+			railOnTop && allowBottomRounding
 		}
 
 		public static var `default`: Configuration {
@@ -251,7 +304,10 @@ extension ScoreSheet {
 				railForegroundHighlight: Asset.Colors.ScoreSheet.Text.OnRail.highlight,
 				railBackground: Asset.Colors.ScoreSheet.Rail.default,
 				railBackgroundHighlight: Asset.Colors.ScoreSheet.Rail.highlight,
-				border: Asset.Colors.ScoreSheet.Border.default
+				border: Asset.Colors.ScoreSheet.Border.default,
+				allowTopRounding: true,
+				allowBottomRounding: true,
+				railOnTop: false
 			)
 		}
 	}
