@@ -1,6 +1,7 @@
 import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
+import ComposableExtensionsLibrary
 import ErrorsFeature
 import FeatureActionLibrary
 import GamesRepositoryInterface
@@ -25,6 +26,7 @@ public struct GamesSharing: Reducer {
 		public var isShowingSeriesSummary: Bool = true
 		public var isShowingBowlerName: Bool = false
 		public var isShowingLeagueName: Bool = false
+		public var isGameIncluded: IdentifiedArrayOf<GameWithInclude> = []
 
 		public var displayScale: CGFloat = .zero
 		public var preferredAppearance: Appearance = .dark
@@ -34,8 +36,9 @@ public struct GamesSharing: Reducer {
 		var configuration: ShareableGamesImage.Configuration? {
 			guard let games, games.count == scores.count else { return nil }
 			return .init(
-				scores: games.compactMap { scores[$0.id] },
-				scoreSheetConfiguration: .default,
+				scores: games
+					.compactMap { scores[$0.id] }
+					.filter { isGameIncluded[id: $0.id]?.isIncluded == true },
 				displayScale: displayScale,
 				colorScheme: preferredAppearance.colorScheme
 			)
@@ -78,6 +81,12 @@ public struct GamesSharing: Reducer {
 	public enum CancelID: Hashable {
 		case scoreKeeper
 		case imageRenderer
+	}
+
+	public struct GameWithInclude: Identifiable, Equatable {
+		public let id: Game.ID
+		public let ordinal: Int
+		public var isIncluded: Bool
 	}
 
 	public init() {}
@@ -133,6 +142,9 @@ public struct GamesSharing: Reducer {
 
 					case let .loadGamesResponse(.success(games)):
 						state.games = games
+						state.isGameIncluded = games
+							.map { GameWithInclude(id: $0.id, ordinal: $0.index + 1, isIncluded: true) }
+							.eraseToIdentifiedArray()
 						return .merge(
 							games.map { game in
 									.run { send in
@@ -221,6 +233,7 @@ public struct GamesSharingView: View {
 
 	public var body: some View {
 		List {
+			gamesSection
 			colorSchemeSection
 		}
 		.task { await send(.task).finish() }
@@ -230,6 +243,21 @@ public struct GamesSharingView: View {
 			send(.didUpdateDisplayScale(displayScale))
 		}
 		.onChange(of: displayScale) { send(.didUpdateDisplayScale(displayScale)) }
+	}
+
+	private var gamesSection: some View {
+		Section {
+			DisclosureGroup {
+				ForEach($store.isGameIncluded) { $isIncluded in
+					Toggle(
+						Strings.Game.titleWithOrdinal(isIncluded.ordinal),
+						isOn: $isIncluded.isIncluded
+					)
+				}
+			} label: {
+				Text(Strings.Sharing.Game.Details.Games.title)
+			}
+		}
 	}
 
 	private var colorSchemeSection: some View {
