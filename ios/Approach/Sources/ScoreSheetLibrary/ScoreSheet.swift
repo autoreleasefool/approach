@@ -42,38 +42,60 @@ public struct ScoreSheet: View {
 	}
 
 	public var body: some View {
-		Grid(horizontalSpacing: 0, verticalSpacing: 0) {
-			if configuration.railOnTop {
+		HStack(alignment: .center, spacing: 0) {
+			Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+				if configuration.railOnTop {
+					GridRow {
+						ForEach(game.frames, id: \.index) { frame in
+							railView(forFrame: frame)
+								.gridCellColumns(Frame.NUMBER_OF_ROLLS)
+						}
+					}
+				}
+
 				GridRow {
 					ForEach(game.frames, id: \.index) { frame in
-						railView(forFrame: frame)
+						rollViews(forFrame: frame)
+					}
+				}
+
+				GridRow {
+					ForEach(game.frames, id: \.index) { frame in
+						frameView(forFrame: frame)
 							.gridCellColumns(Frame.NUMBER_OF_ROLLS)
 					}
 				}
-			}
 
-			GridRow {
-				ForEach(game.frames, id: \.index) { frame in
-					rollViews(forFrame: frame)
-				}
-			}
-
-			GridRow {
-				ForEach(game.frames, id: \.index) { frame in
-					frameView(forFrame: frame)
-						.gridCellColumns(Frame.NUMBER_OF_ROLLS)
-				}
-			}
-
-			if !configuration.railOnTop {
-				GridRow {
-					ForEach(game.frames, id: \.index) { frame in
-						railView(forFrame: frame)
-							.gridCellColumns(Frame.NUMBER_OF_ROLLS)
+				if !configuration.railOnTop {
+					GridRow {
+						ForEach(game.frames, id: \.index) { frame in
+							railView(forFrame: frame)
+								.gridCellColumns(Frame.NUMBER_OF_ROLLS)
+						}
 					}
 				}
 			}
+			.frame(maxHeight: .infinity)
+
+			finalScoreView
 		}
+		.fixedSize(horizontal: false, vertical: true)
+	}
+
+	private var finalScoreView: some View {
+		Text("\(game.score ?? 0)")
+			.font(.title2)
+			.bold()
+			.padding(.vertical, .smallSpacing)
+			.padding(.horizontal, .largeSpacing)
+			.frame(maxHeight: .infinity)
+			.foregroundColor(configuration.foreground)
+			.background(configuration.background)
+			.roundCorners(
+				topTrailing: configuration.allowTopRounding,
+				bottomTrailing: configuration.allowBottomRounding
+			)
+			.border(edges: [.leading], color: configuration.border)
 	}
 
 	private func frameView(forFrame frame: ScoredFrame) -> some View {
@@ -85,9 +107,7 @@ public struct ScoreSheet: View {
 				.background(background(forFrameIndex: frame.index))
 				.roundCorners(
 					topLeading: configuration.roundTopFrameCorners && frame.index == 0,
-					topTrailing: configuration.roundTopFrameCorners && Frame.isLast(frame.index),
-					bottomLeading: configuration.roundBottomFrameCorners && frame.index == 0,
-					bottomTrailing: configuration.roundBottomFrameCorners && Frame.isLast(frame.index)
+					bottomLeading: configuration.roundBottomFrameCorners && frame.index == 0
 				)
 		}
 		.id(FrameID(frameIndex: frame.index))
@@ -103,7 +123,8 @@ public struct ScoreSheet: View {
 					.minimumScaleFactor(0.2)
 					.lineLimit(1)
 					.frame(width: contentSize.width / 12)
-					.padding(.smallSpacing)
+					.padding(.horizontal, .smallSpacing)
+					.padding(.vertical, .unitSpacing)
 					.foregroundColor(
 						foreground(
 							forRollIndex: roll.index,
@@ -115,9 +136,7 @@ public struct ScoreSheet: View {
 					.background(background(forRollIndex: roll.index, inFrame: frame.index))
 					.roundCorners(
 						topLeading: configuration.roundTopRollCorners && frame.index == 0 && roll.index == 0,
-						topTrailing: configuration.roundTopRollCorners && Frame.isLast(frame.index) && Frame.isLastRoll(roll.index),
-						bottomLeading: configuration.roundBottomRollCorners && frame.index == 0 && roll.index == 0,
-						bottomTrailing: configuration.roundBottomRollCorners && Frame.isLast(frame.index) && Frame.isLastRoll(roll.index)
+						bottomLeading: configuration.roundBottomRollCorners && frame.index == 0 && roll.index == 0
 					)
 			}
 			.id(Selection(frameIndex: frame.index, rollIndex: roll.index))
@@ -143,9 +162,7 @@ public struct ScoreSheet: View {
 			.border(edges: frame.index == 0 ? [] : [.leading], color: configuration.border)
 			.roundCorners(
 				topLeading: configuration.roundTopRailCorners && frame.index == 0,
-				topTrailing: configuration.roundTopRailCorners && Frame.isLast(frame.index),
-				bottomLeading: configuration.roundBottomRailCorners && frame.index == 0,
-				bottomTrailing: configuration.roundBottomRailCorners && Frame.isLast(frame.index)
+				bottomLeading: configuration.roundBottomRailCorners && frame.index == 0
 			)
 	}
 
@@ -291,7 +308,7 @@ extension ScoreSheet {
 			railOnTop && allowBottomRounding
 		}
 
-		public static var `default`: Configuration {
+		public static var plain: Configuration {
 			Configuration(
 				foreground: Asset.Colors.ScoreSheet.Text.OnBackground.default,
 				foregroundHighlight: Asset.Colors.ScoreSheet.Text.OnBackground.highlight,
@@ -313,34 +330,29 @@ extension ScoreSheet {
 	}
 }
 
-#if DEBUG
-struct ScoreSheetPreviews: PreviewProvider {
-	static var previews: some View {
-		VStack {
-			Spacer()
-			ScoreSheet(
-				game: .init(
-					id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
-					index: 0,
-					frames: Game.FRAME_INDICES.map {
-						.init(
-							index: $0,
-							rolls: [
-								.init(index: 0, displayValue: "HP", didFoul: true, isSecondary: false),
-								.init(index: 1, displayValue: "10", didFoul: false, isSecondary: false),
-								.init(index: 2, displayValue: "-", didFoul: false, isSecondary: false),
-							],
-							score: 255
-						)
-					}
-				),
-				configuration: .default,
-				contentSize: CGSize(width: 400, height: 200),
-				selection: .constant(.init(frameIndex: 0, rollIndex: 0))
-			)
-			Spacer()
-		}
-		.background(.black)
+#Preview(traits: .sizeThatFitsLayout) {
+	VStack {
+		Spacer()
+		ScoreSheet(
+			game: .init(
+				id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
+				index: 0,
+				frames: Game.FRAME_INDICES.map {
+					.init(
+						index: $0,
+						rolls: [
+							.init(index: 0, displayValue: "HP", didFoul: true, isSecondary: false),
+							.init(index: 1, displayValue: "10", didFoul: false, isSecondary: false),
+							.init(index: 2, displayValue: "-", didFoul: false, isSecondary: false),
+						],
+						score: 255
+					)
+				}
+			),
+			configuration: .plain,
+			contentSize: CGSize(width: 400, height: 200),
+			selection: .constant(.init(frameIndex: 0, rollIndex: 0))
+		)
+		Spacer()
 	}
 }
-#endif

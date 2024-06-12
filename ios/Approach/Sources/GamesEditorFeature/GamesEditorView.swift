@@ -152,7 +152,7 @@ public struct GamesEditorView: View {
 
 	@ViewBuilder private var scoreSheet: some View {
 		if let game = store.score {
-			ScoreSheetScrollView(game: game, configuration: .default, selection: $store.currentFrame)
+			ScoreSheetScrollView(game: game, configuration: .plain, selection: $store.currentFrame)
 		}
 	}
 }
