@@ -5,7 +5,7 @@ extension View {
 	public func border(
 		edges: [Edge],
 		width: CGFloat = .standardBorder,
-		color: ColorAsset = Asset.Colors.ScoreSheet.Border.default
+		color: ColorAsset = Asset.Colors.ScoreSheet.Plain.Border.default
 	) -> some View {
 		overlay(EdgeBorder(width: width, edges: edges).foregroundColor(color))
 	}

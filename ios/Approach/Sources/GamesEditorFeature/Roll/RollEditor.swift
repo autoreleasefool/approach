@@ -169,11 +169,11 @@ public struct RollEditorView: View {
 			Button { send(.didToggleFoul) } label: {
 				HStack(spacing: .smallSpacing) {
 					Text(Strings.Roll.Properties.Foul.title)
-						.foregroundColor(store.didFoul ? Asset.Colors.ScoreSheet.Text.OnBackground.foul.swiftUIColor : .white)
+						.foregroundColor(store.didFoul ? Asset.Colors.ScoreSheet.Plain.Text.OnBackground.foul.swiftUIColor : .white)
 					Image(systemSymbol: store.didFoul ? .fCursiveCircleFill : .fCursiveCircle)
 						.resizable()
 						.frame(width: .smallIcon, height: .smallIcon)
-						.foregroundColor(store.didFoul ? Asset.Colors.ScoreSheet.Text.OnBackground.foul.swiftUIColor : .white)
+						.foregroundColor(store.didFoul ? Asset.Colors.ScoreSheet.Plain.Text.OnBackground.foul.swiftUIColor : .white)
 				}
 			}
 			.buttonStyle(TappableElement())
