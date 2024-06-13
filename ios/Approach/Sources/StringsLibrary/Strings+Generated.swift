@@ -224,6 +224,8 @@ public enum Strings {
       public static let christmas = Strings.tr("Localizable", "app.icon.christmas", fallback: "Christmas")
       /// Current icon
       public static let current = Strings.tr("Localizable", "app.icon.current", fallback: "Current icon")
+      /// Dark
+      public static let dark = Strings.tr("Localizable", "app.icon.dark", fallback: "Dark")
       /// Pride
       public static let pride = Strings.tr("Localizable", "app.icon.pride", fallback: "Pride")
       /// Primary
