@@ -1402,6 +1402,42 @@ public enum Strings {
     }
     public enum Game {
       public enum Details {
+        /// Bowler
+        public static let bowlerName = Strings.tr("Localizable", "sharing.game.details.bowlerName", fallback: "Bowler")
+        /// Date
+        public static let date = Strings.tr("Localizable", "sharing.game.details.date", fallback: "Date")
+        /// High
+        public static let highScore = Strings.tr("Localizable", "sharing.game.details.highScore", fallback: "High")
+        /// %d HIGH
+        public static func highScoreLabel(_ p1: Int) -> String {
+          return Strings.tr("Localizable", "sharing.game.details.highScoreLabel", p1, fallback: "%d HIGH")
+        }
+        /// League
+        public static let leagueName = Strings.tr("Localizable", "sharing.game.details.leagueName", fallback: "League")
+        /// Low
+        public static let lowScore = Strings.tr("Localizable", "sharing.game.details.lowScore", fallback: "Low")
+        /// %d LOW
+        public static func lowScoreLabel(_ p1: Int) -> String {
+          return Strings.tr("Localizable", "sharing.game.details.lowScoreLabel", p1, fallback: "%d LOW")
+        }
+        /// Summary
+        public static let scoreSummary = Strings.tr("Localizable", "sharing.game.details.scoreSummary", fallback: "Summary")
+        /// %d TOTAL
+        public static func totalLabel(_ p1: Int) -> String {
+          return Strings.tr("Localizable", "sharing.game.details.totalLabel", p1, fallback: "%d TOTAL")
+        }
+        public enum Appearance {
+          /// Appearance
+          public static let title = Strings.tr("Localizable", "sharing.game.details.appearance.title", fallback: "Appearance")
+        }
+        public enum ColorPalette {
+          /// Grayscale
+          public static let grayscale = Strings.tr("Localizable", "sharing.game.details.colorPalette.grayscale", fallback: "Grayscale")
+          /// Standard
+          public static let plain = Strings.tr("Localizable", "sharing.game.details.colorPalette.plain", fallback: "Standard")
+          /// Color Palette
+          public static let title = Strings.tr("Localizable", "sharing.game.details.colorPalette.title", fallback: "Color Palette")
+        }
         public enum Games {
           /// Games
           public static let title = Strings.tr("Localizable", "sharing.game.details.games.title", fallback: "Games")
@@ -1446,12 +1482,24 @@ public enum Strings {
         public static let date = Strings.tr("Localizable", "sharing.series.details.date", fallback: "Date")
         /// High
         public static let highScore = Strings.tr("Localizable", "sharing.series.details.highScore", fallback: "High")
+        /// %d HIGH
+        public static func highScoreLabel(_ p1: Int) -> String {
+          return Strings.tr("Localizable", "sharing.series.details.highScoreLabel", p1, fallback: "%d HIGH")
+        }
         /// League
         public static let leagueName = Strings.tr("Localizable", "sharing.series.details.leagueName", fallback: "League")
         /// Low
         public static let lowScore = Strings.tr("Localizable", "sharing.series.details.lowScore", fallback: "Low")
+        /// %d LOW
+        public static func lowScoreLabel(_ p1: Int) -> String {
+          return Strings.tr("Localizable", "sharing.series.details.lowScoreLabel", p1, fallback: "%d LOW")
+        }
         /// Summary
         public static let scoreSummary = Strings.tr("Localizable", "sharing.series.details.scoreSummary", fallback: "Summary")
+        /// %d TOTAL
+        public static func totalLabel(_ p1: Int) -> String {
+          return Strings.tr("Localizable", "sharing.series.details.totalLabel", p1, fallback: "%d TOTAL")
+        }
       }
     }
   }

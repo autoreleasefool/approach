@@ -68,11 +68,19 @@ public struct ShareableSeriesImage: View {
 			HStack(spacing: .smallSpacing) {
 				if configuration.showDetails {
 					if let total = configuration.total {
-						ChartLabel(symbol: .checkmarkSealFill, title: "\(total) TOTAL", style: .small)
+						ChartLabel(symbol: .checkmarkSealFill, title: Strings.Sharing.Series.Details.totalLabel(total), style: .small)
 					}
 
-					ChartLabel(symbol: .arrowUp, title: "\(configuration.scores.highestScore) HIGH", style: .small)
-					ChartLabel(symbol: .arrowDown, title: "\(configuration.scores.lowestScore) LOW", style: .small)
+					ChartLabel(
+						symbol: .arrowUp,
+						title: Strings.Sharing.Series.Details.highScoreLabel(configuration.scores.highestScore),
+						style: .small
+					)
+					ChartLabel(
+						symbol: .arrowDown,
+						title: Strings.Sharing.Series.Details.lowScoreLabel(configuration.scores.lowestScore),
+						style: .small
+					)
 				}
 			}
 		}
@@ -153,21 +161,21 @@ private struct ChartLabel: View {
 		let spacing: CGFloat
 		let padding: CGFloat
 
-		static var title: Self = .init(
+		static let title: Self = .init(
 			font: .title3.weight(.bold),
 			iconSize: .smallIcon,
 			spacing: .standardSpacing,
 			padding: .smallSpacing
 		)
 
-		static var plain: Self = .init(
+		static let plain: Self = .init(
 			font: .body,
 			iconSize: .smallIcon,
 			spacing: .standardSpacing,
 			padding: .unitSpacing
 		)
 
-		static var small: Self = .init(
+		static let small: Self = .init(
 			font: .caption2,
 			iconSize: 8,
 			spacing: .smallSpacing,

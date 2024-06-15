@@ -92,8 +92,8 @@ public struct ScoreSheet: View {
 			.foregroundColor(configuration.foreground)
 			.background(configuration.background)
 			.roundCorners(
-				topTrailing: configuration.allowTopRounding,
-				bottomTrailing: configuration.allowBottomRounding
+				topTrailing: configuration.shouldRound(.score, inPosition: .topTrailing),
+				bottomTrailing: configuration.shouldRound(.score, inPosition: .bottomTrailing)
 			)
 			.border(edges: [.leading], color: configuration.border)
 	}
@@ -106,8 +106,8 @@ public struct ScoreSheet: View {
 				.foregroundColor(foreground(forFrameIndex: frame.index))
 				.background(background(forFrameIndex: frame.index))
 				.roundCorners(
-					topLeading: configuration.roundTopFrameCorners && frame.index == 0,
-					bottomLeading: configuration.roundBottomFrameCorners && frame.index == 0
+					topLeading: configuration.shouldRound(.frame, inPosition: .topLeading, frameIndex: frame.index),
+					bottomLeading: configuration.shouldRound(.frame, inPosition: .bottomLeading, frameIndex: frame.index)
 				)
 		}
 		.id(FrameID(frameIndex: frame.index))
@@ -135,8 +135,18 @@ public struct ScoreSheet: View {
 					)
 					.background(background(forRollIndex: roll.index, inFrame: frame.index))
 					.roundCorners(
-						topLeading: configuration.roundTopRollCorners && frame.index == 0 && roll.index == 0,
-						bottomLeading: configuration.roundBottomRollCorners && frame.index == 0 && roll.index == 0
+						topLeading: configuration.shouldRound(
+							.roll,
+							inPosition: .topLeading, 
+							frameIndex: frame.index,
+							rollIndex: roll.index
+						),
+						bottomLeading: configuration.shouldRound(
+							.roll,
+							inPosition: .bottomLeading,
+							frameIndex: frame.index,
+							rollIndex: roll.index
+						)
 					)
 			}
 			.id(Selection(frameIndex: frame.index, rollIndex: roll.index))
@@ -161,8 +171,8 @@ public struct ScoreSheet: View {
 			.background(background(forRailInFrame: frame.index))
 			.border(edges: frame.index == 0 ? [] : [.leading], color: configuration.border)
 			.roundCorners(
-				topLeading: configuration.roundTopRailCorners && frame.index == 0,
-				bottomLeading: configuration.roundBottomRailCorners && frame.index == 0
+				topLeading: configuration.shouldRound(.rail, inPosition: .topLeading, frameIndex: frame.index),
+				bottomLeading: configuration.shouldRound(.rail, inPosition: .bottomLeading, frameIndex: frame.index)
 			)
 	}
 
@@ -246,7 +256,9 @@ extension ScoreSheet {
 		public let railBackground: ColorAsset
 		public let railBackgroundHighlight: ColorAsset
 		public let border: ColorAsset
+		public let allowLeadingRounding: Bool
 		public let allowTopRounding: Bool
+		public let allowTrailingRounding: Bool
 		public let allowBottomRounding: Bool
 		public let railOnTop: Bool
 
@@ -263,7 +275,9 @@ extension ScoreSheet {
 			railBackground: ColorAsset,
 			railBackgroundHighlight: ColorAsset,
 			border: ColorAsset,
+			allowLeadingRounding: Bool,
 			allowTopRounding: Bool,
+			allowTrailingRounding: Bool,
 			allowBottomRounding: Bool,
 			railOnTop: Bool
 		) {
@@ -279,33 +293,11 @@ extension ScoreSheet {
 			self.railBackground = railBackground
 			self.railBackgroundHighlight = railBackgroundHighlight
 			self.border = border
+			self.allowLeadingRounding = allowLeadingRounding
 			self.allowTopRounding = allowTopRounding
+			self.allowTrailingRounding = allowTrailingRounding
 			self.allowBottomRounding = allowBottomRounding
 			self.railOnTop = railOnTop
-		}
-
-		var roundTopRailCorners: Bool {
-			railOnTop && allowTopRounding
-		}
-
-		var roundBottomRailCorners: Bool {
-			!railOnTop && allowBottomRounding
-		}
-
-		var roundTopRollCorners: Bool {
-			!railOnTop && allowTopRounding
-		}
-
-		var roundBottomRollCorners: Bool {
-			false
-		}
-
-		var roundTopFrameCorners: Bool {
-			false
-		}
-
-		var roundBottomFrameCorners: Bool {
-			railOnTop && allowBottomRounding
 		}
 
 		public static var plain: Configuration {
@@ -322,9 +314,54 @@ extension ScoreSheet {
 				railBackground: Asset.Colors.ScoreSheet.Plain.Rail.default,
 				railBackgroundHighlight: Asset.Colors.ScoreSheet.Plain.Rail.highlight,
 				border: Asset.Colors.ScoreSheet.Plain.Border.default,
+				allowLeadingRounding: true,
 				allowTopRounding: true,
+				allowTrailingRounding: true,
 				allowBottomRounding: true,
 				railOnTop: false
+			)
+		}
+	}
+}
+
+extension ScoreSheet.Configuration {
+	fileprivate enum CornerComponent {
+		case roll
+		case frame
+		case rail
+		case score
+	}
+
+	fileprivate enum Position {
+		case topLeading
+		case topTrailing
+		case bottomLeading
+		case bottomTrailing
+	}
+
+	fileprivate func shouldRound(
+		_ component: CornerComponent,
+		inPosition position: Position,
+		frameIndex: Int? = nil,
+		rollIndex: Int? = nil
+	) -> Bool {
+		switch component {
+		case .roll:
+			return frameIndex == 0 && rollIndex == 0 &&
+				(position == .topLeading && !railOnTop && allowTopRounding && allowLeadingRounding)
+		case .frame:
+			return frameIndex == 0 &&
+				(position == .bottomLeading && allowLeadingRounding && railOnTop && allowBottomRounding)
+		case .rail:
+			return frameIndex == 0 &&
+				(
+					(position == .topLeading && allowLeadingRounding && railOnTop && allowTopRounding) ||
+					(position == .bottomLeading && allowLeadingRounding && !railOnTop && allowBottomRounding)
+				)
+		case .score:
+			return (
+				(position == .topTrailing && allowTrailingRounding && allowTopRounding) ||
+				(position == .bottomTrailing && allowTrailingRounding && allowBottomRounding)
 			)
 		}
 	}

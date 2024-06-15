@@ -21,12 +21,13 @@ public struct GamesSharing: Reducer {
 		public var series: Series.Shareable?
 		public var games: [Game.Shareable]?
 		public var scores: [Game.ID: ScoredGame] = [:]
-
+		public var isGameIncluded: IdentifiedArrayOf<GameWithInclude> = []
+		public var isShowingGameTitles: Bool = true
+		public var isShowingSeriesDetails: Bool = true
 		public var isShowingSeriesDate: Bool = true
-		public var isShowingSeriesSummary: Bool = true
 		public var isShowingBowlerName: Bool = false
 		public var isShowingLeagueName: Bool = false
-		public var isGameIncluded: IdentifiedArrayOf<GameWithInclude> = []
+		public var style: ShareableGamesImage.Configuration.Style = .plain
 
 		public var displayScale: CGFloat = .zero
 		public var preferredAppearance: Appearance = .dark
@@ -39,6 +40,13 @@ public struct GamesSharing: Reducer {
 				scores: games
 					.compactMap { scores[$0.id] }
 					.filter { isGameIncluded[id: $0.id]?.isIncluded == true },
+				isShowingGameTitles: isShowingGameTitles,
+				isShowingSeriesDetails: isShowingSeriesDetails,
+				bowlerName: isShowingBowlerName ? series?.bowlerName : nil,
+				leagueName: isShowingLeagueName ? series?.leagueName : nil,
+				date: isShowingSeriesDate ? series?.date : nil,
+				total: isShowingSeriesDetails ? series?.total : nil,
+				style: style,
 				displayScale: displayScale,
 				colorScheme: preferredAppearance.colorScheme
 			)
@@ -233,8 +241,9 @@ public struct GamesSharingView: View {
 
 	public var body: some View {
 		List {
+			detailsSection
 			gamesSection
-			colorSchemeSection
+			appearanceSection
 		}
 		.task { await send(.task).finish() }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
@@ -243,6 +252,43 @@ public struct GamesSharingView: View {
 			send(.didUpdateDisplayScale(displayScale))
 		}
 		.onChange(of: displayScale) { send(.didUpdateDisplayScale(displayScale)) }
+	}
+
+	private var detailsSection: some View {
+		Section {
+			Grid(horizontalSpacing: .smallSpacing, verticalSpacing: .smallSpacing) {
+				GridRow {
+					ChipButton(
+						icon: .calendar,
+						title: Strings.Sharing.Game.Details.date,
+						isOn: $store.isShowingSeriesDate.animation(.easeInOut(duration: 0.2))
+					)
+
+					ChipButton(
+						icon: .listDash,
+						title: Strings.Sharing.Game.Details.scoreSummary,
+						isOn: $store.isShowingSeriesDetails.animation(.easeInOut(duration: 0.2))
+					)
+				}
+
+				GridRow {
+					ChipButton(
+						icon: .personFill,
+						title: Strings.Sharing.Game.Details.bowlerName,
+						isOn: $store.isShowingBowlerName.animation(.easeInOut(duration: 0.2))
+					)
+
+					ChipButton(
+						icon: .repeat,
+						title: Strings.Sharing.Game.Details.leagueName,
+						isOn: $store.isShowingLeagueName.animation(.easeInOut(duration: 0.2))
+					)
+				}
+			}
+		}
+		.listRowSeparator(.hidden)
+		.listRowInsets(EdgeInsets())
+		.listRowBackground(Color.clear)
 	}
 
 	private var gamesSection: some View {
@@ -260,9 +306,28 @@ public struct GamesSharingView: View {
 		}
 	}
 
-	private var colorSchemeSection: some View {
-		Section {
+	private var appearanceSection: some View {
+		Section(Strings.Sharing.Game.Details.Appearance.title) {
+			Picker(
+				Strings.Sharing.Game.Details.ColorPalette.title,
+				selection: $store.style
+			) {
+				ForEach(ShareableGamesImage.Configuration.Style.allCases) { style in
+					Text(style.title)
+						.tag(style)
+				}
+			}
+
 			AppearancePicker(selection: $store.preferredAppearance)
+		}
+	}
+}
+
+extension ShareableGamesImage.Configuration.Style {
+	var title: String {
+		switch self {
+		case .grayscale: Strings.Sharing.Game.Details.ColorPalette.grayscale
+		case .plain: Strings.Sharing.Game.Details.ColorPalette.plain
 		}
 	}
 }

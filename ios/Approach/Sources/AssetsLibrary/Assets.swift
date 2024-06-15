@@ -128,6 +128,32 @@ public enum Asset {
       public static let light = ColorAsset(name: "Primary/Light")
     }
     public enum ScoreSheet {
+      public enum Grayscale {
+        public enum Background {
+          public static let `default` = ColorAsset(name: "ScoreSheet/Grayscale/Background/Default")
+          public static let highlight = ColorAsset(name: "ScoreSheet/Grayscale/Background/Highlight")
+        }
+        public enum Border {
+          public static let `default` = ColorAsset(name: "ScoreSheet/Grayscale/Border/Default")
+        }
+        public enum Rail {
+          public static let `default` = ColorAsset(name: "ScoreSheet/Grayscale/Rail/Default")
+          public static let highlight = ColorAsset(name: "ScoreSheet/Grayscale/Rail/Highlight")
+        }
+        public enum Text {
+          public enum OnBackground {
+            public static let `default` = ColorAsset(name: "ScoreSheet/Grayscale/Text/OnBackground/Default")
+            public static let foul = ColorAsset(name: "ScoreSheet/Grayscale/Text/OnBackground/Foul")
+            public static let highlight = ColorAsset(name: "ScoreSheet/Grayscale/Text/OnBackground/Highlight")
+            public static let highlightFoul = ColorAsset(name: "ScoreSheet/Grayscale/Text/OnBackground/HighlightFoul")
+            public static let secondary = ColorAsset(name: "ScoreSheet/Grayscale/Text/OnBackground/Secondary")
+          }
+          public enum OnRail {
+            public static let `default` = ColorAsset(name: "ScoreSheet/Grayscale/Text/OnRail/Default")
+            public static let highlight = ColorAsset(name: "ScoreSheet/Grayscale/Text/OnRail/Highlight")
+          }
+        }
+      }
       public enum Plain {
         public enum Background {
           public static let `default` = ColorAsset(name: "ScoreSheet/Plain/Background/Default")
@@ -147,9 +173,6 @@ public enum Asset {
             public static let highlight = ColorAsset(name: "ScoreSheet/Plain/Text/OnBackground/Highlight")
             public static let highlightFoul = ColorAsset(name: "ScoreSheet/Plain/Text/OnBackground/HighlightFoul")
             public static let secondary = ColorAsset(name: "ScoreSheet/Plain/Text/OnBackground/Secondary")
-          }
-          public enum OnCard {
-            public static let `default` = ColorAsset(name: "ScoreSheet/Plain/Text/OnCard/Default")
           }
           public enum OnRail {
             public static let `default` = ColorAsset(name: "ScoreSheet/Plain/Text/OnRail/Default")

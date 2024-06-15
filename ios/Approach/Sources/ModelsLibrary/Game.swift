@@ -147,6 +147,11 @@ public struct ScoredGame: Sendable, Identifiable, Equatable {
 	public var score: Int? { frames.gameScore() }
 }
 
+extension Array where Element == ScoredGame {
+	public var lowestScore: Int { self.min { ($0.score ?? 0) < ($1.score ?? 0) }?.score ?? 0 }
+	public var highestScore: Int { self.max { ($0.score ?? 0) < ($1.score ?? 0) }?.score ?? 0 }
+}
+
 extension Game {
 	public struct Shareable: Identifiable, Equatable, Decodable {
 		public let id: Game.ID
