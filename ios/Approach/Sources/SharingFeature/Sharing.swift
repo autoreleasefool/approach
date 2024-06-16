@@ -159,6 +159,7 @@ public struct Sharing: Reducer {
 @ViewAction(for: Sharing.self)
 public struct SharingView: View {
 	@Namespace private var previewNamespace
+
 	public var store: StoreOf<Sharing>
 
 	public init(store: StoreOf<Sharing>) {
@@ -196,15 +197,18 @@ public struct SharingView: View {
 				}
 			}
 			.blur(radius: store.isPreviewingImage ? .largeRadius : 0)
-			.onTapGesture { send(.didTapBackdrop, animation: .easeInOut) }
 			.disabled(store.isPreviewingImage)
 			.zIndex(1)
 
 			if let preview = store.preview?.preview, store.isPreviewingImage {
+				Color.clear
+					.onTapGesture { send(.didTapBackdrop, animation: .easeInOut) }
+					.zIndex(2)
+
 				ModalImagePreview(image: preview, namespace: previewNamespace) {
 					send(.didTapBackdrop, animation: .easeInOut)
 				}
-				.zIndex(2)
+				.zIndex(3)
 			}
 		}
 		.navigationTitle(Strings.Sharing.title)
