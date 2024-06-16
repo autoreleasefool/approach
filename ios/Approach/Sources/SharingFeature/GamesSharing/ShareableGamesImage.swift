@@ -32,6 +32,7 @@ public struct ShareableGamesImage: View {
 					.bold()
 					.padding(.horizontal)
 					.padding(.top)
+					.padding(.bottom, configuration.subtitles == nil ? .standardSpacing : 0)
 					.foregroundColor(baseScoreSheetConfiguration.foreground)
 			}
 
