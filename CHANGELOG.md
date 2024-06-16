@@ -1,10 +1,13 @@
 # Most recent version
 
-## iOS 1.4.2b21
+## iOS 1.5.0b22
 
-```
-- Fix: Ensure TelemetryDeck is initiated immediately, instead of in a later task to avoid crash when newSessionSignal is sent
-```
+- Feat: Sharing series, games, and statistics
+- Feat: New Dark Mode icon
+- Feat: Faster statistics through caching preferences
+- Feat: New average first roll statistic
+- Feat: Manual series
+- Feat: Pre-bowl convert to series
 
 ## Android 4.0.0b321
 
@@ -19,6 +22,12 @@ Complete rewrite of the 5 Pin Bowling Companion as Approach, for Android.
 ---
 
 # Legacy iOS Versions
+
+## iOS 1.4.2b21
+
+```
+- Fix: Ensure TelemetryDeck is initiated immediately, instead of in a later task to avoid crash when newSessionSignal is sent
+```
 
 ## iOS 1.4.1b20
 
