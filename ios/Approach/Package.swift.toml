@@ -315,7 +315,7 @@ processed = [ "Resources" ]
 
 [libraries.ComposableExtensions]
 skip_tests = true
-dependencies = [ "ComposableArchitecture" ]
+dependencies = [ "ComposableArchitecture", "IdentifiedCollections" ]
 
 [libraries.Constants]
 skip_tests = true
@@ -385,7 +385,7 @@ libraries = [ "ScoreKeeperModels" ]
 [libraries.ScoreKeeperModels]
 
 [libraries.ScoreSheet]
-libraries = [ "DateTime", "Models", "Views" ]
+libraries = [ "Models", "Views" ]
 dependencies = [ "SwiftUIExtensionsPackageLibrary" ]
 
 [libraries.Sorting]
@@ -438,7 +438,7 @@ libraries = [ "Assets", "Strings" ]
 # Dependency Versions
 [sharedRefs.SwiftUtilities]
 url = "https://github.com/autoreleasefool/swift-utilities.git"
-branch = "main"
+from = "1.0.0"
 
 [sharedRefs.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"

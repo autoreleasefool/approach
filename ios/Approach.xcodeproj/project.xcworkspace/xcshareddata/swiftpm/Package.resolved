@@ -203,8 +203,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/autoreleasefool/swift-utilities.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "8feb5ce547ac5ed60ed1d59728498b34b8ef1b3a"
+        "revision" : "8feb5ce547ac5ed60ed1d59728498b34b8ef1b3a",
+        "version" : "1.0.0"
       }
     },
     {
