@@ -20,7 +20,8 @@ public struct Sharing: Reducer {
 		public var tabs: [SharingTab]
 		public var selectedTab: SharingTab
 
-		public var shareImage: Image?
+		public var isPreviewingImage: Bool = false
+		public var preview: Preview?
 
 		public init(source: Source) {
 			self.source = source
@@ -48,6 +49,8 @@ public struct Sharing: Reducer {
 			case didTapSaveButton
 			case didTapShareButton
 			case didTapDoneButton
+			case didTapPreviewImage
+			case didTapBackdrop
 		}
 		@CasePathable public enum Delegate { case doNothing }
 		@CasePathable public enum Internal {
@@ -73,6 +76,11 @@ public struct Sharing: Reducer {
 		case statistic
 	}
 
+	public struct Preview: Equatable {
+		public let preview: UIImage
+		public let image: Image
+	}
+
 	public init() {}
 
 	@Dependency(\.dismiss) var dismiss
@@ -93,20 +101,28 @@ public struct Sharing: Reducer {
 
 				case .didTapDoneButton:
 					return .run { _ in await dismiss() }
+
+				case .didTapPreviewImage:
+					state.isPreviewingImage = true
+					return .none
+
+				case .didTapBackdrop:
+					state.isPreviewingImage = false
+					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
 				case let .seriesSharing(.delegate(.imageRendered(image))):
-					state.shareImage = Image(uiImage: image)
+					state.preview = Preview(preview: image, image: Image(uiImage: image))
 					return .none
 
 				case let .statisticsSharing(.delegate(.imageRendered(image))):
-					state.shareImage = Image(uiImage: image)
+					state.preview = Preview(preview: image, image: Image(uiImage: image))
 					return .none
 
 				case let .gamesSharing(.delegate(.imageRendered(image))):
-					state.shareImage = Image(uiImage: image)
+					state.preview = Preview(preview: image, image: Image(uiImage: image))
 					return .none
 
 				case .statisticsSharing(.binding), .statisticsSharing(.internal), .statisticsSharing(.view),
@@ -142,6 +158,7 @@ public struct Sharing: Reducer {
 
 @ViewAction(for: Sharing.self)
 public struct SharingView: View {
+	@Namespace private var previewNamespace
 	public var store: StoreOf<Sharing>
 
 	public init(store: StoreOf<Sharing>) {
@@ -149,25 +166,45 @@ public struct SharingView: View {
 	}
 
 	public var body: some View {
-		VStack(spacing: 0) {
-			if store.tabs.count > 1 {
-				tabs
-			} else {
-				switch store.selectedTab {
-				case .series:
-					seriesSharing
-				case .statistic:
-					statisticsSharing
-				case .games:
-					gamesSharing
+		ZStack {
+			VStack(spacing: 0) {
+				if store.tabs.count > 1 {
+					tabs
+				} else {
+					switch store.selectedTab {
+					case .series:
+						seriesSharing
+					case .statistic:
+						statisticsSharing
+					case .games:
+						gamesSharing
+					}
+				}
+
+				VStack(spacing: 0) {
+					Divider()
+
+					if !store.isPreviewingImage {
+						previewImage
+							.matchedGeometryEffect(id: "Preview", in: previewNamespace)
+							.padding(.top)
+							.padding(.horizontal)
+					}
+
+					shareButton
+						.padding()
 				}
 			}
+			.blur(radius: store.isPreviewingImage ? .largeRadius : 0)
+			.onTapGesture { send(.didTapBackdrop, animation: .easeInOut) }
+			.disabled(store.isPreviewingImage)
+			.zIndex(1)
 
-			VStack(spacing: 0) {
-				Divider()
-
-				previewImage
-				shareButton
+			if let preview = store.preview?.preview, store.isPreviewingImage {
+				ModalImagePreview(image: preview, namespace: previewNamespace) {
+					send(.didTapBackdrop, animation: .easeInOut)
+				}
+				.zIndex(2)
 			}
 		}
 		.navigationTitle(Strings.Sharing.title)
@@ -208,32 +245,29 @@ public struct SharingView: View {
 
 	@ViewBuilder
 	private var previewImage: some View {
-		if let preview = store.shareImage {
+		if let preview = store.preview?.image {
 			preview
 				.resizable()
 				.frame(maxWidth: .infinity)
 				.aspectRatio(contentMode: .fit)
 				.clipShape(RoundedRectangle(cornerRadius: .standardRadius))
-				.padding(.top)
-				.padding(.horizontal)
+				.onTapGesture { send(.didTapPreviewImage, animation: .easeInOut) }
 		}
 	}
 
 	@ViewBuilder
 	private var shareButton: some View {
-		if let image = store.shareImage {
+		if let image = store.preview?.image {
 			ShareLink(item: image, preview: SharePreview(Strings.App.name, image: image)) {
 				ShareImageButton()
 			}
 			.modifier(ShareImageButtonModifier())
-			.padding()
 		} else {
 			Button { } label: {
 				ShareImageButton()
 			}
 			.modifier(ShareImageButtonModifier())
 			.disabled(true)
-			.padding()
 		}
 	}
 }
