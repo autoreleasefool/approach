@@ -11,7 +11,7 @@
 	<string name="accessory_list_alley_empty_title">No alleys found</string>
 	<string name="accessory_list_alley_empty_message">Compare how you bowl across alleys or even lanes.</string>
 
-	<string name="accessory_list_gear_empty_title">No alleys found</string>
+	<string name="accessory_list_gear_empty_title">No gear found</string>
 	<string name="accessory_list_gear_empty_message">Track usage stats for your shoes, balls, and more.</string>
 
 	<string name="accessory_onboarding_title">New to Approach: Accessories</string>
