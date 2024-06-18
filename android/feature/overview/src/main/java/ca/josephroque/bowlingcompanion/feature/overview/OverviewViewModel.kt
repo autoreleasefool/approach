@@ -113,16 +113,17 @@ class OverviewViewModel @Inject constructor(
 						val chart = statisticsWidgetsRepository.getStatisticsWidgetChart(widget)
 
 						widgetCharts.update {
-							val widgetChart = it[widget.id] ?: StatisticsWidgetLayoutUiState.ChartContent(
-								chart,
-								ChartEntryModelProducer(),
-							)
+							val widgetChart =
+								it[widget.id]?.copy(chart = chart) ?: StatisticsWidgetLayoutUiState.ChartContent(
+									chart,
+									ChartEntryModelProducer(),
+								)
 
 							if (widgetChart.chart.hasModelEntries()) {
-								widgetChart.modelProducer.setEntriesSuspending(chart.getModelEntries()).await()
+								widgetChart.modelProducer.setEntriesSuspending(widgetChart.chart.getModelEntries()).await()
 							}
 
-							it + (widget.id to widgetChart.copy(chart = chart))
+							it + (widget.id to widgetChart)
 						}
 					}
 				}
