@@ -1,12 +1,14 @@
 package ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,37 +33,43 @@ fun StatisticsWidgetLayout(
 	onAction: (StatisticsWidgetLayoutUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	Column(
-		modifier = modifier.fillMaxWidth(),
-	) {
-		if (state.widgets.isEmpty()) {
-			StatisticsWidgetPlaceholderCard(onClick = {
-				onAction(StatisticsWidgetLayoutUiAction.ChangeLayoutClicked)
-			})
-		} else {
-			val widgetsRows = state.widgets.chunked(2)
-			widgetsRows.forEach { row ->
-				StatisticsWidgetRow(
-					widgets = row,
-					widgetCharts = state.widgetCharts,
-					onAction = onAction,
-					modifier = Modifier.padding(bottom = if (row == widgetsRows.last()) 0.dp else 16.dp),
+	BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
+		val rowWidth = maxWidth
+		val numberOfWidgetsPerRow = (rowWidth / 240.dp).toInt().coerceAtLeast(2)
+
+		Column {
+			if (state.widgets.isEmpty()) {
+				StatisticsWidgetPlaceholderCard(
+					onClick = {
+						onAction(StatisticsWidgetLayoutUiAction.ChangeLayoutClicked)
+					},
 				)
-			}
-
-			Row {
-				Spacer(modifier = Modifier.weight(1f))
-
-				Surface(
-					color = Color.Transparent,
-					shape = MaterialTheme.shapes.small,
-					onClick = { onAction(StatisticsWidgetLayoutUiAction.ChangeLayoutClicked) },
-				) {
-					Text(
-						stringResource(R.string.statistics_widget_layout_change),
-						style = MaterialTheme.typography.labelSmall,
-						modifier = Modifier.padding(8.dp),
+			} else {
+				val widgetsRows = state.widgets.chunked(numberOfWidgetsPerRow)
+				widgetsRows.forEach { row ->
+					StatisticsWidgetRow(
+						widgets = row,
+						widgetCharts = state.widgetCharts,
+						onAction = onAction,
+						modifier = Modifier.padding(bottom = if (row == widgetsRows.last()) 0.dp else 16.dp),
+						maxWidgetsPerRow = numberOfWidgetsPerRow,
 					)
+				}
+
+				Row {
+					Spacer(modifier = Modifier.weight(1f))
+
+					Surface(
+						color = Color.Transparent,
+						shape = MaterialTheme.shapes.small,
+						onClick = { onAction(StatisticsWidgetLayoutUiAction.ChangeLayoutClicked) },
+					) {
+						Text(
+							stringResource(R.string.statistics_widget_layout_change),
+							style = MaterialTheme.typography.labelSmall,
+							modifier = Modifier.padding(8.dp),
+						)
+					}
 				}
 			}
 		}
@@ -70,6 +78,7 @@ fun StatisticsWidgetLayout(
 
 @Composable
 private fun StatisticsWidgetRow(
+	maxWidgetsPerRow: Int,
 	widgets: List<StatisticsWidget>,
 	widgetCharts: Map<UUID, StatisticsWidgetLayoutUiState.ChartContent>,
 	onAction: (StatisticsWidgetLayoutUiAction) -> Unit,
@@ -87,9 +96,16 @@ private fun StatisticsWidgetRow(
 				chart = chart?.chart,
 				chartEntryModelProducer = chart?.modelProducer,
 				onClick = { onAction(StatisticsWidgetLayoutUiAction.WidgetClicked(widget)) },
-				modifier = Modifier
-					.weight(1f)
-					.aspectRatio(if (widgets.size == 1) 2f else 1f),
+				modifier = if (maxWidgetsPerRow == 2) {
+					Modifier
+						.weight(1f)
+						.aspectRatio(if (widgets.size == 1) 2f else 1f)
+				} else {
+					Modifier
+						.requiredWidthIn(max = 240.dp)
+						.weight(1f, fill = false)
+						.aspectRatio(1f)
+				},
 			)
 		}
 	}

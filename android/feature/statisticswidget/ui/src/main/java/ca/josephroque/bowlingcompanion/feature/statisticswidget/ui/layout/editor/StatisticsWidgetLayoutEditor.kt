@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.edito
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -53,80 +54,85 @@ fun StatisticsWidgetLayoutEditor(
 		},
 	)
 
-	LazyVerticalGrid(
-		columns = GridCells.Fixed(2),
-		state = reorderableState.gridState,
-		modifier = modifier
-			.reorderable(reorderableState)
-			.detectReorderAfterLongPress(reorderableState)
-			.padding(horizontal = 8.dp),
-	) {
-		items(
-			state.widgets,
-			key = { it.id },
-		) { widget ->
-			ReorderableItem(
-				reorderableState = reorderableState,
-				key = widget.id,
-			) { isDragging ->
-				val elevation = animateDpAsState(if (isDragging) 16.dp else 0.dp, label = "elevation")
+	BoxWithConstraints {
+		val rowWidth = maxWidth
+		val numberOfWidgetsPerRow = (rowWidth / 240.dp).toInt().coerceAtLeast(2)
 
-				Wiggle { modifier ->
-					Box(
-						contentAlignment = Alignment.TopEnd,
-						modifier = modifier,
-					) {
-						val chart = state.widgetCharts[widget.id]
+		LazyVerticalGrid(
+			columns = GridCells.Fixed(numberOfWidgetsPerRow),
+			state = reorderableState.gridState,
+			modifier = modifier
+				.reorderable(reorderableState)
+				.detectReorderAfterLongPress(reorderableState)
+				.padding(horizontal = 8.dp),
+		) {
+			items(
+				state.widgets,
+				key = { it.id },
+			) { widget ->
+				ReorderableItem(
+					reorderableState = reorderableState,
+					key = widget.id,
+				) { isDragging ->
+					val elevation = animateDpAsState(if (isDragging) 16.dp else 0.dp, label = "elevation")
 
-						StatisticsWidgetCard(
-							widget = widget,
-							chart = chart?.chart,
-							chartEntryModelProducer = chart?.modelProducer,
-							onClick = { onAction(StatisticsWidgetLayoutEditorUiAction.WidgetClicked(widget)) },
-							modifier = Modifier
-								.aspectRatio(1f)
-								.padding(8.dp)
-								.shadow(elevation.value),
-						)
+					Wiggle { modifier ->
+						Box(
+							contentAlignment = Alignment.TopEnd,
+							modifier = modifier,
+						) {
+							val chart = state.widgetCharts[widget.id]
 
-						if (state.isDeleteModeEnabled) {
-							IconButton(
+							StatisticsWidgetCard(
+								widget = widget,
+								chart = chart?.chart,
+								chartEntryModelProducer = chart?.modelProducer,
 								onClick = { onAction(StatisticsWidgetLayoutEditorUiAction.WidgetClicked(widget)) },
-								colors = IconButtonDefaults.filledIconButtonColors(
-									contentColor = colorResource(
-										ca.josephroque.bowlingcompanion.core.designsystem.R.color.white,
+								modifier = Modifier
+									.aspectRatio(1f)
+									.padding(8.dp)
+									.shadow(elevation.value),
+							)
+
+							if (state.isDeleteModeEnabled) {
+								IconButton(
+									onClick = { onAction(StatisticsWidgetLayoutEditorUiAction.WidgetClicked(widget)) },
+									colors = IconButtonDefaults.filledIconButtonColors(
+										contentColor = colorResource(
+											ca.josephroque.bowlingcompanion.core.designsystem.R.color.white,
+										),
+										containerColor = colorResource(
+											ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+										),
 									),
-									containerColor = colorResource(
-										ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
-									),
-								),
-							) {
-								Icon(
-									Icons.Default.Delete,
-									contentDescription = stringResource(R.string.cd_delete_widget),
-								)
+								) {
+									Icon(
+										Icons.Default.Delete,
+										contentDescription = stringResource(R.string.cd_delete_widget),
+									)
+								}
 							}
 						}
 					}
 				}
 			}
-		}
 
-		item(span = { GridItemSpan(2) }) {
-			Text(
-				text = stringResource(
-					if (state.isDeleteModeEnabled) {
-						R.string.statistics_widget_layout_editor_tap_to_delete_widget
-					} else {
-						R.string.statistics_widget_layout_editor_tap_and_hold_to_reorder
-					},
-				),
-				style = MaterialTheme.typography.bodySmall,
-				textAlign = TextAlign.Center,
-				modifier = Modifier
-					.fillMaxWidth()
-					.padding(top = 8.dp),
-			)
+			item(span = { GridItemSpan(2) }) {
+				Text(
+					text = stringResource(
+						if (state.isDeleteModeEnabled) {
+							R.string.statistics_widget_layout_editor_tap_to_delete_widget
+						} else {
+							R.string.statistics_widget_layout_editor_tap_and_hold_to_reorder
+						},
+					),
+					style = MaterialTheme.typography.bodySmall,
+					textAlign = TextAlign.Center,
+					modifier = Modifier
+						.fillMaxWidth()
+						.padding(top = 8.dp),
+				)
+			}
 		}
 	}
 }
