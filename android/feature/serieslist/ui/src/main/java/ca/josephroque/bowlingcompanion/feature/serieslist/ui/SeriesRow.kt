@@ -4,10 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -25,6 +27,7 @@ import ca.josephroque.bowlingcompanion.core.charts.rememberChartStyle
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
+import com.patrykandpatrick.vico.compose.chart.scroll.rememberChartScrollSpec
 import com.patrykandpatrick.vico.compose.style.ProvideChartStyle
 import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
 import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
@@ -96,12 +99,15 @@ private fun DefaultSeriesRow(
 	modifier: Modifier = Modifier,
 ) {
 	Box(
-		contentAlignment = Alignment.BottomStart,
+		contentAlignment = Alignment.BottomCenter,
 		modifier = modifier
+			.fillMaxWidth()
+			.widthIn(max = 600.dp)
 			.clickable(onClick = onClick)
 			.padding(bottom = 8.dp),
 	) {
 		ScoreChart(
+			numberOfGames = scores.numberOfGames,
 			scores = scores.model,
 			seriesLow = scores.seriesLow,
 			seriesHigh = scores.seriesHigh,
@@ -109,7 +115,9 @@ private fun DefaultSeriesRow(
 
 		Column(
 			verticalArrangement = Arrangement.spacedBy(16.dp),
-			modifier = Modifier.padding(16.dp),
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(16.dp),
 		) {
 			ca.josephroque.bowlingcompanion.core.model.ui.SeriesRow(
 				date = date,
@@ -170,36 +178,47 @@ private fun ScoreSummary(
 }
 
 @Composable
-private fun ScoreChart(seriesLow: Int, seriesHigh: Int, scores: ChartEntryModelProducer) {
-	ProvideChartStyle(
-		chartStyle = rememberChartStyle(
-			lineChartColors = listOf(
-				Pair(
-					colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
-					colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
+private fun ScoreChart(
+	numberOfGames: Int,
+	seriesLow: Int,
+	seriesHigh: Int,
+	scores: ChartEntryModelProducer,
+) {
+	BoxWithConstraints {
+		val chartWidth = maxWidth
+
+		ProvideChartStyle(
+			chartStyle = rememberChartStyle(
+				lineChartColors = listOf(
+					Pair(
+						colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
+						colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
+					),
 				),
 			),
-		),
-	) {
-		Chart(
-			chart = lineChart(
-				axisValuesOverrider = AxisValuesOverrider.fixed(
-					// FIXME: Decide how the yRange is calculated for iOS and Android
-					// iOS currently sets the yRange to 0..450
-					// Android sets the range to minScore..maxScore
-					// Results in iOS having less dramatic charts, but are relative to one another
-					// Android has greater variation in charts, but cannot be compared to one another
-					minY = seriesLow.toFloat() - 5,
-					maxY = seriesHigh.toFloat() + 5,
+		) {
+			Chart(
+				chartScrollSpec = rememberChartScrollSpec(isScrollEnabled = false),
+				chart = lineChart(
+					spacing = chartWidth / numberOfGames.toFloat(),
+					axisValuesOverrider = AxisValuesOverrider.fixed(
+						// FIXME: Decide how the yRange is calculated for iOS and Android
+						// iOS currently sets the yRange to 0..450
+						// Android sets the range to minScore..maxScore
+						// Results in iOS having less dramatic charts, but are relative to one another
+						// Android has greater variation in charts, but cannot be compared to one another
+						minY = seriesLow.toFloat() - 5,
+						maxY = seriesHigh.toFloat() + 5,
+					),
 				),
-			),
-			runInitialAnimation = false,
-			chartModelProducer = scores,
-			horizontalLayout = HorizontalLayout.FullWidth(),
-			modifier = Modifier
-				.fillMaxWidth()
-				.height(48.dp),
-		)
+				runInitialAnimation = false,
+				chartModelProducer = scores,
+				horizontalLayout = HorizontalLayout.FullWidth(unscalableEndPaddingDp = 1f),
+				modifier = Modifier
+					.fillMaxWidth()
+					.height(48.dp),
+			)
+		}
 	}
 }
 
