@@ -3,11 +3,12 @@ package ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,15 +39,21 @@ fun FrameEditor(
 	var isKnockingDownPins by remember { mutableStateOf(false) }
 	var toggledPins by remember { mutableStateOf(setOf<Pin>()) }
 
-	Box(
+	BoxWithConstraints(
 		modifier = modifier
 			.fillMaxWidth()
 			.onSizeChanged { maxX = it.width.toFloat() },
 	) {
+		val maxWidth = this.maxWidth
+		val maxHeight = this.maxHeight
+		val ratio = maxWidth / maxHeight
+		val isWide = ratio > 2.12
+
 		Row(
 			verticalAlignment = Alignment.CenterVertically,
 			modifier = Modifier
 				.fillMaxWidth()
+				.widthIn(max = if (isWide) maxHeight * 2.12f else maxWidth)
 				.pointerInput(state) {
 					awaitEachGesture {
 						awaitFirstDown()

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.model.ScoringFrame
@@ -56,14 +58,18 @@ fun GamesEditor(
 
 			Column(
 				modifier = Modifier.fillMaxSize(),
+				horizontalAlignment = Alignment.CenterHorizontally,
 			) {
+				Spacer(modifier = Modifier.size(16.dp))
 				Spacer(modifier = Modifier.weight(1f))
 
 				if (state.manualScore == null) {
 					AnimatedFrameEditor(
 						state = state.frameEditor,
 						onAction = { onAction(GamesEditorUiAction.FrameEditor(it)) },
-						modifier = Modifier.padding(horizontal = 16.dp),
+						modifier = Modifier
+							.aspectRatio(ratio = 2.1F)
+							.padding(horizontal = 16.dp),
 					)
 				} else {
 					ManualScoreCard(
@@ -74,6 +80,7 @@ fun GamesEditor(
 				}
 
 				Spacer(modifier = Modifier.weight(1f))
+				Spacer(modifier = Modifier.size(16.dp))
 			}
 		}
 
@@ -195,12 +202,11 @@ private fun ManualScoreCard(
 	}
 }
 
-@Preview
+@Preview(device = Devices.PIXEL_TABLET)
 @Composable
 private fun GamesEditorPreview() {
 	GamesEditor(
 		state = GamesEditorUiState(
-			manualScore = 120,
 			frameEditor = FrameEditorUiState(
 				downedPins = setOf(),
 				lockedPins = setOf(),
