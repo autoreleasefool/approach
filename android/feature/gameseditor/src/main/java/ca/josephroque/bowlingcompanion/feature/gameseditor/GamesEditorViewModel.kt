@@ -90,7 +90,8 @@ class GamesEditorViewModel @Inject constructor(
 	private val analyticsClient: AnalyticsClient,
 	private val userDataRepository: UserDataRepository,
 	@ApplicationScope private val scope: CoroutineScope,
-) : ApproachViewModel<GamesEditorScreenEvent>(), DefaultLifecycleObserver {
+) : ApproachViewModel<GamesEditorScreenEvent>(),
+	DefaultLifecycleObserver {
 	private val initialGameId = Route.EditGame.getGame(savedStateHandle)!!
 
 	private val series = MutableStateFlow(Route.EditGame.getSeries(savedStateHandle))
@@ -105,6 +106,7 @@ class GamesEditorViewModel @Inject constructor(
 	private val isGameLockSnackBarVisible = MutableStateFlow(false)
 
 	private val lastLoadedGameAt = MutableStateFlow<GameLoadDate?>(null)
+	private var lastUpdatedDurationAtMillis: Long = 0
 
 	private var ballsJob: Job? = null
 	private var framesJob: Job? = null
@@ -429,6 +431,7 @@ class GamesEditorViewModel @Inject constructor(
 					)
 				}
 
+				val originalGameDetails = gameDetailsState.value
 				val gameDetails = gameDetailsState.updateGameDetailsAndGet(gameToLoad) {
 					when (it.scoringMethod.scoringMethod) {
 						GameScoringMethod.MANUAL -> it
@@ -438,23 +441,31 @@ class GamesEditorViewModel @Inject constructor(
 					}
 				}
 
-				when (gameDetails.scoringMethod.scoringMethod) {
-					GameScoringMethod.MANUAL -> Unit
-					GameScoringMethod.BY_FRAME -> viewModelScope.launch {
-						gamesRepository.setGameScore(
-							gameDetails.gameId,
-							gameDetails.scoringMethod.score,
-						)
-
-						val lastLoadedGameAt = this@GamesEditorViewModel.lastLoadedGameAt.value
-						if (lastLoadedGameAt?.gameId == gameDetails.gameId) {
-							val durationMillis = System.currentTimeMillis() - lastLoadedGameAt.loadedAt
-							gamesRepository.setGameDuration(
+				// Only save details back to the game if they've changed, to avoid an infinite update loop
+				if (originalGameDetails.scoringMethod != gameDetails.scoringMethod) {
+					when (gameDetails.scoringMethod.scoringMethod) {
+						GameScoringMethod.MANUAL -> Unit
+						GameScoringMethod.BY_FRAME -> viewModelScope.launch {
+							gamesRepository.setGameScore(
 								gameDetails.gameId,
-								lastLoadedGameAt.durationMillisWhenLoaded + durationMillis,
+								gameDetails.scoringMethod.score,
 							)
 						}
 					}
+				}
+
+				// Only update the game duration if there is a greater than 2 second diff, to avoid an infinite loop
+				val lastLoadedGameAt = this@GamesEditorViewModel.lastLoadedGameAt.value
+				val nextValidUpdateAt = lastUpdatedDurationAtMillis + 2_000
+				if (lastLoadedGameAt?.gameId == gameDetails.gameId &&
+					nextValidUpdateAt < System.currentTimeMillis()
+				) {
+					lastUpdatedDurationAtMillis = System.currentTimeMillis()
+					val durationMillis = System.currentTimeMillis() - lastLoadedGameAt.loadedAt
+					gamesRepository.setGameDuration(
+						gameDetails.gameId,
+						lastLoadedGameAt.durationMillisWhenLoaded + durationMillis,
+					)
 				}
 			}
 		}
