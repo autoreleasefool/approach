@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SheetValue
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
@@ -66,11 +65,6 @@ sealed interface GamesEditorScreenUiAction {
 	data object DidDisappear : GamesEditorScreenUiAction
 	data object GameLockSnackBarDismissed : GamesEditorScreenUiAction
 
-	data class SheetValueDidChange
-	@OptIn(ExperimentalMaterial3Api::class)
-	constructor(
-		val sheetValue: SheetValue,
-	) : GamesEditorScreenUiAction
 	data class GearUpdated(val gearIds: Set<UUID>) : GamesEditorScreenUiAction
 	data class AlleyUpdated(val alleyId: UUID?) : GamesEditorScreenUiAction
 	data class LanesUpdated(val laneIds: Set<UUID>) : GamesEditorScreenUiAction
