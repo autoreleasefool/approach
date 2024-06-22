@@ -2,12 +2,14 @@
 
 ## iOS 1.5.0b22
 
+```
 - Feat: Sharing series, games, and statistics
 - Feat: New Dark Mode icon
 - Feat: Faster statistics through caching preferences
 - Feat: New average first roll statistic
 - Feat: Manual series
 - Feat: Pre-bowl convert to series
+```
 
 ## Android 4.0.0b322
 
