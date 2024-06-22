@@ -51,7 +51,7 @@ fun ScoreSheet(
 		modifier = modifier.fillMaxWidth(),
 	) {
 		val scrollState = rememberScrollState()
-		val cellWidth = if (maxWidth >= 600.dp) maxWidth / 5f  else maxWidth / 3f
+		val cellWidth = if (maxWidth >= 600.dp) maxWidth / 5f else maxWidth / 3f
 		val targetPositionDp = (state.selection.frameIndex - 1) * (maxWidth.value / 3f)
 		val targetPositionPx = with(LocalDensity.current) { targetPositionDp.dp.toPx() }
 		LaunchedEffect(state.selection) {
