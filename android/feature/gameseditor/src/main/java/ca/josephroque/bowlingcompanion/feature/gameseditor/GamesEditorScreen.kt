@@ -1,5 +1,8 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -7,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
@@ -33,6 +37,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.designsystem.modifiers.disableGestures
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorTopBar
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
@@ -128,6 +133,7 @@ internal fun GamesEditorRoute(
 	)
 }
 
+@SuppressLint("ReturnFromAwaitPointerEventScope")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun GamesEditorScreen(
@@ -138,7 +144,8 @@ internal fun GamesEditorScreen(
 	val bottomSheetState = rememberStandardBottomSheetState(skipHiddenState = false)
 	val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
 	val handleHeight = remember { mutableFloatStateOf(56f) }
-
+	val backgroundCoverOpacity = remember { Animatable(0F) }
+	
 	DisposableEffect(Unit) {
 		onAction(GamesEditorScreenUiAction.DidAppear)
 		onDispose { onAction(GamesEditorScreenUiAction.DidDisappear) }
@@ -149,14 +156,23 @@ internal fun GamesEditorScreen(
 		when (state) {
 			GamesEditorScreenUiState.Loading -> Unit
 			is GamesEditorScreenUiState.Loaded -> {
-				if (state.isGameDetailsSheetVisible == hasExpandedSheet) return@LaunchedEffect
-				if (state.isGameDetailsSheetVisible) {
+				if (state.bottomSheet.isGameDetailsSheetVisible == hasExpandedSheet) return@LaunchedEffect
+				if (state.bottomSheet.isGameDetailsSheetVisible) {
 					scaffoldState.bottomSheetState.partialExpand()
 				} else {
 					scaffoldState.bottomSheetState.hide()
 				}
-				hasExpandedSheet = state.isGameDetailsSheetVisible
+				hasExpandedSheet = state.bottomSheet.isGameDetailsSheetVisible
 			}
+		}
+	}
+
+	LaunchedEffect(bottomSheetState.currentValue) {
+		when (bottomSheetState.currentValue) {
+			SheetValue.Expanded ->
+				backgroundCoverOpacity.animateTo(0.6F)
+			SheetValue.PartiallyExpanded, SheetValue.Hidden ->
+				backgroundCoverOpacity.animateTo(0F)
 		}
 	}
 
@@ -207,7 +223,7 @@ internal fun GamesEditorScreen(
 			}
 		},
 		sheetPeekHeight = (
-			(state as? GamesEditorScreenUiState.Loaded)?.headerPeekHeight?.plus(
+			(state as? GamesEditorScreenUiState.Loaded)?.bottomSheet?.headerPeekHeight?.plus(
 				handleHeight.floatValue,
 			) ?: 0f
 			).dp,
@@ -225,12 +241,26 @@ internal fun GamesEditorScreen(
 			color = Color.Black,
 			modifier = Modifier.fillMaxSize(),
 		) {
-			when (state) {
-				GamesEditorScreenUiState.Loading -> Unit
-				is GamesEditorScreenUiState.Loaded -> GamesEditor(
-					state = state.gamesEditor,
-					onAction = { onAction(GamesEditorScreenUiAction.GamesEditor(it)) },
-					modifier = Modifier.padding(padding),
+			Box {
+				when (state) {
+					GamesEditorScreenUiState.Loading -> Unit
+					is GamesEditorScreenUiState.Loaded -> GamesEditor(
+						state = state.gamesEditor,
+						onAction = { onAction(GamesEditorScreenUiAction.GamesEditor(it)) },
+						modifier = Modifier.padding(padding),
+					)
+				}
+
+				Box(
+					modifier = Modifier
+						.fillMaxSize()
+						.background(Color.Black.copy(alpha = backgroundCoverOpacity.value))
+						.disableGestures(
+							disabled = when (bottomSheetState.currentValue) {
+								SheetValue.PartiallyExpanded, SheetValue.Hidden -> false
+								SheetValue.Expanded -> true
+							},
+						),
 				)
 			}
 		}
