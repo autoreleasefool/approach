@@ -42,11 +42,11 @@ fun ProvideWidgetChartStyle(context: @Composable () -> Unit) {
 	ProvideChartStyle(
 		chartStyle = rememberChartStyle(
 			columnChartColors = listOf(
-				colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
+				colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_100),
 			),
 			lineChartColors = listOf(
 				Pair(
-					colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.pink_200),
+					colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.pink_100),
 					null,
 				),
 			),
