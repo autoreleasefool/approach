@@ -34,7 +34,7 @@
 	<string name="settings_item_version_detail">%1$s (%2$s)</string>
 	<string name="settings_item_development_footer">You can view the source for Approach using the links above, to report issues or watch the development of new features</string>
 
-	<string name="settings_item_copyright">© Joseph Roque, 2023</string>
+	<string name="settings_item_copyright">© 2015–2024, Joseph Roque</string>
 
 	<string name="statistics_settings_title">Statistics</string>
 	<string name="statistics_settings_per_frame">Per Frame</string>

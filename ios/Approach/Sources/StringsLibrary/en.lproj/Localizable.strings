@@ -586,7 +586,7 @@
 "settings.appIcon.list.error.failedToChange" = "Could not change icon. Please try again.";
 "settings.appInfo.version" = "Version";
 "settings.appInfo.appVersion" = "%@ (%@)";
-"settings.appInfo.copyright" = "©2023, Joseph Roque";
+"settings.appInfo.copyright" = "© 2022-2024, Joseph Roque";
 "settings.featureFlags.title" = "Features";
 "settings.featureFlags.matchRelease" = "Match flags to Release";
 "settings.featureFlags.matchTest" = "Match flags to Test";
