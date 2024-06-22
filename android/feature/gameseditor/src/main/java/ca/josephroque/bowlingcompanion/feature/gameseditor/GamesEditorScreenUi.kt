@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor
 
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetValue
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
@@ -12,20 +14,11 @@ import java.util.UUID
 object GamesEditorArguments {
 	data class EditMatchPlay(val gameId: UUID)
 
-	data class EditGear(
-		val gearIds: Set<UUID>,
-		val onGearUpdated: NavResultCallback<Set<UUID>>,
-	)
+	data class EditGear(val gearIds: Set<UUID>, val onGearUpdated: NavResultCallback<Set<UUID>>)
 
-	data class EditRolledBall(
-		val ballId: UUID?,
-		val onBallUpdated: NavResultCallback<Set<UUID>>,
-	)
+	data class EditRolledBall(val ballId: UUID?, val onBallUpdated: NavResultCallback<Set<UUID>>)
 
-	data class EditAlley(
-		val alleyId: UUID?,
-		val onAlleyUpdated: NavResultCallback<Set<UUID>>,
-	)
+	data class EditAlley(val alleyId: UUID?, val onAlleyUpdated: NavResultCallback<Set<UUID>>)
 
 	data class EditLanes(
 		val alleyId: UUID,
@@ -53,20 +46,31 @@ object GamesEditorArguments {
 sealed interface GamesEditorScreenUiState {
 	data object Loading : GamesEditorScreenUiState
 
-	data class Loaded(
-		val headerPeekHeight: Float = 0f,
-		val isGameDetailsSheetVisible: Boolean = true,
+	data class Loaded constructor(
 		val isGameLockSnackBarVisible: Boolean = false,
 		val gameDetails: GameDetailsUiState,
 		val gamesEditor: GamesEditorUiState,
+		val bottomSheet: GamesEditorScreenBottomSheetUiState,
 	) : GamesEditorScreenUiState
 }
+
+data class GamesEditorScreenBottomSheetUiState
+@OptIn(ExperimentalMaterial3Api::class)
+constructor(
+	val headerPeekHeight: Float = 0f,
+	val isGameDetailsSheetVisible: Boolean = true,
+)
 
 sealed interface GamesEditorScreenUiAction {
 	data object DidAppear : GamesEditorScreenUiAction
 	data object DidDisappear : GamesEditorScreenUiAction
 	data object GameLockSnackBarDismissed : GamesEditorScreenUiAction
 
+	data class SheetValueDidChange
+	@OptIn(ExperimentalMaterial3Api::class)
+	constructor(
+		val sheetValue: SheetValue,
+	) : GamesEditorScreenUiAction
 	data class GearUpdated(val gearIds: Set<UUID>) : GamesEditorScreenUiAction
 	data class AlleyUpdated(val alleyId: UUID?) : GamesEditorScreenUiAction
 	data class LanesUpdated(val laneIds: Set<UUID>) : GamesEditorScreenUiAction
@@ -75,10 +79,8 @@ sealed interface GamesEditorScreenUiAction {
 	data class SeriesUpdated(val series: List<UUID>) : GamesEditorScreenUiAction
 	data class CurrentGameUpdated(val gameId: UUID) : GamesEditorScreenUiAction
 	data class SelectedBallUpdated(val ballId: UUID?) : GamesEditorScreenUiAction
-	data class ScoreUpdated(
-		val score: Int,
-		val scoringMethod: GameScoringMethod,
-	) : GamesEditorScreenUiAction
+	data class ScoreUpdated(val score: Int, val scoringMethod: GameScoringMethod) :
+		GamesEditorScreenUiAction
 }
 
 sealed interface GamesEditorScreenEvent {
@@ -89,10 +91,8 @@ sealed interface GamesEditorScreenEvent {
 	data class EditAlley(val alleyId: UUID?) : GamesEditorScreenEvent
 	data class EditLanes(val alleyId: UUID, val laneIds: Set<UUID>) : GamesEditorScreenEvent
 	data class EditRolledBall(val ballId: UUID?) : GamesEditorScreenEvent
-	data class ShowGamesSettings(
-		val series: List<UUID>,
-		val currentGameId: UUID,
-	) : GamesEditorScreenEvent
+	data class ShowGamesSettings(val series: List<UUID>, val currentGameId: UUID) :
+		GamesEditorScreenEvent
 	data class EditScore(val score: Int, val scoringMethod: GameScoringMethod) : GamesEditorScreenEvent
 	data class ShowStatistics(val filter: TrackableFilter) : GamesEditorScreenEvent
 	data class ShowBowlerScores(val series: List<UUID>, val gameIndex: Int) : GamesEditorScreenEvent

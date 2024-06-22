@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.SavedStateHandle
@@ -61,6 +62,7 @@ import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -74,6 +76,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @HiltViewModel
 class GamesEditorViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
@@ -122,25 +125,36 @@ class GamesEditorViewModel @Inject constructor(
 	private var gameDetailsJob: Job? = null
 	private val gameDetailsState = MutableStateFlow(GameDetailsUiState(gameId = initialGameId))
 
+	@OptIn(ExperimentalMaterial3Api::class)
+	val bottomSheetUiState: Flow<GamesEditorScreenBottomSheetUiState> = combine(
+		headerPeekHeight,
+		isGameDetailsSheetVisible,
+	) {
+			headerPeekHeight,
+			isGameDetailsSheetVisible,
+		->
+		GamesEditorScreenBottomSheetUiState(
+			headerPeekHeight = headerPeekHeight,
+			isGameDetailsSheetVisible = isGameDetailsSheetVisible,
+		)
+	}
+
 	val uiState: StateFlow<GamesEditorScreenUiState> = combine(
 		gamesEditorState,
 		gameDetailsState,
-		headerPeekHeight,
 		isGameLockSnackBarVisible,
-		isGameDetailsSheetVisible,
+		bottomSheetUiState,
 	) {
 			gamesEditor,
 			gameDetails,
-			headerPeekHeight,
 			isGameLockSnackBarVisible,
-			isGameDetailsSheetVisible,
+			bottomSheetUiState,
 		->
 		GamesEditorScreenUiState.Loaded(
 			gamesEditor = gamesEditor,
 			gameDetails = gameDetails,
-			headerPeekHeight = headerPeekHeight,
+			bottomSheet = bottomSheetUiState,
 			isGameLockSnackBarVisible = isGameLockSnackBarVisible,
-			isGameDetailsSheetVisible = isGameDetailsSheetVisible,
 		)
 	}.stateIn(
 		scope = viewModelScope,
@@ -157,6 +171,7 @@ class GamesEditorViewModel @Inject constructor(
 			GamesEditorScreenUiAction.DidAppear -> loadInitialGame()
 			GamesEditorScreenUiAction.DidDisappear -> dismissLatestGameInEditor()
 			GamesEditorScreenUiAction.GameLockSnackBarDismissed -> dismissGameLockSnackBar()
+			is GamesEditorScreenUiAction.SheetValueDidChange -> updateSheetValue(action.sheetValue)
 			is GamesEditorScreenUiAction.GamesEditor -> handleGamesEditorAction(action.action)
 			is GamesEditorScreenUiAction.GameDetails -> handleGameDetailsAction(action.action)
 			is GamesEditorScreenUiAction.GearUpdated -> updateGear(action.gearIds)
