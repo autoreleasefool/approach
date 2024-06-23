@@ -19,7 +19,7 @@ android {
 
 	defaultConfig {
 		applicationId = "ca.josephroque.bowlingcompanion"
-		versionCode = 322
+		versionCode = 323
 		versionName = "4.0.0"
 
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

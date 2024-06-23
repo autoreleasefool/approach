@@ -11,15 +11,11 @@
 - Feat: Pre-bowl convert to series
 ```
 
-## Android 4.0.0b322
+## Android 4.0.0b323
 
 ```
-Complete rewrite of the 5 Pin Bowling Companion as Approach, for Android.
-
-- Refactored to use modern Android technologies, including Jetpack Compose
-- New and improved charts for all statistics
-- New statistics, including 3-counts, 5-counts, average roll count
-- Fixed tablet sizing issues
+- Fix: Onboarding Dark Mode colors
+- Fix: Crash in Logbook onboarding
 ```
 
 ---
@@ -168,6 +164,12 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.0.0b322
+
+```
+- Fix: Tablet sizing issues
+```
 
 ## Android 4.0.0b321
 
