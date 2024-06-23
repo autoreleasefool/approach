@@ -7,6 +7,7 @@
 	<string name="onboarding_new_user_description_vancouver">Lovingly crafted in Vancouver</string>
 	<string name="onboarding_new_user_logbook">This logbook belongs to</string>
 	<string name="onboarding_new_user_add_bowler">Add bowler</string>
+	<string name="onboarding_new_user_your_name">Your Name</string>
 
 	<string name="onboarding_legacy_user_title_your_bowling_companion">Your 5 Pin Bowling Companion</string>
 	<string name="onboarding_legacy_user_content_description_next">Next</string>
