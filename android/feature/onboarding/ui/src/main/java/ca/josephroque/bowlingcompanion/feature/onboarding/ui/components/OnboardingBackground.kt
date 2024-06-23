@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -66,8 +67,8 @@ fun ReadableContent(modifier: Modifier = Modifier, content: @Composable () -> Un
 				} else {
 					Brush.verticalGradient(
 						0f to Color.Transparent,
-						(16.dp / height.value).value to Color.White,
-						1f - (16.dp / height.value).value to Color.White,
+						(16.dp / height.value).value to colorResource(R.color.container),
+						1f - (16.dp / height.value).value to colorResource(R.color.container),
 						1f to Color.Transparent,
 					)
 				},
