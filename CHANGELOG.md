@@ -1,14 +1,9 @@
 # Most recent version
 
-## iOS 1.5.0b22
+## iOS 1.5.1b23
 
 ```
-- Feat: Sharing series, games, and statistics
-- Feat: New Dark Mode icon
-- Feat: Faster statistics through caching preferences
-- Feat: New average first roll statistic
-- Feat: Manual series
-- Feat: Pre-bowl convert to series
+- Fix: Onboarding now supports Dark Mode
 ```
 
 ## Android 4.0.0b323
@@ -21,6 +16,17 @@
 ---
 
 # Legacy iOS Versions
+
+## iOS 1.5.0b22
+
+```
+- Feat: Sharing series, games, and statistics
+- Feat: New Dark Mode icon
+- Feat: Faster statistics through caching preferences
+- Feat: New average first roll statistic
+- Feat: Manual series
+- Feat: Pre-bowl convert to series
+```
 
 ## iOS 1.4.2b21
 
