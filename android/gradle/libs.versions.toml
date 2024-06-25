@@ -4,7 +4,7 @@ compileSdk = "34"
 targetSdk = "34"
 
 accompanist = "0.34.0"
-androidGradlePlugin = "8.3.2"
+androidGradlePlugin = "8.5.0"
 androidxActivity = "1.8.2"
 androidxComposeBom = "2024.04.00"
 androidxComposeCompiler = "1.5.11"
