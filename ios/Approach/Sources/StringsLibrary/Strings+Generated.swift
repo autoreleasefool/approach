@@ -1253,8 +1253,8 @@ public enum Strings {
       public static func appVersion(_ p1: Any, _ p2: Any) -> String {
         return Strings.tr("Localizable", "settings.appInfo.appVersion", String(describing: p1), String(describing: p2), fallback: "%@ (%@)")
       }
-      /// ©2023, Joseph Roque
-      public static let copyright = Strings.tr("Localizable", "settings.appInfo.copyright", fallback: "©2023, Joseph Roque")
+      /// © 2022-2024, Joseph Roque
+      public static let copyright = Strings.tr("Localizable", "settings.appInfo.copyright", fallback: "© 2022-2024, Joseph Roque")
       /// App Info
       public static let title = Strings.tr("Localizable", "settings.appInfo.title", fallback: "App Info")
       /// Version
@@ -1406,16 +1406,12 @@ public enum Strings {
         public static let bowlerName = Strings.tr("Localizable", "sharing.game.details.bowlerName", fallback: "Bowler")
         /// Date
         public static let date = Strings.tr("Localizable", "sharing.game.details.date", fallback: "Date")
-        /// High
-        public static let highScore = Strings.tr("Localizable", "sharing.game.details.highScore", fallback: "High")
         /// %d HIGH
         public static func highScoreLabel(_ p1: Int) -> String {
           return Strings.tr("Localizable", "sharing.game.details.highScoreLabel", p1, fallback: "%d HIGH")
         }
         /// League
         public static let leagueName = Strings.tr("Localizable", "sharing.game.details.leagueName", fallback: "League")
-        /// Low
-        public static let lowScore = Strings.tr("Localizable", "sharing.game.details.lowScore", fallback: "Low")
         /// %d LOW
         public static func lowScoreLabel(_ p1: Int) -> String {
           return Strings.tr("Localizable", "sharing.game.details.lowScoreLabel", p1, fallback: "%d LOW")

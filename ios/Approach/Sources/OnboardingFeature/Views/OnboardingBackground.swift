@@ -21,19 +21,25 @@ struct OnboardingContainer: View {
 			if fadedEdges.contains(.top) {
 				Rectangle()
 					.fill(.linearGradient(
-						.init(colors: [.white.opacity(0.0), .white]),
+						.init(colors: [
+							Asset.Colors.Onboarding.background.swiftUIColor.opacity(0.0),
+							Asset.Colors.Onboarding.background.swiftUIColor,
+						]),
 						startPoint: .top,
 						endPoint: .bottom
 					))
 					.frame(height: .extraLargeSpacing)
 			}
 
-			Rectangle().fill(.white)
+			Rectangle().fill(Asset.Colors.Onboarding.background.swiftUIColor)
 
 			if fadedEdges.contains(.bottom) {
 				Rectangle()
 					.fill(.linearGradient(
-						.init(colors: [.white.opacity(0.0), .white]),
+						.init(colors: [
+							Asset.Colors.Onboarding.background.swiftUIColor.opacity(0.0),
+							Asset.Colors.Onboarding.background.swiftUIColor,
+						]),
 						startPoint: .bottom,
 						endPoint: .top
 					))
