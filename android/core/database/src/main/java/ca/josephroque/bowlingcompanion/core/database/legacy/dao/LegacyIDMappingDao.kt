@@ -17,10 +17,32 @@ interface LegacyIDMappingDao {
 		SELECT * FROM legacy_ids
 		WHERE mapping_key = :key
 		AND legacy_id IN (:legacyIds)
+		LIMIT :limit
+		OFFSET :offset
 	""",
 	)
 	suspend fun getLegacyIDMappings(
 		legacyIds: List<Long>,
 		key: LegacyIDMappingKey,
+		limit: Int,
+		offset: Int,
 	): List<LegacyIDMappingEntity>
+
+	suspend fun getLegacyIDMappings(
+		legacyIds: List<Long>,
+		key: LegacyIDMappingKey,
+	): List<LegacyIDMappingEntity> {
+		val limit = 250
+		val results = mutableListOf<LegacyIDMappingEntity>()
+		var offset = 0
+
+		var result = getLegacyIDMappings(legacyIds, key, limit, offset)
+		while (result.isNotEmpty()) {
+			results.addAll(result)
+			offset += limit
+			result = getLegacyIDMappings(legacyIds, key, limit, offset)
+		}
+
+		return results
+	}
 }

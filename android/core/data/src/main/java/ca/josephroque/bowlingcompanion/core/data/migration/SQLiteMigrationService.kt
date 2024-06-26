@@ -301,13 +301,13 @@ class SQLiteMigrationService @Inject constructor(
 	private suspend fun migrateTeamBowlersToRoom(teamBowlers: List<LegacyTeamBowler>) {
 		val migratedTeamBowlers = mutableListOf<TeamBowlerCrossRef>()
 
-		val legacyBowlerIds = teamBowlers.map(LegacyTeamBowler::bowlerId)
+		val legacyBowlerIds = teamBowlers.map(LegacyTeamBowler::bowlerId).toSet().toList()
 		val bowlerIdMappings = legacyIDMappingDao.getLegacyIDMappings(
 			legacyIds = legacyBowlerIds,
 			key = LegacyIDMappingKey.BOWLER,
 		).associateBy({ it.legacyId }, { it.id })
 
-		val legacyTeamIds = teamBowlers.map(LegacyTeamBowler::teamId)
+		val legacyTeamIds = teamBowlers.map(LegacyTeamBowler::teamId).toSet().toList()
 		val teamIdMappings = legacyIDMappingDao.getLegacyIDMappings(
 			legacyIds = legacyTeamIds,
 			key = LegacyIDMappingKey.TEAM,
@@ -393,7 +393,7 @@ class SQLiteMigrationService @Inject constructor(
 		val migratedLeagues = mutableListOf<LeagueEntity>()
 		val idMappings = mutableListOf<LegacyIDMappingEntity>()
 
-		val legacyBowlerIds = leagues.map(LegacyLeague::bowlerId)
+		val legacyBowlerIds = leagues.map(LegacyLeague::bowlerId).toSet().toList()
 		val bowlerIdMappings = legacyIDMappingDao.getLegacyIDMappings(
 			legacyIds = legacyBowlerIds,
 			key = LegacyIDMappingKey.BOWLER,
@@ -515,7 +515,7 @@ class SQLiteMigrationService @Inject constructor(
 		val migratedSeries = mutableListOf<SeriesEntity>()
 		val idMappings = mutableListOf<LegacyIDMappingEntity>()
 
-		val legacyLeagueIds = series.map(LegacySeries::leagueId)
+		val legacyLeagueIds = series.map(LegacySeries::leagueId).toSet().toList()
 		val leagueIdMappings = legacyIDMappingDao.getLegacyIDMappings(
 			legacyIds = legacyLeagueIds,
 			key = LegacyIDMappingKey.LEAGUE,
@@ -617,7 +617,7 @@ class SQLiteMigrationService @Inject constructor(
 
 		val gameIdMappings = mutableListOf<LegacyIDMappingEntity>()
 
-		val legacySeriesIds = games.map(LegacyGame::seriesId)
+		val legacySeriesIds = games.map(LegacyGame::seriesId).toSet().toList()
 		val seriesIdMappings = legacyIDMappingDao.getLegacyIDMappings(
 			legacyIds = legacySeriesIds,
 			key = LegacyIDMappingKey.SERIES,
@@ -724,7 +724,7 @@ class SQLiteMigrationService @Inject constructor(
 		val migratedOpponents = mutableMapOf<String, BowlerEntity>()
 		val matchPlayIdMappings = mutableListOf<LegacyIDMappingEntity>()
 
-		val legacyGameIds = matchPlays.map(LegacyMatchPlay::gameId)
+		val legacyGameIds = matchPlays.map(LegacyMatchPlay::gameId).toSet().toList()
 		val gameIdMappings = legacyIDMappingDao.getLegacyIDMappings(
 			legacyIds = legacyGameIds,
 			key = LegacyIDMappingKey.GAME,
@@ -861,7 +861,7 @@ class SQLiteMigrationService @Inject constructor(
 	private suspend fun migrateFramesToRoom(frames: List<LegacyFrame>) {
 		val migratedFrames = mutableListOf<FrameEntity>()
 
-		val legacyGameIds = frames.map(LegacyFrame::gameId)
+		val legacyGameIds = frames.map(LegacyFrame::gameId).toSet().toList()
 		val gameIdMappings = legacyIDMappingDao.getLegacyIDMappings(
 			legacyIds = legacyGameIds,
 			key = LegacyIDMappingKey.GAME,
