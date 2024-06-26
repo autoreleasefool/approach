@@ -14,6 +14,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 class MainActivityViewModel @Inject constructor(
 	private val analyticsClient: AnalyticsClient,
 	private val gamesRepository: GamesRepository,
-	userDataRepository: UserDataRepository,
+	private val userDataRepository: UserDataRepository,
 ) : ViewModel() {
 	private val isLaunchComplete: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
@@ -57,7 +58,10 @@ class MainActivityViewModel @Inject constructor(
 		}
 
 		viewModelScope.launch {
-			gamesRepository.lockStaleGames()
+			val userData = userDataRepository.userData.first()
+			if (userData.isOnboardingComplete) {
+				gamesRepository.lockStaleGames()
+			}
 		}
 
 		isLaunchComplete.value = true
@@ -70,10 +74,8 @@ class MainActivityViewModel @Inject constructor(
 
 sealed interface MainActivityUiState {
 	data object Loading : MainActivityUiState
-	data class Success(
-		val appState: ApproachAppUiState,
-		val isLaunchComplete: Boolean,
-	) : MainActivityUiState
+	data class Success(val appState: ApproachAppUiState, val isLaunchComplete: Boolean) :
+		MainActivityUiState
 }
 
 internal fun MainActivityUiState.isLaunchComplete(): Boolean = when (this) {
