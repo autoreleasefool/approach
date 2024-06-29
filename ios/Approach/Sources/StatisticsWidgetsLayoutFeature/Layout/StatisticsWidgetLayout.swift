@@ -11,6 +11,7 @@ import StatisticsWidgetsLibrary
 import StatisticsWidgetsRepositoryInterface
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @Reducer
@@ -20,20 +21,12 @@ public struct StatisticsWidgetLayout: Reducer {
 		public let context: String
 		public let newWidgetSource: StatisticsWidget.Source?
 
+		public var contentSize: CGSize = .zero
+
 		public var widgets: IdentifiedArrayOf<StatisticsWidget.Configuration>?
 		public var widgetData: [StatisticsWidget.ID: Statistics.ChartContent] = [:]
 
 		public var errors: Errors<ErrorID>.State = .init()
-
-		var widgetRows: IdentifiedArrayOf<StatisticsWidget.Configuration>? {
-			guard let widgets else { return nil }
-			return widgets.count % 2 == 0 ? widgets : .init(uniqueElements: widgets.dropLast())
-		}
-
-		var leftoverWidget: StatisticsWidget.Configuration? {
-			guard let widgets else { return nil }
-			return widgets.count % 2 == 0 ? nil : widgets.last
-		}
 
 		@Presents public var destination: Destination.State?
 
@@ -206,7 +199,9 @@ public struct StatisticsWidgetLayout: Reducer {
 
 @ViewAction(for: StatisticsWidgetLayout.self)
 public struct StatisticsWidgetLayoutView: View {
+	@Environment(\.horizontalSizeClass) private var horizontalSizeClass
 	@Bindable public var store: StoreOf<StatisticsWidgetLayout>
+	@State private var contentSize: CGSize = .zero
 
 	public init(store: StoreOf<StatisticsWidgetLayout>) {
 		self.store = store
@@ -214,6 +209,7 @@ public struct StatisticsWidgetLayoutView: View {
 
 	public var body: some View {
 		widgetRows
+			.measure(key: ContentSizeKey.self, to: $contentSize)
 			.task { await send(.task).finish() }
 			.details($store.scope(state: \.destination?.details, action: \.internal.destination.details))
 			.layoutBuilder($store.scope(state: \.destination?.layout, action: \.internal.destination.layout))
@@ -222,8 +218,14 @@ public struct StatisticsWidgetLayoutView: View {
 	}
 
 	@MainActor @ViewBuilder private var widgetRows: some View {
-		if let widgets = store.widgetRows {
-			if widgets.isEmpty && store.leftoverWidget == nil {
+		if let widgets = widgetRows(forScreenWidth: contentSize.width, inSizeClass: horizontalSizeClass) {
+			let leftoverWidget = leftoverWidget(forScreenWidth: contentSize.width, inSizeClass: horizontalSizeClass)
+			let numberOfWidgetsPerRow = numberOfWidgetsPerRow(
+				forScreenWidth: contentSize.width,
+				inSizeClass: horizontalSizeClass
+			)
+
+			if widgets.isEmpty && leftoverWidget == nil {
 				Button { send(.didTapConfigureStatisticsButton) } label: {
 					StatisticsWidget.PlaceholderWidget()
 				}
@@ -231,7 +233,7 @@ public struct StatisticsWidgetLayoutView: View {
 			} else {
 				VStack(spacing: 0) {
 					LazyVGrid(
-						columns: [.init(spacing: .standardSpacing), .init(spacing: .standardSpacing)],
+						columns: (0..<numberOfWidgetsPerRow).map { _ in GridItem(spacing: .standardSpacing) },
 						spacing: .standardSpacing
 					) {
 						ForEach(widgets) { widget in
@@ -244,7 +246,7 @@ public struct StatisticsWidgetLayoutView: View {
 						}
 					}
 
-					if let leftoverWidget = store.leftoverWidget {
+					if let leftoverWidget {
 						RectangleWidget(
 							configuration: leftoverWidget,
 							chartContent: store.widgetData[leftoverWidget.id]
@@ -268,6 +270,49 @@ public struct StatisticsWidgetLayoutView: View {
 			}
 		} else {
 			Text("")
+				.frame(maxWidth: .infinity)
+		}
+	}
+
+	private func numberOfWidgetsPerRow(
+		forScreenWidth screenWidth: CGFloat,
+		inSizeClass sizeClass: UserInterfaceSizeClass?
+	) -> Int {
+		switch sizeClass {
+		case .compact, .none:
+			return 2
+		case .regular:
+			return Int(max((screenWidth / 240), 2))
+		@unknown default:
+			return 2
+		}
+	}
+
+	private func widgetRows(
+		forScreenWidth screenWidth: CGFloat,
+		inSizeClass sizeClass: UserInterfaceSizeClass?
+	) -> IdentifiedArrayOf<StatisticsWidget.Configuration>? {
+		guard let widgets = store.widgets else { return nil }
+		let widgetsPerRow = numberOfWidgetsPerRow(forScreenWidth: screenWidth, inSizeClass: sizeClass)
+
+		if widgetsPerRow == 2 {
+			return widgets.count % 2 == 0 ? widgets : .init(uniqueElements: widgets.dropLast())
+		} else {
+			return widgets
+		}
+	}
+
+	private func leftoverWidget(
+		forScreenWidth screenWidth: CGFloat,
+		inSizeClass sizeClass: UserInterfaceSizeClass?
+	) -> StatisticsWidget.Configuration? {
+		guard let widgets = store.widgets else { return nil }
+		let widgetsPerRow = numberOfWidgetsPerRow(forScreenWidth: screenWidth, inSizeClass: sizeClass)
+
+		if widgetsPerRow == 2 {
+			return widgets.count % 2 == 0 ? nil : widgets.last
+		} else {
+			return nil
 		}
 	}
 }
@@ -307,6 +352,8 @@ public enum StatisticsWidgetLayoutError: LocalizedError {
 		}
 	}
 }
+
+private struct ContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 
 #if DEBUG
 struct StatisticsWidgetLayoutPreview: PreviewProvider {
