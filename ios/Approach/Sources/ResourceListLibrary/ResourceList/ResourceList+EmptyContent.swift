@@ -100,6 +100,8 @@ public struct ResourceListEmpty: Reducer {
 
 @ViewAction(for: ResourceListEmpty.self)
 public struct ResourceListEmptyView: View {
+	@ScaledMetric private var unit: CGFloat = 20
+
 	public var store: StoreOf<ResourceListEmpty>
 
 	public init(store: StoreOf<ResourceListEmpty>) {
@@ -107,42 +109,55 @@ public struct ResourceListEmptyView: View {
 	}
 
 	public var body: some View {
-		VStack {
+		GeometryReader { proxy in
 			VStack {
-				Spacer()
+				VStack {
+					Spacer()
 
-				store.content.image.swiftUIImage
-					.resizable()
-					.scaledToFit()
-					.padding(.bottom, .smallSpacing)
+					store.content.image.swiftUIImage
+						.resizable()
+						.scaledToFit()
+						.padding(.bottom, .smallSpacing)
 
-				Spacer()
+					Spacer()
 
-				VStack(spacing: .smallSpacing) {
-					Text(store.content.title)
-						.font(.headline)
+					VStack(spacing: .smallSpacing) {
+						Text(store.content.title)
+							.font(.headline)
 
-					if let message = store.content.message {
-						Text(message)
-							.multilineTextAlignment(.center)
+						if let message = store.content.message {
+							Text(message)
+								.multilineTextAlignment(.center)
+						}
 					}
+					.padding()
+					.frame(maxWidth: .infinity)
+					.background(store.style == .error ? Asset.Colors.Error.light : Asset.Colors.Primary.light)
+					.cornerRadius(.standardRadius)
+					.padding(.bottom, .smallSpacing)
+					.layoutPriority(1)
 				}
-				.padding()
-				.frame(maxWidth: .infinity)
-				.background(store.style == .error ? Asset.Colors.Error.light : Asset.Colors.Primary.light)
-				.cornerRadius(.standardRadius)
-				.padding(.bottom, .smallSpacing)
-				.layoutPriority(1)
+
+				Button {
+					send(.didTapActionButton)
+				} label: {
+					Text(store.content.action)
+						.frame(maxWidth: .infinity)
+				}
+				.modifier(PrimaryButton())
+			}
+			.padding()
+			.padding(.horizontal, padding(for: proxy.size.width))
+		}
+	}
+
+	private func padding(for width: CGFloat) -> CGFloat {
+			let idealWidth = 70 * unit / 2
+
+			guard width >= idealWidth else {
+					return 0
 			}
 
-			Button {
-				send(.didTapActionButton)
-			} label: {
-				Text(store.content.action)
-					.frame(maxWidth: .infinity)
-			}
-			.modifier(PrimaryButton())
+			return round((width - idealWidth) / 2)
 		}
-		.padding()
-	}
 }

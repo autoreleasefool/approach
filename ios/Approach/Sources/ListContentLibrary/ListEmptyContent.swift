@@ -2,6 +2,8 @@ import AssetsLibrary
 import SwiftUI
 
 public struct ListEmptyContent: View {
+	@ScaledMetric private var unit: CGFloat = 20
+
 	public let image: ImageAsset
 	public let title: String
 	public let message: String?
@@ -23,34 +25,47 @@ public struct ListEmptyContent: View {
 	}
 
 	public var body: some View {
-		VStack {
-			Spacer()
+		GeometryReader { proxy in
+			VStack {
+				Spacer()
 
-			image.swiftUIImage
-				.resizable()
-				.scaledToFit()
+				image.swiftUIImage
+					.resizable()
+					.scaledToFit()
+					.padding(.bottom, .smallSpacing)
+
+				Spacer()
+
+				VStack(spacing: .smallSpacing) {
+					Text(title)
+						.font(.headline)
+
+					if let message {
+						Text(message)
+							.multilineTextAlignment(.center)
+					}
+				}
+				.padding()
+				.frame(maxWidth: .infinity)
+				.background(style == .error ? Asset.Colors.Error.light : Asset.Colors.Primary.light)
+				.cornerRadius(.standardRadius)
 				.padding(.bottom, .smallSpacing)
 
-			Spacer()
-
-			VStack(spacing: .smallSpacing) {
-				Text(title)
-					.font(.headline)
-
-				if let message {
-					Text(message)
-						.multilineTextAlignment(.center)
-				}
+				action
 			}
 			.padding()
-			.frame(maxWidth: .infinity)
-			.background(style == .error ? Asset.Colors.Error.light : Asset.Colors.Primary.light)
-			.cornerRadius(.standardRadius)
-			.padding(.bottom, .smallSpacing)
-
-			action
+			.padding(.horizontal, padding(for: proxy.size.width))
 		}
-		.padding()
+	}
+
+	private func padding(for width: CGFloat) -> CGFloat {
+		let idealWidth = 70 * unit / 2
+
+		guard width >= idealWidth else {
+				return 0
+		}
+
+		return round((width - idealWidth) / 2)
 	}
 }
 
