@@ -32,7 +32,7 @@ interface LegacyIDMappingDao {
 		legacyIds: List<Long>,
 		key: LegacyIDMappingKey,
 	): List<LegacyIDMappingEntity> {
-		val limit = 250
+		val limit = 100
 		val results = mutableListOf<LegacyIDMappingEntity>()
 		var offset = 0
 
