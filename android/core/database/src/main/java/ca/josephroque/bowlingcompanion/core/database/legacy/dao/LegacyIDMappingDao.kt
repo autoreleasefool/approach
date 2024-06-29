@@ -17,6 +17,7 @@ interface LegacyIDMappingDao {
 		SELECT * FROM legacy_ids
 		WHERE mapping_key = :key
 		AND legacy_id IN (:legacyIds)
+		ORDER BY legacy_id
 		LIMIT :limit
 		OFFSET :offset
 	""",
