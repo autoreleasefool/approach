@@ -16,11 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 
-data class GameLoadDate(
-	val gameId: UUID,
-	val durationMillisWhenLoaded: Long,
-	val loadedAt: Long,
-)
+data class GameLoadDate(val gameId: UUID, val durationMillisWhenLoaded: Long, val loadedAt: Long)
 
 inline fun MutableStateFlow<GameDetailsUiState>.updateGameDetails(
 	gameId: UUID,
@@ -142,7 +138,7 @@ fun GameDetailsUiState.updateHeader(
 		val numberOfBowlers = bowlers.size
 		val numberOfGames = seriesGameIds.size
 
-		if (numberOfBowlers == 1) {
+		if (numberOfBowlers == 1 || numberOfBowlers == 0) {
 			if (nextGameIndex < numberOfGames) {
 				NextGameEditableElement.Game(nextGameIndex, seriesGameIds[nextGameIndex])
 			} else {
@@ -170,7 +166,8 @@ fun GameDetailsUiState.updateHeader(
 			(
 				Frame.isLastFrame(
 					selection.frameIndex,
-				) || !frames[selection.frameIndex].deckForRoll(selection.rollIndex).arePinsCleared()
+				) ||
+					!frames[selection.frameIndex].deckForRoll(selection.rollIndex).arePinsCleared()
 				)
 		) {
 			NextGameEditableElement.Roll(selection.rollIndex + 1)
