@@ -86,6 +86,8 @@ public struct SeriesPreBowlEditor: Reducer {
 	@Dependency(SeriesRepository.self) var series
 
 	public var body: some ReducerOf<Self> {
+		BindingReducer()
+
 		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
