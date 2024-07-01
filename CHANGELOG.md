@@ -6,12 +6,12 @@
 - Fix: Onboarding now supports Dark Mode
 ```
 
-## Android 4.0.1b324
+## Android 4.0.2b325
 
 ```
 - Fix: Resolved crash when migrating large databases
-- Fix: Resolved crash when migrating corrupt databases
-- Fix: Resolved crash on startup when locking stale games before database is initialized
+- Fix: Resolved crash on older devices when migrating database
+- Fix: Resolved crash when editing manual games
 ```
 
 ---
@@ -171,6 +171,14 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.0.1b324
+
+```
+- Fix: Resolved crash when migrating large databases
+- Fix: Resolved crash when migrating corrupt databases
+- Fix: Resolved crash on startup when locking stale games before database is initialized
+```
 
 ## Android 4.0.0b323
 
