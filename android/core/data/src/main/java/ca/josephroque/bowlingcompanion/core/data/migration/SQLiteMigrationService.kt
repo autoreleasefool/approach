@@ -122,7 +122,7 @@ class SQLiteMigrationService @Inject constructor(
 		// Forces the database to be re-opened and re-rerun migrations
 		ApproachDatabase.close()
 
-		LegacyDatabaseHelper.getInstance(context, name).use { dbHelper ->
+		LegacyDatabaseHelper.getInstance(context, name).let { dbHelper ->
 			dbHelper.readableDatabase.use { db ->
 				transactionRunner {
 					migrateTeams(db = db)
