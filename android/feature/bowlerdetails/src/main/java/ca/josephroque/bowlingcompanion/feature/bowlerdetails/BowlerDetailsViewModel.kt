@@ -60,18 +60,27 @@ class BowlerDetailsViewModel @Inject constructor(
 
 	private val leagueToArchive: MutableStateFlow<LeagueListItem?> = MutableStateFlow(null)
 
+	private val recurrence = MutableStateFlow<LeagueRecurrence?>(null)
+
 	private val isHidingWidgets = userDataRepository.userData
 		.map { it.isHidingWidgetsInLeaguesList }
 
+	private val leagues = recurrence.flatMapLatest {
+		leaguesRepository.getLeaguesList(bowlerId, recurrence = it)
+	}
+
 	private val leaguesListState: Flow<LeaguesListUiState> = combine(
-		leaguesRepository.getLeaguesList(bowlerId),
+		leagues,
 		leagueToArchive,
+		recurrence,
 		isHidingWidgets,
-	) { leaguesList, leagueToArchive, isHidingWidgets ->
+	) { leaguesList, leagueToArchive, recurrence, isHidingWidgets ->
+		val filter = LeaguesListUiState.Filter(recurrence = recurrence)
 		LeaguesListUiState(
 			list = leaguesList,
 			leagueToArchive = leagueToArchive,
-			isShowingHeader = !isHidingWidgets && leaguesList.isNotEmpty(),
+			isShowingHeader = !isHidingWidgets && (leaguesList.isNotEmpty() || filter.isNotEmpty),
+			filter = filter,
 		)
 	}
 
@@ -183,6 +192,7 @@ class BowlerDetailsViewModel @Inject constructor(
 			is LeaguesListUiAction.LeagueEdited -> sendEvent(
 				BowlerDetailsScreenEvent.EditLeague(action.league.id),
 			)
+			is LeaguesListUiAction.RecurrenceClicked -> filterByRecurrence(action.recurrence)
 			is LeaguesListUiAction.LeagueArchived -> setLeagueArchivePrompt(action.league)
 			is LeaguesListUiAction.ConfirmArchiveClicked -> archiveLeague()
 			is LeaguesListUiAction.DismissArchiveClicked -> setLeagueArchivePrompt(null)
@@ -210,6 +220,12 @@ class BowlerDetailsViewModel @Inject constructor(
 			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(
 				BowlerDetailsScreenEvent.EditStatisticsWidget(statisticsWidgetContext, bowlerId),
 			)
+		}
+	}
+
+	private fun filterByRecurrence(filter: LeagueRecurrence?) {
+		recurrence.update {
+			if (filter == null || it == filter) null else filter
 		}
 	}
 

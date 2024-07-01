@@ -4,4 +4,5 @@
 
 	<string name="league_list_empty_title">No leagues found</string>
 	<string name="league_list_empty_message">You haven\'t added any leagues or events yet. Track your progress week over week for each league you\'re in. See how you measure up in tournaments with events.</string>
+	<string name="league_list_empty_filters_message">Your search didn\'t return any leagues or events.</string>
 </resources>

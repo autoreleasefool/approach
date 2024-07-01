@@ -5,4 +5,7 @@
 
 	<string name="bowler_details_preferred_gear_title">Preferred Gear</string>
 	<string name="bowler_details_preferred_gear_description">Pre-select all the gear you typically use, and it will automatically be added to every game. You can remove or add more gear to a game later.</string>
+
+	<string name="bowler_details_leagues_filter_recurrence_repeats">Repeating</string>
+	<string name="bowler_details_leagues_filter_recurrence_one_time">One-Time</string>
 </resources>

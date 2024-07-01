@@ -113,6 +113,7 @@ private fun LeaguesListPreview() {
 			state = LeaguesListUiState(
 				leagueToArchive = null,
 				isShowingHeader = true,
+				filter = LeaguesListUiState.Filter(),
 				list = listOf(
 					LeagueListItem(
 						id = UUID.randomUUID(),
