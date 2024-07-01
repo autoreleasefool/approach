@@ -244,7 +244,6 @@ public struct GameDetails: Reducer {
 					return .none
 
 				case .didLoadGame(.failure):
-					// TODO: Handle error observing game -- not actually sure we need to care about the error here
 					return .none
 
 				case .destination(.presented(.statistics(.delegate(.doNothing)))):

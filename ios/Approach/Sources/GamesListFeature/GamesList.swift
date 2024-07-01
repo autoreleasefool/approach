@@ -258,6 +258,7 @@ public struct GamesList: Reducer {
 						.destination(.presented(.seriesEditor(.binding))),
 						.destination(.presented(.sharing(.internal))),
 						.destination(.presented(.sharing(.view))),
+						.destination(.presented(.sharing(.binding))),
 						.errors(.internal), .errors(.view):
 					return .none
 				}

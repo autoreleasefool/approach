@@ -20,6 +20,7 @@ public struct Sharing: Reducer {
 		public var tabs: [SharingTab]
 		public var selectedTab: SharingTab
 
+		public var lastPreviewPerTab: [SharingTab: Preview] = [:]
 		public var isPreviewingImage: Bool = false
 		public var preview: Preview?
 
@@ -28,22 +29,24 @@ public struct Sharing: Reducer {
 
 			switch source {
 			case let .series(seriesId):
-				seriesSharing = .init(seriesId: seriesId) // TODO: We can also eventually instantiate GamesSharing here
-				tabs = [.series]
+				seriesSharing = .init(seriesId: seriesId)
+				gamesSharing = .init(seriesId: seriesId)
+				tabs = [.series, .games]
 				selectedTab = .series
 			case let .statistic(source, statistic):
 				statisticsSharing = .init(source: source, statistic: statistic)
 				tabs = [.statistic]
 				selectedTab = .statistic
 			case let .games(seriesId):
+				seriesSharing = .init(seriesId: seriesId)
 				gamesSharing = .init(seriesId: seriesId)
-				tabs = [.games]
+				tabs = [.series, .games]
 				selectedTab = .games
 			}
 		}
 	}
 
-	public enum Action: FeatureAction, ViewAction {
+	public enum Action: BindableAction, FeatureAction, ViewAction {
 		@CasePathable public enum View {
 			case onAppear
 			case didTapSaveButton
@@ -62,6 +65,7 @@ public struct Sharing: Reducer {
 		case view(View)
 		case delegate(Delegate)
 		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	public enum Source: Equatable {
@@ -70,10 +74,20 @@ public struct Sharing: Reducer {
 		case statistic(StatisticsWidget.Source?, statistic: String?)
 	}
 
-	public enum SharingTab: Equatable {
+	public enum SharingTab: Identifiable, Hashable, CustomStringConvertible {
 		case series
 		case games
 		case statistic
+
+		public var id: Self { self }
+
+		public var description: String {
+			switch self {
+			case .games: Strings.Sharing.Tabs.games
+			case .series: Strings.Sharing.Tabs.series
+			case .statistic: Strings.Sharing.Tabs.statistic
+			}
+		}
 	}
 
 	public struct Preview: Equatable {
@@ -86,6 +100,8 @@ public struct Sharing: Reducer {
 	@Dependency(\.dismiss) var dismiss
 
 	public var body: some ReducerOf<Self> {
+		BindingReducer()
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
@@ -114,16 +130,13 @@ public struct Sharing: Reducer {
 			case let .internal(internalAction):
 				switch internalAction {
 				case let .seriesSharing(.delegate(.imageRendered(image))):
-					state.preview = Preview(preview: image, image: Image(uiImage: image))
-					return .none
+					return updatePreview(image, forTab: .series, state: &state)
 
 				case let .statisticsSharing(.delegate(.imageRendered(image))):
-					state.preview = Preview(preview: image, image: Image(uiImage: image))
-					return .none
+					return updatePreview(image, forTab: .statistic, state: &state)
 
 				case let .gamesSharing(.delegate(.imageRendered(image))):
-					state.preview = Preview(preview: image, image: Image(uiImage: image))
-					return .none
+					return updatePreview(image, forTab: .games, state: &state)
 
 				case .statisticsSharing(.binding), .statisticsSharing(.internal), .statisticsSharing(.view),
 						.seriesSharing(.binding), .seriesSharing(.internal), .seriesSharing(.view),
@@ -131,7 +144,11 @@ public struct Sharing: Reducer {
 					return .none
 				}
 
-			case .delegate:
+			case .binding(\.selectedTab):
+				state.preview = state.lastPreviewPerTab[state.selectedTab]
+				return .none
+
+			case .delegate, .binding:
 				return .none
 			}
 		}
@@ -152,6 +169,13 @@ public struct Sharing: Reducer {
 			}
 		}
 	}
+
+	private func updatePreview(_ image: UIImage, forTab: SharingTab, state: inout State) -> Effect<Action> {
+		let preview = Preview(preview: image, image: Image(uiImage: image))
+		state.lastPreviewPerTab[forTab] = preview
+		state.preview = preview
+		return .none
+	}
 }
 
 // MARK: - View
@@ -160,7 +184,7 @@ public struct Sharing: Reducer {
 public struct SharingView: View {
 	@Namespace private var previewNamespace
 
-	public var store: StoreOf<Sharing>
+	@Bindable public var store: StoreOf<Sharing>
 
 	public init(store: StoreOf<Sharing>) {
 		self.store = store
@@ -222,8 +246,31 @@ public struct SharingView: View {
 	}
 
 	private var tabs: some View {
-		// TODO: Show tab picker
-		EmptyView()
+		VStack(spacing: 0) {
+			Picker(
+				Strings.Sharing.Tabs.title,
+				selection: $store.selectedTab.animation()
+			) {
+				ForEach(store.tabs) {
+					Text(String(describing: $0)).tag($0)
+				}
+			}
+			.pickerStyle(.segmented)
+			.padding(.horizontal)
+			.padding(.bottom)
+
+			TabView(selection: $store.selectedTab) {
+				seriesSharing
+					.tag(Sharing.SharingTab.series)
+
+				gamesSharing
+					.tag(Sharing.SharingTab.games)
+
+				statisticsSharing
+					.tag(Sharing.SharingTab.statistic)
+			}
+			.tabViewStyle(.page(indexDisplayMode: .never))
+		}
 	}
 
 	@ViewBuilder
@@ -304,3 +351,4 @@ private struct ShareImageButtonModifier: ViewModifier {
 			.tint(Asset.Colors.Primary.default)
 	}
 }
+

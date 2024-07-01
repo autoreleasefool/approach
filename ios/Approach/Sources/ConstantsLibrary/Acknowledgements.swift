@@ -6,7 +6,7 @@ public struct Acknowledgement: Equatable {
 	public let license: LicenseFile
 
 	public var licenseText: String? {
-		// TODO: Convert to Bundle dependency
+		// FIXME: Convert to Bundle dependency
 		guard let path = Bundle.module.path(forResource: license.fileName, ofType: license.type),
 					let contents = try? String(contentsOfFile: path, encoding: .utf8) else {
 			return nil

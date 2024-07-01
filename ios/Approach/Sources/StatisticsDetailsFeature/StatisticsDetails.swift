@@ -337,6 +337,7 @@ public struct StatisticsDetails: Reducer {
 						.destination(.presented(.sourcePicker(.view))),
 						.destination(.presented(.sharing(.internal))),
 						.destination(.presented(.sharing(.view))),
+						.destination(.presented(.sharing(.binding))),
 						.errors(.internal), .errors(.view),
 						.charts(.internal), .charts(.view), .charts(.binding):
 					return .none

@@ -137,7 +137,7 @@ public struct ScoreSheet: View {
 					.roundCorners(
 						topLeading: configuration.shouldRound(
 							.roll,
-							inPosition: .topLeading, 
+							inPosition: .topLeading,
 							frameIndex: frame.index,
 							rollIndex: roll.index
 						),

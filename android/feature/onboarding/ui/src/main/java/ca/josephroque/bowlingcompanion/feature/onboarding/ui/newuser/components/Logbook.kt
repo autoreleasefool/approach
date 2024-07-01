@@ -45,7 +45,7 @@ fun Logbook(
 		},
 	)
 
-	// TODO: Figure out a way to focus text field automatically without crashing
+	// FIXME: Figure out a way to focus text field automatically without crashing
 	// IllegalStateException: FocusRequester is not initialized.
 	val focusManager = LocalFocusManager.current
 

@@ -477,6 +477,10 @@
 /* Sharing */
 
 "sharing.title" = "Share";
+"sharing.tabs.title" = "Share Format";
+"sharing.tabs.games" = "Games";
+"sharing.tabs.statistic" = "Statistic";
+"sharing.tabs.series" = "Series";
 "sharing.series.details.date" = "Date";
 "sharing.series.details.scoreSummary" = "Summary";
 "sharing.series.details.bowlerName" = "Bowler";

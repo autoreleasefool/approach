@@ -1498,6 +1498,16 @@ public enum Strings {
         }
       }
     }
+    public enum Tabs {
+      /// Games
+      public static let games = Strings.tr("Localizable", "sharing.tabs.games", fallback: "Games")
+      /// Series
+      public static let series = Strings.tr("Localizable", "sharing.tabs.series", fallback: "Series")
+      /// Statistic
+      public static let statistic = Strings.tr("Localizable", "sharing.tabs.statistic", fallback: "Statistic")
+      /// Share Format
+      public static let title = Strings.tr("Localizable", "sharing.tabs.title", fallback: "Share Format")
+    }
   }
   public enum SortOrder {
     /// Sort Order
