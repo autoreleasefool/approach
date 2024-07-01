@@ -151,7 +151,7 @@ let package = Package(
 		.package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.0"),
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.0"),
 		.package(url: "https://github.com/apple/swift-collections.git", from: "1.1.0"),
-		.package(url: "https://github.com/autoreleasefool/swift-utilities.git", from: "1.0.0"),
+		.package(url: "https://github.com/autoreleasefool/swift-utilities.git", from: "2.0.1"),
 		.package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.4"),
 		.package(url: "https://github.com/elai950/AlertToast.git", from: "1.3.9"),
 		.package(url: "https://github.com/getsentry/sentry-cocoa.git", from: "8.21.0"),
@@ -163,7 +163,6 @@ let package = Package(
 		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "1.1.0"),
 		.package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "4.37.0"),
 		.package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", from: "5.2.0"),
-		.package(url: "https://github.com/TelemetryDeck/SwiftClient.git", from: "1.5.1"),
 		.package(url: "https://github.com/weichsel/ZIPFoundation.git", from: "0.9.18"),
 	],
 	targets: [
@@ -254,7 +253,6 @@ let package = Package(
 		.target(
 			name: "AppFeature",
 			dependencies: [
-				.product(name: "AnalyticsPackageService", package: "swift-utilities"),
 				.product(name: "AppInfoPackageService", package: "swift-utilities"),
 				.product(name: "BundlePackageService", package: "swift-utilities"),
 				.product(name: "FeatureFlagsPackageService", package: "swift-utilities"),

@@ -6,7 +6,6 @@ import OnboardingFeature
 import PreferenceServiceInterface
 import StatisticsRepositoryInterface
 
-import AnalyticsPackageService
 import AppInfoPackageService
 import BundlePackageService
 import FeatureFlagsPackageService
