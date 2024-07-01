@@ -1,9 +1,9 @@
 # Most recent version
 
-## iOS 1.5.1b23
+## iOS 1.5.2b24
 
 ```
-- Fix: Onboarding now supports Dark Mode
+- Fix: Support widget resizing on larger screens
 ```
 
 ## Android 4.0.2b325
@@ -17,6 +17,12 @@
 ---
 
 # Legacy iOS Versions
+
+## iOS 1.5.1b23
+
+```
+- Fix: Onboarding now supports Dark Mode
+```
 
 ## iOS 1.5.0b22
 
