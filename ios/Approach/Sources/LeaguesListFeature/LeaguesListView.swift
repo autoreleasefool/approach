@@ -55,7 +55,7 @@ public struct LeaguesListView: View {
 				SortButton(isActive: false) { send(.didTapSortOrderButton) }
 			}
 		}
-		.task { send(.didStartTask) }
+		.task { await send(.didStartTask).finish() }
 		.onAppear { send(.onAppear) }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		.leagueEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
