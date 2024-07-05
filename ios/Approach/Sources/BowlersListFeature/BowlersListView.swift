@@ -1,5 +1,6 @@
 import AnnouncementsFeature
 import AssetsLibrary
+import BowlerDetailsFeature
 import BowlerEditorFeature
 import ComposableArchitecture
 import ErrorsFeature
@@ -49,6 +50,7 @@ public struct BowlersListView: View {
 		.onAppear { send(.onAppear) }
 		.onFirstAppear { send(.didFirstAppear) }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.details($store.scope(state: \.destination?.details, action: \.internal.destination.details))
 		.bowlerEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
 		.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
 		.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
@@ -117,6 +119,12 @@ public struct BowlersListView: View {
 			NavigationStack {
 				BowlerEditorView(store: store)
 			}
+		}
+	}
+
+	fileprivate func details(_ store: Binding<StoreOf<BowlerDetails>?>) -> some View {
+		navigationDestination(item: store) { (store: StoreOf<BowlerDetails>) in
+			BowlerDetailsView(store: store)
 		}
 	}
 

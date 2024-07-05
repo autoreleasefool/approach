@@ -18,6 +18,7 @@ let package = Package(
 		.library(name: "AppFeature", targets: ["AppFeature"]),
 		.library(name: "ArchiveListFeature", targets: ["ArchiveListFeature"]),
 		.library(name: "AvatarEditorFeature", targets: ["AvatarEditorFeature"]),
+		.library(name: "BowlerDetailsFeature", targets: ["BowlerDetailsFeature"]),
 		.library(name: "BowlerEditorFeature", targets: ["BowlerEditorFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
 		.library(name: "ErrorsFeature", targets: ["ErrorsFeature"]),
@@ -318,6 +319,20 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "BowlerDetailsFeature",
+			dependencies: [
+				"BowlerEditorFeature",
+				"LeaguesListFeature",
+			]
+		),
+		.testTarget(
+			name: "BowlerDetailsFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"BowlerDetailsFeature",
+			]
+		),
+		.target(
 			name: "BowlerEditorFeature",
 			dependencies: [
 				"BowlersRepositoryInterface",
@@ -335,8 +350,7 @@ let package = Package(
 			name: "BowlersListFeature",
 			dependencies: [
 				"AnnouncementsFeature",
-				"BowlerEditorFeature",
-				"LeaguesListFeature",
+				"BowlerDetailsFeature",
 				"QuickLaunchRepositoryInterface",
 			]
 		),

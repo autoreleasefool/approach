@@ -3,6 +3,7 @@ import AnnouncementsFeature
 import AnnouncementsLibrary
 import AnnouncementsServiceInterface
 import AssetsLibrary
+import BowlerDetailsFeature
 import BowlerEditorFeature
 import BowlersRepositoryInterface
 import ComposableArchitecture
@@ -54,6 +55,7 @@ public struct BowlersList: Reducer {
 
 		public var isShowingQuickLaunchTip: Bool
 		public var isShowingWidgets: Bool
+		public var isBowlerDetailsEnabled: Bool
 
 		public init() {
 			self.list = .init(
@@ -77,6 +79,9 @@ public struct BowlersList: Reducer {
 
 			@Dependency(TipsService.self) var tips
 			self.isShowingQuickLaunchTip = tips.shouldShow(tipFor: .quickLaunchTip)
+
+			@Dependency(\.featureFlags) var featureFlags
+			self.isBowlerDetailsEnabled = featureFlags.isFlagEnabled(.bowlerDetails)
 		}
 	}
 
@@ -113,6 +118,7 @@ public struct BowlersList: Reducer {
 	@Reducer(state: .equatable)
 	public enum Destination {
 		case editor(BowlerEditor)
+		case details(BowlerDetails)
 		case leagues(LeaguesList)
 		case sortOrder(SortOrder<Bowler.Ordering>)
 		case seriesEditor(SeriesEditor)
@@ -199,6 +205,11 @@ public struct BowlersList: Reducer {
 				case let .didTapBowler(id):
 					guard let bowler = state.list.findResource(byId: id) else { return .none }
 					state.destination = .leagues(.init(bowler: bowler.summary))
+					state.destination = if state.isBowlerDetailsEnabled {
+						.details(BowlerDetails.State(bowler: bowler.summary))
+					} else {
+						.leagues(LeaguesList.State(bowler: bowler.summary))
+					}
 					return recentlyUsed.didRecentlyUse(.bowlers, id: id, in: self)
 
 				case .didTapQuickLaunchButton:
@@ -245,6 +256,12 @@ public struct BowlersList: Reducer {
 				case .didLoadQuickLaunch(.failure):
 					// Intentionally drop quick launch errors
 					return .none
+
+				case let .destination(.presented(.details(.delegate(delegateAction)))):
+					switch delegateAction {
+					case .doNothing:
+						return .none
+					}
 
 				case let .destination(.presented(.seriesEditor(.delegate(delegateAction)))):
 					switch delegateAction {
@@ -302,7 +319,7 @@ public struct BowlersList: Reducer {
 						return .run { [announcement = announcement.announcement] _ in
 							await announcements.hideAnnouncement(announcement)
 						}
-					case .editor, .leagues, .sortOrder, .seriesEditor, .games, .none:
+					case .editor, .leagues, .sortOrder, .seriesEditor, .games, .details, .none:
 						return .none
 					}
 
@@ -310,6 +327,8 @@ public struct BowlersList: Reducer {
 						.destination(.presented(.editor(.view))),
 						.destination(.presented(.editor(.binding))),
 						.destination(.presented(.editor(.delegate(.doNothing)))),
+						.destination(.presented(.details(.internal))),
+						.destination(.presented(.details(.view))),
 						.destination(.presented(.leagues(.internal))),
 						.destination(.presented(.leagues(.view))),
 						.destination(.presented(.leagues(.delegate(.doNothing)))),

@@ -47,12 +47,15 @@ services = [ "Avatar" ]
 libraries = [ "FeatureFlags", "Views" ]
 dependencies = [ "EquatablePackageLibrary", "ExtensionsPackageLibrary" ]
 
+[features.BowlerDetails]
+features = [ "BowlerEditor", "LeaguesList" ]
+
 [features.BowlerEditor]
 features = [ "Form" ]
 repositories = [ "Bowlers" ]
 
 [features.BowlersList]
-features = [ "Announcements", "BowlerEditor", "LeaguesList" ]
+features = [ "Announcements", "BowlerDetails" ]
 repositories = [ "QuickLaunch" ]
 
 [features.Errors]
