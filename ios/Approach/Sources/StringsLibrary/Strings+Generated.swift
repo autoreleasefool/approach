@@ -320,6 +320,18 @@ public enum Strings {
       public static let preview = Strings.tr("Localizable", "avatar.editor.preview", fallback: "Preview")
       /// Avatar
       public static let title = Strings.tr("Localizable", "avatar.editor.title", fallback: "Edit avatar")
+      public enum Kind {
+        /// Photo
+        public static let photo = Strings.tr("Localizable", "avatar.editor.kind.photo", fallback: "Photo")
+        /// Text
+        public static let text = Strings.tr("Localizable", "avatar.editor.kind.text", fallback: "Text")
+        /// Kind
+        public static let title = Strings.tr("Localizable", "avatar.editor.kind.title", fallback: "Kind")
+      }
+      public enum Photo {
+        /// Select photo
+        public static let choosePhoto = Strings.tr("Localizable", "avatar.editor.photo.choosePhoto", fallback: "Select photo")
+      }
       public enum Properties {
         public enum BackgroundColor {
           /// Background colour

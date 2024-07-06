@@ -44,8 +44,8 @@ libraries = [ "DateTime", "ModelsViews" ]
 
 [features.AvatarEditor]
 services = [ "Avatar" ]
-libraries = [ "Views" ]
-dependencies = [ "ExtensionsPackageLibrary" ]
+libraries = [ "FeatureFlags", "Views" ]
+dependencies = [ "EquatablePackageLibrary", "ExtensionsPackageLibrary" ]
 
 [features.BowlerEditor]
 features = [ "Form" ]

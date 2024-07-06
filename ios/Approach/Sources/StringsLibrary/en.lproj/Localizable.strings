@@ -456,6 +456,10 @@
 /* Avatar */
 
 "avatar.editor.title" = "Edit avatar";
+"avatar.editor.kind.title" = "Kind";
+"avatar.editor.kind.text" = "Text";
+"avatar.editor.kind.photo" = "Photo";
+"avatar.editor.photo.choosePhoto" = "Select photo";
 "avatar.editor.preview" = "Preview";
 "avatar.editor.properties.backgroundColor.title" = "Background Colour";
 "avatar.editor.properties.backgroundColor.backgroundColor" = "Background colour";

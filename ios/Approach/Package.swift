@@ -300,10 +300,12 @@ let package = Package(
 		.target(
 			name: "AvatarEditorFeature",
 			dependencies: [
+				.product(name: "EquatablePackageLibrary", package: "swift-utilities"),
 				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
 				"AnalyticsServiceInterface",
 				"AvatarServiceInterface",
 				"FeatureActionLibrary",
+				"FeatureFlagsLibrary",
 				"LoggingServiceInterface",
 				"ViewsLibrary",
 			]
