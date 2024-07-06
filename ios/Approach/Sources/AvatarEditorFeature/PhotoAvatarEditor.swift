@@ -14,6 +14,7 @@ public struct PhotoAvatarEditor: Reducer {
 	public struct State: Equatable {
 		public var imageState: ImageState
 		public var photosPickerItem: PhotosPickerItem?
+		@Presents public var photoCrop: PhotoCrop.State?
 
 		var value: Avatar.Value? {
 			if let data = imageState.photoData {
@@ -43,6 +44,7 @@ public struct PhotoAvatarEditor: Reducer {
 		@CasePathable public enum Internal {
 			case didStartLoadingPhoto
 			case didLoadPhoto(Result<PhotoData?, Error>)
+			case photoCrop(PresentationAction<PhotoCrop.Action>)
 		}
 
 		case view(View)
@@ -112,15 +114,28 @@ public struct PhotoAvatarEditor: Reducer {
 					return .none
 
 				case let .didLoadPhoto(.success(photoData)):
-					state.imageState = if let photoData {
-						.success(photoData)
+					if let photoData {
+						state.photoCrop = PhotoCrop.State(image: photoData.image)
 					} else {
-						.empty
+						state.imageState = .empty
 					}
 					return .none
 
 				case let .didLoadPhoto(.failure(error)):
-					state.imageState = .failure(.init(error))
+					state.imageState = .failure(AlwaysEqual(error))
+					return .none
+
+				case let .photoCrop(.presented(.delegate(.didFinishCropping(image)))):
+					guard let data = image.pngData() else {
+						state.imageState = .empty
+						return .none
+					}
+
+					state.imageState = .success(PhotoData(data: data, image: image))
+					return .none
+
+				case .photoCrop(.dismiss),
+						.photoCrop(.presented(.view)), .photoCrop(.presented(.binding)), .photoCrop(.presented(.internal)):
 					return .none
 				}
 
@@ -128,11 +143,15 @@ public struct PhotoAvatarEditor: Reducer {
 				return .none
 			}
 		}
+		.ifLet(\.$photoCrop, action: \.internal.photoCrop) {
+			PhotoCrop()
+		}
 	}
 
 	private func loadTransferable(from imageSelection: PhotosPickerItem) async throws -> PhotoData? {
 		let avatarImage = try await imageSelection.loadTransferable(type: AvatarImage.self)
 		guard let avatarImage else { return nil }
+		try await Task.sleep(for: .seconds(0.5))
 		return PhotoData(data: avatarImage.data, image: avatarImage.image)
 	}
 }
@@ -153,6 +172,11 @@ public struct PhotoAvatarEditorView: View {
 				matching: .images,
 				photoLibrary: .shared()
 			)
+		}
+		.sheet(item: $store.scope(state: \.photoCrop, action: \.internal.photoCrop)) { store in
+			NavigationStack {
+				PhotoCropView(store: store)
+			}
 		}
 	}
 }

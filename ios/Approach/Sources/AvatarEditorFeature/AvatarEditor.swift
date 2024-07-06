@@ -24,16 +24,20 @@ public struct AvatarEditor: Reducer {
 		public let isPhotoAvatarsEnabled: Bool
 
 		public init(avatar: Avatar.Summary?) {
-			@Dependency(\.uuid) var uuid
-			self.id = avatar?.id ?? uuid()
-			self.initialAvatar = avatar
-			self.avatarKind = avatar?.kind ?? .text
-			self.text = TextAvatarEditor.State(avatar: avatar)
-			self.photo = PhotoAvatarEditor.State(avatar: avatar)
-
 			@Dependency(\.featureFlags) var featureFlags
 			let isPhotoAvatarsEnabled = featureFlags.isFlagEnabled(.photoAvatars)
 			self.isPhotoAvatarsEnabled = isPhotoAvatarsEnabled
+
+			@Dependency(\.uuid) var uuid
+			self.id = avatar?.id ?? uuid()
+			self.initialAvatar = avatar
+			self.text = TextAvatarEditor.State(avatar: avatar)
+			self.photo = PhotoAvatarEditor.State(avatar: avatar)
+			if isPhotoAvatarsEnabled {
+				self.avatarKind = avatar?.kind ?? .text
+			} else {
+				self.avatarKind = .text
+			}
 		}
 
 		var hasChanges: Bool {
@@ -168,7 +172,7 @@ public struct AvatarEditor: Reducer {
 extension Color {
 	var rgb: Avatar.Background.RGB {
 		let (red, green, blue, _) = UIColor(self).rgba
-		return .init(red, green, blue)
+		return Avatar.Background.RGB(red, green, blue)
 	}
 }
 
