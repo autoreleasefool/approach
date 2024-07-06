@@ -23,7 +23,7 @@ public struct AccessoriesOverview: Reducer {
 		public var recentAlleys: IdentifiedArrayOf<Alley.Summary> = []
 		public var recentGear: IdentifiedArrayOf<Gear.Summary> = []
 
-		public var errors: Errors<ErrorID>.State = .init()
+		public var errors = Errors<ErrorID>.State()
 
 		@Presents public var destination: Destination.State?
 
@@ -137,24 +137,24 @@ public struct AccessoriesOverview: Reducer {
 					}
 
 				case .didTapViewAllGear:
-					state.destination = .gearList(.init(kind: nil))
+					state.destination = .gearList(GearList.State(kind: nil))
 					return .none
 
 				case .didTapViewAllAlleys:
-					state.destination = .alleysList(.init())
+					state.destination = .alleysList(AlleysList.State())
 					return .none
 
 				case .didTapAddAlley:
-					state.destination = .alleyEditor(.init(value: .create(.default(withId: uuid()))))
+					state.destination = .alleyEditor(AlleyEditor.State(value: .create(.default(withId: uuid()))))
 					return .none
 
 				case .didTapAddGear:
 					let avatar = Avatar.Summary(id: uuid(), value: .text("", .default))
-					state.destination = .gearEditor(.init(value: .create(.default(withId: uuid(), avatar: avatar))))
+					state.destination = .gearEditor(GearEditor.State(value: .create(.default(withId: uuid(), avatar: avatar))))
 					return .none
 
 				case let .didTapGearKind(kind):
-					state.destination = .gearList(.init(kind: kind))
+					state.destination = .gearList(GearList.State(kind: kind))
 					return .none
 				}
 
@@ -163,12 +163,12 @@ public struct AccessoriesOverview: Reducer {
 				case let .itemsResponse(.success(items)):
 					switch items.first {
 					case .alley:
-						state.recentAlleys = .init(uniqueElements: items.compactMap {
+						state.recentAlleys = IdentifiedArray(uniqueElements: items.compactMap {
 							guard case let .alley(alley) = $0 else { return nil }
 							return alley
 						})
 					case .gear:
-						state.recentGear = .init(uniqueElements: items.compactMap {
+						state.recentGear = IdentifiedArray(uniqueElements: items.compactMap {
 							guard case let .gear(gear) = $0 else { return nil }
 							return gear
 						})
@@ -178,11 +178,11 @@ public struct AccessoriesOverview: Reducer {
 					return .none
 
 				case let .didLoadEditableAlley(.success(alley)):
-					state.destination = .alleyEditor(.init(value: .edit(alley)))
+					state.destination = .alleyEditor(AlleyEditor.State(value: .edit(alley)))
 					return .none
 
 				case let .didLoadEditableGear(.success(gear)):
-					state.destination = .gearEditor(.init(value: .edit(gear)))
+					state.destination = .gearEditor(GearEditor.State(value: .edit(gear)))
 					return .none
 
 				case .didFinishDeletingItem(.success):
@@ -305,7 +305,7 @@ public struct AccessoriesOverview: Reducer {
 
 extension AccessoriesOverview {
 	static func alert(toDeleteItem: Item) -> AlertState<AlertAction> {
-		.init(
+		AlertState(
 			title: TextState(Strings.Form.Prompt.delete(toDeleteItem.name)),
 			primaryButton: .destructive(
 				TextState(Strings.Action.delete),

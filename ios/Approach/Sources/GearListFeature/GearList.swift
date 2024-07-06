@@ -47,7 +47,7 @@ public struct GearList: Reducer {
 					.swipeToEdit,
 					.swipeToDelete,
 				],
-				query: .init(kind: nil, sortOrder: .default),
+				query: .init(kind: kind, sortOrder: .default),
 				listTitle: Strings.Gear.List.title,
 				emptyContent: .init(
 					image: Asset.Media.EmptyState.gear,
