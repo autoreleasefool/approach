@@ -47,6 +47,8 @@
 		CAA3D74D29CFB48D00876EDC /* BowlersRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74C29CFB48D00876EDC /* BowlersRepository */; };
 		CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74E29CFB49200876EDC /* DatabaseService */; };
 		CAA668BE2A8F29A800DF3E75 /* EmailService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA668BD2A8F29A800DF3E75 /* EmailService */; };
+		CABA39BF2C38AD7100F74E0C /* AvatarEditorPreviewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABA39BE2C38AD7100F74E0C /* AvatarEditorPreviewApp.swift */; };
+		CABA39C32C38AD7200F74E0C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CABA39C22C38AD7200F74E0C /* Assets.xcassets */; };
 		CABD35C22B85EC98001FB3C2 /* AnnouncementsService in Frameworks */ = {isa = PBXBuildFile; productRef = CABD35C12B85EC98001FB3C2 /* AnnouncementsService */; };
 		CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */ = {isa = PBXBuildFile; productRef = CABEC0CE29CBF9CD003CF669 /* AddressLookupService */; };
 		CAC458A32AB838C500898C16 /* ImportExportService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC458A22AB838C500898C16 /* ImportExportService */; };
@@ -61,6 +63,8 @@
 		CAD15BBB29FDF8E40015E4CB /* GamesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAD15BBA29FDF8E40015E4CB /* GamesRepository */; };
 		CAD15BC129FDFF890015E4CB /* TestDatabaseUtilitiesLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = CAD15BC029FDFF890015E4CB /* TestDatabaseUtilitiesLibrary */; };
 		CAECBAEB2ABD7323007713A8 /* LanesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAECBAEA2ABD7323007713A8 /* LanesRepository */; };
+		CAFD57632C38AF9E00004F4C /* AvatarService in Frameworks */ = {isa = PBXBuildFile; productRef = CAFD57622C38AF9E00004F4C /* AvatarService */; };
+		CAFD57652C38AFA200004F4C /* AvatarEditorFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CAFD57642C38AFA200004F4C /* AvatarEditorFeature */; };
 		CAFF2FCB2AB19B3000AE31BF /* AvatarService in Frameworks */ = {isa = PBXBuildFile; productRef = CAFF2FCA2AB19B3000AE31BF /* AvatarService */; };
 /* End PBXBuildFile section */
 
@@ -83,6 +87,10 @@
 		CA8BBC5C28D59B8C00653A1E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CA8BBC5F28D59B8C00653A1E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		CAB632A72AB4F96200C6D1BA /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+		CABA39BC2C38AD7100F74E0C /* AvatarEditorPreview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AvatarEditorPreview.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CABA39BE2C38AD7100F74E0C /* AvatarEditorPreviewApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarEditorPreviewApp.swift; sourceTree = "<group>"; };
+		CABA39C22C38AD7200F74E0C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CABA39CA2C38ADB800F74E0C /* AppAvatarEditorPreview.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppAvatarEditorPreview.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +156,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CABA39B92C38AD7100F74E0C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAFD57632C38AF9E00004F4C /* AvatarService in Frameworks */,
+				CAFD57652C38AFA200004F4C /* AvatarEditorFeature in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -175,6 +192,7 @@
 				CA5F86F12A01E5A70092F519 /* AppApproach.xcconfig */,
 				CAB632A72AB4F96200C6D1BA /* Secrets.xcconfig */,
 				CA5F86F32A01E5BE0092F519 /* AppGameEditorPreview.xcconfig */,
+				CABA39CA2C38ADB800F74E0C /* AppAvatarEditorPreview.xcconfig */,
 			);
 			path = XCConfigs;
 			sourceTree = "<group>";
@@ -202,6 +220,7 @@
 		CA632F6329BD26F200272ADB /* Previews */ = {
 			isa = PBXGroup;
 			children = (
+				CABA39BD2C38AD7100F74E0C /* AvatarEditorPreview */,
 				CA632F5629BD26E200272ADB /* GameEditorPreview */,
 			);
 			path = Previews;
@@ -223,6 +242,7 @@
 			children = (
 				CA8BBC5528D59B8B00653A1E /* Approach.app */,
 				CA632F5529BD26E200272ADB /* GameEditorPreview.app */,
+				CABA39BC2C38AD7100F74E0C /* AvatarEditorPreview.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -245,6 +265,15 @@
 				CA8BBC5F28D59B8C00653A1E /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		CABA39BD2C38AD7100F74E0C /* AvatarEditorPreview */ = {
+			isa = PBXGroup;
+			children = (
+				CABA39BE2C38AD7100F74E0C /* AvatarEditorPreviewApp.swift */,
+				CABA39C22C38AD7200F74E0C /* Assets.xcassets */,
+			);
+			path = AvatarEditorPreview;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -337,6 +366,27 @@
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
 			productType = "com.apple.product-type.application";
 		};
+		CABA39BB2C38AD7100F74E0C /* AvatarEditorPreview */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CABA39C92C38AD7200F74E0C /* Build configuration list for PBXNativeTarget "AvatarEditorPreview" */;
+			buildPhases = (
+				CABA39B82C38AD7100F74E0C /* Sources */,
+				CABA39B92C38AD7100F74E0C /* Frameworks */,
+				CABA39BA2C38AD7100F74E0C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AvatarEditorPreview;
+			packageProductDependencies = (
+				CAFD57622C38AF9E00004F4C /* AvatarService */,
+				CAFD57642C38AFA200004F4C /* AvatarEditorFeature */,
+			);
+			productName = AvatarEditorPreview;
+			productReference = CABA39BC2C38AD7100F74E0C /* AvatarEditorPreview.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -344,7 +394,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1420;
+				LastSwiftUpdateCheck = 1540;
 				LastUpgradeCheck = 1540;
 				TargetAttributes = {
 					CA632F5429BD26E200272ADB = {
@@ -352,6 +402,9 @@
 					};
 					CA8BBC5428D59B8B00653A1E = {
 						CreatedOnToolsVersion = 14.0;
+					};
+					CABA39BB2C38AD7100F74E0C = {
+						CreatedOnToolsVersion = 15.4;
 					};
 				};
 			};
@@ -372,6 +425,7 @@
 			targets = (
 				CA8BBC5428D59B8B00653A1E /* Approach */,
 				CA632F5429BD26E200272ADB /* GameEditorPreview */,
+				CABA39BB2C38AD7100F74E0C /* AvatarEditorPreview */,
 			);
 		};
 /* End PBXProject section */
@@ -392,6 +446,14 @@
 				CA8BBC6028D59B8C00653A1E /* Preview Assets.xcassets in Resources */,
 				CA626E2B2A836881002BCC13 /* Configuration.storekit in Resources */,
 				CA8BBC5D28D59B8C00653A1E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CABA39BA2C38AD7100F74E0C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CABA39C32C38AD7200F74E0C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -452,6 +514,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CABA39B82C38AD7100F74E0C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CABA39BF2C38AD7100F74E0C /* AvatarEditorPreviewApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
@@ -497,6 +567,20 @@
 			};
 			name = Release;
 		};
+		CABA39C72C38AD7200F74E0C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CABA39CA2C38ADB800F74E0C /* AppAvatarEditorPreview.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		CABA39C82C38AD7200F74E0C /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CABA39CA2C38ADB800F74E0C /* AppAvatarEditorPreview.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -523,6 +607,15 @@
 			buildConfigurations = (
 				CA8BBC7A28D59B8C00653A1E /* Debug */,
 				CA8BBC7B28D59B8C00653A1E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CABA39C92C38AD7200F74E0C /* Build configuration list for PBXNativeTarget "AvatarEditorPreview" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CABA39C72C38AD7200F74E0C /* Debug */,
+				CABA39C82C38AD7200F74E0C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -713,6 +806,14 @@
 		CAECBAEA2ABD7323007713A8 /* LanesRepository */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LanesRepository;
+		};
+		CAFD57622C38AF9E00004F4C /* AvatarService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AvatarService;
+		};
+		CAFD57642C38AFA200004F4C /* AvatarEditorFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AvatarEditorFeature;
 		};
 		CAFF2FCA2AB19B3000AE31BF /* AvatarService */ = {
 			isa = XCSwiftPackageProductDependency;
