@@ -24,9 +24,13 @@ extension ExportService: DependencyKey {
 
 						_ = exportCache.withValue { $0.insert(backupFileName) }
 
-						try database.writer().backup(to: DatabaseQueue(path: backupUrl.absoluteString)) {
+						let backUpQueue = try DatabaseQueue(path: backupUrl.absoluteString)
+
+						try database.writer().backup(to: backUpQueue) {
 							continuation.yield(.progress(stepsComplete: $0.completedPageCount, totalSteps: $0.totalPageCount))
 						}
+
+						try backUpQueue.close()
 
 						continuation.yield(.response(backupUrl))
 					} catch {

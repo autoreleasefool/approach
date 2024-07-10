@@ -211,6 +211,7 @@ public enum Asset {
       }
     }
     public enum Warning {
+      public static let background = ColorAsset(name: "Warning/Background")
       public static let `default` = ColorAsset(name: "Warning/Default")
     }
   }

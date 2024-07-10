@@ -1,5 +1,6 @@
 import BundlePackageServiceInterface
 import ConstantsLibrary
+import DatabaseServiceInterface
 import Dependencies
 import LaunchServiceInterface
 import Sentry
@@ -28,5 +29,8 @@ public struct ApproachApp: App {
 		Task.detached(priority: .high) {
 			await launch.didLaunch()
 		}
+
+		@Dependency(\.database) var database
+		database.initialize()
 	}
 }

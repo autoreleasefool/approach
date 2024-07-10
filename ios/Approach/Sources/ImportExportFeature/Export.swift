@@ -17,7 +17,7 @@ public struct Export: Reducer {
 	public struct State: Equatable {
 		public var exportUrl: URL?
 		public var lastExportAt: Date
-		public var errorMessage: String? = "Error"
+		public var errorMessage: String?
 
 		public init() {
 			@Dependency(\.preferences) var preferences

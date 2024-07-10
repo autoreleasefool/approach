@@ -1,6 +1,7 @@
 import DatabaseMigrationsLibrary
 import DatabaseServiceInterface
 import Dependencies
+import FileManagerPackageServiceInterface
 import Foundation
 import GRDB
 import GRDBDatabasePackageLibrary
@@ -14,18 +15,40 @@ extension DatabaseService: DependencyKey {
 		let eraseDatabaseSchemaOnChange = false
 #endif
 
-		@Dependency(\.grdb) var grdb
+		@Dependency(\.fileManager) var fileManager
+		let dbUrl: URL
 		do {
-			try grdb.initialize(
-				migrations: Migrations.approachMigrations,
-				eraseDatabaseOnSchemaChange: eraseDatabaseSchemaOnChange
-			)
+			let folderUrl = try fileManager
+				.getUserDirectory()
+				.appending(path: "database", directoryHint: .isDirectory)
+
+			try fileManager.createDirectory(folderUrl)
+
+			dbUrl = folderUrl.appending(path: "db.sqlite")
 		} catch {
 			// FIXME: should notify user of failure to open DB
-			fatalError("Unable to initialize database: \(error)")
+			fatalError("Unable to access database path: \(error)")
 		}
 
 		return Self(
+			initialize: {
+				@Dependency(\.grdb) var grdb
+				do {
+					try grdb.initialize(
+						dbUrl: dbUrl,
+						migrations: Migrations.approachMigrations,
+						eraseDatabaseOnSchemaChange: eraseDatabaseSchemaOnChange
+					)
+				} catch {
+					// FIXME: should notify user of failure to open DB
+					fatalError("Unable to initialize database: \(error)")
+				}
+			},
+			dbUrl: { dbUrl },
+			close: {
+				@Dependency(\.grdb) var grdb
+				try grdb.close()
+			},
 			reader: {
 				@Dependency(\.grdb) var grdb
 				return grdb.reader()

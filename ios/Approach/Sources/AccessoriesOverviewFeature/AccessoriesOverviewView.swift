@@ -126,6 +126,7 @@ public struct AccessoriesOverviewView: View {
 		.alleyEditor($store.scope(state: \.destination?.alleyEditor, action: \.internal.destination.alleyEditor))
 		.gearEditor($store.scope(state: \.destination?.gearEditor, action: \.internal.destination.gearEditor))
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.alert($store.scope(state: \.destination?.alert, action: \.internal.destination.alert))
 	}
 }
 

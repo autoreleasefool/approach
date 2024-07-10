@@ -652,6 +652,28 @@
 "onboarding.logbook.name" = "Your Name";
 "onboarding.logbook.addBowler" = "Add Bowler";
 
+/* Import */
+"import.title" = "Importing";
+"import.description.approachAllowsExport" = "Approach allows to you export your data to a back up file for safety and security of your data.";
+"import.description.importBackupFiles" = "If you lose your data, you can restore your data from a back up file here.";
+"import.description.restore" = "Something not looking quite right? You can restore your data to before your last import.";
+"import.instructions.overwrite" = "This will overwrite any existing data on this device.";
+"import.instructions.notRecover" = "You may not be able to recover it later.";
+"import.action.import" = "Import data";
+"import.action.restorePreviousData" = "Restore previous data";
+"import.action.restore" = "Restore";
+"import.importing.notStarted" = "Import not started...";
+"import.importing.inProgress" = "Importing...";
+"import.importing.successImporting" = "Data successfully imported!";
+"import.importing.successRestoring" = "Data successfully restored!";
+"import.importing.error" = "There was an error importing your data";
+"import.importing.report" = "If you're having trouble importing your data, try sending us an email at approach@josephroque.ca for help.";
+"import.restore.title" = "Restore to before last import?";
+"import.restore.message" = "You last imported your data on %@. If you choose to restore your data, you will lose any new data you've recorded since this import, and your records will be reset to before the imported data was applied. Are you sure about this?";
+"import.error.failedToFetchBackup" = "Could not find latest back up. Restart Approach to try again.";
+"import.error.failedToImport" = "Approach couldn't find the file you imported. Please try again.";
+"import.error.failedToRestore" = "Approach couldn't restore to the latest backup. Please try again.";
+
 /* Export */
 
 "export.title" = "Exporting";
@@ -721,6 +743,7 @@
 "error.toast.failedToArchive" = "Error archiving data";
 "error.toast.failedToRestore" = "Error restoring data";
 "error.toast.failedToSave" = "Error saving data";
+"error.toast.failedToImport" = "Error importing data";
 "error.toast.itemNotCreated" = "%@ not created";
 "error.toast.itemNotUpdated" = "%@ not updated";
 "error.toast.tapToReport" = "Tap to Report";

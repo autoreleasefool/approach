@@ -51,7 +51,7 @@ public struct Settings: Reducer {
 		}
 
 		public mutating func showAppIconList() -> Effect<Settings.Action> {
-			self.destination = .appIcon(.init())
+			self.destination = .appIcon(AppIconList.State())
 			return .none
 		}
 	}
@@ -99,6 +99,7 @@ public struct Settings: Reducer {
 		case opponentsList(OpponentsList)
 		case statistics(StatisticsSettings)
 		case analytics(AnalyticsSettings)
+		case `import`(Import)
 		case export(Export)
 		case alert(AlertState<AlertAction>)
 	}
@@ -139,23 +140,23 @@ public struct Settings: Reducer {
 					return .run { _ in try await databaseMocking.mockDatabase() }
 
 				case .didTapOpponents:
-					state.destination = .opponentsList(.init())
+					state.destination = .opponentsList(OpponentsList.State())
 					return .none
 
 				case .didTapFeatureFlags:
-					state.destination = .featureFlags(.init())
+					state.destination = .featureFlags(FeatureFlagsList.State())
 					return .none
 
 				case .didTapStatistics:
-					state.destination = .statistics(.init())
+					state.destination = .statistics(StatisticsSettings.State())
 					return .none
 
 				case .didTapAppIcon:
-					state.destination = .appIcon(.init())
+					state.destination = .appIcon(AppIconList.State())
 					return .none
 
 				case .didTapArchive:
-					state.destination = .archive(.init())
+					state.destination = .archive(ArchiveList.State())
 					return .none
 
 				case .didTapVersionNumber:
@@ -198,15 +199,15 @@ public struct Settings: Reducer {
 					return .run { _ in crash() }
 
 				case .didTapAnalyticsButton:
-					state.destination = .analytics(.init())
+					state.destination = .analytics(AnalyticsSettings.State())
 					return .none
 
 				case .didTapImportButton:
-					// FIXME: Navigate to data import feature
+					state.destination = .import(Import.State())
 					return .none
 
 				case .didTapExportButton:
-					state.destination = .export(.init())
+					state.destination = .export(Export.State())
 					return .none
 				}
 
@@ -248,11 +249,14 @@ public struct Settings: Reducer {
 				case .destination(.presented(.export(.delegate(.doNothing)))):
 					return .none
 
+				case .destination(.presented(.import(.delegate(.doNothing)))):
+					return .none
+
 				case .destination(.dismiss):
 					switch state.destination {
 					case .export:
 						return .run { _ in export.cleanUp() }
-					case .analytics, .appIcon, .archive, .featureFlags, .opponentsList, .statistics, .alert, .none:
+					case .analytics, .appIcon, .archive, .featureFlags, .opponentsList, .statistics, .alert, .none, .import:
 						return .none
 					}
 
@@ -265,6 +269,8 @@ public struct Settings: Reducer {
 						.destination(.presented(.analytics(.internal))), .destination(.presented(.analytics(.view))),
 						.destination(.presented(.analytics(.binding))),
 						.destination(.presented(.export(.internal))), .destination(.presented(.export(.view))),
+						.destination(.presented(.import(.internal))), .destination(.presented(.import(.view))),
+						.destination(.presented(.import(.binding))),
 						.destination(.presented(.alert(.didTapDismissButton))):
 					return .none
 				}

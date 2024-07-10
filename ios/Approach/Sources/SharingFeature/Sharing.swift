@@ -351,4 +351,3 @@ private struct ShareImageButtonModifier: ViewModifier {
 			.tint(Asset.Colors.Primary.default)
 	}
 }
-

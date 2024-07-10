@@ -155,6 +155,7 @@ public struct SettingsView: View {
 		.statisticsSettings($store.scope(state: \.destination?.statistics, action: \.internal.destination.statistics))
 		.analytics($store.scope(state: \.destination?.analytics, action: \.internal.destination.analytics))
 		.export($store.scope(state: \.destination?.export, action: \.internal.destination.export))
+		.import($store.scope(state: \.destination?.import, action: \.internal.destination.import))
 		.alert($store.scope(state: \.destination?.alert, action: \.internal.destination.alert))
 	}
 }
@@ -169,6 +170,12 @@ public struct SettingsView: View {
 	fileprivate func export(_ store: Binding<StoreOf<Export>?>) -> some View {
 		navigationDestination(item: store) {
 			ExportView(store: $0)
+		}
+	}
+
+	fileprivate func `import`(_ store: Binding<StoreOf<Import>?>) -> some View {
+		navigationDestination(item: store) {
+			ImportView(store: $0)
 		}
 	}
 

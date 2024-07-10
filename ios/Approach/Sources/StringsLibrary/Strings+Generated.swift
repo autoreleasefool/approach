@@ -432,6 +432,8 @@ public enum Strings {
       public static let failedToArchive = Strings.tr("Localizable", "error.toast.failedToArchive", fallback: "Error archiving data")
       /// Error deleting data
       public static let failedToDelete = Strings.tr("Localizable", "error.toast.failedToDelete", fallback: "Error deleting data")
+      /// Error importing data
+      public static let failedToImport = Strings.tr("Localizable", "error.toast.failedToImport", fallback: "Error importing data")
       /// Error loading data
       public static let failedToLoad = Strings.tr("Localizable", "error.toast.failedToLoad", fallback: "Error loading data")
       /// Error restoring data
@@ -745,6 +747,62 @@ public enum Strings {
         /// Towels
         public static let towels = Strings.tr("Localizable", "gear.properties.kind.towels", fallback: "Towels")
       }
+    }
+  }
+  public enum Import {
+    /// Import
+    public static let title = Strings.tr("Localizable", "import.title", fallback: "Importing")
+    public enum Action {
+      /// Import data
+      public static let `import` = Strings.tr("Localizable", "import.action.import", fallback: "Import data")
+      /// Restore
+      public static let restore = Strings.tr("Localizable", "import.action.restore", fallback: "Restore")
+      /// Restore previous data
+      public static let restorePreviousData = Strings.tr("Localizable", "import.action.restorePreviousData", fallback: "Restore previous data")
+    }
+    public enum Description {
+      /// Approach allows to you export your data to a back up file for safety and security of your data.
+      public static let approachAllowsExport = Strings.tr("Localizable", "import.description.approachAllowsExport", fallback: "Approach allows to you export your data to a back up file for safety and security of your data.")
+      /// If you lose your data, you can restore your data from a back up file here.
+      public static let importBackupFiles = Strings.tr("Localizable", "import.description.importBackupFiles", fallback: "If you lose your data, you can restore your data from a back up file here.")
+      /// Something not looking quite right? You can restore your data to before your last import.
+      public static let restore = Strings.tr("Localizable", "import.description.restore", fallback: "Something not looking quite right? You can restore your data to before your last import.")
+    }
+    public enum Error {
+      /// Could not find latest back up. Restart Approach to try again.
+      public static let failedToFetchBackup = Strings.tr("Localizable", "import.error.failedToFetchBackup", fallback: "Could not find latest back up. Restart Approach to try again.")
+      /// Approach couldn't find the file you imported. Please try again.
+      public static let failedToImport = Strings.tr("Localizable", "import.error.failedToImport", fallback: "Approach couldn't find the file you imported. Please try again.")
+      /// Approach couldn't restore to the latest backup. Please try again.
+      public static let failedToRestore = Strings.tr("Localizable", "import.error.failedToRestore", fallback: "Approach couldn't restore to the latest backup. Please try again.")
+    }
+    public enum Importing {
+      /// There was an error importing your data
+      public static let error = Strings.tr("Localizable", "import.importing.error", fallback: "There was an error importing your data")
+      /// Importing...
+      public static let inProgress = Strings.tr("Localizable", "import.importing.inProgress", fallback: "Importing...")
+      /// Import not started...
+      public static let notStarted = Strings.tr("Localizable", "import.importing.notStarted", fallback: "Import not started...")
+      /// If you're having trouble importing your data, try sending us an email at approach@josephroque.ca for help.
+      public static let report = Strings.tr("Localizable", "import.importing.report", fallback: "If you're having trouble importing your data, try sending us an email at approach@josephroque.ca for help.")
+      /// Data successfully imported!
+      public static let successImporting = Strings.tr("Localizable", "import.importing.successImporting", fallback: "Data successfully imported!")
+      /// Data successfully restored!
+      public static let successRestoring = Strings.tr("Localizable", "import.importing.successRestoring", fallback: "Data successfully restored!")
+    }
+    public enum Instructions {
+      /// You may not be able to recover it later.
+      public static let notRecover = Strings.tr("Localizable", "import.instructions.notRecover", fallback: "You may not be able to recover it later.")
+      /// This will overwrite any existing data on this device.
+      public static let overwrite = Strings.tr("Localizable", "import.instructions.overwrite", fallback: "This will overwrite any existing data on this device.")
+    }
+    public enum Restore {
+      /// You last imported your data on %@. If you choose to restore your data, you will lose any new data you've recorded since this import, and your records will be reset to before the imported data was applied. Are you sure about this?
+      public static func message(_ p1: Any) -> String {
+        return Strings.tr("Localizable", "import.restore.message", String(describing: p1), fallback: "You last imported your data on %@. If you choose to restore your data, you will lose any new data you've recorded since this import, and your records will be reset to before the imported data was applied. Are you sure about this?")
+      }
+      /// Restore to before last import?
+      public static let title = Strings.tr("Localizable", "import.restore.title", fallback: "Restore to before last import?")
     }
   }
   public enum Lane {

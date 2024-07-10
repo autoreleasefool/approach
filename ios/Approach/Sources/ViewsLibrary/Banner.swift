@@ -78,13 +78,18 @@ extension Banner {
 		)
 
 		public static let success: Self = .init(
-			foreground: .green,
-			background: .teal
+			foreground: Color.black,
+			background: Asset.Colors.Success.default.swiftUIColor
 		)
 
 		public static let destructive: Self = .init(
 			foreground: Asset.Colors.Destructive.default.swiftUIColor,
 			background: .pink
+		)
+
+		public static let warning: Self = .init(
+			foreground: Color.black,
+			background: Asset.Colors.Warning.background.swiftUIColor
 		)
 
 		public static let error: Self = .init(

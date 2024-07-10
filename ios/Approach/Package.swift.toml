@@ -87,8 +87,9 @@ services = [ "RecentlyUsed" ]
 libraries = [ "ResourceList", "SortOrder" ]
 
 [features.ImportExport]
+features = [ "Errors" ]
 services = [ "ImportExport", "Preference" ]
-libraries = [ "DateTime", "Views" ]
+libraries = [ "DateTime" ]
 dependencies = [ "SwiftUIExtensionsPackageLibrary" ]
 
 [features.LaneEditor]
@@ -263,6 +264,8 @@ skip_tests = true
 services = [ "Database" ]
 libraries = [ "DateTime" ]
 dependencies = [ "FileManagerPackageServiceInterface" ]
+[services.ImportExport.interface]
+dependencies = [ "DependenciesMacros" ]
 
 [services.Launch]
 services = [ "Analytics", "Preference", "Products" ]
@@ -438,7 +441,7 @@ libraries = [ "Assets", "Strings" ]
 # Dependency Versions
 [sharedRefs.SwiftUtilities]
 url = "https://github.com/autoreleasefool/swift-utilities.git"
-from = "2.0.1"
+from = "2.2.0"
 
 [sharedRefs.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"
