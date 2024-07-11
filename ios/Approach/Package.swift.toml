@@ -251,6 +251,7 @@ libraries = [ "ModelsViews" ]
 
 [services.Database]
 libraries = [ "DatabaseMigrations" ]
+dependencies = [ "FileManagerPackageServiceInterface" ]
 [services.Database.interface]
 suitable_for_dependents_matching = "\\w+Repository$"
 dependencies = [ "DependenciesMacros", "GRDB", "GRDBDatabasePackageServiceInterface" ]
@@ -441,7 +442,7 @@ libraries = [ "Assets", "Strings" ]
 # Dependency Versions
 [sharedRefs.SwiftUtilities]
 url = "https://github.com/autoreleasefool/swift-utilities.git"
-from = "2.2.0"
+from = "2.3.0"
 
 [sharedRefs.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"
