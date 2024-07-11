@@ -63,10 +63,39 @@
 		CAD15BBB29FDF8E40015E4CB /* GamesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAD15BBA29FDF8E40015E4CB /* GamesRepository */; };
 		CAD15BC129FDFF890015E4CB /* TestDatabaseUtilitiesLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = CAD15BC029FDFF890015E4CB /* TestDatabaseUtilitiesLibrary */; };
 		CAECBAEB2ABD7323007713A8 /* LanesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAECBAEA2ABD7323007713A8 /* LanesRepository */; };
+		CAF2DE942C3E692300D54930 /* ApproachWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF2DE932C3E692300D54930 /* ApproachWatchApp.swift */; };
+		CAF2DE962C3E692300D54930 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF2DE952C3E692300D54930 /* ContentView.swift */; };
+		CAF2DE982C3E692400D54930 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CAF2DE972C3E692400D54930 /* Assets.xcassets */; };
+		CAF2DE9B2C3E692400D54930 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CAF2DE9A2C3E692400D54930 /* Preview Assets.xcassets */; };
+		CAF2DE9E2C3E692400D54930 /* ApproachWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = CAF2DE912C3E692300D54930 /* ApproachWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CAFD57632C38AF9E00004F4C /* AvatarService in Frameworks */ = {isa = PBXBuildFile; productRef = CAFD57622C38AF9E00004F4C /* AvatarService */; };
 		CAFD57652C38AFA200004F4C /* AvatarEditorFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CAFD57642C38AFA200004F4C /* AvatarEditorFeature */; };
 		CAFF2FCB2AB19B3000AE31BF /* AvatarService in Frameworks */ = {isa = PBXBuildFile; productRef = CAFF2FCA2AB19B3000AE31BF /* AvatarService */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CAF2DE9C2C3E692400D54930 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CA8BBC4D28D59B8B00653A1E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CAF2DE902C3E692300D54930;
+			remoteInfo = "WatchApproach Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CAF2DEA22C3E692400D54930 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				CAF2DE9E2C3E692400D54930 /* ApproachWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		CA2F033928F87C4100030BFE /* Approach */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Approach; sourceTree = "<group>"; };
@@ -91,6 +120,14 @@
 		CABA39BE2C38AD7100F74E0C /* AvatarEditorPreviewApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarEditorPreviewApp.swift; sourceTree = "<group>"; };
 		CABA39C22C38AD7200F74E0C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CABA39CA2C38ADB800F74E0C /* AppAvatarEditorPreview.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppAvatarEditorPreview.xcconfig; sourceTree = "<group>"; };
+		CAF2DE912C3E692300D54930 /* ApproachWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ApproachWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAF2DE932C3E692300D54930 /* ApproachWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApproachWatchApp.swift; sourceTree = "<group>"; };
+		CAF2DE952C3E692300D54930 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		CAF2DE972C3E692400D54930 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CAF2DE9A2C3E692400D54930 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		CAF2DEA42C3FB7B600D54930 /* WatchApproach.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = WatchApproach.xcconfig; sourceTree = "<group>"; };
+		CAF2DEA62C3FB7C800D54930 /* Watch.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Watch.xcconfig; sourceTree = "<group>"; };
+		CAF2DEA72C3FB7DA00D54930 /* Target.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Target.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,6 +202,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CAF2DE8E2C3E692300D54930 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -190,6 +234,7 @@
 			children = (
 				CA5F86ED2A01E5810092F519 /* Base */,
 				CA5F86F12A01E5A70092F519 /* AppApproach.xcconfig */,
+				CAF2DEA42C3FB7B600D54930 /* WatchApproach.xcconfig */,
 				CAB632A72AB4F96200C6D1BA /* Secrets.xcconfig */,
 				CA5F86F32A01E5BE0092F519 /* AppGameEditorPreview.xcconfig */,
 				CABA39CA2C38ADB800F74E0C /* AppAvatarEditorPreview.xcconfig */,
@@ -204,6 +249,8 @@
 				CA5F86F22A01E5AF0092F519 /* Project.xcconfig */,
 				CA5F86EF2A01E5930092F519 /* Test.xcconfig */,
 				CA5F86F02A01E59B0092F519 /* Version.xcconfig */,
+				CAF2DEA62C3FB7C800D54930 /* Watch.xcconfig */,
+				CAF2DEA72C3FB7DA00D54930 /* Target.xcconfig */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -231,6 +278,7 @@
 			children = (
 				CA2F033928F87C4100030BFE /* Approach */,
 				CA8BBC5728D59B8B00653A1E /* ApproachIOS */,
+				CAF2DE922C3E692300D54930 /* ApproachWatch */,
 				CA5F86EC2A01E5780092F519 /* XCConfigs */,
 				CA632F6329BD26F200272ADB /* Previews */,
 				CA8BBC5628D59B8B00653A1E /* Products */,
@@ -244,6 +292,7 @@
 				CA8BBC5528D59B8B00653A1E /* Approach.app */,
 				CA632F5529BD26E200272ADB /* GameEditorPreview.app */,
 				CABA39BC2C38AD7100F74E0C /* AvatarEditorPreview.app */,
+				CAF2DE912C3E692300D54930 /* ApproachWatch.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -274,6 +323,25 @@
 				CABA39C22C38AD7200F74E0C /* Assets.xcassets */,
 			);
 			path = AvatarEditorPreview;
+			sourceTree = "<group>";
+		};
+		CAF2DE922C3E692300D54930 /* ApproachWatch */ = {
+			isa = PBXGroup;
+			children = (
+				CAF2DE932C3E692300D54930 /* ApproachWatchApp.swift */,
+				CAF2DE952C3E692300D54930 /* ContentView.swift */,
+				CAF2DE972C3E692400D54930 /* Assets.xcassets */,
+				CAF2DE992C3E692400D54930 /* Preview Content */,
+			);
+			path = ApproachWatch;
+			sourceTree = "<group>";
+		};
+		CAF2DE992C3E692400D54930 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				CAF2DE9A2C3E692400D54930 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -320,11 +388,13 @@
 				CA8BBC5128D59B8B00653A1E /* Sources */,
 				CA8BBC5228D59B8B00653A1E /* Frameworks */,
 				CA8BBC5328D59B8B00653A1E /* Resources */,
+				CAF2DEA22C3E692400D54930 /* Embed Watch Content */,
 				5B8CBEA6A7864D49B251E753 /* Upload Debug Symbols to Sentry */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				CAF2DE9D2C3E692400D54930 /* PBXTargetDependency */,
 			);
 			name = Approach;
 			packageProductDependencies = (
@@ -387,6 +457,23 @@
 			productReference = CABA39BC2C38AD7100F74E0C /* AvatarEditorPreview.app */;
 			productType = "com.apple.product-type.application";
 		};
+		CAF2DE902C3E692300D54930 /* ApproachWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CAF2DE9F2C3E692400D54930 /* Build configuration list for PBXNativeTarget "ApproachWatch" */;
+			buildPhases = (
+				CAF2DE8D2C3E692300D54930 /* Sources */,
+				CAF2DE8E2C3E692300D54930 /* Frameworks */,
+				CAF2DE8F2C3E692300D54930 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ApproachWatch;
+			productName = "Approach Watch App";
+			productReference = CAF2DE912C3E692300D54930 /* ApproachWatch.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -404,6 +491,9 @@
 						CreatedOnToolsVersion = 14.0;
 					};
 					CABA39BB2C38AD7100F74E0C = {
+						CreatedOnToolsVersion = 15.4;
+					};
+					CAF2DE902C3E692300D54930 = {
 						CreatedOnToolsVersion = 15.4;
 					};
 				};
@@ -426,6 +516,7 @@
 				CA8BBC5428D59B8B00653A1E /* Approach */,
 				CA632F5429BD26E200272ADB /* GameEditorPreview */,
 				CABA39BB2C38AD7100F74E0C /* AvatarEditorPreview */,
+				CAF2DE902C3E692300D54930 /* ApproachWatch */,
 			);
 		};
 /* End PBXProject section */
@@ -454,6 +545,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				CABA39C32C38AD7200F74E0C /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAF2DE8F2C3E692300D54930 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAF2DE9B2C3E692400D54930 /* Preview Assets.xcassets in Resources */,
+				CAF2DE982C3E692400D54930 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -522,7 +622,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CAF2DE8D2C3E692300D54930 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAF2DE962C3E692300D54930 /* ContentView.swift in Sources */,
+				CAF2DE942C3E692300D54930 /* ApproachWatchApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CAF2DE9D2C3E692400D54930 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CAF2DE902C3E692300D54930 /* ApproachWatch */;
+			targetProxy = CAF2DE9C2C3E692400D54930 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		CA632F6029BD26E300272ADB /* Debug */ = {
@@ -557,6 +674,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CA5F86F12A01E5A70092F519 /* AppApproach.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 			};
 			name = Debug;
 		};
@@ -564,6 +682,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CA5F86F12A01E5A70092F519 /* AppApproach.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 			};
 			name = Release;
 		};
@@ -577,6 +696,20 @@
 		CABA39C82C38AD7200F74E0C /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CABA39CA2C38ADB800F74E0C /* AppAvatarEditorPreview.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		CAF2DEA02C3E692400D54930 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CAF2DEA42C3FB7B600D54930 /* WatchApproach.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		CAF2DEA12C3E692400D54930 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CAF2DEA42C3FB7B600D54930 /* WatchApproach.xcconfig */;
 			buildSettings = {
 			};
 			name = Release;
@@ -616,6 +749,15 @@
 			buildConfigurations = (
 				CABA39C72C38AD7200F74E0C /* Debug */,
 				CABA39C82C38AD7200F74E0C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CAF2DE9F2C3E692400D54930 /* Build configuration list for PBXNativeTarget "ApproachWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CAF2DEA02C3E692400D54930 /* Debug */,
+				CAF2DEA12C3E692400D54930 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
