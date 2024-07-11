@@ -440,6 +440,11 @@ dependencies = [ "AlertToast", "ComposableArchitecture" ]
 libraries = [ "Assets", "Strings" ]
 
 # Dependency Versions
+
+[sharedRefs.CocoaLumberjack]
+url = "https://github.com/CocoaLumberjack/CocoaLumberjack.git"
+from = "3.8.5"
+
 [sharedRefs.SwiftUtilities]
 url = "https://github.com/autoreleasefool/swift-utilities.git"
 from = "2.3.0"
@@ -463,12 +468,9 @@ url = "https://github.com/apple/swift-async-algorithms.git"
 from = "1.0.0"
 
 [dependencies.CocoaLumberjack]
-url = "https://github.com/CocoaLumberjack/CocoaLumberjack.git"
-from = "3.8.4"
-
+sharedRef = "CocoaLumberjack"
 [dependencies.CocoaLumberjackSwift]
-url = "https://github.com/CocoaLumberjack/CocoaLumberjack.git"
-from = "3.8.4"
+sharedRef = "CocoaLumberjack"
 
 [dependencies.Collections]
 url = "https://github.com/apple/swift-collections.git"
