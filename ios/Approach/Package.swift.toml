@@ -487,7 +487,7 @@ sharedRef = "Dependencies"
 
 [dependencies.GRDB]
 url = "https://github.com/groue/GRDB.swift.git"
-from = "6.25.0"
+from = "6.28.0"
 
 [dependencies.IdentifiedCollections]
 url = "https://github.com/pointfreeco/swift-identified-collections.git"
