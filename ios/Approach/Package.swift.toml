@@ -516,7 +516,7 @@ from = "1.1.2"
 
 [dependencies.ZIPFoundation]
 url = "https://github.com/weichsel/ZIPFoundation.git"
-from = "0.9.18"
+from = "0.9.19"
 
 [dependencies.AnalyticsPackageServiceInterface]
 sharedRef = "SwiftUtilities"
