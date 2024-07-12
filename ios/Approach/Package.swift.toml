@@ -451,7 +451,7 @@ from = "2.3.0"
 
 [sharedRefs.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"
-from = "1.2.2"
+from = "1.3.1"
 
 # External Dependencies
 
@@ -478,7 +478,7 @@ from = "1.1.0"
 
 [dependencies.ComposableArchitecture]
 url = "https://github.com/pointfreeco/swift-composable-architecture.git"
-from = "1.9.2"
+from = "1.11.2"
 
 [dependencies.Dependencies]
 sharedRef = "Dependencies"
@@ -491,7 +491,7 @@ from = "6.28.0"
 
 [dependencies.IdentifiedCollections]
 url = "https://github.com/pointfreeco/swift-identified-collections.git"
-from = "1.0.0"
+from = "1.1.0"
 
 [dependencies.RevenueCat]
 url = "https://github.com/RevenueCat/purchases-ios.git"
@@ -508,11 +508,11 @@ from = "8.30.1"
 [dependencies.SnapshotTesting]
 suitable_for_dependents_matching = "\\w+Tests$"
 url = "https://github.com/pointfreeco/swift-snapshot-testing.git"
-from = "1.15.4"
+from = "1.17.1"
 
 [dependencies.XCTestDynamicOverlay]
 url = "https://github.com/pointfreeco/xctest-dynamic-overlay.git"
-from = "1.1.0"
+from = "1.1.2"
 
 [dependencies.ZIPFoundation]
 url = "https://github.com/weichsel/ZIPFoundation.git"
