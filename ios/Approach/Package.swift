@@ -162,7 +162,7 @@ let package = Package(
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.1"),
 		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "1.1.2"),
 		.package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "4.37.0"),
-		.package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", from: "5.2.0"),
+		.package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", from: "5.3.0"),
 		.package(url: "https://github.com/weichsel/ZIPFoundation.git", from: "0.9.18"),
 	],
 	targets: [
