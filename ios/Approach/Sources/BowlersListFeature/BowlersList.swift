@@ -55,7 +55,6 @@ public struct BowlersList: Reducer {
 
 		public var isShowingQuickLaunchTip: Bool
 		public var isShowingWidgets: Bool
-		public var isBowlerDetailsEnabled: Bool
 
 		public init() {
 			self.list = .init(
@@ -79,9 +78,6 @@ public struct BowlersList: Reducer {
 
 			@Dependency(TipsService.self) var tips
 			self.isShowingQuickLaunchTip = tips.shouldShow(tipFor: .quickLaunchTip)
-
-			@Dependency(\.featureFlags) var featureFlags
-			self.isBowlerDetailsEnabled = featureFlags.isFlagEnabled(.bowlerDetails)
 		}
 	}
 
@@ -140,6 +136,7 @@ public struct BowlersList: Reducer {
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date
 	@Dependency(\.errors) var errors
+	@Dependency(\.featureFlags) var featureFlags
 	@Dependency(GamesRepository.self) var games
 	@Dependency(\.preferences) var preferences
 	@Dependency(QuickLaunchRepository.self) var quickLaunch
@@ -204,8 +201,7 @@ public struct BowlersList: Reducer {
 
 				case let .didTapBowler(id):
 					guard let bowler = state.list.findResource(byId: id) else { return .none }
-					state.destination = .leagues(.init(bowler: bowler.summary))
-					state.destination = if state.isBowlerDetailsEnabled {
+					state.destination = if featureFlags.isFlagEnabled(.bowlerDetails) {
 						.details(BowlerDetails.State(bowler: bowler.summary))
 					} else {
 						.leagues(LeaguesList.State(bowler: bowler.summary))
