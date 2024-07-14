@@ -2,6 +2,7 @@ import BowlerEditorFeature
 import ComposableArchitecture
 import FeatureActionLibrary
 import LeaguesListFeature
+import LeaguesRepositoryInterface
 import ModelsLibrary
 import SwiftUI
 
@@ -11,10 +12,17 @@ public struct BowlerDetails: Reducer {
 	public struct State: Equatable {
 		public let bowler: Bowler.Summary
 		public var header: BowlerDetailsHeader.State
+		public var leagues: LeaguesSection.State
+
+		@Shared public var recurrence: League.Recurrence?
+		@Shared public var ordering: League.Ordering
 
 		public init(bowler: Bowler.Summary) {
 			self.bowler = bowler
 			self.header = BowlerDetailsHeader.State(bowler: bowler)
+			self._recurrence = Shared(.none)
+			self._ordering = Shared(.default)
+			self.leagues = LeaguesSection.State(bowlerId: bowler.id, ordering: _ordering, recurrence: _recurrence)
 		}
 	}
 
@@ -23,6 +31,7 @@ public struct BowlerDetails: Reducer {
 		@CasePathable public enum Delegate { case doNothing }
 		@CasePathable public enum Internal {
 			case header(BowlerDetailsHeader.Action)
+			case leagues(LeaguesSection.Action)
 		}
 
 		case view(View)
@@ -36,6 +45,10 @@ public struct BowlerDetails: Reducer {
 		Scope(state: \.header, action:
 				\.internal.header) {
 			BowlerDetailsHeader()
+		}
+
+		Scope(state: \.leagues, action: \.internal.leagues) {
+			LeaguesSection()
 		}
 
 		Reduce<State, Action> { state, action in
@@ -54,7 +67,8 @@ public struct BowlerDetails: Reducer {
 						return .none
 					}
 
-				case .header(.view), .header(.internal):
+				case .header(.view), .header(.internal),
+						.leagues(.view), .leagues(.internal), .leagues(.delegate(.doNothing)):
 					return .none
 				}
 
@@ -65,6 +79,8 @@ public struct BowlerDetails: Reducer {
 	}
 }
 
+// MARK: - View
+
 @ViewAction(for: BowlerDetails.self)
 public struct BowlerDetailsView: View {
 	public var store: StoreOf<BowlerDetails>
@@ -74,8 +90,11 @@ public struct BowlerDetailsView: View {
 	}
 
 	public var body: some View {
-		VStack {
+		List {
 			BowlerDetailsHeaderView(store: store.scope(state: \.header, action: \.internal.header))
+
+			LeaguesSectionView(store: store.scope(state: \.leagues, action: \.internal.leagues))
 		}
+		.navigationTitle(store.bowler.name)
 	}
 }

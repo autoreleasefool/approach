@@ -74,6 +74,24 @@ public struct LeaguesRepository: Sendable {
 	) -> AsyncThrowingStream<[League.Summary], Error> {
 		self.pickable(bowledBy, withRecurrence, ordering)
 	}
+
+	public func list(filter: ListFilter) -> AsyncThrowingStream<[League.List], Error> {
+		self.list(bowledBy: filter.bowler, withRecurrence: filter.recurrence, ordering: filter.ordering)
+	}
+}
+
+extension LeaguesRepository {
+	public struct ListFilter {
+		public let bowler: Bowler.ID
+		public let recurrence: League.Recurrence?
+		public let ordering: League.Ordering
+
+		public init(bowler: Bowler.ID, recurrence: League.Recurrence?, ordering: League.Ordering) {
+			self.bowler = bowler
+			self.recurrence = recurrence
+			self.ordering = ordering
+		}
+	}
 }
 
 extension LeaguesRepository: TestDependencyKey {
