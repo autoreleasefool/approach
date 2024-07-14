@@ -199,10 +199,7 @@ public struct BowlersList: Reducer {
 				case let .didTapBowler(id):
 					guard let bowler = state.list.findResource(byId: id) else { return .none }
 					state.destination = .leagues(.init(bowler: bowler.summary))
-					return .run { _ in
-						try await clock.sleep(for: .seconds(1))
-						recentlyUsed.didRecentlyUseResource(.bowlers, id)
-					}
+					return recentlyUsed.didRecentlyUse(.bowlers, id: id, in: self)
 
 				case .didTapQuickLaunchButton:
 					guard let league = state.quickLaunch?.league else { return .none }

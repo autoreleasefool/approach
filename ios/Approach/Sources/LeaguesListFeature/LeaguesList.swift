@@ -213,17 +213,11 @@ public struct LeaguesList: Reducer {
 
 				case let .didLoadSeriesLeague(.success(league)):
 					state.destination = .series(.init(league: league))
-					return .run { _ in
-						try await clock.sleep(for: .seconds(1))
-						recentlyUsed.didRecentlyUseResource(.leagues, league.id)
-					}
+					return recentlyUsed.didRecentlyUse(.leagues, id: league.id, in: self)
 
 				case let .didLoadEventSeries(.success(event)):
 					state.destination = .games(.init(series: event.series, host: event.host))
-					return .run { _ in
-						try await clock.sleep(for: .seconds(1))
-						recentlyUsed.didRecentlyUseResource(.leagues, event.host.id)
-					}
+					return recentlyUsed.didRecentlyUse(.leagues, id: event.host.id, in: self)
 
 				case .didArchiveLeague(.success):
 					return .none
