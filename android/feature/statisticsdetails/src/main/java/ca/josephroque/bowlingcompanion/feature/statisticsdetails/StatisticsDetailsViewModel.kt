@@ -37,7 +37,8 @@ class StatisticsDetailsViewModel @Inject constructor(
 	private val userDataRepository: UserDataRepository,
 	private val analyticsClient: AnalyticsClient,
 	@ApplicationScope private val scope: CoroutineScope,
-) : ApproachViewModel<StatisticsDetailsScreenEvent>(), DefaultLifecycleObserver {
+) : ApproachViewModel<StatisticsDetailsScreenEvent>(),
+	DefaultLifecycleObserver {
 	private val sourceType = Route.StatisticsDetails.getSourceType(savedStateHandle)!!
 	private val sourceId = Route.StatisticsDetails.getSourceId(savedStateHandle) ?: UUID.randomUUID()
 	private val initialFilterSource = when (sourceType) {
@@ -133,6 +134,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 	}
 
 	private fun hasSeenAllStatistics() {
+		// TODO: Do we need to use @ApplicationScope here
 		scope.launch {
 			userDataRepository.setAllStatisticIDsSeen()
 		}

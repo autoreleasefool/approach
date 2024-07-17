@@ -39,6 +39,7 @@ import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheet
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetConfiguration
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.AnimatedFrameEditor
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.DragHint
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.FrameEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiState
@@ -82,6 +83,11 @@ fun GamesEditor(
 				Spacer(modifier = Modifier.weight(1f))
 				Spacer(modifier = Modifier.size(16.dp))
 			}
+
+			DragHint(
+				isVisible = state.frameEditor.isShowingDragHint,
+				onAction = { onAction(GamesEditorUiAction.FrameEditor(it)) },
+			)
 		}
 
 		if (state.manualScore == null) {

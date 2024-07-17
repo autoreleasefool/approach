@@ -222,6 +222,7 @@ class GamesEditorViewModel @Inject constructor(
 		when (action) {
 			FrameEditorUiAction.FrameEditorInteractionStarted -> handleInteractionWithPins()
 			FrameEditorUiAction.AnimationFinished -> setFrameEditorAnimation(null)
+			FrameEditorUiAction.DragHintDismissed -> dismissDragHint()
 			is FrameEditorUiAction.DownedPinsChanged -> updateDownedPins(action.downedPins)
 		}
 	}
@@ -275,6 +276,18 @@ class GamesEditorViewModel @Inject constructor(
 
 		analyticsClient.trackEvent(GameViewed(eventId = gameId))
 		setLatestGameId(gameId)
+
+		viewModelScope.launch {
+			userDataRepository.userData.collect { userData ->
+				gamesEditorState.update {
+					it.copy(
+						frameEditor = it.frameEditor.copy(
+							isShowingDragHint = !userData.isFrameDragHintDismissed,
+						),
+					)
+				}
+			}
+		}
 
 		gameDetailsJob?.cancel()
 		gameDetailsJob = viewModelScope.launch {
@@ -516,8 +529,15 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun dismissLatestGameInEditor() {
+		// TODO: Do we need to use @ApplicationScope here
 		scope.launch {
 			userDataRepository.dismissLatestGameInEditor()
+		}
+	}
+
+	private fun dismissDragHint() {
+		viewModelScope.launch {
+			userDataRepository.didDismissFrameDragHint()
 		}
 	}
 

@@ -34,6 +34,7 @@ data class UserData(
 	val isQuickPlayTipDismissed: Boolean,
 	val isStatisticsTapToViewChartTipDismissed: Boolean,
 	val isSwipeRowsTipDismissed: Boolean,
+	val isFrameDragHintDismissed: Boolean,
 
 	// Game in progress
 	val latestSeriesInEditor: List<String>,

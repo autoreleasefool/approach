@@ -70,10 +70,13 @@
 	<string name="game_settings_bowlers">Bowlers</string>
 	<string name="cd_game_settings_selected">Selected</string>
 
+	<string name="frame_editor_drag_hint_tip">Drag your finger across the pins to mark them as knocked down, or to reset them.</string>
+
 	<string name="cd_pin_left_two_pin">Left Two Pin</string>
 	<string name="cd_pin_left_three_pin">Left Three Pin</string>
 	<string name="cd_pin_head_pin">Head Pin</string>
 	<string name="cd_pin_right_three_pin">Right Three Pin</string>
 	<string name="cd_pin_right_two_pin">Right Two Pin</string>
 	<string name="cd_select_ball">Pick Ball Rolled</string>
+	<string name="cd_swipe_indicator">Swipe to select knocked down pins</string>
 </resources>

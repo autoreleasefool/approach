@@ -134,6 +134,7 @@ class MidGameStatisticsDetailsViewModel @Inject constructor(
 	}
 
 	private fun hasSeenAllStatistics() {
+		// TODO: Do we need to use @ApplicationScope here
 		scope.launch {
 			userDataRepository.setAllStatisticIDsSeen()
 		}

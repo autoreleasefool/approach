@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,16 +47,18 @@ fun AnimatedFrameEditor(
 		onAction(FrameEditorUiAction.AnimationFinished)
 	}
 
-	FrameEditor(
-		state = state,
-		onAction = onAction,
-		modifier = modifier
-			.offset {
-				IntOffset(
-					x = offsetX.value.toInt(),
-					y = 0,
-				)
-			}
-			.onSizeChanged { frameEditorWidth.floatValue = it.width.toFloat() + 32.dp.value },
-	)
+	Box(modifier = modifier) {
+		FrameEditor(
+			state = state,
+			onAction = onAction,
+			modifier = Modifier
+				.offset {
+					IntOffset(
+						x = offsetX.value.toInt(),
+						y = 0,
+					)
+				}
+				.onSizeChanged { frameEditorWidth.floatValue = it.width.toFloat() + 32.dp.value },
+		)
+	}
 }

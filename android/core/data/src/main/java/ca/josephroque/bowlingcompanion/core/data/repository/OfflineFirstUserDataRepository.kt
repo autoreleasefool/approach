@@ -109,6 +109,10 @@ class OfflineFirstUserDataRepository @Inject constructor(
 		approachPreferencesDataSource.setIsSwipeRowsTipDismissed(isDismissed = true)
 	}
 
+	override suspend fun didDismissFrameDragHint() {
+		approachPreferencesDataSource.setIsFrameDragHintDismissed(isDismissed = true)
+	}
+
 	override suspend fun setStatisticIDSeen(statistic: StatisticID) {
 		approachPreferencesDataSource.setStatisticsIdsSeen(statistic.name)
 	}

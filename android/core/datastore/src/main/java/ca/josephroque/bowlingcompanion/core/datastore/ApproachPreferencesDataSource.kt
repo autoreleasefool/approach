@@ -49,6 +49,7 @@ class ApproachPreferencesDataSource @Inject constructor(
 				isQuickPlayTipDismissed = it.isQuickPlayTipDismissed,
 				isStatisticsTapToViewChartTipDismissed = it.isStatisticsTapToViewChartTipDismissed,
 				isSwipeRowsTipDismissed = it.isSwipeRowsTipDismissed,
+				isFrameDragHintDismissed = it.isFrameDragHintDismissed,
 				lastTrackableFilter = it.parseTrackableFilterSource(),
 				seenStatisticIds = it.seenStatisticsIdsList.toSet(),
 				latestSeriesInEditor = it.latestSeriesInEditorList,
@@ -209,6 +210,12 @@ class ApproachPreferencesDataSource @Inject constructor(
 	suspend fun setIsSwipeRowsTipDismissed(isDismissed: Boolean) {
 		userPreferences.updateData {
 			it.copy { this.isSwipeRowsTipDismissed = isDismissed }
+		}
+	}
+
+	suspend fun setIsFrameDragHintDismissed(isDismissed: Boolean) {
+		userPreferences.updateData {
+			it.copy { this.isFrameDragHintDismissed = isDismissed }
 		}
 	}
 

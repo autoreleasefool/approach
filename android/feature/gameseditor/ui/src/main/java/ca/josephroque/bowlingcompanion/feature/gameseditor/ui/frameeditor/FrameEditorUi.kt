@@ -10,6 +10,7 @@ enum class AnimationDirection {
 data class FrameEditorUiState(
 	val nextAnimationDirection: AnimationDirection? = null,
 	val isEnabled: Boolean = false,
+	val isShowingDragHint: Boolean = false,
 	val lockedPins: Set<Pin> = emptySet(),
 	val downedPins: Set<Pin> = emptySet(),
 )
@@ -17,6 +18,7 @@ data class FrameEditorUiState(
 sealed interface FrameEditorUiAction {
 	data object AnimationFinished : FrameEditorUiAction
 	data object FrameEditorInteractionStarted : FrameEditorUiAction
+	data object DragHintDismissed : FrameEditorUiAction
 
 	data class DownedPinsChanged(val downedPins: Set<Pin>) : FrameEditorUiAction
 }

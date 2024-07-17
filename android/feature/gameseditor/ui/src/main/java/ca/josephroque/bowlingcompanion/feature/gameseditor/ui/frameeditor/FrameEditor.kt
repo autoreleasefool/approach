@@ -143,6 +143,7 @@ private fun FrameEditorPreview() {
 				when (it) {
 					FrameEditorUiAction.FrameEditorInteractionStarted,
 					FrameEditorUiAction.AnimationFinished,
+					FrameEditorUiAction.DragHintDismissed,
 					-> Unit
 					is FrameEditorUiAction.DownedPinsChanged -> state = state.copy(downedPins = it.downedPins)
 				}
