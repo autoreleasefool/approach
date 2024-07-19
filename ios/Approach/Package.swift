@@ -1433,6 +1433,7 @@ let package = Package(
 		.target(
 			name: "RecentlyUsedServiceInterface",
 			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"StatisticsLibrary",
 			]

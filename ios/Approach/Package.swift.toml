@@ -297,6 +297,7 @@ libraries = [ "Products" ]
 dependencies = [ "Algorithms", "UserDefaultsPackageServiceInterface" ]
 [services.RecentlyUsed.interface]
 libraries = [ "Statistics" ]
+dependencies = [ "ComposableArchitecture" ]
 
 [services.Tips]
 dependencies = [ "UserDefaultsPackageServiceInterface" ]
@@ -444,15 +445,15 @@ libraries = [ "Assets", "Strings" ]
 
 # Dependency Versions
 
-[sharedRefs.CocoaLumberjack]
+[shared.refs.CocoaLumberjack]
 url = "https://github.com/CocoaLumberjack/CocoaLumberjack.git"
 from = "3.8.5"
 
-[sharedRefs.SwiftUtilities]
+[shared.refs.SwiftUtilities]
 url = "https://github.com/autoreleasefool/swift-utilities.git"
 from = "2.3.0"
 
-[sharedRefs.Dependencies]
+[shared.refs.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"
 from = "1.3.1"
 
@@ -471,9 +472,9 @@ url = "https://github.com/apple/swift-async-algorithms.git"
 from = "1.0.0"
 
 [dependencies.CocoaLumberjack]
-sharedRef = "CocoaLumberjack"
+dep_ref = "CocoaLumberjack"
 [dependencies.CocoaLumberjackSwift]
-sharedRef = "CocoaLumberjack"
+dep_ref = "CocoaLumberjack"
 
 [dependencies.Collections]
 url = "https://github.com/apple/swift-collections.git"
@@ -484,9 +485,9 @@ url = "https://github.com/pointfreeco/swift-composable-architecture.git"
 from = "1.11.2"
 
 [dependencies.Dependencies]
-sharedRef = "Dependencies"
+dep_ref = "Dependencies"
 [dependencies.DependenciesMacros]
-sharedRef = "Dependencies"
+dep_ref = "Dependencies"
 
 [dependencies.GRDB]
 url = "https://github.com/groue/GRDB.swift.git"
@@ -522,85 +523,85 @@ url = "https://github.com/weichsel/ZIPFoundation.git"
 from = "0.9.19"
 
 [dependencies.AnalyticsPackageServiceInterface]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.AppInfoPackageService]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.AppInfoPackageServiceInterface]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.BundlePackageService]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.BundlePackageServiceInterface]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.EquatablePackageLibrary]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.ErrorReportingClientPackageLibrary]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.ExtensionsPackageLibrary]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.FeatureFlagsPackageLibrary]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.FeatureFlagsPackageService]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.FeatureFlagsPackageServiceInterface]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.FileManagerPackageService]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.FileManagerPackageServiceInterface]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.GRDBDatabasePackageLibrary]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.GRDBDatabasePackageService]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.GRDBDatabasePackageServiceInterface]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.GRDBDatabaseTestUtilitiesPackageLibrary]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.PasteboardPackageService]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.PasteboardPackageServiceInterface]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.SentryErrorReportingPackageService]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.StoreReviewPackageService]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.StoreReviewPackageServiceInterface]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.SwiftUIExtensionsPackageLibrary]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.TelemetryDeckAnalyticsPackageService]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.TestUtilitiesPackageLibrary]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.UserDefaultsPackageService]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 [dependencies.UserDefaultsPackageServiceInterface]
-sharedRef = "SwiftUtilities"
+dep_ref = "SwiftUtilities"
 
 # Default Imports
 
