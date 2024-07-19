@@ -127,13 +127,13 @@ public struct LeaguesSection: Reducer {
 					state.destination = .editor(LeagueEditor.State(value: .edit(league)))
 					return recentlyUsed.didRecentlyUse(.leagues, id: league.id, in: self)
 
-				case let .didLoadLeagues(.failure(error)):
+				case .didLoadLeagues(.failure):
 					// TODO: handle error
 					return .none
 
-				case let .didLoadLeagueToView(.failure(error)),
-						let .didLoadEventSeriesToView(.failure(error)),
-						let .didLoadLeagueForEdits(.failure(error)):
+				case .didLoadLeagueToView(.failure),
+						.didLoadEventSeriesToView(.failure),
+						.didLoadLeagueForEdits(.failure):
 					// TODO: handle error
 					return .none
 

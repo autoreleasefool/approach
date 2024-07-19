@@ -228,28 +228,14 @@ public struct Settings: Reducer {
 					state.isLoadingAppIcon = false
 					return .none
 
-				case .destination(.presented(.archive(.delegate(.doNothing)))):
-					return .none
-
-				case .destination(.presented(.featureFlags(.delegate(.doNothing)))):
-					return .none
-
-				case .destination(.presented(.opponentsList(.delegate(.doNothing)))):
-					return .none
-
-				case .destination(.presented(.statistics(.delegate(.doNothing)))):
-					return .none
-
-				case .destination(.presented(.appIcon(.delegate(.doNothing)))):
-					return .none
-
-				case .destination(.presented(.analytics(.delegate(.doNothing)))):
-					return .none
-
-				case .destination(.presented(.export(.delegate(.doNothing)))):
-					return .none
-
-				case .destination(.presented(.import(.delegate(.doNothing)))):
+				case .destination(.presented(.archive(.delegate(.doNothing)))),
+						.destination(.presented(.featureFlags(.delegate(.doNothing)))),
+						.destination(.presented(.opponentsList(.delegate(.doNothing)))),
+						.destination(.presented(.statistics(.delegate(.doNothing)))),
+						.destination(.presented(.appIcon(.delegate(.doNothing)))),
+						.destination(.presented(.analytics(.delegate(.doNothing)))),
+						.destination(.presented(.export(.delegate(.doNothing)))),
+						.destination(.presented(.import(.delegate(.doNothing)))):
 					return .none
 
 				case .destination(.dismiss):

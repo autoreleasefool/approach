@@ -51,7 +51,7 @@ public struct BowlerDetails: Reducer {
 			LeaguesSection()
 		}
 
-		Reduce<State, Action> { state, action in
+		Reduce<State, Action> { _, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
