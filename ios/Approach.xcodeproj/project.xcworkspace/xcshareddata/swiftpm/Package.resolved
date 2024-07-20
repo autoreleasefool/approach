@@ -1,4 +1,5 @@
 {
+  "originHash" : "bfce50c187a86291e1992ba0d21fca0731d8b89e13234921385ad2d027a40c55",
   "pins" : [
     {
       "identity" : "alerttoast",
@@ -203,8 +204,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/autoreleasefool/swift-utilities.git",
       "state" : {
-        "revision" : "f48658a559da782b133d4d1974a386ad90750818",
-        "version" : "2.4.0"
+        "revision" : "8d6f66db48b0cce1c8cd112bbe3a01834b3e08a8",
+        "version" : "2.4.1"
       }
     },
     {
@@ -244,5 +245,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

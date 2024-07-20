@@ -1,5 +1,5 @@
 name = "Approach"
-tools_version = "5.7.1"
+tools_version = "5.10"
 default_localization = "en"
 
 # Platforms
@@ -451,7 +451,7 @@ from = "3.8.5"
 
 [shared.refs.SwiftUtilities]
 url = "https://github.com/autoreleasefool/swift-utilities.git"
-from = "2.3.0"
+from = "2.4.1"
 
 [shared.refs.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"

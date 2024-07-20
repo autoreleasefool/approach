@@ -152,7 +152,8 @@ extension GamesRepository: DependencyKey {
 				}
 
 				guard games.count == gameIds.count else {
-					throw FetchableError.allRecordsNotFound(type: Game.Shareable.self, allIds: gameIds, foundIds: games.map(\.id))
+					let firstMissingId = gameIds.first(where: { id in !games.contains(where: { $0.id == id }) })
+					throw FetchableError.recordNotFound(type: Game.Shareable.self, id: firstMissingId)
 				}
 
 				return games.sortBy(ids: gameIds)
