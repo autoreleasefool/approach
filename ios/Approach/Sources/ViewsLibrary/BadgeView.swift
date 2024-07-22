@@ -5,7 +5,7 @@ public struct BadgeView: View {
 	let text: String
 	let style: Style
 
-	public init(_ text: String, style: Style = .plain) {
+	@MainActor public init(_ text: String, style: Style = .plain) {
 		self.text = text
 		self.style = style
 	}
@@ -29,7 +29,7 @@ public struct BadgeView: View {
 }
 
 extension BadgeView {
-	public struct Style {
+	public struct Style: Sendable {
 		let foregroundColor: Color
 		let backgroundColor: Color
 
@@ -38,27 +38,27 @@ extension BadgeView {
 			self.backgroundColor = background
 		}
 
-		public static let primary: Self = .init(
+		@MainActor public static let primary: Self = .init(
 			foreground: Asset.Colors.Primary.default.swiftUIColor,
 			background: Asset.Colors.Primary.light.swiftUIColor
 		)
 
-		public static let plain: Self = .init(
+		@MainActor public static let plain: Self = .init(
 			foreground: .black,
 			background: .gray
 		)
 
-		public static let success: Self = .init(
+		@MainActor public static let success: Self = .init(
 			foreground: .green,
 			background: .teal
 		)
 
-		public static let destructive: Self = .init(
+		@MainActor public static let destructive: Self = .init(
 			foreground: Asset.Colors.Destructive.default.swiftUIColor,
 			background: .pink
 		)
 
-		public static let info: Self = .init(
+		@MainActor public static let info: Self = .init(
 			foreground: .blue,
 			background: .cyan
 		)

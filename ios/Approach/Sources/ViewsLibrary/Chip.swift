@@ -7,7 +7,7 @@ public struct Chip: View {
 	public let accessory: Accessory?
 	public let style: Style
 
-	public init(
+	@MainActor public init(
 		title: String,
 		icon: SFSymbol? = nil,
 		accessory: Accessory? = nil,
@@ -68,21 +68,21 @@ extension Chip {
 }
 
 extension Chip {
-	public struct Style {
+	public struct Style: Sendable {
 		public let foreground: ColorAsset
 		public let background: ColorAsset
 
-		public static let plain = Self(
+		@MainActor public static let plain = Self(
 			foreground: Asset.Colors.Chip.plainForeground,
 			background: Asset.Colors.Chip.plainBackground
 		)
 
-		public static let info = Self(
+		@MainActor public static let info = Self(
 			foreground: Asset.Colors.Chip.infoForeground,
 			background: Asset.Colors.Chip.infoBackground
 		)
 
-		public static let primary = Self(
+		@MainActor public static let primary = Self(
 			foreground: Asset.Colors.Chip.primaryForeground,
 			background: Asset.Colors.Chip.primaryBackground
 		)
