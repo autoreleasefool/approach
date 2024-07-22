@@ -14,7 +14,7 @@ xcassets:
     - Approach/Sources/AssetsLibrary/Resources/Colors.xcassets
     - Approach/Sources/AssetsLibrary/Resources/Media.xcassets
   outputs:
-    - templateName: swift5
+    - templatePath: SwiftGen/swift5-sendable.stencil
       output: Approach/Sources/AssetsLibrary/Assets.swift
       params:
         publicAccess: true

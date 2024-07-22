@@ -23,7 +23,7 @@ public typealias AssetImageTypeAlias = ImageAsset.Image
 // MARK: - Asset Catalogs
 
 // swiftlint:disable identifier_name line_length nesting type_body_length type_name
-public enum Asset {
+public enum Asset: Sendable {
   public enum Colors {
     public enum Action {
       public static let `default` = ColorAsset(name: "Action/Default")
@@ -290,12 +290,12 @@ public final class ColorAsset {
   #endif
 
   @available(iOS 11.0, tvOS 11.0, watchOS 4.0, macOS 10.13, *)
-  public private(set) lazy var color: Color = {
+  public var color: Color {
     guard let color = Color(asset: self) else {
       fatalError("Unable to load color asset named \(name).")
     }
     return color
-  }()
+  }
 
   #if os(iOS) || os(tvOS)
   @available(iOS 11.0, tvOS 11.0, *)
@@ -310,9 +310,9 @@ public final class ColorAsset {
 
   #if canImport(SwiftUI)
   @available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
-  public private(set) lazy var swiftUIColor: SwiftUI.Color = {
+  public var swiftUIColor: SwiftUI.Color {
     SwiftUI.Color(asset: self)
-  }()
+  }
   #endif
 
   fileprivate init(name: String) {
@@ -344,7 +344,7 @@ public extension SwiftUI.Color {
 }
 #endif
 
-public struct ImageAsset {
+public struct ImageAsset: Sendable {
   public fileprivate(set) var name: String
 
   #if os(macOS)
@@ -424,3 +424,4 @@ public extension SwiftUI.Image {
   }
 }
 #endif
+// swiftlint:enable all
