@@ -7,7 +7,7 @@ import ModelsLibrary
 import SwiftUI
 
 @Reducer
-public struct BowlerDetails: Reducer {
+public struct BowlerDetails: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let bowler: Bowler.Summary

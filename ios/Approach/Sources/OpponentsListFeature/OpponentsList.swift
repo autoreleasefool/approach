@@ -26,7 +26,7 @@ extension Bowler.Ordering: CustomStringConvertible {
 }
 
 @Reducer
-public struct OpponentsList: Reducer {
+public struct OpponentsList: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var list: ResourceList<Bowler.Opponent, Bowler.Ordering>.State

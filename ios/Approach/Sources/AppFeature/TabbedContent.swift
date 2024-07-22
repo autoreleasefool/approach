@@ -7,7 +7,7 @@ import SettingsFeature
 import StatisticsOverviewFeature
 
 @Reducer
-public struct TabbedContent: Reducer {
+public struct TabbedContent: Reducer, Sendable {
 
 	@ObservableState
 	public struct State: Equatable {

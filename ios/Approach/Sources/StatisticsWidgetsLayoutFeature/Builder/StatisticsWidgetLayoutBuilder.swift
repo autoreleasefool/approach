@@ -13,7 +13,7 @@ import StringsLibrary
 import SwiftUI
 
 @Reducer
-public struct StatisticsWidgetLayoutBuilder: Reducer {
+public struct StatisticsWidgetLayoutBuilder: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let context: String

@@ -12,7 +12,7 @@ import ToastLibrary
 private let ERROR_REPORT_THRESHOLD = 3
 
 @Reducer
-public struct Errors<ErrorID: Hashable>: Reducer {
+public struct Errors<ErrorID: Hashable>: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var errorCount: [ErrorID: Int] = [:]
@@ -77,7 +77,7 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 	}
 
 	@Reducer
-	public struct Destination: Reducer {
+	public struct Destination: Reducer, Sendable {
 		public enum State: Equatable {
 			case report(ErrorReport.State)
 			case toast(ToastState<ToastAction>)

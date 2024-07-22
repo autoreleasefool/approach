@@ -15,7 +15,7 @@ import SwiftUI
 public typealias LeagueForm = FormFeature.Form<League.Create, League.Edit>
 
 @Reducer
-public struct LeagueEditor: Reducer {
+public struct LeagueEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var name: String

@@ -7,7 +7,7 @@ import StringsLibrary
 import SwiftUI
 
 @Reducer
-public struct GearFilter: Reducer {
+public struct GearFilter: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var kind: Gear.Kind?

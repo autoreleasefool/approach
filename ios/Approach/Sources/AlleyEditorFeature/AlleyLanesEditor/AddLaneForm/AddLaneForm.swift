@@ -6,7 +6,7 @@ import StringsLibrary
 import SwiftUI
 
 @Reducer
-public struct AddLaneForm: Reducer {
+public struct AddLaneForm: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var lanesToAdd = 1

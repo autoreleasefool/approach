@@ -14,7 +14,7 @@ import SwiftUI
 import ViewsLibrary
 
 @Reducer
-public struct LeaguesSection: Reducer {
+public struct LeaguesSection: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let bowlerId: Bowler.ID

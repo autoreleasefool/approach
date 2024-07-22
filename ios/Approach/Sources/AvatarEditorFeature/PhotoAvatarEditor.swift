@@ -9,7 +9,7 @@ import StringsLibrary
 import SwiftUI
 
 @Reducer
-public struct PhotoAvatarEditor: Reducer {
+public struct PhotoAvatarEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var imageState: ImageState

@@ -7,7 +7,7 @@ import StringsLibrary
 import SwiftUI
 
 @Reducer
-public struct AlleysFilter: Reducer {
+public struct AlleysFilter: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var filter: Alley.List.FetchRequest.Filter

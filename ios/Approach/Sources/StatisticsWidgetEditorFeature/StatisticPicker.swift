@@ -7,7 +7,7 @@ import SwiftUI
 import ViewsLibrary
 
 @Reducer
-public struct StatisticPicker: Reducer {
+public struct StatisticPicker: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		let groups: [StatisticsGroup]

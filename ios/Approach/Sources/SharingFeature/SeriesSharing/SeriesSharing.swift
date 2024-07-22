@@ -11,7 +11,7 @@ import SwiftUI
 import ViewsLibrary
 
 @Reducer
-public struct SeriesSharing: Reducer {
+public struct SeriesSharing: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let seriesId: Series.ID

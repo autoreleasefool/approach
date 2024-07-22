@@ -22,7 +22,7 @@ public struct AvatarImage: Equatable {
 }
 
 @Reducer
-public struct GearEditor: Reducer {
+public struct GearEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var name: String
@@ -96,7 +96,7 @@ public struct GearEditor: Reducer {
 	}
 
 	@Reducer
-	public struct Destination: Reducer {
+	public struct Destination: Reducer, Sendable {
 		public enum State: Equatable {
 			case bowlerPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State)
 			case avatar(AvatarEditor.State)

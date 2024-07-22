@@ -33,7 +33,7 @@ extension FormRecord {
 public struct Form<
 	New: CreateableRecord,
 	Existing: EditableRecord
->: Reducer where New.ID == Existing.ID {
+>: Reducer, Sendable where New.ID == Existing.ID {
 	public enum Value: Equatable {
 		case create(New)
 		case edit(Existing)

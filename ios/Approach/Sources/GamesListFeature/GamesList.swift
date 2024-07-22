@@ -23,7 +23,7 @@ extension Game.List: ResourceListItem {
 }
 
 @Reducer
-public struct GamesList: Reducer {
+public struct GamesList: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var series: Series.GameHost

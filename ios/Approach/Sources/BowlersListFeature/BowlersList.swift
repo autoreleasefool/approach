@@ -39,7 +39,7 @@ extension Bowler.Ordering: CustomStringConvertible {
 
 @Reducer
 // swiftlint:disable:next type_body_length
-public struct BowlersList: Reducer {
+public struct BowlersList: Reducer, Sendable {
 	public static let widgetContext = "bowlersList"
 
 	@ObservableState

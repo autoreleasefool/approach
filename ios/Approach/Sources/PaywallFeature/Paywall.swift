@@ -7,7 +7,7 @@ import ProductsServiceInterface
 import StringsLibrary
 
 @Reducer
-public struct Paywall: Reducer {
+public struct Paywall: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let product: Product

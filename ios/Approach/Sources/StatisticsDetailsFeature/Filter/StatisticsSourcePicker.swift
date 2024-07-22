@@ -21,7 +21,7 @@ import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @Reducer
-public struct StatisticsSourcePicker: Reducer {
+public struct StatisticsSourcePicker: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var sourceToLoad: TrackableFilter.Source?
@@ -77,7 +77,7 @@ public struct StatisticsSourcePicker: Reducer {
 	}
 
 	@Reducer
-	public struct Destination: Reducer {
+	public struct Destination: Reducer, Sendable {
 		public enum State: Equatable {
 			case bowlerPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State)
 			case leaguePicker(ResourcePicker<League.Summary, Bowler.ID>.State)

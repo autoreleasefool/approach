@@ -10,7 +10,7 @@ import SwiftUI
 import ViewsLibrary
 
 @Reducer
-public struct GamesHeader: Reducer {
+public struct GamesHeader: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var currentGameIndex: Int = 0

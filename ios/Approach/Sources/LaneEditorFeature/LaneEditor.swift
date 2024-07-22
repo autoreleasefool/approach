@@ -14,7 +14,7 @@ extension Lane.Position: CustomStringConvertible {
 }
 
 @Reducer
-public struct LaneEditor: Reducer {
+public struct LaneEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Identifiable, Equatable {
 		public let id: Lane.ID

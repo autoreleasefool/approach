@@ -12,7 +12,7 @@ import SwiftUI
 import ViewsLibrary
 
 @Reducer
-public struct ErrorReport: Reducer {
+public struct ErrorReport: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var isIncludingDeviceLogs = true

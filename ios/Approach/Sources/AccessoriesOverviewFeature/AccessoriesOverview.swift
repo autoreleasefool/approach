@@ -14,7 +14,7 @@ import SwiftUI
 import SwiftUIExtensionsPackageLibrary
 
 @Reducer
-public struct AccessoriesOverview: Reducer {
+public struct AccessoriesOverview: Reducer, Sendable {
 	static let recentAlleysLimit = 5
 	static let recentGearLimit = 10
 

@@ -11,7 +11,7 @@ import StringsLibrary
 import SwiftUI
 
 @Reducer
-public struct PreferredGear: Reducer {
+public struct PreferredGear: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let bowler: Bowler.ID

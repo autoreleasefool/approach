@@ -4,7 +4,7 @@ import FeatureFlagsLibrary
 import SwiftUI
 
 @Reducer
-public struct FeatureFlagToggle: Reducer {
+public struct FeatureFlagToggle: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable, Identifiable {
 		public var flag: FeatureFlagItem

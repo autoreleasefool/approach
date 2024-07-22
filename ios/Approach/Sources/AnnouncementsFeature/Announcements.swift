@@ -5,7 +5,7 @@ import FeatureActionLibrary
 import SwiftUI
 
 @Reducer
-public struct Announcements: Reducer {
+public struct Announcements: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let announcement: Announcement

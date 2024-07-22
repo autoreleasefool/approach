@@ -2,7 +2,7 @@ import AnalyticsPackageServiceInterface
 import ComposableArchitecture
 
 @Reducer
-public struct BreadcrumbReducer<State, Action>: Reducer {
+public struct BreadcrumbReducer<State, Action>: Reducer, Sendable {
 	let reducer: (State, Action) -> Breadcrumb?
 
 	public init(reducer: @escaping (_ state: State, _ action: Action) -> Breadcrumb?) {

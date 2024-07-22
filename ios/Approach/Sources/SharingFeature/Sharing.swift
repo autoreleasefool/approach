@@ -8,7 +8,7 @@ import StringsLibrary
 import SwiftUI
 
 @Reducer
-public struct Sharing: Reducer {
+public struct Sharing: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let source: Source

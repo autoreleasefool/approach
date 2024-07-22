@@ -15,7 +15,7 @@ import StringsLibrary
 import SwiftUI
 
 @Reducer
-public struct StatisticsWidgetConfigurationEditor: Reducer {
+public struct StatisticsWidgetConfigurationEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let id: StatisticsWidget.ID
@@ -93,7 +93,7 @@ public struct StatisticsWidgetConfigurationEditor: Reducer {
 	}
 
 	@Reducer
-	public struct Destination: Reducer {
+	public struct Destination: Reducer, Sendable {
 		public enum State: Equatable {
 			case bowlerPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State)
 			case leaguePicker(ResourcePicker<League.Summary, Bowler.ID>.State)

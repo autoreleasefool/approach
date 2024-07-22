@@ -10,7 +10,7 @@ import SharingFeature
 
 extension GamesEditor {
 	@Reducer
-	public struct SheetsDestination: Reducer {
+	public struct SheetsDestination: Reducer, Sendable {
 		public enum State: Equatable {
 			case settings(GamesSettings.State)
 			case ballPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
@@ -40,7 +40,7 @@ extension GamesEditor {
 	}
 
 	@Reducer
-	public struct Destination: Reducer {
+	public struct Destination: Reducer, Sendable {
 		public enum State: Equatable {
 			case gameDetails(GameDetails.State)
 			case duplicateLanesAlert(AlertState<DuplicateLanesAlertAction>)

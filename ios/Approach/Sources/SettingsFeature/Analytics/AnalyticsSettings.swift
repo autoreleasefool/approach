@@ -7,7 +7,7 @@ import SwiftUI
 import ViewsLibrary
 
 @Reducer
-public struct AnalyticsSettings: Reducer {
+public struct AnalyticsSettings: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var analyticsOptIn: Bool

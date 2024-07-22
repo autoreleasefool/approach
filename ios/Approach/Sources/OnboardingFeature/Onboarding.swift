@@ -6,7 +6,7 @@ import FeatureActionLibrary
 import ModelsLibrary
 
 @Reducer
-public struct Onboarding: Reducer {
+public struct Onboarding: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var step: Step = .empty

@@ -11,7 +11,7 @@ import SwiftUI
 import ViewsLibrary
 
 @Reducer
-public struct AvatarEditor: Reducer {
+public struct AvatarEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let id: UUID

@@ -7,7 +7,7 @@ import StringsLibrary
 import SwiftUI
 
 @Reducer
-public struct LeaguesFilter: Reducer {
+public struct LeaguesFilter: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var recurrence: League.Recurrence?

@@ -12,7 +12,7 @@ import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @Reducer
-public struct Export: Reducer {
+public struct Export: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var exportUrl: URL?

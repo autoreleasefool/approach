@@ -11,7 +11,7 @@ import ViewsLibrary
 public struct SectionResourceList<
 	R: ResourceListItem,
 	Q: Equatable
->: Reducer {
+>: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var editMode: EditMode = .inactive

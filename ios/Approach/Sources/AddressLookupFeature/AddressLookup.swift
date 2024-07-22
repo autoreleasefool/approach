@@ -8,7 +8,7 @@ import ModelsLibrary
 import StringsLibrary
 
 @Reducer
-public struct AddressLookup: Reducer {
+public struct AddressLookup: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var query: String

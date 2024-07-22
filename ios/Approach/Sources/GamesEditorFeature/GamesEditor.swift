@@ -23,7 +23,7 @@ import SwiftUI
 @Reducer
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
-public struct GamesEditor: Reducer {
+public struct GamesEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 
@@ -522,7 +522,7 @@ public struct GamesEditor: Reducer {
 }
 
 @Reducer
-public struct GamesEditorErrorHandlerReducer: Reducer {
+public struct GamesEditorErrorHandlerReducer: Reducer, Sendable {
 	public var body: some ReducerOf<GamesEditor> {
 		ErrorHandlerReducer<State, Action> { _, action in
 			switch action {
@@ -542,7 +542,7 @@ public struct GamesEditorErrorHandlerReducer: Reducer {
 }
 
 @Reducer
-public struct GamesEditorAnalyticsReducer: Reducer {
+public struct GamesEditorAnalyticsReducer: Reducer, Sendable {
 	public var body: some ReducerOf<GamesEditor> {
 		AnalyticsReducer<State, Action> { _, action in
 			switch action {

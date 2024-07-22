@@ -13,7 +13,7 @@ public protocol ResourceListItem: Equatable, Identifiable {
 public struct ResourceList<
 	R: ResourceListItem,
 	Q: Equatable
->: Reducer {
+>: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var sectionList: SectionResourceList<R, Q>.State

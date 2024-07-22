@@ -3,7 +3,7 @@ import FeatureActionLibrary
 import SwiftUI
 
 @Reducer
-public struct PhotoCrop: Reducer {
+public struct PhotoCrop: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var image: UIImage

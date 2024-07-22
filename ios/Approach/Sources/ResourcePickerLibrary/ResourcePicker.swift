@@ -9,7 +9,7 @@ public protocol PickableResource: Equatable, Identifiable {
 }
 
 @Reducer
-public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Reducer {
+public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var resources: IdentifiedArrayOf<Resource>?

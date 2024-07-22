@@ -10,7 +10,7 @@ import SwiftUI
 import SwiftUIExtensionsPackageLibrary
 
 @Reducer
-public struct AppIconList: Reducer {
+public struct AppIconList: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var isLoadingAppIcon = true

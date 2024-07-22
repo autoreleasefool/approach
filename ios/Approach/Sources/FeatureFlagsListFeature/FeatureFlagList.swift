@@ -8,7 +8,7 @@ public struct FeatureFlagItem: Equatable {
 }
 
 @Reducer
-public struct FeatureFlagsList: Reducer {
+public struct FeatureFlagsList: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var featureFlags: IdentifiedArrayOf<FeatureFlagToggle.State> = []

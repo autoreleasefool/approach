@@ -15,7 +15,7 @@ import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @Reducer
-public struct StatisticsWidgetLayout: Reducer {
+public struct StatisticsWidgetLayout: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let context: String

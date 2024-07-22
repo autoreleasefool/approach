@@ -12,7 +12,7 @@ import TipsServiceInterface
 import ViewsLibrary
 
 @Reducer
-public struct StatisticsDetailsList: Reducer {
+public struct StatisticsDetailsList: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var isHidingZeroStatistics: Bool

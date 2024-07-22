@@ -19,7 +19,7 @@ import TipsLibrary
 import TipsServiceInterface
 
 @Reducer
-public struct StatisticsWidgetEditor: Reducer {
+public struct StatisticsWidgetEditor: Reducer, Sendable {
 	static let chartLoadingAnimationTime: TimeInterval = 0.5
 
 	@ObservableState
@@ -77,7 +77,7 @@ public struct StatisticsWidgetEditor: Reducer {
 	}
 
 	@Reducer
-	public struct Destination: Reducer {
+	public struct Destination: Reducer, Sendable {
 		public enum State: Equatable {
 			case help(StatisticsWidgetHelp.State)
 		}

@@ -10,7 +10,7 @@ import StringsLibrary
 import SwiftUI
 
 @Reducer
-public struct SeriesPreBowlEditor: Reducer {
+public struct SeriesPreBowlEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let league: League.ID
@@ -57,7 +57,7 @@ public struct SeriesPreBowlEditor: Reducer {
 	}
 
 	@Reducer
-	public struct Destination: Reducer {
+	public struct Destination: Reducer, Sendable {
 		public enum State: Equatable {
 			case seriesPicker(ResourcePicker<Series.Summary, League.ID>.State)
 		}

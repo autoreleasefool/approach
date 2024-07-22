@@ -31,7 +31,7 @@ extension League.Ordering: CustomStringConvertible {
 
 @Reducer
 // swiftlint:disable:next type_body_length
-public struct LeaguesList: Reducer {
+public struct LeaguesList: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let bowler: Bowler.Summary

@@ -1,7 +1,7 @@
 import ComposableArchitecture
 
 @Reducer
-public struct AnalyticsReducer<State, Action>: Reducer {
+public struct AnalyticsReducer<State, Action>: Reducer, Sendable {
 	let reducer: (State, Action) -> TrackableEvent?
 
 	public init(reducer: @escaping (_ state: State, _ action: Action) -> TrackableEvent?) {
@@ -19,7 +19,7 @@ public struct AnalyticsReducer<State, Action>: Reducer {
 }
 
 @Reducer
-public struct GameAnalyticsReducer<State, Action>: Reducer {
+public struct GameAnalyticsReducer<State, Action>: Reducer, Sendable {
 	let reducer: (State, Action) -> GameSessionTrackableEvent?
 
 	public init(reducer: @escaping (_ state: State, _ action: Action) -> GameSessionTrackableEvent?) {

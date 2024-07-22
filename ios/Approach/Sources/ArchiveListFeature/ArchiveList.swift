@@ -26,7 +26,7 @@ public enum ArchiveItemID: Hashable {
 }
 
 @Reducer
-public struct ArchiveList: Reducer {
+public struct ArchiveList: Reducer, Sendable {
 
 	@ObservableState
 	public struct State: Equatable {

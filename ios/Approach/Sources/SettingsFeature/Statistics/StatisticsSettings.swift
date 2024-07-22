@@ -6,7 +6,7 @@ import StringsLibrary
 import SwiftUI
 
 @Reducer
-public struct StatisticsSettings: Reducer {
+public struct StatisticsSettings: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var isHidingZeroStatistics: Bool

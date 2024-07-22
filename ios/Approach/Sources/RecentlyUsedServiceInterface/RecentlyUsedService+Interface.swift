@@ -38,7 +38,7 @@ public struct RecentlyUsedTrackableFilterService: Sendable {
 }
 
 extension RecentlyUsedService {
-	public enum Resource: String {
+	public enum Resource: String, Sendable {
 		case bowlers
 		case leagues
 		case frames

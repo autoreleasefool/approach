@@ -26,7 +26,7 @@ extension Gear.Ordering: CustomStringConvertible {
 }
 
 @Reducer
-public struct GearList: Reducer {
+public struct GearList: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var list: ResourceList<Gear.Summary, Query>.State

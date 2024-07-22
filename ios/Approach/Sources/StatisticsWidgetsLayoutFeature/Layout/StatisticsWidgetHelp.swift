@@ -6,7 +6,7 @@ import StringsLibrary
 import SwiftUI
 
 @Reducer
-public struct StatisticsWidgetHelp: Reducer {
+public struct StatisticsWidgetHelp: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let missingStatistic: StatisticsWidget.Configuration

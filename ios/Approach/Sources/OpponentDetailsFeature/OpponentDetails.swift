@@ -12,7 +12,7 @@ import StringsLibrary
 import ViewsLibrary
 
 @Reducer
-public struct OpponentDetails: Reducer {
+public struct OpponentDetails: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let opponent: Bowler.Summary

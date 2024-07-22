@@ -37,7 +37,7 @@ extension Series.List: ResourceListItem {
 
 @Reducer
 // swiftlint:disable:next type_body_length
-public struct SeriesList: Reducer {
+public struct SeriesList: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var league: League.SeriesHost

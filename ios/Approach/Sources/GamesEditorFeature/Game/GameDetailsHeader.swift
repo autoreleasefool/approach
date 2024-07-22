@@ -9,7 +9,7 @@ import SwiftUI
 import ViewsLibrary
 
 @Reducer
-public struct GameDetailsHeader: Reducer {
+public struct GameDetailsHeader: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var currentBowlerName: String

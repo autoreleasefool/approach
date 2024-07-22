@@ -7,7 +7,7 @@ import SwiftUI
 import SwiftUIExtensionsPackageLibrary
 
 @Reducer
-public struct ScoringEditor: Reducer {
+public struct ScoringEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var scoringMethod: Game.ScoringMethod

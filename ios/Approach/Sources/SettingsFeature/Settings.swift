@@ -19,7 +19,7 @@ import PasteboardPackageServiceInterface
 import StringsLibrary
 
 @Reducer
-public struct Settings: Reducer {
+public struct Settings: Reducer, Sendable {
 
 	@ObservableState
 	public struct State: Equatable {

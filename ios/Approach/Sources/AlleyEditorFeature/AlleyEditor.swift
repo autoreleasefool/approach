@@ -17,7 +17,7 @@ import SwiftUI
 public typealias AlleyForm = FormFeature.Form<Alley.Create, Alley.Edit>
 
 @Reducer
-public struct AlleyEditor: Reducer {
+public struct AlleyEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var name: String

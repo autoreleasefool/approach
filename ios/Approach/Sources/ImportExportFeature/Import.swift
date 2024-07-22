@@ -15,7 +15,7 @@ import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @Reducer
-public struct Import: Reducer {
+public struct Import: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var lastBackupAt: Date?

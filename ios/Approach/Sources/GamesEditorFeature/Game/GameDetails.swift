@@ -21,7 +21,7 @@ import ViewsLibrary
 
 @Reducer
 // swiftlint:disable:next type_body_length
-public struct GameDetails: Reducer {
+public struct GameDetails: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var gameId: Game.ID
@@ -93,7 +93,7 @@ public struct GameDetails: Reducer {
 	}
 
 	@Reducer
-	public struct Destination: Reducer {
+	public struct Destination: Reducer, Sendable {
 		public enum State: Equatable {
 			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.State)
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)

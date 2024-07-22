@@ -5,7 +5,7 @@ import ModelsLibrary
 import SwiftUI
 
 @Reducer
-public struct BowlerDetailsHeader: Reducer {
+public struct BowlerDetailsHeader: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let bowler: Bowler.Summary

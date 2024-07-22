@@ -11,7 +11,7 @@ import TipsLibrary
 import TipsServiceInterface
 
 @Reducer
-public struct StatisticsOverview: Reducer {
+public struct StatisticsOverview: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var isShowingOverviewTip: Bool

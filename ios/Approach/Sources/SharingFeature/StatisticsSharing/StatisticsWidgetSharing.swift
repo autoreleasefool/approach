@@ -14,7 +14,7 @@ import SwiftUI
 import ViewsLibrary
 
 @Reducer
-public struct StatisticsWidgetSharing: Reducer {
+public struct StatisticsWidgetSharing: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var editor: StatisticsWidgetConfigurationEditor.State

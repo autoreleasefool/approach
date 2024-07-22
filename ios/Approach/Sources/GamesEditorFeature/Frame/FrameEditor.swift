@@ -8,7 +8,7 @@ import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @Reducer
-public struct FrameEditor: Reducer {
+public struct FrameEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var isDragging = false

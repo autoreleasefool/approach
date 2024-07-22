@@ -20,7 +20,7 @@ public typealias SeriesForm = FormFeature.Form<Series.Create, Series.Edit>
 
 @Reducer
 // swiftlint:disable:next type_body_length
-public struct SeriesEditor: Reducer {
+public struct SeriesEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let league: League.SeriesHost

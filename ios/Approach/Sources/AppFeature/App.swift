@@ -18,7 +18,7 @@ import TelemetryDeckAnalyticsPackageService
 import UserDefaultsPackageService
 
 @Reducer
-public struct App: Reducer {
+public struct App: Reducer, Sendable {
 
 	@ObservableState
 	public enum State: Equatable {

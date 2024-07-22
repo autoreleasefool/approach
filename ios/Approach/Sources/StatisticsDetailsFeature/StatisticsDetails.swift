@@ -16,7 +16,7 @@ import SwiftUI
 
 @Reducer
 // swiftlint:disable:next type_body_length
-public struct StatisticsDetails: Reducer {
+public struct StatisticsDetails: Reducer, Sendable {
 	static let chartLoadingAnimationTime: TimeInterval = 0.5
 	static let defaultSheetDetent: PresentationDetent = .fraction(0.25)
 

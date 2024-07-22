@@ -9,7 +9,7 @@ import StringsLibrary
 import SwiftUI
 
 @Reducer
-public struct GamesSettings: Reducer {
+public struct GamesSettings: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let bowlers: IdentifiedArrayOf<Bowler.Summary>

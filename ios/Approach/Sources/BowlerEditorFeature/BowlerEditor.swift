@@ -10,7 +10,7 @@ import StringsLibrary
 public typealias BowlerForm = Form<Bowler.Create, Bowler.Edit>
 
 @Reducer
-public struct BowlerEditor: Reducer {
+public struct BowlerEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var name: String

@@ -10,7 +10,7 @@ import StringsLibrary
 import SwiftUI
 
 @Reducer
-public struct MidGameStatisticsDetails: Reducer {
+public struct MidGameStatisticsDetails: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var filter: TrackableFilter

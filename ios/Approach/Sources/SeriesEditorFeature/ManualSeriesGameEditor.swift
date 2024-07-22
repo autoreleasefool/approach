@@ -5,7 +5,7 @@ import StringsLibrary
 import SwiftUI
 
 @Reducer
-public struct ManualSeriesGameEditor: Reducer {
+public struct ManualSeriesGameEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Identifiable, Equatable {
 		public let id: Game.ID

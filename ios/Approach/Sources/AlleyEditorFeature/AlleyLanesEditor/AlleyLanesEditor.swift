@@ -9,7 +9,7 @@ import StringsLibrary
 import SwiftUI
 
 @Reducer
-public struct AlleyLanesEditor: Reducer {
+public struct AlleyLanesEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var alley: Alley.ID

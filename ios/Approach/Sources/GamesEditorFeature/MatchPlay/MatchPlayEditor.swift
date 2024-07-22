@@ -14,7 +14,7 @@ import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @Reducer
-public struct MatchPlayEditor: Reducer {
+public struct MatchPlayEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var matchPlay: MatchPlay.Edit
