@@ -14,8 +14,10 @@ public struct LaunchService: Sendable {
 }
 
 extension LaunchService: TestDependencyKey {
-	public static var testValue = Self(
-		didInit: { unimplemented("\(Self.self).didInit") },
-		didLaunch: { unimplemented("\(Self.self).didLaunch") }
-	)
+	public static var testValue: Self {
+		Self(
+			didInit: { unimplemented("\(Self.self).didInit") },
+			didLaunch: { unimplemented("\(Self.self).didLaunch") }
+		)
+	}
 }

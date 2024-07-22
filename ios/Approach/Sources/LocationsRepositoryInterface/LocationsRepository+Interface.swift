@@ -12,7 +12,9 @@ public struct LocationsRepository: Sendable {
 }
 
 extension LocationsRepository: TestDependencyKey {
-	public static var testValue = Self(
-		insertOrUpdate: { _ in unimplemented("\(Self.self).insertOrUpdate") }
-	)
+	public static var testValue: Self {
+		Self(
+			insertOrUpdate: { _ in unimplemented("\(Self.self).insertOrUpdate") }
+		)
+	}
 }

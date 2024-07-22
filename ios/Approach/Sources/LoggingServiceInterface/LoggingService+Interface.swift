@@ -46,9 +46,11 @@ public struct LoggingService: Sendable {
 }
 
 extension LoggingService: TestDependencyKey {
-	public static var testValue = Self(
-		initialize: { unimplemented("\(Self.self).initialize") },
-		log: { _, _ in unimplemented("\(Self.self).log") },
-		fetchLogData: { unimplemented("\(Self.self).initialize") }
-	)
+	public static var testValue: Self {
+		Self(
+			initialize: { unimplemented("\(Self.self).initialize") },
+			log: { _, _ in unimplemented("\(Self.self).log") },
+			fetchLogData: { unimplemented("\(Self.self).initialize") }
+		)
+	}
 }

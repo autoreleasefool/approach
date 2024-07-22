@@ -16,7 +16,9 @@ public struct ScoresRepository: Sendable {
 }
 
 extension ScoresRepository: TestDependencyKey {
-	public static var testValue = Self(
-		observeScore: { _ in unimplemented("\(Self.self).observeScore") }
-	)
+	public static var testValue: Self {
+		Self(
+			observeScore: { _ in unimplemented("\(Self.self).observeScore") }
+		)
+	}
 }

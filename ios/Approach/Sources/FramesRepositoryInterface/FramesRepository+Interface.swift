@@ -19,9 +19,11 @@ public struct FramesRepository: Sendable {
 }
 
 extension FramesRepository: TestDependencyKey {
-	public static var testValue = Self(
-		observe: { _ in unimplemented("\(Self.self).observe") },
-		observeRolls: { _ in unimplemented("\(Self.self).observeRolls") },
-		update: { _ in unimplemented("\(Self.self).update") }
-	)
+	public static var testValue: Self {
+		Self(
+			observe: { _ in unimplemented("\(Self.self).observe") },
+			observeRolls: { _ in unimplemented("\(Self.self).observeRolls") },
+			update: { _ in unimplemented("\(Self.self).update") }
+		)
+	}
 }

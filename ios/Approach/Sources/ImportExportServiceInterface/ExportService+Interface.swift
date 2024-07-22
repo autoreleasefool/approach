@@ -22,8 +22,10 @@ extension ExportService {
 }
 
 extension ExportService: TestDependencyKey {
-	public static var testValue = Self(
-		exportDatabase: { unimplemented("\(Self.self).exportDatabase") },
-		cleanUp: { unimplemented("\(Self.self).cleanUp") }
-	)
+	public static var testValue: Self {
+		Self(
+			exportDatabase: { unimplemented("\(Self.self).exportDatabase") },
+			cleanUp: { unimplemented("\(Self.self).cleanUp") }
+		)
+	}
 }

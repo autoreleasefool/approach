@@ -19,9 +19,11 @@ public struct AddressLookupService: Sendable {
 }
 
 extension AddressLookupService: TestDependencyKey {
-	public static var testValue = Self(
-		beginSearch: { _ in unimplemented("\(Self.self).beginSearch") },
-		updateSearchQuery: { _, _ in unimplemented("\(Self.self).updateSearchQuery") },
-		lookUpAddress: { _ in unimplemented("\(Self.self).lookUpAddress") }
-	)
+	public static var testValue: Self {
+		Self(
+			beginSearch: { _ in unimplemented("\(Self.self).beginSearch") },
+			updateSearchQuery: { _, _ in unimplemented("\(Self.self).updateSearchQuery") },
+			lookUpAddress: { _ in unimplemented("\(Self.self).lookUpAddress") }
+		)
+	}
 }

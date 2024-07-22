@@ -8,5 +8,5 @@ public struct ZIPService: Sendable {
 }
 
 extension ZIPService: TestDependencyKey {
-	public static var testValue = Self()
+	public static var testValue: Self { Self() }
 }

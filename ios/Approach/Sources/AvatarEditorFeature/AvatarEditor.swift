@@ -219,7 +219,7 @@ public struct AvatarEditorView: View {
 		.onAppear { send(.onAppear) }
 	}
 
-	@ViewBuilder private var editorTabs: some View {
+	@MainActor @ViewBuilder private var editorTabs: some View {
 		Picker(
 			Strings.Avatar.Editor.Kind.title,
 			selection: $store.avatarKind.animation()
@@ -263,7 +263,7 @@ public struct AvatarEditorView: View {
 		.ignoresSafeArea(.container, edges: .bottom)
 	}
 
-	@ViewBuilder private var textEditor: some View {
+	@MainActor @ViewBuilder private var textEditor: some View {
 		List {
 			Section {
 				AvatarView(store.avatar, size: .extraExtraLargeIcon)

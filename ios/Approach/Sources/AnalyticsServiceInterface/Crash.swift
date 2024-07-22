@@ -13,7 +13,7 @@ public struct CrashGenerator: Sendable {
 }
 
 extension CrashGenerator: TestDependencyKey {
-	public static var testValue = Self { }
+	public static var testValue: Self { Self { } }
 }
 
 extension DependencyValues {

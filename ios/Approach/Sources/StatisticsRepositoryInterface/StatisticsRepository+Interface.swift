@@ -54,16 +54,18 @@ public struct StatisticsRepository: Sendable {
 }
 
 extension StatisticsRepository: TestDependencyKey {
-	public static var testValue = Self(
-		loadSources: { _ in unimplemented("\(Self.self).loadSources") },
-		loadDefaultSources: { unimplemented("\(Self.self).loadDefaultSource") },
-		saveLastUsedSource: { _ in unimplemented("\(Self.self).saveLastUsedSource") },
-		observeRecentlyUsedFilters: { unimplemented("\(Self.self).observeRecentlyUsedFilters") },
-		loadValues: { _ in unimplemented("\(Self.self).loadValues") },
-		loadChart: { _, _ in unimplemented("\(Self.self).loadChart") },
-		loadWidgetSources: { _ in unimplemented("\(Self.self).loadWidgetSources") },
-		loadDefaultWidgetSources: { unimplemented("\(Self.self).loadDefaultWidgetSources") },
-		loadWidgetData: { _ in unimplemented("\(Self.self).loadWidgetData") },
-		hideNewStatisticLabels: { unimplemented("\(Self.self).hideNewStatisticsLabels") }
-	)
+	public static var testValue: Self {
+		Self(
+			loadSources: { _ in unimplemented("\(Self.self).loadSources") },
+			loadDefaultSources: { unimplemented("\(Self.self).loadDefaultSource") },
+			saveLastUsedSource: { _ in unimplemented("\(Self.self).saveLastUsedSource") },
+			observeRecentlyUsedFilters: { unimplemented("\(Self.self).observeRecentlyUsedFilters") },
+			loadValues: { _ in unimplemented("\(Self.self).loadValues") },
+			loadChart: { _, _ in unimplemented("\(Self.self).loadChart") },
+			loadWidgetSources: { _ in unimplemented("\(Self.self).loadWidgetSources") },
+			loadDefaultWidgetSources: { unimplemented("\(Self.self).loadDefaultWidgetSources") },
+			loadWidgetData: { _ in unimplemented("\(Self.self).loadWidgetData") },
+			hideNewStatisticLabels: { unimplemented("\(Self.self).hideNewStatisticsLabels") }
+		)
+	}
 }

@@ -23,8 +23,10 @@ public struct TipsService: Sendable {
 }
 
 extension TipsService: TestDependencyKey {
-	public static var testValue = Self(
-		shouldShowTip: { _ in unimplemented("\(Self.self).shouldShowTip") },
-		hideTip: { _ in unimplemented("\(Self.self).hideTip") }
-	)
+	public static var testValue: Self {
+		Self(
+			shouldShowTip: { _ in unimplemented("\(Self.self).shouldShowTip") },
+			hideTip: { _ in unimplemented("\(Self.self).hideTip") }
+		)
+	}
 }

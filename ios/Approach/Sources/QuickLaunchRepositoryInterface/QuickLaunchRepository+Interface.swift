@@ -12,7 +12,9 @@ public struct QuickLaunchRepository: Sendable {
 }
 
 extension QuickLaunchRepository: TestDependencyKey {
-	public static var testValue = Self(
-		defaultSource: { unimplemented("\(Self.self).defaultSource") }
-	)
+	public static var testValue: Self {
+		Self(
+			defaultSource: { unimplemented("\(Self.self).defaultSource") }
+		)
+	}
 }

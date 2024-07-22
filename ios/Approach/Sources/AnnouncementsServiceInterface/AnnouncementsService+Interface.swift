@@ -15,8 +15,10 @@ public struct AnnouncementsService: Sendable {
 }
 
 extension AnnouncementsService: TestDependencyKey {
-	public static var testValue = Self(
-		announcement: { unimplemented("\(Self.self).announcement") },
-		hideAnnouncement: { _ in unimplemented("\(Self.self).hideAnnouncement")}
-	)
+	public static var testValue: Self {
+		Self(
+			announcement: { unimplemented("\(Self.self).announcement") },
+			hideAnnouncement: { _ in unimplemented("\(Self.self).hideAnnouncement")}
+		)
+	}
 }

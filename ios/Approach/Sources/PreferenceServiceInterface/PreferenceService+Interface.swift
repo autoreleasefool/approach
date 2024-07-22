@@ -23,7 +23,7 @@ public struct PreferenceService: Sendable {
 }
 
 extension PreferenceService: TestDependencyKey {
-	public static var testValue = Self()
+	public static var testValue: Self { Self() }
 }
 
 extension DependencyValues {

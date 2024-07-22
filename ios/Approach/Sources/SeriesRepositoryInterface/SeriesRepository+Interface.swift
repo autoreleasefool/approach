@@ -75,20 +75,22 @@ public struct SeriesRepository: Sendable {
 }
 
 extension SeriesRepository: TestDependencyKey {
-	public static var testValue = Self(
-		list: { _, _ in unimplemented("\(Self.self).list") },
-		summaries: { _ in unimplemented("\(Self.self).summaries") },
-		unusedPreBowls: { _ in unimplemented("\(Self.self).unusedPreBowls") },
-		gameHost: { _ in unimplemented("\(Self.self).gameHost") },
-		eventSeries: { _ in unimplemented("\(Self.self).eventSeries") },
-		shareable: { _ in unimplemented("\(Self.self).shareable") },
-		archived: { unimplemented("\(Self.self).archived") },
-		edit: { _ in unimplemented("\(Self.self).edit") },
-		usePreBowl: { _, _ in unimplemented("\(Self.self).usePreBowl") },
-		create: { _ in unimplemented("\(Self.self).create") },
-		update: { _ in unimplemented("\(Self.self).update") },
-		addGamesToSeries: { _, _ in unimplemented("\(Self.self).addGames") },
-		archive: { _ in unimplemented("\(Self.self).archive") },
-		unarchive: { _ in unimplemented("\(Self.self).unarchive") }
-	)
+	public static var testValue: Self {
+		Self(
+			list: { _, _ in unimplemented("\(Self.self).list") },
+			summaries: { _ in unimplemented("\(Self.self).summaries") },
+			unusedPreBowls: { _ in unimplemented("\(Self.self).unusedPreBowls") },
+			gameHost: { _ in unimplemented("\(Self.self).gameHost") },
+			eventSeries: { _ in unimplemented("\(Self.self).eventSeries") },
+			shareable: { _ in unimplemented("\(Self.self).shareable") },
+			archived: { unimplemented("\(Self.self).archived") },
+			edit: { _ in unimplemented("\(Self.self).edit") },
+			usePreBowl: { _, _ in unimplemented("\(Self.self).usePreBowl") },
+			create: { _ in unimplemented("\(Self.self).create") },
+			update: { _ in unimplemented("\(Self.self).update") },
+			addGamesToSeries: { _, _ in unimplemented("\(Self.self).addGames") },
+			archive: { _ in unimplemented("\(Self.self).archive") },
+			unarchive: { _ in unimplemented("\(Self.self).unarchive") }
+		)
+	}
 }

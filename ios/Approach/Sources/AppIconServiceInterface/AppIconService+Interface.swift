@@ -21,10 +21,12 @@ public struct AppIconService: Sendable {
 }
 
 extension AppIconService: TestDependencyKey {
-	public static var testValue = Self(
-		setAppIcon: { _ in unimplemented("\(Self.self).setAppIcon") },
-		resetAppIcon: { unimplemented("\(Self.self).resetAppIcon") },
-		getAppIconName: { unimplemented("\(Self.self).getAppIconName") },
-		supportsAlternateIcons: { unimplemented("\(Self.self).supportsAlternateIcons") }
-	)
+	public static var testValue: Self {
+		Self(
+			setAppIcon: { _ in unimplemented("\(Self.self).setAppIcon") },
+			resetAppIcon: { unimplemented("\(Self.self).resetAppIcon") },
+			getAppIconName: { unimplemented("\(Self.self).getAppIconName") },
+			supportsAlternateIcons: { unimplemented("\(Self.self).supportsAlternateIcons") }
+		)
+	}
 }

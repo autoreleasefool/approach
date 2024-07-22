@@ -95,15 +95,17 @@ extension LeaguesRepository {
 }
 
 extension LeaguesRepository: TestDependencyKey {
-	public static var testValue = Self(
-		list: { _, _, _ in unimplemented("\(Self.self).list") },
-		pickable: { _, _, _ in unimplemented("\(Self.self).pickable") },
-		archived: { unimplemented("\(Self.self).archived") },
-		seriesHost: { _ in unimplemented("\(Self.self).seriesHost") },
-		edit: { _ in unimplemented("\(Self.self).edit") },
-		create: { _ in unimplemented("\(Self.self).create") },
-		update: { _ in unimplemented("\(Self.self).update") },
-		archive: { _ in unimplemented("\(Self.self).archive") },
-		unarchive: { _ in unimplemented("\(Self.self).unarchive") }
-	)
+	public static var testValue: Self {
+		Self(
+			list: { _, _, _ in unimplemented("\(Self.self).list") },
+			pickable: { _, _, _ in unimplemented("\(Self.self).pickable") },
+			archived: { unimplemented("\(Self.self).archived") },
+			seriesHost: { _ in unimplemented("\(Self.self).seriesHost") },
+			edit: { _ in unimplemented("\(Self.self).edit") },
+			create: { _ in unimplemented("\(Self.self).create") },
+			update: { _ in unimplemented("\(Self.self).update") },
+			archive: { _ in unimplemented("\(Self.self).archive") },
+			unarchive: { _ in unimplemented("\(Self.self).unarchive") }
+		)
+	}
 }

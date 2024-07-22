@@ -50,10 +50,12 @@ public struct RecordPersistence: Sendable {
 }
 
 extension RecordPersistence: TestDependencyKey {
-	public static var testValue = Self(
-		create: { _ in unimplemented("\(Self.self).create") },
-		update: { _ in unimplemented("\(Self.self).update") },
-		delete: { _ in unimplemented("\(Self.self).delete") },
-		archive: { _ in unimplemented("\(Self.self).archive") }
-	)
+	public static var testValue: Self {
+		Self(
+			create: { _ in unimplemented("\(Self.self).create") },
+			update: { _ in unimplemented("\(Self.self).update") },
+			delete: { _ in unimplemented("\(Self.self).delete") },
+			archive: { _ in unimplemented("\(Self.self).archive") }
+		)
+	}
 }

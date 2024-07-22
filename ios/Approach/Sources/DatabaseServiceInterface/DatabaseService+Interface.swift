@@ -14,7 +14,7 @@ public struct DatabaseService: Sendable {
 }
 
 extension DatabaseService: TestDependencyKey {
-	public static var testValue = Self()
+	public static var testValue: Self { Self() }
 }
 
 extension DependencyValues {

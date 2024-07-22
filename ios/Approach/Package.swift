@@ -174,6 +174,9 @@ let package = Package(
 				.product(name: "Algorithms", package: "swift-algorithms"),
 				"AlleysListFeature",
 				"GearListFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -181,6 +184,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AccessoriesOverviewFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -193,6 +199,9 @@ let package = Package(
 				"LocationsRepositoryInterface",
 				"LoggingServiceInterface",
 				"ViewsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -200,6 +209,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AddressLookupFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -210,6 +222,9 @@ let package = Package(
 				"FormFeature",
 				"LaneEditorFeature",
 				"ModelsViewsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -217,6 +232,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AlleyEditorFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -226,6 +244,9 @@ let package = Package(
 				"AlleyEditorFeature",
 				"FeatureFlagsLibrary",
 				"ResourceListLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -233,6 +254,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AlleysListFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -242,6 +266,9 @@ let package = Package(
 				"AnnouncementsServiceInterface",
 				"FeatureActionLibrary",
 				"LoggingServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -249,6 +276,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AnnouncementsFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -270,6 +300,9 @@ let package = Package(
 				"OnboardingFeature",
 				"SettingsFeature",
 				"StatisticsOverviewFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -277,6 +310,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AppFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -289,6 +325,9 @@ let package = Package(
 				"LeaguesRepositoryInterface",
 				"ModelsViewsLibrary",
 				"SeriesRepositoryInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -296,6 +335,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ArchiveListFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -309,6 +351,9 @@ let package = Package(
 				"FeatureFlagsLibrary",
 				"LoggingServiceInterface",
 				"ViewsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -316,6 +361,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AvatarEditorFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -323,6 +371,9 @@ let package = Package(
 			dependencies: [
 				"BowlerEditorFeature",
 				"LeaguesListFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -330,6 +381,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"BowlerDetailsFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -337,6 +391,9 @@ let package = Package(
 			dependencies: [
 				"BowlersRepositoryInterface",
 				"FormFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -344,6 +401,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"BowlerEditorFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -352,6 +412,9 @@ let package = Package(
 				"AnnouncementsFeature",
 				"BowlerDetailsFeature",
 				"QuickLaunchRepositoryInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -359,6 +422,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"BowlersListFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -375,6 +441,9 @@ let package = Package(
 				"LoggingServiceInterface",
 				"ToastLibrary",
 				"ViewsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -382,6 +451,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ErrorsFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -392,6 +464,9 @@ let package = Package(
 				"FeatureFlagsLibrary",
 				"LoggingServiceInterface",
 				"StringsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -399,12 +474,18 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"FeatureFlagsListFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "FormFeature",
 			dependencies: [
 				"ErrorsFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -412,6 +493,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"FormFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -423,6 +507,9 @@ let package = Package(
 				"GearRepositoryInterface",
 				"LanesRepositoryInterface",
 				"StatisticsDetailsFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -430,6 +517,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"GamesEditorFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -438,6 +528,9 @@ let package = Package(
 				"GamesEditorFeature",
 				"ResourceListLibrary",
 				"SeriesEditorFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -445,6 +538,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"GamesListFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -455,6 +551,9 @@ let package = Package(
 				"FormFeature",
 				"GearRepositoryInterface",
 				"PickableModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -462,6 +561,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"GearEditorFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -471,6 +573,9 @@ let package = Package(
 				"RecentlyUsedServiceInterface",
 				"ResourceListLibrary",
 				"SortOrderLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -478,6 +583,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"GearListFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -488,6 +596,9 @@ let package = Package(
 				"ErrorsFeature",
 				"ImportExportServiceInterface",
 				"PreferenceServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -495,6 +606,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ImportExportFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -506,6 +620,9 @@ let package = Package(
 				"LoggingServiceInterface",
 				"ModelsLibrary",
 				"ViewsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -513,6 +630,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LaneEditorFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -523,6 +643,9 @@ let package = Package(
 				"LeaguesRepositoryInterface",
 				"ModelsViewsLibrary",
 				"PickableModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -530,6 +653,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LeagueEditorFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -537,6 +663,9 @@ let package = Package(
 			dependencies: [
 				"SeriesListFeature",
 				"StatisticsWidgetsLayoutFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -544,6 +673,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LeaguesListFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -556,6 +688,9 @@ let package = Package(
 				"FeatureActionLibrary",
 				"LoggingServiceInterface",
 				"ViewsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -563,6 +698,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"OnboardingFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -571,6 +709,9 @@ let package = Package(
 				"BowlerEditorFeature",
 				"GamesRepositoryInterface",
 				"ResourceListLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -578,6 +719,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"OpponentDetailsFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -589,6 +733,9 @@ let package = Package(
 				"OpponentDetailsFeature",
 				"RecentlyUsedServiceInterface",
 				"SortOrderLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -596,6 +743,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"OpponentsListFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -603,6 +753,9 @@ let package = Package(
 			dependencies: [
 				"ErrorsFeature",
 				"ProductsServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -610,6 +763,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"PaywallFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -622,6 +778,9 @@ let package = Package(
 				"ModelsViewsLibrary",
 				"PickableModelsLibrary",
 				"SeriesRepositoryInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -629,6 +788,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SeriesEditorFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -637,6 +799,9 @@ let package = Package(
 				"GamesListFeature",
 				"LeagueEditorFeature",
 				"SortOrderLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -644,6 +809,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SeriesListFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -657,6 +825,9 @@ let package = Package(
 				"ImportExportFeature",
 				"OpponentsListFeature",
 				"ProductsServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -664,6 +835,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SettingsFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -674,6 +848,9 @@ let package = Package(
 				"ScoresRepositoryInterface",
 				"SeriesRepositoryInterface",
 				"StatisticsWidgetEditorFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -681,6 +858,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SharingFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -692,6 +872,9 @@ let package = Package(
 				"RecentlyUsedServiceInterface",
 				"SharingFeature",
 				"TipsServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -699,12 +882,18 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"StatisticsDetailsFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "StatisticsOverviewFeature",
 			dependencies: [
 				"StatisticsDetailsFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -712,6 +901,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"StatisticsOverviewFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -724,6 +916,9 @@ let package = Package(
 				"ModelsViewsLibrary",
 				"PickableModelsLibrary",
 				"StatisticsWidgetsRepositoryInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -731,6 +926,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"StatisticsWidgetEditorFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -738,6 +936,9 @@ let package = Package(
 			dependencies: [
 				"ReorderingLibrary",
 				"StatisticsDetailsFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -745,6 +946,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"StatisticsWidgetsLayoutFeature",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 
@@ -757,6 +961,9 @@ let package = Package(
 				"RecentlyUsedServiceInterface",
 				"RepositoryLibrary",
 				"StatisticsModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -764,6 +971,9 @@ let package = Package(
 			dependencies: [
 				"LanesRepositoryInterface",
 				"LocationsRepositoryInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -774,6 +984,9 @@ let package = Package(
 				"AlleysRepository",
 				"DatabaseService",
 				"TestDatabaseUtilitiesLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -784,6 +997,9 @@ let package = Package(
 				"RecentlyUsedServiceInterface",
 				"RepositoryLibrary",
 				"StatisticsModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -791,6 +1007,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"ModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -801,6 +1020,9 @@ let package = Package(
 				"BowlersRepository",
 				"DatabaseService",
 				"TestDatabaseUtilitiesLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -810,6 +1032,9 @@ let package = Package(
 				"DatabaseServiceInterface",
 				"FramesRepositoryInterface",
 				"RepositoryLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -819,6 +1044,9 @@ let package = Package(
 				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
 				"ModelsLibrary",
 				"ScoreKeeperLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -829,6 +1057,9 @@ let package = Package(
 				"DatabaseService",
 				"FramesRepository",
 				"TestDatabaseUtilitiesLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -839,12 +1070,18 @@ let package = Package(
 				"DatabaseServiceInterface",
 				"GamesRepositoryInterface",
 				"RepositoryLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "GamesRepositoryInterface",
 			dependencies: [
 				"MatchPlaysRepositoryInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -855,6 +1092,9 @@ let package = Package(
 				"DatabaseService",
 				"GamesRepository",
 				"TestDatabaseUtilitiesLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -865,6 +1105,9 @@ let package = Package(
 				"GearRepositoryInterface",
 				"RecentlyUsedServiceInterface",
 				"RepositoryLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -872,6 +1115,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"ModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -882,6 +1128,9 @@ let package = Package(
 				"DatabaseService",
 				"GearRepository",
 				"TestDatabaseUtilitiesLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -891,6 +1140,9 @@ let package = Package(
 				"DatabaseServiceInterface",
 				"LanesRepositoryInterface",
 				"RepositoryLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -898,6 +1150,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"ModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -908,6 +1163,9 @@ let package = Package(
 				"DatabaseService",
 				"LanesRepository",
 				"TestDatabaseUtilitiesLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -918,6 +1176,9 @@ let package = Package(
 				"RecentlyUsedServiceInterface",
 				"RepositoryLibrary",
 				"StatisticsModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -925,6 +1186,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"ModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -935,6 +1199,9 @@ let package = Package(
 				"DatabaseService",
 				"LeaguesRepository",
 				"TestDatabaseUtilitiesLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -944,6 +1211,9 @@ let package = Package(
 				"DatabaseServiceInterface",
 				"LocationsRepositoryInterface",
 				"RepositoryLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -951,6 +1221,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"ModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -961,6 +1234,9 @@ let package = Package(
 				"DatabaseService",
 				"LocationsRepository",
 				"TestDatabaseUtilitiesLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -970,6 +1246,9 @@ let package = Package(
 				"DatabaseServiceInterface",
 				"MatchPlaysRepositoryInterface",
 				"RepositoryLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -977,6 +1256,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"ModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -987,6 +1269,9 @@ let package = Package(
 				"DatabaseService",
 				"MatchPlaysRepository",
 				"TestDatabaseUtilitiesLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -998,6 +1283,9 @@ let package = Package(
 				"QuickLaunchRepositoryInterface",
 				"RecentlyUsedServiceInterface",
 				"RepositoryLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1005,6 +1293,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"ModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1015,6 +1306,9 @@ let package = Package(
 				"DatabaseService",
 				"QuickLaunchRepository",
 				"TestDatabaseUtilitiesLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1026,6 +1320,9 @@ let package = Package(
 				"GamesRepositoryInterface",
 				"RepositoryLibrary",
 				"ScoresRepositoryInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1033,6 +1330,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"ModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1045,6 +1345,9 @@ let package = Package(
 				"GamesRepository",
 				"ScoresRepository",
 				"TestDatabaseUtilitiesLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1054,6 +1357,9 @@ let package = Package(
 				"DatabaseServiceInterface",
 				"RepositoryLibrary",
 				"SeriesRepositoryInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1061,6 +1367,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"ModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1071,6 +1380,9 @@ let package = Package(
 				"DatabaseService",
 				"SeriesRepository",
 				"TestDatabaseUtilitiesLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1084,6 +1396,9 @@ let package = Package(
 				"RepositoryLibrary",
 				"StatisticsModelsLibrary",
 				"StatisticsRepositoryInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1091,6 +1406,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Collections", package: "swift-collections"),
 				"StatisticsWidgetsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1101,6 +1419,9 @@ let package = Package(
 				"DatabaseService",
 				"StatisticsRepository",
 				"TestDatabaseUtilitiesLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1110,12 +1431,18 @@ let package = Package(
 				"DatabaseServiceInterface",
 				"RepositoryLibrary",
 				"StatisticsWidgetsRepositoryInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "StatisticsWidgetsRepositoryInterface",
 			dependencies: [
 				"StatisticsRepositoryInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1127,6 +1454,9 @@ let package = Package(
 				"StatisticsRepository",
 				"StatisticsWidgetsRepository",
 				"TestDatabaseUtilitiesLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 
@@ -1137,6 +1467,9 @@ let package = Package(
 			name: "AddressLookupService",
 			dependencies: [
 				"AddressLookupServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1146,6 +1479,9 @@ let package = Package(
 				.product(name: "EquatablePackageLibrary", package: "swift-utilities"),
 				.product(name: "XCTestDynamicOverlay", package: "xctest-dynamic-overlay"),
 				"ModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1153,6 +1489,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AddressLookupService",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1160,6 +1499,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Sentry", package: "sentry-cocoa"),
 				"AnalyticsServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1170,6 +1512,9 @@ let package = Package(
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "DependenciesMacros", package: "swift-dependencies"),
 				.product(name: "ErrorReportingClientPackageLibrary", package: "swift-utilities"),
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1177,6 +1522,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AnalyticsService",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1184,12 +1532,18 @@ let package = Package(
 			dependencies: [
 				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
 				"AnnouncementsServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "AnnouncementsServiceInterface",
 			dependencies: [
 				"AnnouncementsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1197,12 +1551,18 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AnnouncementsService",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "AppIconService",
 			dependencies: [
 				"AppIconServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1210,6 +1570,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"AssetsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1217,6 +1580,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
 				"AvatarServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1224,6 +1590,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"ModelsViewsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1231,18 +1600,27 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AvatarService",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "DatabaseMockingService",
 			dependencies: [
 				"DatabaseMockingServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "DatabaseMockingServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1251,6 +1629,9 @@ let package = Package(
 				.product(name: "FileManagerPackageServiceInterface", package: "swift-utilities"),
 				"DatabaseMigrationsLibrary",
 				"DatabaseServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1260,6 +1641,9 @@ let package = Package(
 				.product(name: "DependenciesMacros", package: "swift-dependencies"),
 				.product(name: "GRDB", package: "GRDB.swift"),
 				.product(name: "GRDBDatabasePackageServiceInterface", package: "swift-utilities"),
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1267,18 +1651,27 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DatabaseService",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "EmailService",
 			dependencies: [
 				"EmailServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "EmailServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1286,6 +1679,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"EmailService",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1295,6 +1691,9 @@ let package = Package(
 				"DatabaseServiceInterface",
 				"DateTimeLibrary",
 				"ImportExportServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1302,6 +1701,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "DependenciesMacros", package: "swift-dependencies"),
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1309,6 +1711,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ImportExportService",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1322,12 +1727,18 @@ let package = Package(
 				"LaunchServiceInterface",
 				"PreferenceServiceInterface",
 				"ProductsServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "LaunchServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1335,6 +1746,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LaunchService",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1344,12 +1758,18 @@ let package = Package(
 				.product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
 				"LoggingServiceInterface",
 				"ZIPServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "LoggingServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1357,18 +1777,27 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LoggingService",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "NotificationsService",
 			dependencies: [
 				"NotificationsServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "NotificationsServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1376,6 +1805,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"NotificationsService",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1383,6 +1815,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
 				"PreferenceServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1390,6 +1825,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "DependenciesMacros", package: "swift-dependencies"),
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1397,6 +1835,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"PreferenceService",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1406,6 +1847,9 @@ let package = Package(
 				.product(name: "RevenueCat", package: "purchases-ios"),
 				"ConstantsLibrary",
 				"ProductsServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1413,6 +1857,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"ProductsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1420,6 +1867,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ProductsService",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1428,6 +1878,9 @@ let package = Package(
 				.product(name: "Algorithms", package: "swift-algorithms"),
 				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
 				"RecentlyUsedServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1436,6 +1889,9 @@ let package = Package(
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"StatisticsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1443,6 +1899,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"RecentlyUsedService",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1450,6 +1909,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
 				"TipsServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1457,6 +1919,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"TipsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1464,6 +1929,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"TipsService",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1472,6 +1940,9 @@ let package = Package(
 				.product(name: "FileManagerPackageServiceInterface", package: "swift-utilities"),
 				.product(name: "ZIPFoundation", package: "ZIPFoundation"),
 				"ZIPServiceInterface",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1479,6 +1950,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "DependenciesMacros", package: "swift-dependencies"),
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1486,6 +1960,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ZIPService",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 
@@ -1495,6 +1972,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"ViewsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1502,6 +1982,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AnnouncementsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1511,6 +1994,9 @@ let package = Package(
 			],
 			resources: [
 				.process("Resources"),
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1518,6 +2004,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "IdentifiedCollections", package: "swift-identified-collections"),
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1528,6 +2017,9 @@ let package = Package(
 			],
 			resources: [
 				.process("Resources"),
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1538,6 +2030,9 @@ let package = Package(
 				.product(name: "GRDB", package: "GRDB.swift"),
 				.product(name: "GRDBDatabasePackageLibrary", package: "swift-utilities"),
 				"ScoreKeeperLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1546,23 +2041,35 @@ let package = Package(
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "GRDB", package: "GRDB.swift"),
 				"ModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "DateTimeLibrary",
-			dependencies: []
+			dependencies: [],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
+			]
 		),
 		.testTarget(
 			name: "DateTimeLibraryTests",
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DateTimeLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "FeatureActionLibrary",
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1570,6 +2077,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "FeatureFlagsPackageLibrary", package: "swift-utilities"),
 				.product(name: "FeatureFlagsPackageServiceInterface", package: "swift-utilities"),
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1577,6 +2087,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"ViewsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1584,6 +2097,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ListContentLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1591,6 +2107,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "IdentifiedCollections", package: "swift-identified-collections"),
 				"ScoreKeeperModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1599,6 +2118,9 @@ let package = Package(
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1607,6 +2129,9 @@ let package = Package(
 				"AssetsLibrary",
 				"ModelsLibrary",
 				"StringsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1614,6 +2139,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ModelsViewsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1621,6 +2149,9 @@ let package = Package(
 			dependencies: [
 				"ModelsLibrary",
 				"ResourcePickerLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1628,17 +2159,26 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"PickableModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "ProductsLibrary",
-			dependencies: []
+			dependencies: [],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
+			]
 		),
 		.target(
 			name: "ReorderingLibrary",
 			dependencies: [
 				.product(name: "IdentifiedCollections", package: "swift-identified-collections"),
 				"FeatureActionLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1646,6 +2186,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ReorderingLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1653,6 +2196,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
 				"SortingLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1660,6 +2206,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"RepositoryLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1670,6 +2219,9 @@ let package = Package(
 				"ComposableExtensionsLibrary",
 				"FeatureActionLibrary",
 				"ListContentLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1677,6 +2229,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ResourceListLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1686,6 +2241,9 @@ let package = Package(
 				"ComposableExtensionsLibrary",
 				"FeatureActionLibrary",
 				"ListContentLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1693,12 +2251,18 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ResourcePickerLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "ScoreKeeperLibrary",
 			dependencies: [
 				"ScoreKeeperModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1706,17 +2270,26 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ScoreKeeperLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "ScoreKeeperModelsLibrary",
-			dependencies: []
+			dependencies: [],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
+			]
 		),
 		.testTarget(
 			name: "ScoreKeeperModelsLibraryTests",
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ScoreKeeperModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1725,6 +2298,9 @@ let package = Package(
 				.product(name: "SwiftUIExtensionsPackageLibrary", package: "swift-utilities"),
 				"ModelsLibrary",
 				"ViewsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1732,6 +2308,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ScoreSheetLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1740,6 +2319,9 @@ let package = Package(
 				.product(name: "SwiftUIExtensionsPackageLibrary", package: "swift-utilities"),
 				"FeatureActionLibrary",
 				"ViewsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1747,17 +2329,26 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SortOrderLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "SortingLibrary",
-			dependencies: []
+			dependencies: [],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
+			]
 		),
 		.testTarget(
 			name: "SortingLibraryTests",
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SortingLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1767,6 +2358,9 @@ let package = Package(
 				"AssetsLibrary",
 				"DateTimeLibrary",
 				"StatisticsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1774,6 +2368,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"StatisticsChartsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1781,6 +2378,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"StatisticsChartsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1788,6 +2388,9 @@ let package = Package(
 			dependencies: [
 				"ModelsLibrary",
 				"StringsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1796,6 +2399,9 @@ let package = Package(
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"StatisticsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1803,6 +2409,9 @@ let package = Package(
 			dependencies: [
 				"DatabaseModelsLibrary",
 				"StatisticsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1812,12 +2421,18 @@ let package = Package(
 				"DatabaseService",
 				"StatisticsModelsLibrary",
 				"TestDatabaseUtilitiesLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "StatisticsWidgetsLibrary",
 			dependencies: [
 				"StatisticsChartsMocksLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1825,17 +2440,26 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"StatisticsWidgetsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "StringsLibrary",
-			dependencies: []
+			dependencies: [],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
+			]
 		),
 		.testTarget(
 			name: "StringsLibraryTests",
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"StringsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1844,12 +2468,18 @@ let package = Package(
 				.product(name: "GRDBDatabaseTestUtilitiesPackageLibrary", package: "swift-utilities"),
 				"DatabaseMigrationsLibrary",
 				"DatabaseModelsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
 			name: "TipsLibrary",
 			dependencies: [
 				"ViewsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1857,6 +2487,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"TipsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1865,6 +2498,9 @@ let package = Package(
 				.product(name: "AlertToast", package: "AlertToast"),
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"AssetsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1872,6 +2508,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ToastLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.target(
@@ -1879,6 +2518,9 @@ let package = Package(
 			dependencies: [
 				"AssetsLibrary",
 				"StringsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 		.testTarget(
@@ -1886,6 +2528,9 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ViewsLibrary",
+			],
+			swiftSettings: [
+				.enableExperimentalFeature("StrictConcurrency"),
 			]
 		),
 	]

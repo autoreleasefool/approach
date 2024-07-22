@@ -30,13 +30,15 @@ public struct ProductsService: Sendable {
 }
 
 extension ProductsService: TestDependencyKey {
-	public static var testValue = Self(
-		initialize: { unimplemented("\(Self.self).initialize") },
-		peekIsAvailable: { _ in unimplemented("\(Self.self).peekIsAvailable") },
-		isAvailable: { _ in unimplemented("\(Self.self).isAvailable") },
-		observe: { _ in unimplemented("\(Self.self).observe") },
-		fetchVariants: { _ in unimplemented("\(Self.self).fetchVariants") },
-		enableVariant: { _ in unimplemented("\(Self.self).enableVariant") },
-		restore: { unimplemented("\(Self.self).restore") }
-	)
+	public static var testValue: Self{
+		Self(
+			initialize: { unimplemented("\(Self.self).initialize") },
+			peekIsAvailable: { _ in unimplemented("\(Self.self).peekIsAvailable") },
+			isAvailable: { _ in unimplemented("\(Self.self).isAvailable") },
+			observe: { _ in unimplemented("\(Self.self).observe") },
+			fetchVariants: { _ in unimplemented("\(Self.self).fetchVariants") },
+			enableVariant: { _ in unimplemented("\(Self.self).enableVariant") },
+			restore: { unimplemented("\(Self.self).restore") }
+		)
+	}
 }

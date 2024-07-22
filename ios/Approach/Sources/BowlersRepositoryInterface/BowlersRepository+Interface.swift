@@ -72,17 +72,19 @@ public struct BowlersRepository: Sendable {
 }
 
 extension BowlersRepository: TestDependencyKey {
-	public static var testValue = Self(
-		list: { _ in unimplemented("\(Self.self).list") },
-		summaries: { _, _ in unimplemented("\(Self.self).summaries") },
-		archived: { unimplemented("\(Self.self).archived") },
-		opponents: { _ in unimplemented("\(Self.self).opponents") },
-		fetchSummaries: { _ in unimplemented("\(Self.self).fetchSummaries") },
-		opponentRecord: { _ in unimplemented("\(Self.self).opponentRecord") },
-		edit: { _ in unimplemented("\(Self.self).edit") },
-		create: { _ in unimplemented("\(Self.self).create") },
-		update: { _ in unimplemented("\(Self.self).update") },
-		archive: { _ in unimplemented("\(Self.self).archive") },
-		unarchive: { _ in unimplemented("\(Self.self).unarchive") }
-	)
+	public static var testValue: Self {
+		Self(
+			list: { _ in unimplemented("\(Self.self).list") },
+			summaries: { _, _ in unimplemented("\(Self.self).summaries") },
+			archived: { unimplemented("\(Self.self).archived") },
+			opponents: { _ in unimplemented("\(Self.self).opponents") },
+			fetchSummaries: { _ in unimplemented("\(Self.self).fetchSummaries") },
+			opponentRecord: { _ in unimplemented("\(Self.self).opponentRecord") },
+			edit: { _ in unimplemented("\(Self.self).edit") },
+			create: { _ in unimplemented("\(Self.self).create") },
+			update: { _ in unimplemented("\(Self.self).update") },
+			archive: { _ in unimplemented("\(Self.self).archive") },
+			unarchive: { _ in unimplemented("\(Self.self).unarchive") }
+		)
+	}
 }

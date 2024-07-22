@@ -9,7 +9,9 @@ public struct DatabaseMockingService: Sendable {
 }
 
 extension DatabaseMockingService: TestDependencyKey {
-	public static var testValue = Self(
-		mockDatabase: { unimplemented("\(Self.self).mockDatabase") }
-	)
+	public static var testValue: Self {
+		Self(
+			mockDatabase: { unimplemented("\(Self.self).mockDatabase") }
+		)
+	}
 }

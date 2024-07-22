@@ -8,7 +8,7 @@ public struct BreadcrumbService: Sendable {
 }
 
 extension BreadcrumbService: TestDependencyKey {
-	public static var testValue = Self()
+	public static var testValue: Self { Self() }
 }
 
 extension DependencyValues {

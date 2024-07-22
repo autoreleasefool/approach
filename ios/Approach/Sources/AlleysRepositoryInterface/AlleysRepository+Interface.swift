@@ -72,14 +72,16 @@ public struct AlleysRepository: Sendable {
 }
 
 extension AlleysRepository: TestDependencyKey {
-	public static var testValue = Self(
-		list: { _, _, _, _, _ in unimplemented("\(Self.self).list") },
-		mostRecentlyUsed: { _ in unimplemented("\(Self.self).mostRecentlyUsed") },
-		pickable: { unimplemented("\(Self.self).pickable") },
-		load: { _ in unimplemented("\(Self.self).load") },
-		edit: { _ in unimplemented("\(Self.self).edit") },
-		create: { _ in unimplemented("\(Self.self).create") },
-		update: { _ in unimplemented("\(Self.self).update") },
-		delete: { _ in unimplemented("\(Self.self).delete") }
-	)
+	public static var testValue: Self {
+		Self(
+			list: { _, _, _, _, _ in unimplemented("\(Self.self).list") },
+			mostRecentlyUsed: { _ in unimplemented("\(Self.self).mostRecentlyUsed") },
+			pickable: { unimplemented("\(Self.self).pickable") },
+			load: { _ in unimplemented("\(Self.self).load") },
+			edit: { _ in unimplemented("\(Self.self).edit") },
+			create: { _ in unimplemented("\(Self.self).create") },
+			update: { _ in unimplemented("\(Self.self).update") },
+			delete: { _ in unimplemented("\(Self.self).delete") }
+		)
+	}
 }

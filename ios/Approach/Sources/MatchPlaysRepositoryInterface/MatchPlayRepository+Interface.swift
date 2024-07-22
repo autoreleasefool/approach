@@ -18,9 +18,11 @@ public struct MatchPlaysRepository: Sendable {
 }
 
 extension MatchPlaysRepository: TestDependencyKey {
-	public static var testValue = Self(
-		create: { _ in unimplemented("\(Self.self).create") },
-		update: { _ in unimplemented("\(Self.self).update") },
-		delete: { _ in unimplemented("\(Self.self).delete") }
-	)
+	public static var testValue: Self {
+		Self(
+			create: { _ in unimplemented("\(Self.self).create") },
+			update: { _ in unimplemented("\(Self.self).update") },
+			delete: { _ in unimplemented("\(Self.self).delete") }
+		)
+	}
 }

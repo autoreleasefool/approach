@@ -13,7 +13,9 @@ public struct UIDeviceNotifications: Sendable {
 }
 
 extension UIDeviceNotifications: TestDependencyKey {
-	public static var testValue = Self(
-		orientationDidChange: { unimplemented("\(Self.self).orientationDidChange") }
-	)
+	public static var testValue: Self {
+		Self(
+			orientationDidChange: { unimplemented("\(Self.self).orientationDidChange") }
+		)
+	}
 }

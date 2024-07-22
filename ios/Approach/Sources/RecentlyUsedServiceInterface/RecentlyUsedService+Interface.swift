@@ -61,20 +61,24 @@ extension RecentlyUsedService {
 }
 
 extension RecentlyUsedService: TestDependencyKey {
-	public static var testValue = Self(
-		didRecentlyUseResource: { _, _ in unimplemented("\(Self.self).didRecentlyUseResource") },
-		getRecentlyUsed: { _ in unimplemented("\(Self.self).getRecentlyUsed") },
-		observeRecentlyUsed: { _ in unimplemented("\(Self.self).observeRecentlyUsed") },
-		observeRecentlyUsedIds: { _ in unimplemented("\(Self.self).observeRecentlyUsedIds") },
-		resetRecentlyUsed: { _ in unimplemented("\(Self.self).resetRecentlyUsed") }
-	)
+	public static var testValue: Self {
+		Self(
+			didRecentlyUseResource: { _, _ in unimplemented("\(Self.self).didRecentlyUseResource") },
+			getRecentlyUsed: { _ in unimplemented("\(Self.self).getRecentlyUsed") },
+			observeRecentlyUsed: { _ in unimplemented("\(Self.self).observeRecentlyUsed") },
+			observeRecentlyUsedIds: { _ in unimplemented("\(Self.self).observeRecentlyUsedIds") },
+			resetRecentlyUsed: { _ in unimplemented("\(Self.self).resetRecentlyUsed") }
+		)
+	}
 }
 
 extension RecentlyUsedTrackableFilterService: TestDependencyKey {
-	public static var testValue = Self(
-		didRecentlyUse: { _ in unimplemented("\(Self.self).didRecentlyUse") },
-		observeRecentlyUsed: { unimplemented("\(Self.self).observeRecentlyUsed") }
-	)
+	public static var testValue: Self {
+		Self(
+			didRecentlyUse: { _ in unimplemented("\(Self.self).didRecentlyUse") },
+			observeRecentlyUsed: { unimplemented("\(Self.self).observeRecentlyUsed") }
+		)
+	}
 }
 
 extension DependencyValues {
