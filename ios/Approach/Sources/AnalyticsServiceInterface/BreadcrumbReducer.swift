@@ -3,9 +3,9 @@ import ComposableArchitecture
 
 @Reducer
 public struct BreadcrumbReducer<State, Action>: Reducer, Sendable {
-	let reducer: (State, Action) -> Breadcrumb?
+	let reducer: @Sendable (State, Action) -> Breadcrumb?
 
-	public init(reducer: @escaping (_ state: State, _ action: Action) -> Breadcrumb?) {
+	public init(reducer: @escaping @Sendable (_ state: State, _ action: Action) -> Breadcrumb?) {
 		self.reducer = reducer
 	}
 

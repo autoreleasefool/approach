@@ -3,9 +3,9 @@ import ErrorReportingClientPackageLibrary
 
 @Reducer
 public struct ErrorHandlerReducer<State, Action>: Reducer, Sendable {
-	let reducer: (State, Action) -> Error?
+	let reducer: @Sendable (State, Action) -> Error?
 
-	public init(reducer: @escaping (_ state: State, _ action: Action) -> Error?) {
+	public init(reducer: @escaping @Sendable (_ state: State, _ action: Action) -> Error?) {
 		self.reducer = reducer
 	}
 

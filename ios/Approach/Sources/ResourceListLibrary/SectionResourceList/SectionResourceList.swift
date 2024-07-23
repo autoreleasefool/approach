@@ -140,11 +140,11 @@ public struct SectionResourceList<
 
 	enum CancelID { case observation }
 
-	public init(fetchSections: @escaping (Q) -> AsyncThrowingStream<[Section], Swift.Error>) {
+	public init(fetchSections: @escaping @Sendable (Q) -> AsyncThrowingStream<[Section], Swift.Error>) {
 		self.fetchSections = fetchSections
 	}
 
-	let fetchSections: (Q) -> AsyncThrowingStream<[Section], Swift.Error>
+	let fetchSections: @Sendable (Q) -> AsyncThrowingStream<[Section], Swift.Error>
 
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.emptyState, action: \.internal.empty) {

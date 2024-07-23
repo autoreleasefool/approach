@@ -28,7 +28,7 @@ public struct AlleyEditorView: View {
 			pinFallSection
 			pinBaseSection
 			lanesSection
-			Banner(.message(Strings.Alley.Editor.Help.askAStaffMember))
+			Banner(.message(Strings.Alley.Editor.Help.askAStaffMember), style: .plain)
 				.listRowInsets(EdgeInsets())
 		}
 		.onAppear { send(.onAppear) }

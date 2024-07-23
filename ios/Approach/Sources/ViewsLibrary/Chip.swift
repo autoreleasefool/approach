@@ -7,11 +7,11 @@ public struct Chip: View {
 	public let accessory: Accessory?
 	public let style: Style
 
-	@MainActor public init(
+	public init(
 		title: String,
 		icon: SFSymbol? = nil,
 		accessory: Accessory? = nil,
-		style: Style = .plain
+		style: Style
 	) {
 		self.title = title
 		self.icon = icon

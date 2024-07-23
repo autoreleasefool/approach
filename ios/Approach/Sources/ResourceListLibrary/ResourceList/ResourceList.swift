@@ -63,15 +63,17 @@ public struct ResourceList<
 		case delegate(Delegate)
 	}
 
-	public init(fetchResources: @escaping (Q) -> AsyncThrowingStream<[R], Swift.Error>) {
+	public init(fetchResources: @escaping @Sendable (Q) -> AsyncThrowingStream<[R], Swift.Error>) {
 		self.fetchResources = fetchResources
 	}
 
-	let fetchResources: (Q) -> AsyncThrowingStream<[R], Swift.Error>
+	let fetchResources: @Sendable (Q) -> AsyncThrowingStream<[R], Swift.Error>
 
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.sectionList, action: \.internal.sectionList) {
-			SectionResourceList(fetchSections: fetchResources(query:))
+			SectionResourceList { @Sendable in
+				fetchResources(query: $0)
+			}
 		}
 
 		Reduce<State, Action> { _, action in

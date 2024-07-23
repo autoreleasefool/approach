@@ -5,7 +5,7 @@ public struct BadgeView: View {
 	let text: String
 	let style: Style
 
-	@MainActor public init(_ text: String, style: Style = .plain) {
+	public init(_ text: String, style: Style) {
 		self.text = text
 		self.style = style
 	}

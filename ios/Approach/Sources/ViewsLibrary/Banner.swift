@@ -5,7 +5,7 @@ public struct Banner: View {
 	let content: Content
 	let style: Style
 
-	@MainActor public init(_ content: Content, style: Style = .plain) {
+	public init(_ content: Content, style: Style) {
 		self.content = content
 		self.style = style
 	}

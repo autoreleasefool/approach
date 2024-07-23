@@ -105,7 +105,9 @@ public struct OpponentsList: Reducer, Sendable {
 		}
 
 		Scope(state: \.list, action: \.internal.list) {
-			ResourceList(fetchResources: bowlers.opponents(ordering:))
+			ResourceList { @Sendable in
+				bowlers.opponents(ordering: $0)
+			}
 		}
 
 		Reduce<State, Action> { state, action in

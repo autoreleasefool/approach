@@ -112,7 +112,9 @@ public struct GamesList: Reducer, Sendable {
 
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.list, action: \.internal.list) {
-			ResourceList(fetchResources: fetchGames(seriesId:))
+			ResourceList { @Sendable in
+				fetchGames(seriesId: $0)
+			}
 		}
 
 		Scope(state: \.errors, action: \.internal.errors) {
@@ -297,7 +299,7 @@ public struct GamesList: Reducer, Sendable {
 	}
 
 	private func fetchGames(seriesId: Series.ID) -> AsyncThrowingStream<[Game.List], Error> {
-		.init { continuation in
+		AsyncThrowingStream { continuation in
 			let task = Task {
 				do {
 					for try await games in games.seriesGames(forId: seriesId, ordering: .byIndex) {

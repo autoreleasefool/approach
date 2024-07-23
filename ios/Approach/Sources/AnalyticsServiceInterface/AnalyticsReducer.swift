@@ -2,9 +2,9 @@ import ComposableArchitecture
 
 @Reducer
 public struct AnalyticsReducer<State, Action>: Reducer, Sendable {
-	let reducer: (State, Action) -> TrackableEvent?
+	let reducer: @Sendable (State, Action) -> TrackableEvent?
 
-	public init(reducer: @escaping (_ state: State, _ action: Action) -> TrackableEvent?) {
+	public init(reducer: @escaping @Sendable (_ state: State, _ action: Action) -> TrackableEvent?) {
 		self.reducer = reducer
 	}
 
@@ -20,9 +20,9 @@ public struct AnalyticsReducer<State, Action>: Reducer, Sendable {
 
 @Reducer
 public struct GameAnalyticsReducer<State, Action>: Reducer, Sendable {
-	let reducer: (State, Action) -> GameSessionTrackableEvent?
+	let reducer: @Sendable (State, Action) -> GameSessionTrackableEvent?
 
-	public init(reducer: @escaping (_ state: State, _ action: Action) -> GameSessionTrackableEvent?) {
+	public init(reducer: @escaping @Sendable (_ state: State, _ action: Action) -> GameSessionTrackableEvent?) {
 		self.reducer = reducer
 	}
 

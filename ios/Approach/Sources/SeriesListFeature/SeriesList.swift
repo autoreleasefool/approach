@@ -142,7 +142,9 @@ public struct SeriesList: Reducer, Sendable {
 		}
 
 		Scope(state: \.list, action: \.internal.list) {
-			SectionResourceList(fetchSections: self.fetchResources(query:))
+			SectionResourceList { @Sendable in
+				fetchResources(query: $0)
+			}
 		}
 
 		Reduce<State, Action> { state, action in

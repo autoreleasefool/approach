@@ -75,12 +75,12 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 
 	enum CancelID { case observation }
 
-	public init(observeResources: @escaping (Query) -> AsyncThrowingStream<[Resource], Error>) {
+	public init(observeResources: @escaping @Sendable (Query) -> AsyncThrowingStream<[Resource], Error>) {
 		self.observeResources = observeResources
 	}
 
 	@Dependency(\.dismiss) var dismiss
-	let observeResources: (Query) -> AsyncThrowingStream<[Resource], Error>
+	let observeResources: @Sendable (Query) -> AsyncThrowingStream<[Resource], Error>
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in
