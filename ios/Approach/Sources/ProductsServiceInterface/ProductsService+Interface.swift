@@ -30,7 +30,7 @@ public struct ProductsService: Sendable {
 }
 
 extension ProductsService: TestDependencyKey {
-	public static var testValue: Self{
+	public static var testValue: Self {
 		Self(
 			initialize: { unimplemented("\(Self.self).initialize") },
 			peekIsAvailable: { _ in unimplemented("\(Self.self).peekIsAvailable") },

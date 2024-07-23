@@ -6,7 +6,7 @@ extension Gear {
 		case byName
 		case byRecentlyUsed
 
-		public static var `default`: Self = .byRecentlyUsed
+		public static var `default`: Self { .byRecentlyUsed }
 	}
 }
 

@@ -58,7 +58,7 @@ public class ScoreKeeper {
 
 		// Ensure there is at least one roll in the game, or return a nil score
 		guard !rolls.isEmpty else {
-			return frames.enumerated().map { index, _ in
+			return frames.indices.map { index in
 					.init(
 						index: index,
 						rolls: Frame.ROLL_INDICES.map { rollIndex in

@@ -226,6 +226,6 @@ final class RecentlyUsedServiceTests: XCTestCase {
 			return ""
 		}
 
-		return String(data: entries, encoding: .utf8)!
+		return String(decoding: entries, as: UTF8.self)
 	}
 }

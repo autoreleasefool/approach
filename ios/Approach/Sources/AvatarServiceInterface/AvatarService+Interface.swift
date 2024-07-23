@@ -17,7 +17,7 @@ public struct AvatarService {
 }
 
 extension AvatarService: TestDependencyKey {
-	public static var testValue: Self { 
+	public static var testValue: Self {
 		Self(
 			render: { _ in unimplemented("\(Self.self).render") },
 			preRender: { _ in unimplemented("\(Self.self).preRender")}
