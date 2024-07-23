@@ -280,8 +280,8 @@ public enum Asset: Sendable {
 
 // MARK: - Implementation Details
 
-public final class ColorAsset {
-  public fileprivate(set) var name: String
+public final class ColorAsset: Sendable {
+  public let name: String
 
   #if os(macOS)
   public typealias Color = NSColor

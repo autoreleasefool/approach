@@ -148,7 +148,7 @@
 {% if hasARResourceGroup %}
 
 {{accessModifier}} struct {{arResourceGroupType}} {
-  {{accessModifier}} fileprivate(set) var name: String
+  {{accessModifier}} fileprivate(set) let name: String
 
   #if os(iOS)
   @available(iOS 11.3, *)
@@ -183,8 +183,8 @@
 {% endif %}
 {% if hasColor %}
 
-{{accessModifier}} final class {{colorType}} {
-  {{accessModifier}} fileprivate(set) var name: String
+{{accessModifier}} final class {{colorType}}: Sendable {
+  {{accessModifier}} let name: String
 
   #if os(macOS)
   {{accessModifier}} typealias Color = NSColor
