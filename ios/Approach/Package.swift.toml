@@ -7,10 +7,6 @@ default_localization = "en"
 [platforms.iOS]
 supported = [ "\"17.0\"" ]
 
-# Configuration
-[shared]
-swift_settings = [ ".enableExperimentalFeature(\"StrictConcurrency\")" ]
-
 # Features
 
 [features.App]
