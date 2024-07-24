@@ -8,9 +8,9 @@ android {
 }
 
 dependencies {
-	implementation(project(":feature:accessoriesoverview:ui"))
-	implementation(project(":feature:alleyslist"))
-	implementation(project(":feature:alleyslist:ui"))
-	implementation(project(":feature:gearlist"))
-	implementation(project(":feature:gearlist:ui"))
+	implementation(projects.feature.accessoriesoverview.ui)
+	implementation(projects.feature.alleyslist)
+	implementation(projects.feature.alleyslist.ui)
+	implementation(projects.feature.gearlist)
+	implementation(projects.feature.gearlist.ui)
 }

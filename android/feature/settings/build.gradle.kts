@@ -11,6 +11,6 @@ android {
 }
 
 dependencies {
-	implementation(project(":core:featureflags"))
-	implementation(project(":feature:settings:ui"))
+	implementation(projects.core.featureflags)
+	implementation(projects.feature.settings.ui)
 }

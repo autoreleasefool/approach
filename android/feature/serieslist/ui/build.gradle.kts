@@ -8,8 +8,8 @@ android {
 }
 
 dependencies {
-	implementation(project(":core:charts"))
-	implementation(project(":core:common"))
+	implementation(projects.core.charts)
+	implementation(projects.core.common)
 
 	implementation(libs.kotlinx.datetime)
 	implementation(libs.swipe)

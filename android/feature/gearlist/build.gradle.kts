@@ -8,5 +8,5 @@ android {
 }
 
 dependencies {
-	implementation(project(":feature:gearlist:ui"))
+	implementation(projects.feature.gearlist.ui)
 }

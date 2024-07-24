@@ -8,5 +8,5 @@ android {
 }
 
 dependencies {
-	implementation(project(":feature:bowlerslist:ui"))
+	implementation(projects.feature.bowlerslist.ui)
 }

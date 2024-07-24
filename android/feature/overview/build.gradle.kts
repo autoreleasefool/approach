@@ -8,11 +8,11 @@ android {
 }
 
 dependencies {
-	implementation(project(":core:statistics"))
-	implementation(project(":core:statistics:charts"))
-	implementation(project(":feature:bowlerslist:ui"))
-	implementation(project(":feature:overview:ui"))
-	implementation(project(":feature:statisticswidget:ui"))
+	implementation(projects.core.statistics)
+	implementation(projects.core.statistics.charts)
+	implementation(projects.feature.bowlerslist.ui)
+	implementation(projects.feature.overview.ui)
+	implementation(projects.feature.statisticswidget.ui)
 
 	implementation(libs.kotlinx.datetime)
 	implementation(libs.vico.compose)

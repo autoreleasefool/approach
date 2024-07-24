@@ -8,7 +8,7 @@ android {
 }
 
 dependencies {
-	implementation(project(":core:common"))
+	implementation(projects.core.common)
 
 	api(libs.androidx.compose.foundation)
 	api(libs.androidx.compose.foundation.layout)

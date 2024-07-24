@@ -8,6 +8,6 @@ android {
 }
 
 dependencies {
-	implementation(project(":core:statistics"))
-	implementation(project(":feature:statisticsoverview:ui"))
+	implementation(projects.core.statistics)
+	implementation(projects.feature.statisticsoverview.ui)
 }

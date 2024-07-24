@@ -8,6 +8,6 @@ android {
 }
 
 dependencies {
-	implementation(project(":feature:bowlerform:ui"))
+	implementation(projects.feature.bowlerform.ui)
 	implementation(libs.kotlinx.datetime)
 }

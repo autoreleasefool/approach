@@ -8,8 +8,8 @@ android {
 }
 
 dependencies {
-	implementation(project(":feature:leaguedetails:ui"))
-	implementation(project(":feature:serieslist:ui"))
+	implementation(projects.feature.leaguedetails.ui)
+	implementation(projects.feature.serieslist.ui)
 
 	implementation(libs.kotlinx.datetime)
 	implementation(libs.vico.compose)

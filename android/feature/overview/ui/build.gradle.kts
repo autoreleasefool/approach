@@ -8,8 +8,8 @@ android {
 }
 
 dependencies {
-	implementation(project(":feature:bowlerslist:ui"))
-	implementation(project(":feature:statisticswidget:ui"))
+	implementation(projects.feature.bowlerslist.ui)
+	implementation(projects.feature.statisticswidget.ui)
 
 	implementation(libs.compose.reorderable)
 	implementation(libs.swipe)

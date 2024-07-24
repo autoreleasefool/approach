@@ -8,8 +8,8 @@ android {
 }
 
 dependencies {
-	implementation(project(":core:error"))
-	implementation(project(":feature:datamanagement:ui"))
+	implementation(projects.core.error)
+	implementation(projects.feature.datamanagement.ui)
 
 	implementation(libs.kotlinx.datetime)
 }

@@ -8,9 +8,9 @@ android {
 }
 
 dependencies {
-	implementation(project(":core:common"))
-	implementation(project(":feature:serieslist:ui"))
-	implementation(project(":feature:statisticswidget:ui"))
+	implementation(projects.core.common)
+	implementation(projects.feature.serieslist.ui)
+	implementation(projects.feature.statisticswidget.ui)
 
 	implementation(libs.kotlinx.datetime)
 }

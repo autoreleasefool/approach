@@ -8,6 +8,6 @@ android {
 }
 
 dependencies {
-	implementation(project(":feature:leagueform:ui"))
+	implementation(projects.feature.leagueform.ui)
 	implementation(libs.kotlinx.datetime)
 }

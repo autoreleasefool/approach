@@ -8,5 +8,5 @@ android {
 }
 
 dependencies {
-	implementation(project(":feature:opponentslist:ui"))
+	implementation(projects.feature.opponentslist.ui)
 }

@@ -8,9 +8,9 @@ android {
 }
 
 dependencies {
-	implementation(project(":feature:gearlist:ui"))
-	implementation(project(":feature:leagueslist:ui"))
-	implementation(project(":feature:statisticswidget:ui"))
+	implementation(projects.feature.gearlist.ui)
+	implementation(projects.feature.leagueslist.ui)
+	implementation(projects.feature.statisticswidget.ui)
 
 	implementation(libs.vico.compose)
 }

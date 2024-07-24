@@ -8,7 +8,7 @@ android {
 }
 
 dependencies {
-	implementation(project(":feature:archives:ui"))
+	implementation(projects.feature.archives.ui)
 
 	implementation(libs.kotlinx.datetime)
 }

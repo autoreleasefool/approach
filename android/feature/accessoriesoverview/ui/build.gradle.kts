@@ -8,6 +8,6 @@ android {
 }
 
 dependencies {
-	implementation(project(":feature:alleyslist:ui"))
-	implementation(project(":feature:gearlist:ui"))
+	implementation(projects.feature.alleyslist.ui)
+	implementation(projects.feature.gearlist.ui)
 }

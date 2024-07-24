@@ -9,8 +9,8 @@ android {
 }
 
 dependencies {
-	implementation(project(":core:model"))
-	implementation(project(":core:statistics"))
+	implementation(projects.core.model)
+	implementation(projects.core.statistics)
 
 	implementation(libs.kotlinx.datetime)
 	implementation(libs.paging)

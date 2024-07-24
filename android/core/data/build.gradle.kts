@@ -8,12 +8,12 @@ android {
 }
 
 dependencies {
-	implementation(project(":core:common"))
-	implementation(project(":core:database"))
-	implementation(project(":core:datastore"))
-	implementation(project(":core:model"))
-	implementation(project(":core:scoring"))
-	implementation(project(":core:statistics"))
+	implementation(projects.core.common)
+	implementation(projects.core.database)
+	implementation(projects.core.datastore)
+	implementation(projects.core.model)
+	implementation(projects.core.scoring)
+	implementation(projects.core.statistics)
 
 	implementation(libs.androidx.core.ktx)
 	implementation(libs.kotlinx.datetime)

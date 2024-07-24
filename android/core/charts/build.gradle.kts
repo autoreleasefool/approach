@@ -8,7 +8,7 @@ android {
 }
 
 dependencies {
-	implementation(project(":core:designsystem"))
+	implementation(projects.core.designsystem)
 
 	implementation(libs.vico.compose)
 }

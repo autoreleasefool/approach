@@ -8,9 +8,9 @@ android {
 }
 
 dependencies {
-	implementation(project(":core:statistics"))
-	implementation(project(":core:statistics:charts"))
-	implementation(project(":feature:statisticswidget:ui"))
+	implementation(projects.core.statistics)
+	implementation(projects.core.statistics.charts)
+	implementation(projects.feature.statisticswidget.ui)
 
 	implementation(libs.vico.compose)
 }

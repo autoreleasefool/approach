@@ -8,7 +8,7 @@ android {
 }
 
 dependencies {
-	implementation(project(":core:scoresheet"))
+	implementation(projects.core.scoresheet)
 
 	implementation(libs.compose.reorderable)
 }

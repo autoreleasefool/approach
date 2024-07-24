@@ -8,5 +8,5 @@ android {
 }
 
 dependencies {
-	implementation(project(":core:model:ui"))
+	implementation(projects.core.model.ui)
 }

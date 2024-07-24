@@ -18,6 +18,8 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Approach"
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
 include(":core:analytics")
 include(":core:charts")

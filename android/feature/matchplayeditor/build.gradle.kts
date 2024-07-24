@@ -8,5 +8,5 @@ android {
 }
 
 dependencies {
-	implementation(project(":feature:matchplayeditor:ui"))
+	implementation(projects.feature.matchplayeditor.ui)
 }

@@ -8,9 +8,9 @@ android {
 }
 
 dependencies {
-	implementation(project(":core:charts"))
-	implementation(project(":core:common"))
-	implementation(project(":feature:gameslist:ui"))
+	implementation(projects.core.charts)
+	implementation(projects.core.common)
+	implementation(projects.feature.gameslist.ui)
 
 	implementation(libs.kotlinx.datetime)
 	implementation(libs.vico.compose)

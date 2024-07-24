@@ -8,8 +8,8 @@ android {
 }
 
 dependencies {
-	implementation(project(":core:database"))
-	implementation(project(":feature:onboarding:ui"))
+	implementation(projects.core.database)
+	implementation(projects.feature.onboarding.ui)
 
 	implementation(libs.kotlinx.datetime)
 }

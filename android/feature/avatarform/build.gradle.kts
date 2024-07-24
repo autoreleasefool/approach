@@ -8,6 +8,6 @@ android {
 }
 
 dependencies {
-	implementation(project(":core:model:ui"))
-	implementation(project(":feature:avatarform:ui"))
+	implementation(projects.core.model.ui)
+	implementation(projects.feature.avatarform.ui)
 }

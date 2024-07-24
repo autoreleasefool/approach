@@ -8,5 +8,5 @@ android {
 }
 
 dependencies {
-	implementation(project(":feature:gearform:ui"))
+	implementation(projects.feature.gearform.ui)
 }

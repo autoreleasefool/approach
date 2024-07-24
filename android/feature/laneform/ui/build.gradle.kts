@@ -8,5 +8,5 @@ android {
 }
 
 dependencies {
-	implementation(project(":feature:laneslist:ui"))
+	implementation(projects.feature.laneslist.ui)
 }

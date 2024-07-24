@@ -8,5 +8,5 @@ android {
 }
 
 dependencies {
-	implementation(project(":feature:laneform:ui"))
+	implementation(projects.feature.laneform.ui)
 }
