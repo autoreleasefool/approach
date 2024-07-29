@@ -146,7 +146,7 @@ class OfflineFirstGamesRepository @Inject constructor(
 	}
 
 	override suspend fun archiveGame(gameId: UUID) = withContext(ioDispatcher) {
-		gameDao.archiveGame(gameId)
+		gameDao.archiveGame(gameId, archivedOn = Clock.System.now())
 	}
 
 	override suspend fun unarchiveGame(gameId: UUID) = withContext(ioDispatcher) {

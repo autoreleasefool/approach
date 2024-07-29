@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import java.util.UUID
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 
 @Dao
@@ -126,8 +127,8 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 	@Query("UPDATE games SET archived_on = NULL WHERE id = :gameId")
 	abstract fun unarchiveGame(gameId: UUID)
 
-	@Query("UPDATE games SET archived_on = NULL WHERE id = :gameId")
-	abstract fun archiveGame(gameId: UUID)
+	@Query("UPDATE games SET archived_on = :archivedOn WHERE id = :gameId")
+	abstract fun archiveGame(gameId: UUID, archivedOn: Instant)
 
 	@Insert
 	abstract fun insertGames(games: List<GameEntity>)
