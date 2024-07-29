@@ -41,7 +41,7 @@ internal fun SeriesFormRoute(
 					when (it) {
 						is SeriesFormScreenEvent.Dismissed -> onDismissWithResult(it.id)
 						is SeriesFormScreenEvent.EditAlley ->
-							onEditAlley(it.alleyId) { ids ->
+							onEditAlley(it.alleyId) @JvmSerializableLambda { ids ->
 								viewModel.handleAction(SeriesFormScreenUiAction.AlleyUpdated(ids.firstOrNull()))
 							}
 					}

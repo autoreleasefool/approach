@@ -43,10 +43,15 @@ internal fun QuickPlayRoute(
 						QuickPlayScreenEvent.Dismissed -> onDismiss()
 						QuickPlayScreenEvent.ShowHowToUseQuickPlay -> onShowQuickPlayOnboarding()
 						is QuickPlayScreenEvent.BeganRecording -> onBeginRecording(it.seriesIds, it.initialGameId)
-						is QuickPlayScreenEvent.AddBowler -> onPickBowler(it.existingBowlers) { bowler ->
+						is QuickPlayScreenEvent.AddBowler -> onPickBowler(
+							it.existingBowlers,
+						) @JvmSerializableLambda { bowler ->
 							viewModel.handleAction(QuickPlayScreenUiAction.AddedBowler(bowler.firstOrNull()))
 						}
-						is QuickPlayScreenEvent.EditLeague -> onPickLeague(it.bowlerId, it.leagueId) { leagues ->
+						is QuickPlayScreenEvent.EditLeague -> onPickLeague(
+							it.bowlerId,
+							it.leagueId,
+						) @JvmSerializableLambda { leagues ->
 							viewModel.handleAction(
 								QuickPlayScreenUiAction.EditedLeague(it.bowlerId, leagues.firstOrNull()),
 							)

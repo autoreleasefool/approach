@@ -42,19 +42,19 @@ fun StatisticsWidgetEditorRoute(
 					when (it) {
 						StatisticsWidgetEditorScreenEvent.Dismissed -> onBackPressed()
 						is StatisticsWidgetEditorScreenEvent.EditBowler ->
-							onPickBowler(it.bowlerId) { ids ->
+							onPickBowler(it.bowlerId) @JvmSerializableLambda { ids ->
 								viewModel.handleAction(
 									StatisticsWidgetEditorScreenUiAction.UpdatedBowler(ids.firstOrNull()),
 								)
 							}
 						is StatisticsWidgetEditorScreenEvent.EditLeague ->
-							onPickLeague(it.bowlerId, it.leagueId) { ids ->
+							onPickLeague(it.bowlerId, it.leagueId) @JvmSerializableLambda { ids ->
 								viewModel.handleAction(
 									StatisticsWidgetEditorScreenUiAction.UpdatedLeague(ids.firstOrNull()),
 								)
 							}
 						is StatisticsWidgetEditorScreenEvent.EditStatistic ->
-							onPickStatistic(it.statistic.id) { id ->
+							onPickStatistic(it.statistic.id) @JvmSerializableLambda { id ->
 								viewModel.handleAction(StatisticsWidgetEditorScreenUiAction.UpdatedStatistic(id))
 							}
 					}

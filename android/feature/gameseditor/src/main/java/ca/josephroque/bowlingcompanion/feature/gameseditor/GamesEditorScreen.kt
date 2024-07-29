@@ -82,32 +82,35 @@ internal fun GamesEditorRoute(
 							onEditMatchPlay(GamesEditorArguments.EditMatchPlay(it.gameId))
 						is GamesEditorScreenEvent.EditGear ->
 							onEditGear(
-								GamesEditorArguments.EditGear(it.gearIds) { ids ->
+								GamesEditorArguments.EditGear(it.gearIds) @JvmSerializableLambda { ids ->
 									viewModel.handleAction(GamesEditorScreenUiAction.GearUpdated(ids))
 								},
 							)
 						is GamesEditorScreenEvent.EditAlley ->
 							onEditAlley(
-								GamesEditorArguments.EditAlley(it.alleyId) { ids ->
+								GamesEditorArguments.EditAlley(it.alleyId) @JvmSerializableLambda { ids ->
 									viewModel.handleAction(GamesEditorScreenUiAction.AlleyUpdated(ids.firstOrNull()))
 								},
 							)
 						is GamesEditorScreenEvent.EditLanes ->
 							onEditLanes(
-								GamesEditorArguments.EditLanes(it.alleyId, it.laneIds) { ids ->
+								GamesEditorArguments.EditLanes(it.alleyId, it.laneIds) @JvmSerializableLambda { ids ->
 									viewModel.handleAction(GamesEditorScreenUiAction.LanesUpdated(ids))
 								},
 							)
 						is GamesEditorScreenEvent.ShowGamesSettings ->
 							onShowGamesSettings(
-								GamesEditorArguments.ShowGamesSettings(it.series, it.currentGameId) { seriesAndGame ->
+								GamesEditorArguments.ShowGamesSettings(
+									it.series,
+									it.currentGameId,
+								) @JvmSerializableLambda { seriesAndGame ->
 									viewModel.handleAction(GamesEditorScreenUiAction.SeriesUpdated(seriesAndGame.first))
 									viewModel.handleAction(GamesEditorScreenUiAction.CurrentGameUpdated(seriesAndGame.second))
 								},
 							)
 						is GamesEditorScreenEvent.EditRolledBall ->
 							onEditRolledBall(
-								GamesEditorArguments.EditRolledBall(it.ballId) { ids ->
+								GamesEditorArguments.EditRolledBall(it.ballId) @JvmSerializableLambda { ids ->
 									viewModel.handleAction(GamesEditorScreenUiAction.SelectedBallUpdated(ids.firstOrNull()))
 								},
 							)
@@ -117,7 +120,10 @@ internal fun GamesEditorRoute(
 							onShowBowlerScores(GamesEditorArguments.ShowBowlerScores(it.series, it.gameIndex))
 						is GamesEditorScreenEvent.EditScore ->
 							onEditScore(
-								GamesEditorArguments.EditScore(it.score, it.scoringMethod) { result ->
+								GamesEditorArguments.EditScore(
+									it.score,
+									it.scoringMethod,
+								) @JvmSerializableLambda { result ->
 									viewModel.handleAction(GamesEditorScreenUiAction.ScoreUpdated(result.second, result.first))
 								},
 							)

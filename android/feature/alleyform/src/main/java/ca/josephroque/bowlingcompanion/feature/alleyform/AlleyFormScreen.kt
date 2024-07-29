@@ -41,7 +41,7 @@ internal fun AlleyFormRoute(
 					when (it) {
 						AlleyFormScreenEvent.Dismissed -> onDismiss()
 						is AlleyFormScreenEvent.ManageLanes ->
-							onManageLanes(it.existingLanes) { ids ->
+							onManageLanes(it.existingLanes) @JvmSerializableLambda { ids ->
 								viewModel.handleAction(AlleyFormScreenUiAction.LanesUpdated(ids))
 							}
 					}

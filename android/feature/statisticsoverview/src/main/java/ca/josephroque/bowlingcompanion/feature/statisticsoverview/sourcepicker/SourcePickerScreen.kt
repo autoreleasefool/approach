@@ -48,19 +48,19 @@ internal fun SourcePickerRoute(
 						SourcePickerScreenEvent.Dismissed -> onDismiss()
 						is SourcePickerScreenEvent.ShowStatistics -> onShowStatistics(it.filter)
 						is SourcePickerScreenEvent.EditBowler ->
-							onPickBowler(it.bowler) { ids ->
+							onPickBowler(it.bowler) @JvmSerializableLambda { ids ->
 								viewModel.handleAction(SourcePickerScreenUiAction.UpdatedBowler(ids.firstOrNull()))
 							}
 						is SourcePickerScreenEvent.EditLeague ->
-							onPickLeague(it.bowler, it.league) { ids ->
+							onPickLeague(it.bowler, it.league) @JvmSerializableLambda { ids ->
 								viewModel.handleAction(SourcePickerScreenUiAction.UpdatedLeague(ids.firstOrNull()))
 							}
 						is SourcePickerScreenEvent.EditSeries ->
-							onPickSeries(it.league, it.series) { ids ->
+							onPickSeries(it.league, it.series) @JvmSerializableLambda { ids ->
 								viewModel.handleAction(SourcePickerScreenUiAction.UpdatedSeries(ids.firstOrNull()))
 							}
 						is SourcePickerScreenEvent.EditGame ->
-							onPickGame(it.series, it.game) { ids ->
+							onPickGame(it.series, it.game) @JvmSerializableLambda { ids ->
 								viewModel.handleAction(SourcePickerScreenUiAction.UpdatedGame(ids.firstOrNull()))
 							}
 					}

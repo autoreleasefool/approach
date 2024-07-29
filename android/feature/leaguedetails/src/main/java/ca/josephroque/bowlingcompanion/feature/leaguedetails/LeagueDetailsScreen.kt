@@ -41,9 +41,12 @@ internal fun LeagueDetailsRoute(
 				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
 				.collect {
 					when (it) {
-						is LeagueDetailsScreenEvent.AddSeries -> onAddSeries(it.leagueId) { seriesId ->
-							seriesId ?: return@onAddSeries
-							viewModel.handleAction(LeagueDetailsScreenUiAction.SeriesAdded(seriesId))
+						is LeagueDetailsScreenEvent.AddSeries -> onAddSeries(
+							it.leagueId,
+						) @JvmSerializableLambda { seriesId ->
+							if (seriesId != null) {
+								viewModel.handleAction(LeagueDetailsScreenUiAction.SeriesAdded(seriesId))
+							}
 						}
 						is LeagueDetailsScreenEvent.UsePreBowl -> onUsePreBowl(it.leagueId)
 						is LeagueDetailsScreenEvent.EditSeries -> onEditSeries(it.seriesId)

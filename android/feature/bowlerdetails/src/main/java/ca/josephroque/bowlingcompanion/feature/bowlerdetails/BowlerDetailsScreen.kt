@@ -61,7 +61,7 @@ internal fun BowlerDetailsRoute(
 						is BowlerDetailsScreenEvent.ShowWidgetStatistics -> onShowWidgetStatistics(it.filter)
 						is BowlerDetailsScreenEvent.ShowPreferredGearPicker -> onShowPreferredGearPicker(
 							it.selectedGear,
-						) { selectedGear ->
+						) @JvmSerializableLambda { selectedGear ->
 							viewModel.handleAction(BowlerDetailsScreenUiAction.PreferredGearSelected(selectedGear))
 						}
 						BowlerDetailsScreenEvent.ShowWidgetNotEnoughDataError -> onShowWidgetNotEnoughDataError()

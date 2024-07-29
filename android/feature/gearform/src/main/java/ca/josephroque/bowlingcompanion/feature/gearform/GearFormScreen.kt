@@ -43,11 +43,11 @@ internal fun GearFormRoute(
 					when (it) {
 						GearFormScreenEvent.Dismissed -> onDismiss()
 						is GearFormScreenEvent.EditAvatar ->
-							onEditAvatar(it.avatar) { avatar ->
+							onEditAvatar(it.avatar) @JvmSerializableLambda { avatar ->
 								viewModel.handleAction(GearFormScreenUiAction.UpdatedAvatar(avatar))
 							}
 						is GearFormScreenEvent.EditOwner ->
-							onEditOwner(it.owner) { ids ->
+							onEditOwner(it.owner) @JvmSerializableLambda { ids ->
 								viewModel.handleAction(GearFormScreenUiAction.UpdatedOwner(ids.firstOrNull()))
 							}
 					}

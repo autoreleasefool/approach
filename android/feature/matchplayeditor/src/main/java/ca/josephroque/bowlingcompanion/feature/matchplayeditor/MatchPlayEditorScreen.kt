@@ -39,7 +39,7 @@ internal fun MatchPlayEditorRoute(
 					when (it) {
 						MatchPlayEditorScreenEvent.Dismissed -> onDismiss()
 						is MatchPlayEditorScreenEvent.EditOpponent ->
-							onEditOpponent(it.opponent) { ids ->
+							onEditOpponent(it.opponent) @JvmSerializableLambda { ids ->
 								viewModel.handleAction(MatchPlayEditorScreenUiAction.UpdatedOpponent(ids.firstOrNull()))
 							}
 					}
