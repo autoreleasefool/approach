@@ -105,6 +105,10 @@ class OfflineFirstUserDataRepository @Inject constructor(
 		approachPreferencesDataSource.setIsStatisticsTapToViewChartTipDismissed(isDismissed = true)
 	}
 
+	override suspend fun didDismissSwipeRowsTip() {
+		approachPreferencesDataSource.setIsSwipeRowsTipDismissed(isDismissed = true)
+	}
+
 	override suspend fun setStatisticIDSeen(statistic: StatisticID) {
 		approachPreferencesDataSource.setStatisticsIdsSeen(statistic.name)
 	}

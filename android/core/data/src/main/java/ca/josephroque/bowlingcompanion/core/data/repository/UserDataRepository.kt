@@ -39,6 +39,7 @@ interface UserDataRepository {
 	suspend fun didDismissLaneFormSwipeToEditTip()
 	suspend fun didDismissQuickPlayTip()
 	suspend fun didDismissStatisticsTapToViewChartTip()
+	suspend fun didDismissSwipeRowsTip()
 
 	suspend fun setLatestSeriesInEditor(ids: List<UUID>)
 	suspend fun setLatestGameInEditor(id: UUID)

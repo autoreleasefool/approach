@@ -42,10 +42,11 @@ message UserPreferences {
   bool is_lane_form_swipe_to_edit_tip_dismissed = 25;
   bool is_quick_play_tip_dismissed = 31;
   bool is_statistics_tap_to_view_chart_tip_dismissed = 34;
+  bool is_swipe_rows_tip_dismissed = 36;
 
   // Game in progress
   repeated string latest_series_in_editor = 32;
   optional string latest_game_in_editor = 33;
 
-  // Next ID: 36
+  // Next ID: 37
 }

@@ -86,15 +86,20 @@ class OverviewViewModel @Inject constructor(
 		}
 	}
 
+	private val isShowingSwipeHint = userDataRepository.userData
+		.map { !it.isSwipeRowsTipDismissed }
+
 	val uiState: StateFlow<OverviewScreenUiState> = combine(
 		bowlersListState,
 		widgetLayoutState,
 		isGameInProgressSnackBarVisible,
-	) { bowlersList, widgets, isGameInProgressSnackBarVisible ->
+		isShowingSwipeHint,
+	) { bowlersList, widgets, isGameInProgressSnackBarVisible, isShowingSwipeHint ->
 		OverviewScreenUiState.Loaded(
 			overview = OverviewUiState(
 				bowlersList = bowlersList,
 				widgets = widgets,
+				isShowingSwipeHint = isShowingSwipeHint,
 			),
 			isGameInProgressSnackBarVisible = isGameInProgressSnackBarVisible,
 		)
@@ -147,6 +152,7 @@ class OverviewViewModel @Inject constructor(
 				OverviewScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT),
 			)
 			OverviewUiAction.QuickPlayClicked -> sendEvent(OverviewScreenEvent.ShowQuickPlay)
+			OverviewUiAction.SwipeHintDismissed -> dismissSwipeHint()
 			is OverviewUiAction.BowlersListAction -> handleBowlersListAction(action.action)
 			is OverviewUiAction.StatisticsWidgetLayout -> handleStatisticsWidgetLayoutAction(action.action)
 		}
@@ -186,6 +192,12 @@ class OverviewViewModel @Inject constructor(
 			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(
 				OverviewScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT),
 			)
+		}
+	}
+
+	private fun dismissSwipeHint() {
+		viewModelScope.launch {
+			userDataRepository.didDismissSwipeRowsTip()
 		}
 	}
 

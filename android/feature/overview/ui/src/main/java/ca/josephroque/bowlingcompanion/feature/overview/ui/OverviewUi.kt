@@ -8,12 +8,14 @@ import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.Statis
 data class OverviewUiState(
 	val widgets: StatisticsWidgetLayoutUiState?,
 	val bowlersList: BowlersListUiState,
+	val isShowingSwipeHint: Boolean,
 )
 
 sealed interface OverviewUiAction {
 	data object AddBowlerClicked : OverviewUiAction
 	data object QuickPlayClicked : OverviewUiAction
 	data object EditStatisticsWidgetClicked : OverviewUiAction
+	data object SwipeHintDismissed : OverviewUiAction
 
 	data class BowlersListAction(val action: BowlersListUiAction) : OverviewUiAction
 	data class StatisticsWidgetLayout(val action: StatisticsWidgetLayoutUiAction) : OverviewUiAction

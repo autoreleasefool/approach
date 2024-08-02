@@ -10,6 +10,9 @@
 	<string name="overview_quick_play_number_of_games">Number of Games</string>
 	<string name="cd_add_bowler">Add Bowler</string>
 
+	<string name="swipe_hint_did_you_know">Did you know?</string>
+	<string name="swipe_hint_swipe_to_edit_or_archive">You can swipe bowlers, leagues, and more to the left or right, to archive or edit. Try swiping this item to dismiss it.</string>
+
 	<string name="resume_game">Resume</string>
 	<string name="game_in_progress">Didn\'t finish your last series?</string>
 
