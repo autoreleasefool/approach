@@ -42,7 +42,6 @@
 		CA8BBC5D28D59B8C00653A1E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA8BBC5C28D59B8C00653A1E /* Assets.xcassets */; };
 		CA8BBC6028D59B8C00653A1E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA8BBC5F28D59B8C00653A1E /* Preview Assets.xcassets */; };
 		CA9C5D7D2A8C032100E484E2 /* LoggingService in Frameworks */ = {isa = PBXBuildFile; productRef = CA9C5D7C2A8C032100E484E2 /* LoggingService */; };
-		CA9E25F12A0FA03400BA216C /* FeatureFlagsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA9E25F02A0FA03400BA216C /* FeatureFlagsService */; };
 		CA9E25F32A0FA66B00BA216C /* BowlersRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA9E25F22A0FA66B00BA216C /* BowlersRepository */; };
 		CAA3D74D29CFB48D00876EDC /* BowlersRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74C29CFB48D00876EDC /* BowlersRepository */; };
 		CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74E29CFB49200876EDC /* DatabaseService */; };
@@ -104,7 +103,6 @@
 				CAD15BB929FDF8DF0015E4CB /* FramesRepository in Frameworks */,
 				CA59011D2A05AD81000261C9 /* PreferenceService in Frameworks */,
 				CA5901192A05A862000261C9 /* GearRepository in Frameworks */,
-				CA9E25F12A0FA03400BA216C /* FeatureFlagsService in Frameworks */,
 				CAD15BC129FDFF890015E4CB /* TestDatabaseUtilitiesLibrary in Frameworks */,
 				CA9E25F32A0FA66B00BA216C /* BowlersRepository in Frameworks */,
 				CA7E892C2AC5153B004972E1 /* StatisticsRepository in Frameworks */,
@@ -300,7 +298,6 @@
 				CA5901182A05A862000261C9 /* GearRepository */,
 				CA59011A2A05AD62000261C9 /* RecentlyUsedService */,
 				CA59011C2A05AD81000261C9 /* PreferenceService */,
-				CA9E25F02A0FA03400BA216C /* FeatureFlagsService */,
 				CA9E25F22A0FA66B00BA216C /* BowlersRepository */,
 				CA2FCE902A14908C0061A7FE /* MatchPlaysRepository */,
 				CA2B781E2AABC9E10044487E /* ScoresRepository */,
@@ -730,10 +727,6 @@
 		CA9C5D7C2A8C032100E484E2 /* LoggingService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LoggingService;
-		};
-		CA9E25F02A0FA03400BA216C /* FeatureFlagsService */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = FeatureFlagsService;
 		};
 		CA9E25F22A0FA66B00BA216C /* BowlersRepository */ = {
 			isa = XCSwiftPackageProductDependency;

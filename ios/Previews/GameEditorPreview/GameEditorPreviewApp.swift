@@ -40,7 +40,13 @@ public struct GameEditorPreviewApp: App {
 							fatalError("Could not initialize database: \(error)")
 						}
 
-						return .init(reader: { db }, writer: { db })
+						return DatabaseService(
+							initialize: {},
+							dbUrl: { fatalError() },
+							close: {},
+							reader: { db },
+							writer: { db }
+						)
 					}())
 			}
 		)
