@@ -21,6 +21,7 @@ public struct ScoreSheetScrollView: View {
 				ScoreSheet(game: game, configuration: configuration, contentSize: contentSize, selection: $selection)
 					.cornerRadius(.standardRadius)
 			}
+			.cornerRadius(.standardRadius)
 			.onChange(of: selection) {
 				withAnimation(.easeInOut(duration: 300)) {
 					proxy.scrollTo(selection.frameId, anchor: selection.isLast ? .trailing : .leading)
