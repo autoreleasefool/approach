@@ -528,6 +528,12 @@ public enum Strings {
     public static func title(_ p1: Int) -> String {
       return Strings.tr("Localizable", "frame.title", p1, fallback: "Frame %d")
     }
+    public enum Editor {
+      public enum DragHint {
+        /// Drag your finger across the pins to mark them as knocked down, or to reset them.
+        public static let message = Strings.tr("Localizable", "frame.editor.dragHint.message", fallback: "Drag your finger across the pins to mark them as knocked down, or to reset them.")
+      }
+    }
   }
   public enum Game {
     /// Games

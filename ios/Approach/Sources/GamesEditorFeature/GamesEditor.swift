@@ -12,6 +12,7 @@ import GearRepositoryInterface
 import MatchPlaysRepositoryInterface
 import ModelsLibrary
 import PickableModelsLibrary
+import PreferenceServiceInterface
 import RecentlyUsedServiceInterface
 import ResourcePickerLibrary
 import ScoreSheetLibrary
@@ -65,6 +66,7 @@ public struct GamesEditor: Reducer, Sendable {
 			)
 		}
 
+		public var isFrameDragHintVisible = false
 		public var isScoreSheetVisible = true
 		public var shouldRequestAppStoreReview: Bool = false
 
@@ -153,6 +155,7 @@ public struct GamesEditor: Reducer, Sendable {
 			case didDismissGameDetails
 			case didDismissOpenSheet
 			case didRequestReview
+			case didDismissFrameDragHint
 		}
 		@CasePathable public enum Delegate { case doNothing }
 		@CasePathable public enum Internal {
@@ -219,6 +222,7 @@ public struct GamesEditor: Reducer, Sendable {
 	@Dependency(GamesRepository.self) var games
 	@Dependency(GearRepository.self) var gear
 	@Dependency(MatchPlaysRepository.self) var matchPlays
+	@Dependency(PreferenceService.self) var preferences
 	@Dependency(RecentlyUsedService.self) var recentlyUsed
 	@Dependency(ScoresRepository.self) var scores
 	@Dependency(\.storeReview) var storeReview
@@ -260,6 +264,7 @@ public struct GamesEditor: Reducer, Sendable {
 			case let .view(viewAction):
 				switch viewAction {
 				case .onAppear:
+					state.isFrameDragHintVisible = !(preferences.bool(forKey: .gameDidDismissDragHint) ?? false)
 					return .none
 
 				case .didFirstAppear:
@@ -275,6 +280,10 @@ public struct GamesEditor: Reducer, Sendable {
 				case let .didChangeSafeAreaInsets(newInsets):
 					state.safeAreaInsets = newInsets
 					return .send(.internal(.adjustBackdrop), animation: .default)
+
+				case .didDismissFrameDragHint:
+					state.isFrameDragHintVisible = false
+					return .run { _ in preferences.setBool(forKey: .gameDidDismissDragHint, to: true) }
 
 				case .didDismissOpenSheet:
 					if let game = state.game {

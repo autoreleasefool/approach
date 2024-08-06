@@ -275,6 +275,8 @@
 "game.editor.fields.manualScore.prompt" = "Score";
 "game.editor.fields.manualScore.caption" = "Score set manually";
 
+"frame.editor.dragHint.message" = "Drag your finger across the pins to mark them as knocked down, or to reset them.";
+
 /* Statistics */
 
 "statistics.title" = "Statistics";

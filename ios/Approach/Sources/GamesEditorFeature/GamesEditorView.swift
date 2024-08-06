@@ -48,13 +48,21 @@ public struct GamesEditorView: View {
 					Spacer()
 
 				} else {
+					VStack {
+						Spacer()
 
-					Spacer()
+						FrameEditorView(store: store.scope(state: \.frameEditor, action: \.internal.frameEditor))
+							.padding(.top)
 
-					FrameEditorView(store: store.scope(state: \.frameEditor, action: \.internal.frameEditor))
-						.padding(.top)
-
-					Spacer()
+						Spacer()
+					}
+					.overlay(alignment: .topLeading) {
+						if store.isFrameDragHintVisible {
+							FrameDragHint {
+								send(.didDismissFrameDragHint, animation: .default)
+							}
+						}
+					}
 
 					RollEditorView(store: store.scope(state: \.rollEditor, action: \.internal.rollEditor))
 						.measure(key: RollEditorSizeKey.self, to: $store.rollEditorSize)

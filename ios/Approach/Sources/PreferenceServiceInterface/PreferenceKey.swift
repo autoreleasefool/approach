@@ -12,6 +12,7 @@ public enum PreferenceKey: String {
 	// MARK: - Game
 
 	case gameShouldNotifyEditorChanges              // default: true
+	case gameDidDismissDragHint                     // default: false
 
 	// MARK: - Statistics
 
