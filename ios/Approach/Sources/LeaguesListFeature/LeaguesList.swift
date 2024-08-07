@@ -32,11 +32,13 @@ extension League.Ordering: CustomStringConvertible {
 @Reducer
 // swiftlint:disable:next type_body_length
 public struct LeaguesList: Reducer, Sendable {
+	public typealias SectionList = SectionResourceList<League.List, League.List.FetchRequest>
+
 	@ObservableState
 	public struct State: Equatable {
 		public let bowler: Bowler.Summary
 
-		public var list: ResourceList<League.List, League.List.FetchRequest>.State
+		public var list: SectionList.State
 		public var preferredGear: PreferredGear.State
 		public var widgets: StatisticsWidgetLayout.State
 
@@ -57,7 +59,7 @@ public struct LeaguesList: Reducer, Sendable {
 			self.filter = filter
 			self.widgets = .init(context: LeaguesList.widgetContext(forBowler: bowler.id), newWidgetSource: .bowler(bowler.id))
 			self.preferredGear = .init(bowler: bowler.id)
-			self.list = .init(
+			self.list = SectionList.State(
 				features: [
 					.add,
 					.swipeToEdit,
@@ -101,7 +103,7 @@ public struct LeaguesList: Reducer, Sendable {
 
 			case errors(Errors<ErrorID>.Action)
 			case preferredGear(PreferredGear.Action)
-			case list(ResourceList<League.List, League.List.FetchRequest>.Action)
+			case list(SectionList.Action)
 			case widgets(StatisticsWidgetLayout.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
@@ -118,6 +120,11 @@ public struct LeaguesList: Reducer, Sendable {
 		case series(SeriesList)
 		case games(GamesList)
 		case sortOrder(SortOrder<League.Ordering>)
+	}
+
+	public enum SectionID: String {
+		case leagues
+		case events
 	}
 
 	public enum ErrorID: Hashable {
@@ -143,12 +150,8 @@ public struct LeaguesList: Reducer, Sendable {
 		}
 
 		Scope(state: \.list, action: \.internal.list) {
-			ResourceList { request in
-				leagues.list(
-					bowledBy: request.filter.bowler,
-					withRecurrence: request.filter.recurrence,
-					ordering: request.ordering
-				)
+			SectionResourceList { @Sendable in
+				fetchResources(query: $0)
 			}
 		}
 
@@ -325,7 +328,7 @@ public struct LeaguesList: Reducer, Sendable {
 						.destination(.presented(.games(.view))),
 						.destination(.presented(.games(.delegate(.doNothing)))),
 						.preferredGear(.internal), .preferredGear(.view),
-						.list(.internal), .list(.view),
+						.list(.internal), .list(.view), .list(.binding),
 						.widgets(.internal), .widgets(.view),
 						.errors(.internal), .errors(.view):
 					return .none
@@ -365,6 +368,44 @@ public struct LeaguesList: Reducer, Sendable {
 			default:
 				return nil
 			}
+		}
+	}
+
+	private func fetchResources(
+		query: League.List.FetchRequest
+	) -> AsyncThrowingStream<[SectionList.Section], Error> {
+		return AsyncThrowingStream { continuation in
+			let task = Task {
+				do {
+					for try await leagues in self.leagues.list(
+						bowledBy: query.filter.bowler,
+						withRecurrence: query.filter.recurrence,
+						ordering: query.ordering
+					) {
+						let repeating = IdentifiedArrayOf<League.List>(
+							uniqueElements: leagues.filter { $0.recurrence == .repeating }
+						)
+						let oneOffs = IdentifiedArrayOf<League.List>(
+							uniqueElements: leagues.filter { $0.recurrence == .once }
+						)
+
+						continuation.yield([
+							repeating.isEmpty ? nil : SectionList.Section(
+								id: SectionID.leagues.rawValue,
+								title: Strings.League.List.Repeating.title,
+								items: repeating
+							),
+							oneOffs.isEmpty ? nil : SectionList.Section(
+								id: SectionID.events.rawValue,
+								title: Strings.League.List.Once.title,
+								items: oneOffs
+							),
+						].compactMap { $0 })
+					}
+				}
+			}
+
+			continuation.onTermination = { _ in task.cancel() }
 		}
 	}
 }

@@ -911,6 +911,14 @@ public enum Strings {
       public static let add = Strings.tr("Localizable", "league.list.add", fallback: "Add League")
       /// Leagues
       public static let title = Strings.tr("Localizable", "league.list.title", fallback: "Leagues")
+      public enum Once {
+        /// Events
+        public static let title = Strings.tr("Localizable", "league.list.once.title", fallback: "Events")
+      }
+      public enum Repeating {
+        /// Leagues
+        public static let title = Strings.tr("Localizable", "league.list.repeating.title", fallback: "Leagues")
+      }
     }
     public enum Properties {
       /// Additional Games

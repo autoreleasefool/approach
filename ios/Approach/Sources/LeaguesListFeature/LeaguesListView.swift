@@ -23,9 +23,9 @@ public struct LeaguesListView: View {
 	}
 
 	public var body: some View {
-		ResourceListView(
+		SectionResourceListView(
 			store: store.scope(state: \.list, action: \.internal.list)
-		) { league in
+		) { _, league in
 			Button { send(.didTapLeague(id: league.id)) } label: {
 				LabeledContent(league.name, value: format(average: league.average))
 			}

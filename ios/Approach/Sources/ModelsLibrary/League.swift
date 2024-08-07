@@ -81,6 +81,7 @@ extension League {
 	public struct List: Identifiable, Codable, Equatable {
 		public let id: League.ID
 		public let name: String
+		public let recurrence: Recurrence
 		public let average: Double?
 
 		public var summary: Summary {
