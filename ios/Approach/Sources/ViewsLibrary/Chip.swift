@@ -5,17 +5,20 @@ public struct Chip: View {
 	public let title: String
 	public let icon: SFSymbol?
 	public let accessory: Accessory?
+	public let size: Sizing
 	public let style: Style
 
-	public init(
+	@MainActor public init(
 		title: String,
 		icon: SFSymbol? = nil,
 		accessory: Accessory? = nil,
+		size: Sizing? = nil,
 		style: Style
 	) {
 		self.title = title
 		self.icon = icon
 		self.accessory = accessory
+		self.size = size ?? .standard
 		self.style = style
 	}
 
@@ -24,29 +27,29 @@ public struct Chip: View {
 			if let icon {
 				Image(systemSymbol: icon)
 					.resizable()
-					.frame(width: .tinyIcon, height: .tinyIcon)
+					.frame(width: size.icon, height: size.icon)
 					.padding(.trailing, .smallSpacing)
 					.foregroundColor(style.foreground)
 			}
 
 			Text(title)
 				.lineLimit(0)
-				.font(.body)
+				.font(size.font)
 				.foregroundColor(style.foreground)
 
-			Spacer()
-
 			if let accessory {
+				Spacer()
+
 				Image(systemSymbol: accessory.systemSymbol)
 					.resizable()
-					.frame(width: .tinyIcon, height: .tinyIcon)
+					.frame(width: size.icon, height: size.icon)
 					.padding(.leading, .smallSpacing)
 					.foregroundColor(style.foreground)
 			}
 		}
-		.padding(.all, .standardSpacing)
+		.padding(.all, size.padding)
 		.background(
-			RoundedRectangle(cornerRadius: .largeRadius)
+			RoundedRectangle(cornerRadius: size.radius)
 				.fill(style.background.swiftUIColor)
 				.strokeBorder(style.foreground.swiftUIColor, lineWidth: 2)
 		)
@@ -68,9 +71,37 @@ extension Chip {
 }
 
 extension Chip {
+	public struct Sizing: Sendable {
+		public let padding: CGFloat
+		public let icon: CGFloat
+		public let radius: CGFloat
+		public let font: Font
+
+		@MainActor public static let standard = Self(
+			padding: .standardSpacing,
+			icon: .tinyIcon,
+			radius: .largeRadius,
+			font: .body
+		)
+
+		@MainActor public static let compact = Self(
+			padding: .smallSpacing,
+			icon: .extraTinyIcon,
+			radius: .standardRadius,
+			font: .caption
+		)
+	}
+}
+
+extension Chip {
 	public struct Style: Sendable {
 		public let foreground: ColorAsset
 		public let background: ColorAsset
+
+		public init(foreground: ColorAsset, background: ColorAsset) {
+			self.foreground = foreground
+			self.background = background
+		}
 
 		@MainActor public static let plain = Self(
 			foreground: Asset.Colors.Chip.plainForeground,
