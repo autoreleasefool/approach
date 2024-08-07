@@ -198,6 +198,52 @@ public enum Asset: Sendable {
       public static let onSecondaryBackground = ColorAsset(name: "Text/OnSecondaryBackground")
       public static let onSuccess = ColorAsset(name: "Text/OnSuccess")
     }
+    public enum Theme {
+      public enum Blue {
+        public static let _100 = ColorAsset(name: "Theme/Blue/100")
+        public static let _200 = ColorAsset(name: "Theme/Blue/200")
+        public static let _300 = ColorAsset(name: "Theme/Blue/300")
+        public static let _400 = ColorAsset(name: "Theme/Blue/400")
+        public static let _500 = ColorAsset(name: "Theme/Blue/500")
+        public static let _600 = ColorAsset(name: "Theme/Blue/600")
+        public static let _700 = ColorAsset(name: "Theme/Blue/700")
+        public static let _800 = ColorAsset(name: "Theme/Blue/800")
+        public static let _900 = ColorAsset(name: "Theme/Blue/900")
+      }
+      public enum Pink {
+        public static let _100 = ColorAsset(name: "Theme/Pink/100")
+        public static let _200 = ColorAsset(name: "Theme/Pink/200")
+        public static let _300 = ColorAsset(name: "Theme/Pink/300")
+        public static let _400 = ColorAsset(name: "Theme/Pink/400")
+        public static let _500 = ColorAsset(name: "Theme/Pink/500")
+        public static let _600 = ColorAsset(name: "Theme/Pink/600")
+        public static let _700 = ColorAsset(name: "Theme/Pink/700")
+        public static let _800 = ColorAsset(name: "Theme/Pink/800")
+        public static let _900 = ColorAsset(name: "Theme/Pink/900")
+      }
+      public enum Purple {
+        public static let _100 = ColorAsset(name: "Theme/Purple/100")
+        public static let _200 = ColorAsset(name: "Theme/Purple/200")
+        public static let _300 = ColorAsset(name: "Theme/Purple/300")
+        public static let _400 = ColorAsset(name: "Theme/Purple/400")
+        public static let _500 = ColorAsset(name: "Theme/Purple/500")
+        public static let _600 = ColorAsset(name: "Theme/Purple/600")
+        public static let _700 = ColorAsset(name: "Theme/Purple/700")
+        public static let _800 = ColorAsset(name: "Theme/Purple/800")
+        public static let _900 = ColorAsset(name: "Theme/Purple/900")
+      }
+      public enum Yellow {
+        public static let _100 = ColorAsset(name: "Theme/Yellow/100")
+        public static let _200 = ColorAsset(name: "Theme/Yellow/200")
+        public static let _300 = ColorAsset(name: "Theme/Yellow/300")
+        public static let _400 = ColorAsset(name: "Theme/Yellow/400")
+        public static let _500 = ColorAsset(name: "Theme/Yellow/500")
+        public static let _600 = ColorAsset(name: "Theme/Yellow/600")
+        public static let _700 = ColorAsset(name: "Theme/Yellow/700")
+        public static let _800 = ColorAsset(name: "Theme/Yellow/800")
+        public static let _900 = ColorAsset(name: "Theme/Yellow/900")
+      }
+    }
     public enum TrackableFilters {
       public static let bowler = ColorAsset(name: "TrackableFilters/Bowler")
       public static let game = ColorAsset(name: "TrackableFilters/Game")
