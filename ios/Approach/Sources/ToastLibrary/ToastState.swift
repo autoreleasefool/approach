@@ -1,7 +1,7 @@
-import AlertToast
 import AssetsLibrary
 import ComposableArchitecture
 import SwiftUI
+import ToastUI
 
 public protocol ToastableAction {
 	static var didDismiss: Self { get }
@@ -63,15 +63,15 @@ public struct ToastStyle: Equatable {
 		lhs.id == rhs.id
 	}
 
-	var alertStyle: AlertToast.AlertStyle {
-		.style(
-			backgroundColor: background.swiftUIColor,
-			titleColor: foreground.swiftUIColor,
-			subTitleColor: foreground.swiftUIColor,
-			titleFont: nil,
-			subTitleFont: nil
-		)
-	}
+//	var alertStyle: AlertToast.AlertStyle {
+//		.style(
+//			backgroundColor: background.swiftUIColor,
+//			titleColor: foreground.swiftUIColor,
+//			subTitleColor: foreground.swiftUIColor,
+//			titleFont: nil,
+//			subTitleFont: nil
+//		)
+//	}
 }
 
 extension ToastStyle {
@@ -84,7 +84,6 @@ extension ToastStyle {
 
 extension ToastState {
 	public enum Content {
-		case hud(HUDContent)
 		case toast(SnackContent<Action>)
 	}
 }
@@ -117,59 +116,32 @@ extension ToastState.Content: Equatable where Action: Equatable {}
 extension SnackContent: Equatable where Action: Equatable {}
 
 extension View {
-	public func toast<Action>(
+	@ViewBuilder public func toast<Action>(
 		_ item: Binding<Store<ToastState<Action>, Action>?>
 	) -> some View where Action: Equatable {
 		let store = item.wrappedValue
 		let toastState = store?.withState { $0 }
 
-		return self.toast(
-			isPresenting: item.isPresent(),
-			alert: {
+		self.toast(
+			isPresented: item.isPresent(),
+			dismissAfter: 4,
+			onDismiss: { store?.send(.didFinishDismissing) },
+			content: {
 				switch toastState?.content {
-				case .none:
-					return AlertToast(displayMode: .banner(.slide), type: .regular)
-				case let .hud(content):
-					return AlertToast(
-						displayMode: .alert,
-						type: .regular,
-						title: content.message,
-						style: toastState?.style.alertStyle
-					)
 				case let .toast(content):
-					let type: AlertToast.AlertType
-					if let icon = content.icon {
-						type = .systemImage(
-							icon.rawValue,
-							toastState?.style.foreground.swiftUIColor ?? .black
-						)
-					} else {
-						type = .regular
-					}
-
-					return AlertToast(
-						displayMode: .banner(.pop),
-						type: type,
+					ToastView(
 						title: content.message,
-						subTitle: content.button?.title,
-						style: toastState?.style.alertStyle
-					)
-				}
-			},
-			onTap: {
-				switch toastState?.content {
-				case .none, .hud:
-					break
-				case .toast(let content):
-					if let action = content.button?.action {
+						action: content.button?.title,
+						style: toastState?.style ?? .success
+					) {
+						guard let action = content.button?.action else { return }
 						store?.send(action)
+					} onDismiss: {
+						store?.send(.didDismiss)
 					}
+				case .none:
+					EmptyView()
 				}
-
-				store?.send(.didDismiss)
-			},
-			completion: {
-				store?.send(.didFinishDismissing)
 			}
 		)
 	}

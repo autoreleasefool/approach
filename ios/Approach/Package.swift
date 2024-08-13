@@ -154,7 +154,6 @@ let package = Package(
 		.package(url: "https://github.com/apple/swift-collections.git", from: "1.1.0"),
 		.package(url: "https://github.com/autoreleasefool/swift-utilities.git", from: "2.4.1"),
 		.package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.5"),
-		.package(url: "https://github.com/elai950/AlertToast.git", from: "1.3.9"),
 		.package(url: "https://github.com/getsentry/sentry-cocoa.git", from: "8.30.1"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.28.0"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.11.2"),
@@ -162,6 +161,7 @@ let package = Package(
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "1.1.0"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.1"),
 		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "1.1.2"),
+		.package(url: "https://github.com/quanshousio/ToastUI.git", from: "4.0.0"),
 		.package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "4.37.0"),
 		.package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", from: "5.3.0"),
 		.package(url: "https://github.com/weichsel/ZIPFoundation.git", from: "0.9.19"),
@@ -1862,8 +1862,8 @@ let package = Package(
 		.target(
 			name: "ToastLibrary",
 			dependencies: [
-				.product(name: "AlertToast", package: "AlertToast"),
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				.product(name: "ToastUI", package: "ToastUI"),
 				"AssetsLibrary",
 			]
 		),
