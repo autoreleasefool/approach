@@ -114,16 +114,11 @@ public struct GamesEditorView: View {
 		.onAppear { send(.onAppear) }
 		.onFirstAppear { send(.didFirstAppear) }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.toast($store.scope(state: \.toast, action: \.internal.toast))
 		.alert(
 			$store.scope(
 				state: \.destination?.duplicateLanesAlert,
 				action: \.internal.destination.duplicateLanesAlert
-			)
-		)
-		.alert(
-			$store.scope(
-				state: \.destination?.lockedAlert,
-				action: \.internal.destination.lockedAlert
 			)
 		)
 		.ballPicker(

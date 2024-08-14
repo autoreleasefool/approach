@@ -44,23 +44,17 @@ extension GamesEditor {
 		public enum State: Equatable {
 			case gameDetails(GameDetails.State)
 			case duplicateLanesAlert(AlertState<DuplicateLanesAlertAction>)
-			case lockedAlert(AlertState<LockedAlertAction>)
 			case sheets(SheetsDestination.State)
 		}
 
 		public enum Action {
 			case gameDetails(GameDetails.Action)
 			case duplicateLanesAlert(DuplicateLanesAlertAction)
-			case lockedAlert(LockedAlertAction)
 			case sheets(SheetsDestination.Action)
 		}
 
 		public enum DuplicateLanesAlertAction: Equatable {
 			case confirmDuplicateLanes
-			case didTapDismissButton
-		}
-
-		public enum LockedAlertAction: Equatable {
 			case didTapDismissButton
 		}
 
@@ -77,8 +71,7 @@ extension GamesEditor {
 
 extension GamesEditor.State {
 	mutating func presentLockedAlert() -> Effect<GamesEditor.Action> {
-		willShowLockAlert = true
-		destination = nil
+		toast = .locked
 		return .none
 	}
 }

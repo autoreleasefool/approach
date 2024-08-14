@@ -20,6 +20,7 @@ import ScoresRepositoryInterface
 import StoreReviewPackageServiceInterface
 import StringsLibrary
 import SwiftUI
+import ToastLibrary
 
 @Reducer
 // swiftlint:disable file_length
@@ -72,8 +73,6 @@ public struct GamesEditor: Reducer, Sendable {
 
 		public var didPromptLaneDuplication = false
 		public var willShowDuplicateLanesAlert = false
-
-		public var willShowLockAlert = false
 
 		public var elementsRefreshing: Set<RefreshableElements> = [.bowlers, .frames, .game]
 		var isEditable: Bool { elementsRefreshing.isEmpty && game?.locked != .locked }
@@ -128,7 +127,7 @@ public struct GamesEditor: Reducer, Sendable {
 		public var gamesHeader: GamesHeader.State = .init()
 
 		@Presents public var destination: Destination.State?
-
+		@Presents public var toast: ToastState<ToastAction>?
 		public var errors: Errors<ErrorID>.State = .init()
 
 		public init(
@@ -169,12 +168,12 @@ public struct GamesEditor: Reducer, Sendable {
 			case didDuplicateLanes(Result<Never, Error>)
 
 			case showDuplicateLanesAlert
-			case showLockedAlert
 
 			case calculatedScore(ScoredGame)
 			case adjustBackdrop
 
 			case errors(Errors<ErrorID>.Action)
+			case toast(PresentationAction<ToastAction>)
 			case destination(PresentationAction<Destination.Action>)
 			case gamesHeader(GamesHeader.Action)
 			case frameEditor(FrameEditor.Action)
@@ -305,12 +304,6 @@ public struct GamesEditor: Reducer, Sendable {
 							try await clock.sleep(for: .milliseconds(25))
 							await send(.internal(.showDuplicateLanesAlert))
 						}
-					} else if state.willShowLockAlert {
-						state.willShowLockAlert = false
-						return .run { send in
-							try await clock.sleep(for: .milliseconds(25))
-							await send(.internal(.showLockedAlert))
-						}
 					} else {
 						return .none
 					}
@@ -329,10 +322,6 @@ public struct GamesEditor: Reducer, Sendable {
 
 				case .showDuplicateLanesAlert:
 					state.destination = .duplicateLanesAlert(.duplicateLanes)
-					return .none
-
-				case .showLockedAlert:
-					state.destination = .lockedAlert(.locked)
 					return .none
 
 				case let .bowlersResponse(.success(bowlers)):
@@ -413,7 +402,7 @@ public struct GamesEditor: Reducer, Sendable {
 						))
 						state.didChangeBowler = false
 						loadGameDetailsEffect = nil
-					case .sheets, .duplicateLanesAlert, .lockedAlert:
+					case .sheets, .duplicateLanesAlert:
 						if state.currentGameId != game.id {
 							state.destination = nil
 						}
@@ -484,9 +473,6 @@ public struct GamesEditor: Reducer, Sendable {
 				case let .destination(.presented(.duplicateLanesAlert(action))):
 					return reduce(into: &state, duplicateLanesAction: action)
 
-				case let .destination(.presented(.lockedAlert(action))):
-					return reduce(into: &state, lockedAction: action)
-
 				case let .frameEditor(action):
 					return reduce(into: &state, frameEditorAction: action)
 
@@ -498,6 +484,13 @@ public struct GamesEditor: Reducer, Sendable {
 
 				case let .errors(action):
 					return reduce(into: &state, errorsAction: action)
+
+				case let .toast(.presented(action)):
+					return reduce(into: &state, toastAction: action)
+
+				case .toast(.dismiss):
+					state.toast = nil
+					return .none
 
 				case .destination(.dismiss):
 					return .none

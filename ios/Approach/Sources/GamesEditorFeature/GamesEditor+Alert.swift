@@ -26,22 +26,6 @@ extension GamesEditor {
 			return .none
 		}
 	}
-
-	func reduce(
-		into state: inout State,
-		lockedAction: GamesEditor.Destination.LockedAlertAction
-	) -> Effect<Action> {
-		switch lockedAction {
-		case .didTapDismissButton:
-			state.destination = .gameDetails(.init(
-				gameId: state.currentGameId,
-				seriesGames: state.currentBowlerGames,
-				nextHeaderElement: state.nextHeaderElement,
-				didChangeBowler: false
-			))
-			return .none
-		}
-	}
 }
 
 extension AlertState where Action == GamesEditor.Destination.DuplicateLanesAlertAction {
@@ -57,17 +41,5 @@ extension AlertState where Action == GamesEditor.Destination.DuplicateLanesAlert
 		}
 	} message: {
 		TextState(Strings.Game.Editor.Fields.Alley.Lanes.Duplicate.message)
-	}
-}
-
-extension AlertState where Action == GamesEditor.Destination.LockedAlertAction {
-	static let locked = Self {
-		TextState(Strings.Game.Editor.locked)
-	} actions: {
-		ButtonState(role: .cancel, action: .didTapDismissButton) {
-			TextState(Strings.Action.dismiss)
-		}
-	} message: {
-		TextState(Strings.Game.Editor.Locked.message)
 	}
 }
