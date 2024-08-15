@@ -39,6 +39,22 @@ extension ScoresRepository: DependencyKey {
 
 					continuation.onTermination = { _ in task.cancel() }
 				}
+			},
+			highestScorePossible: { gameId in
+				@Dependency(FramesRepository.self) var framesRepository
+				@Dependency(GamesRepository.self) var gamesRepository
+
+				guard let game = try await gamesRepository.findIndex(gameId) else {
+					return 0
+				}
+
+				let scoreKeeper = ScoreKeeper()
+
+				for try await frames in framesRepository.observeRolls(gameId) {
+					return scoreKeeper.calculateHighestScorePossible(from: frames)
+				}
+
+				return 0
 			}
 		)
 	}

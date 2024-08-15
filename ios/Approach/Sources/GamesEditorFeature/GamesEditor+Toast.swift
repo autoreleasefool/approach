@@ -31,4 +31,27 @@ extension ToastState where Action == GamesEditor.ToastAction {
 			style: .error
 		)
 	}
+
+	static func strikeOut(withFinalScore: Int) -> Self {
+		ToastState(
+			content: .toast(SnackContent(
+				message: Strings.Game.Editor.Fields.StrikeOut.ifYouStrikeOut(withFinalScore),
+				icon: .infoCircle
+			)),
+			duration: 4.0,
+			style: .primary
+		)
+	}
+}
+
+extension GamesEditor.State {
+	mutating func presentLockedAlert() -> Effect<GamesEditor.Action> {
+		toast = .locked
+		return .none
+	}
+
+	mutating func presentStrikeOutAlert(withFinalScore: Int) -> Effect<GamesEditor.Action> {
+		toast = .strikeOut(withFinalScore: withFinalScore)
+		return .none
+	}
 }

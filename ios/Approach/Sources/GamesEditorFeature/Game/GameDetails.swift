@@ -5,6 +5,7 @@ import ComposableExtensionsLibrary
 import DateTimeLibrary
 import EquatablePackageLibrary
 import FeatureActionLibrary
+import FeatureFlagsLibrary
 import GamesRepositoryInterface
 import GearRepositoryInterface
 import LanesRepositoryInterface
@@ -40,6 +41,8 @@ public struct GameDetails: Reducer, Sendable {
 
 		var isEditable: Bool { game?.locked != .locked }
 
+		public let isHighestScorePossibleEnabled: Bool
+
 		init(
 			gameId: Game.ID,
 			seriesGames: IdentifiedArrayOf<Game.Indexed>,
@@ -50,6 +53,10 @@ public struct GameDetails: Reducer, Sendable {
 			self.seriesGames = seriesGames
 			self.nextHeaderElement = nextHeaderElement
 			self.shouldHeaderShimmer = didChangeBowler
+
+			@Dependency(\.featureFlags) var featureFlags
+			self.isHighestScorePossibleEnabled = featureFlags.isFlagEnabled(.highestScorePossible)
+
 			syncHeader()
 		}
 	}
@@ -63,6 +70,7 @@ public struct GameDetails: Reducer, Sendable {
 			case didToggleExclude(Bool)
 			case didTapMatchPlay
 			case didTapScoring
+			case didTapStrikeOut
 			case didTapGear
 			case didTapAlley
 			case didTapSeriesStatisticsButton
@@ -79,6 +87,7 @@ public struct GameDetails: Reducer, Sendable {
 			case didEditGame(Game.Edit?)
 			case didMeasureMinimumSheetContentSize(CGSize)
 			case didMeasureSectionHeaderContentSize(CGSize)
+			case didTapStrikeOut
 		}
 		@CasePathable public enum Internal {
 			case refreshObservation
@@ -158,6 +167,9 @@ public struct GameDetails: Reducer, Sendable {
 
 				case .didFirstAppear:
 					return state.startShimmer()
+
+				case .didTapStrikeOut:
+					return .send(.delegate(.didTapStrikeOut))
 
 				case .didTapSeriesStatisticsButton:
 					guard let seriesId = state.game?.series.id else { return .none }

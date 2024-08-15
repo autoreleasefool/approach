@@ -245,6 +245,9 @@
 "game.editor.fields.scoringMethod.byFrame" = "Frame-by-Frame";
 "game.editor.fields.scoringMethod.manual" = "Manual";
 "game.editor.fields.scoringMethod.help" = "Tap to set a manual score";
+"game.editor.fields.strikeOut.title" = "What if I strike out?";
+"game.editor.fields.strikeOut.subtitle" = "Tap to see your highest possible score";
+"game.editor.fields.strikeOut.ifYouStrikeOut" = "Clean up, strike out, and you could bowl %d";
 "game.editor.fields.gear.help" = "Choose any additional gear you're using this game";
 "game.editor.fields.alley.noneSelected" = "No alley was selected for this series. To add one, you can navigate back and use the edit button at the top of the screen.";
 "game.editor.fields.alley.lanes.help" = "Record which lanes you bowled on for more detailed stats.";

@@ -21,7 +21,7 @@ public enum Pin: Int, Equatable, Sendable, Identifiable, Codable, CaseIterable {
 }
 
 extension Set where Element == Pin {
-	public var value: Int { reduce(0) { value, pin in value + pin.value } }
+	public var value: Int { map(\.value).reduce(0, +) }
 
 	public var isHeadPin: Bool { count == 1 && first == .headPin }
 	public var isHeadPin2: Bool { value == 7 && contains(.headPin) }

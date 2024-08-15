@@ -58,6 +58,13 @@ extension GamesEditor {
 				state.gameDetailsHeaderSize = size
 				return .none
 
+			case .didTapStrikeOut:
+				return .run { [gameId = state.currentGameId] send in
+					await send(.internal(.didCalculateHighestScorePossible(Result {
+						try await self.scores.highestScorePossible(gameId)
+					})))
+				}
+
 			case let .didProceed(next):
 				switch next {
 				case let .bowler(_, id):

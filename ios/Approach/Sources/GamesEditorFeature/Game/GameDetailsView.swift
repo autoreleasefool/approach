@@ -66,12 +66,20 @@ public struct GameDetailsView: View {
 						send(.didTapScoring)
 					}
 
+					if store.isHighestScorePossibleEnabled {
+						StrikeOutSection {
+							send(.didTapStrikeOut)
+						}
+					}
+
 					Section {
 						Toggle(
 							Strings.Game.Editor.Fields.Lock.label,
 							isOn: $store.isLocked.sending(\.view.didToggleLock)
 						)
 						.toggleStyle(.checkboxToggle)
+					} header: {
+						Text(Strings.other)
 					} footer: {
 						Text(Strings.Game.Editor.Fields.Lock.help)
 					}

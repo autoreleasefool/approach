@@ -68,10 +68,3 @@ extension GamesEditor {
 		}
 	}
 }
-
-extension GamesEditor.State {
-	mutating func presentLockedAlert() -> Effect<GamesEditor.Action> {
-		toast = .locked
-		return .none
-	}
-}

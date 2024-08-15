@@ -618,6 +618,16 @@ public enum Strings {
           /// View stats
           public static let viewStatistics = Strings.tr("Localizable", "game.editor.fields.statistics.viewStatistics", fallback: "View stats")
         }
+        public enum StrikeOut {
+          /// Clean up, strike out, and you could bowl %d
+          public static func ifYouStrikeOut(_ p1: Int) -> String {
+            return Strings.tr("Localizable", "game.editor.fields.strikeOut.ifYouStrikeOut", p1, fallback: "Clean up, strike out, and you could bowl %d")
+          }
+          /// Tap to see your highest possible score
+          public static let subtitle = Strings.tr("Localizable", "game.editor.fields.strikeOut.subtitle", fallback: "Tap to see your highest possible score")
+          /// What if I strike out?
+          public static let title = Strings.tr("Localizable", "game.editor.fields.strikeOut.title", fallback: "What if I strike out?")
+        }
       }
       public enum Locked {
         /// This game is locked and cannot be edited.

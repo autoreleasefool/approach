@@ -166,6 +166,7 @@ public struct GamesEditor: Reducer, Sendable {
 			case didUpdateGame(Result<Game.Edit, Error>)
 			case didUpdateMatchPlay(Result<MatchPlay.Edit, Error>)
 			case didDuplicateLanes(Result<Never, Error>)
+			case didCalculateHighestScorePossible(Result<Int, Error>)
 
 			case showDuplicateLanesAlert
 
@@ -203,6 +204,7 @@ public struct GamesEditor: Reducer, Sendable {
 		case failedToSaveFrame
 		case failedToSaveMatchPlay
 		case failedToSaveLanes
+		case failedToCalculateHighestScore
 	}
 
 	public struct GameLoadDate: Equatable {
@@ -324,6 +326,10 @@ public struct GamesEditor: Reducer, Sendable {
 					state.destination = .duplicateLanesAlert(.duplicateLanes)
 					return .none
 
+				case let .didCalculateHighestScorePossible(.success(highestScore)):
+					state.presentStrikeOutAlert(withFinalScore: highestScore)
+					return .none
+
 				case let .bowlersResponse(.success(bowlers)):
 					state.elementsRefreshing.remove(.bowlers)
 					state.bowlers = .init(uniqueElements: bowlers)
@@ -441,6 +447,11 @@ public struct GamesEditor: Reducer, Sendable {
 						.enqueue(.failedToSaveMatchPlay, thrownError: error, toastMessage: Strings.Error.Toast.failedToSave)
 						.map { .internal(.errors($0)) }
 
+				case let .didCalculateHighestScorePossible(.failure(error)):
+					return state.errors
+						.enqueue(.failedToCalculateHighestScore, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
+
 				case .didUpdateFrame(.success), .didUpdateGame(.success), .didUpdateMatchPlay(.success):
 					return .none
 
@@ -534,7 +545,8 @@ public struct GamesEditorErrorHandlerReducer: Reducer, Sendable {
 				let .internal(.didUpdateFrame(.failure(error))),
 				let .internal(.didUpdateGame(.failure(error))),
 				let .internal(.didUpdateMatchPlay(.failure(error))),
-				let .internal(.didDuplicateLanes(.failure(error))):
+				let .internal(.didDuplicateLanes(.failure(error))),
+				let .internal(.didCalculateHighestScorePossible(.failure(error))):
 				return error
 			default:
 				return nil

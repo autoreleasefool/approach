@@ -17,12 +17,14 @@ extension FeatureFlag {
 	public static let sharingStatistic = Self(name: "sharingStatistic", introduced: "2024-04-27", stage: .release)
 	public static let photoAvatars = Self(name: "photoAvatars", introduced: "2024-07-05", stage: .development)
 	public static let bowlerDetails = Self(name: "bowlerDetails", introduced: "2024-07-05", stage: .development)
+	public static let highestScorePossible = Self(name: "highestScorePossible", introduced: "2024-08-14", stage: .development)
 
 	public static let allFlags: [Self] = [
 		.alleyAndGearAverages,
 		.bowlerDetails,
 		.dataImport,
 		.developerOptions,
+		.highestScorePossible,
 		.manualSeries,
 		.opponentDetails,
 		.photoAvatars,

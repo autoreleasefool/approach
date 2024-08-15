@@ -19,6 +19,42 @@ public class ScoreKeeper {
 			.map { .init(index: $0, rolls: padRolls([], displayValue: nil), score: nil)}
 	}
 
+	public func calculateHighestScorePossible(from frames: [[Roll]]) -> Int {
+		let scoredFrames = calculateScore(from: frames)
+		guard let currentScore = scoredFrames.gameScore() else {
+			return Game.MAXIMUM_SCORE
+		}
+
+		let lastValidFrame = frames.lastIndex { !$0.isEmpty } ?? 0
+		let pinValueForFrame = pinValueRemaining(forFrame: frames[lastValidFrame], frameIndex: lastValidFrame)
+		let remainingFrameIndices = (lastValidFrame + 1)..<Game.NUMBER_OF_FRAMES
+		return currentScore + pinValueForFrame + remainingFrameIndices.count * 45
+	}
+
+	private func pinValueRemaining(forFrame frame: [Roll], frameIndex: Int) -> Int {
+		guard frame.count < Frame.NUMBER_OF_ROLLS else { return 0 }
+
+		var pinsDowned: Set<Pin> = []
+		for roll in frame {
+			pinsDowned.formUnion(roll.pinsDowned)
+			if pinsDowned.count == 5 {
+				if Frame.isLast(frameIndex) {
+					pinsDowned = []
+				} else {
+					return 0
+				}
+			}
+		}
+
+		let standingPinValue = Pin.fullDeck.value - pinsDowned.value
+		if Frame.isLast(frameIndex) {
+			let framesNeededForStandingPinValue = standingPinValue > 0 ? 1 : 0
+			return Pin.fullDeck.value * (Frame.NUMBER_OF_ROLLS - frame.count - framesNeededForStandingPinValue) + standingPinValue
+		} else {
+			return standingPinValue + (frame.count == 1 ? 15 : 0)
+		}
+	}
+
 	// swiftlint:disable:next function_body_length
 	public func calculateScore(from frames: [[Roll]]) -> [ScoredFrame] {
 		// The output is a step indicating the score and status of the game after each frame

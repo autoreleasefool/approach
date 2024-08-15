@@ -15,6 +15,8 @@ import XCTest
 final class ScoresRepositoryTests: XCTestCase {
 	@Dependency(ScoresRepository.self) var scores
 
+	// MARK: observeScore
+
 	func testCalculatesScoreForFramesWithSteps() async throws {
 		let (frames, framesContinuation) = AsyncThrowingStream<[[ScoreKeeper.Roll]], Error>.makeStream()
 
@@ -615,6 +617,43 @@ final class ScoresRepositoryTests: XCTestCase {
 		)
 
 		XCTAssertEqual(expectedGame, scores)
+	}
 
+	// MARK: highestScorePossible
+
+	func testHighestScorePossible_WithSkippedRolls() async throws {
+		let (frames, framesContinuation) = AsyncThrowingStream<[[ScoreKeeper.Roll]], Error>.makeStream()
+		let rolls: [[ScoreKeeper.Roll]] = [
+			[
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
+			],
+			[
+				.init(pinsDowned: [.leftThreePin, .headPin, .rightTwoPin, .rightThreePin], didFoul: false),
+			],
+			[
+				.init(pinsDowned: [.headPin], didFoul: false),
+			],
+			[],
+			[],
+			[],
+			[],
+			[],
+			[],
+			[],
+		]
+
+
+
+		framesContinuation.yield(rolls)
+
+		let highestScore = try await withDependencies {
+			$0[GamesRepository.self].findIndex = { @Sendable id in .init(id: id, index: 0) }
+			$0[FramesRepository.self].observeRolls = { @Sendable _ in frames }
+			$0[ScoresRepository.self] = .liveValue
+		} operation: {
+			try await self.scores.highestScorePossible(UUID(0))
+		}
+
+		XCTAssertEqual(highestScore, 386)
 	}
 }

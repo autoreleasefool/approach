@@ -3,8 +3,6 @@ import ScoreKeeperModelsLibrary
 
 extension Game {
 	public typealias ID = UUID
-
-	public static let MAXIMUM_SCORE = 450
 }
 
 extension Game {
