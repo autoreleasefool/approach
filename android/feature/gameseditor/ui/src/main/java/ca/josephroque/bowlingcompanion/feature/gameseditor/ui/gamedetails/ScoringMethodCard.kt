@@ -1,18 +1,16 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -50,41 +48,53 @@ internal fun ScoringMethodCard(
 			modifier = Modifier.padding(bottom = 16.dp),
 		)
 
-		Row(
-			verticalAlignment = Alignment.CenterVertically,
-			horizontalArrangement = Arrangement.spacedBy(8.dp),
-		) {
+		NavigationButton(
+			title = stringResource(
+				when (state.scoringMethod) {
+					GameScoringMethod.MANUAL -> R.string.scoring_method_manual
+					GameScoringMethod.BY_FRAME -> R.string.scoring_method_frame_by_frame
+				},
+			),
+			icon = {
+				Icon(
+					painter = painterResource(
+						when (state.scoringMethod) {
+							GameScoringMethod.MANUAL ->
+								R.drawable.ic_manual_scoring
+							GameScoringMethod.BY_FRAME ->
+								ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_bowling_ball
+						},
+					),
+					contentDescription = null,
+					tint = MaterialTheme.colorScheme.onSurface,
+					modifier = Modifier.size(24.dp),
+				)
+			},
+			onClick = { onAction(GameDetailsUiAction.ManageScoreClicked) },
+			trailingIcon = {
+				Text(
+					text = state.score.toString(),
+					style = MaterialTheme.typography.bodyMedium,
+					fontWeight = FontWeight.ExtraBold,
+					fontSize = 24.sp,
+				)
+			},
+		)
+
+		if (state.isShowingHighestPossibleScoreButton) {
 			NavigationButton(
-				title = stringResource(
-					when (state.scoringMethod) {
-						GameScoringMethod.MANUAL -> R.string.scoring_method_manual
-						GameScoringMethod.BY_FRAME -> R.string.scoring_method_frame_by_frame
-					},
-				),
+				title = stringResource(R.string.game_editor_strike_out_title),
+				subtitle = stringResource(R.string.game_editor_strike_out_subtitle),
 				icon = {
 					Icon(
-						painter = painterResource(
-							when (state.scoringMethod) {
-								GameScoringMethod.MANUAL ->
-									R.drawable.ic_manual_scoring
-								GameScoringMethod.BY_FRAME ->
-									ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_bowling_ball
-							},
-						),
+						imageVector = Icons.Default.Info,
 						contentDescription = null,
 						tint = MaterialTheme.colorScheme.onSurface,
 						modifier = Modifier.size(24.dp),
 					)
 				},
-				onClick = { onAction(GameDetailsUiAction.ManageScoreClicked) },
-				trailingIcon = {
-					Text(
-						text = state.score.toString(),
-						style = MaterialTheme.typography.bodyMedium,
-						fontWeight = FontWeight.ExtraBold,
-						fontSize = 24.sp,
-					)
-				},
+				onClick = { onAction(GameDetailsUiAction.ShowHighestPossibleScoreClicked) },
+				modifier = Modifier.padding(top = 8.dp),
 			)
 		}
 	}
@@ -98,6 +108,7 @@ private fun ScoringMethodCardPreview() {
 			state = GameDetailsUiState.ScoringMethodCardUiState(
 				score = 234,
 				scoringMethod = GameScoringMethod.BY_FRAME,
+				isShowingHighestPossibleScoreButton = true,
 			),
 			onAction = {},
 		)

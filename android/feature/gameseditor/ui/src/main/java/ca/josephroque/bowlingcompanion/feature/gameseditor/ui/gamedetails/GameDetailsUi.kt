@@ -55,9 +55,7 @@ data class GameDetailsUiState(
 		val selectedLanes: List<LaneListItem> = emptyList(),
 	)
 
-	data class GearCardUiState(
-		val selectedGear: List<GearListItem> = emptyList(),
-	)
+	data class GearCardUiState(val selectedGear: List<GearListItem> = emptyList())
 
 	data class MatchPlayCardUiState(
 		val opponentName: String? = null,
@@ -68,6 +66,7 @@ data class GameDetailsUiState(
 	data class ScoringMethodCardUiState(
 		val score: Int = 0,
 		val scoringMethod: GameScoringMethod = GameScoringMethod.BY_FRAME,
+		val isShowingHighestPossibleScoreButton: Boolean = false,
 	)
 }
 
@@ -77,6 +76,7 @@ sealed interface GameDetailsUiAction {
 	data object ManageLanesClicked : GameDetailsUiAction
 	data object ManageMatchPlayClicked : GameDetailsUiAction
 	data object ManageScoreClicked : GameDetailsUiAction
+	data object ShowHighestPossibleScoreClicked : GameDetailsUiAction
 	data object ViewGameStatsClicked : GameDetailsUiAction
 	data object ViewSeriesStatsClicked : GameDetailsUiAction
 	data object ViewAllBowlersClicked : GameDetailsUiAction

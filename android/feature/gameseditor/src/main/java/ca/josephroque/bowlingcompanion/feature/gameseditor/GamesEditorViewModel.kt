@@ -21,6 +21,8 @@ import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedReposito
 import ca.josephroque.bowlingcompanion.core.data.repository.ScoresRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
+import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
@@ -90,6 +92,7 @@ class GamesEditorViewModel @Inject constructor(
 	private val seriesRepository: SeriesRepository,
 	private val analyticsClient: AnalyticsClient,
 	private val userDataRepository: UserDataRepository,
+	private val featureFlagsClient: FeatureFlagsClient,
 	@ApplicationScope private val scope: CoroutineScope,
 ) : ApproachViewModel<GamesEditorScreenEvent>(),
 	DefaultLifecycleObserver {
@@ -105,6 +108,7 @@ class GamesEditorViewModel @Inject constructor(
 
 	private val isGameDetailsSheetVisible = MutableStateFlow(true)
 	private val isGameLockSnackBarVisible = MutableStateFlow(false)
+	private val highestScorePossibleAlert = MutableStateFlow<HighestScorePossibleAlertUiState?>(null)
 
 	private val lastLoadedGameAt = MutableStateFlow<GameLoadDate?>(null)
 	private var lastUpdatedDurationAtMillis: Long = 0
@@ -140,11 +144,13 @@ class GamesEditorViewModel @Inject constructor(
 		gamesEditorState,
 		gameDetailsState,
 		isGameLockSnackBarVisible,
+		highestScorePossibleAlert,
 		bottomSheetUiState,
 	) {
 			gamesEditor,
 			gameDetails,
 			isGameLockSnackBarVisible,
+			highestScorePossibleAlert,
 			bottomSheetUiState,
 		->
 		GamesEditorScreenUiState.Loaded(
@@ -152,6 +158,7 @@ class GamesEditorViewModel @Inject constructor(
 			gameDetails = gameDetails,
 			bottomSheet = bottomSheetUiState,
 			isGameLockSnackBarVisible = isGameLockSnackBarVisible,
+			highestScorePossibleAlert = highestScorePossibleAlert,
 		)
 	}.stateIn(
 		scope = viewModelScope,
@@ -168,6 +175,8 @@ class GamesEditorViewModel @Inject constructor(
 			GamesEditorScreenUiAction.DidAppear -> loadInitialGame()
 			GamesEditorScreenUiAction.DidDisappear -> dismissLatestGameInEditor()
 			GamesEditorScreenUiAction.GameLockSnackBarDismissed -> dismissGameLockSnackBar()
+			GamesEditorScreenUiAction.HighestPossibleScoreSnackBarDismissed ->
+				dismissHighestPossibleScoreSnackBar()
 			is GamesEditorScreenUiAction.GamesEditor -> handleGamesEditorAction(action.action)
 			is GamesEditorScreenUiAction.GameDetails -> handleGameDetailsAction(action.action)
 			is GamesEditorScreenUiAction.GearUpdated -> updateGear(action.gearIds)
@@ -190,6 +199,7 @@ class GamesEditorViewModel @Inject constructor(
 			GameDetailsUiAction.ManageLanesClicked -> openLanesPicker()
 			GameDetailsUiAction.ManageAlleyClicked -> openAlleyPicker()
 			GameDetailsUiAction.ViewAllBowlersClicked -> openAllBowlersScores()
+			GameDetailsUiAction.ShowHighestPossibleScoreClicked -> calculateHighestPossibleScore()
 			is GameDetailsUiAction.LockToggled -> toggleGameLocked(action.locked)
 			is GameDetailsUiAction.ExcludeFromStatisticsToggled -> toggleGameExcludedFromStatistics(
 				action.excludeFromStatistics,
@@ -239,6 +249,14 @@ class GamesEditorViewModel @Inject constructor(
 		when (action) {
 			is ScoreSheetUiAction.RollClicked -> updateSelectedRoll(action.frameIndex, action.rollIndex)
 			is ScoreSheetUiAction.FrameClicked -> updateSelectedFrame(action.frameIndex)
+		}
+	}
+
+	private fun calculateHighestPossibleScore() {
+		viewModelScope.launch {
+			val gameId = currentGameId.value
+			val highestScorePossible = scoresRepository.getHighestScorePossible(gameId)
+			highestScorePossibleAlert.value = HighestScorePossibleAlertUiState(score = highestScorePossible)
 		}
 	}
 
@@ -306,6 +324,9 @@ class GamesEditorViewModel @Inject constructor(
 						scoringMethod = it.scoringMethod.copy(
 							score = gameDetails.properties.score,
 							scoringMethod = gameDetails.properties.scoringMethod,
+							isShowingHighestPossibleScoreButton = featureFlagsClient.isEnabled(
+								FeatureFlag.HIGHEST_SCORE_POSSIBLE,
+							),
 						),
 						gameProperties = it.gameProperties.copy(
 							locked = gameDetails.properties.locked,
@@ -717,6 +738,10 @@ class GamesEditorViewModel @Inject constructor(
 
 	private fun dismissGameLockSnackBar() {
 		isGameLockSnackBarVisible.value = false
+	}
+
+	private fun dismissHighestPossibleScoreSnackBar() {
+		highestScorePossibleAlert.value = null
 	}
 
 	private fun goToNext(next: NextGameEditableElement) {

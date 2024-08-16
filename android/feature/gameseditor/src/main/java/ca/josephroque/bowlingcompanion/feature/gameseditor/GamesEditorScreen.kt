@@ -198,6 +198,34 @@ internal fun GamesEditorScreen(
 			}
 		}
 	}
+	
+	val highestPossibleScore = if (state is GamesEditorScreenUiState.Loaded) {
+		state.highestScorePossibleAlert?.score
+	} else {
+		0
+	}
+
+	val highestScorePossibleAlertMessage = stringResource(
+		R.string.game_editor_strike_out_score,
+		highestPossibleScore ?: 0,
+	)
+	LaunchedEffect(highestPossibleScore) {
+		if (highestPossibleScore != null) {
+			val result = scaffoldState.snackbarHostState.showSnackbar(
+				message = highestScorePossibleAlertMessage,
+				duration = SnackbarDuration.Long,
+			)
+
+			when (result) {
+				SnackbarResult.Dismissed -> onAction(
+					GamesEditorScreenUiAction.HighestPossibleScoreSnackBarDismissed,
+				)
+				SnackbarResult.ActionPerformed -> onAction(
+					GamesEditorScreenUiAction.HighestPossibleScoreSnackBarDismissed,
+				)
+			}
+		}
+	}
 
 	BottomSheetScaffold(
 		scaffoldState = scaffoldState,

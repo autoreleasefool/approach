@@ -4,4 +4,5 @@ import ca.josephroque.bowlingcompanion.core.model.ScoringFrame
 
 interface ScoreKeeper {
 	suspend fun calculateScore(input: ScoreKeeperInput): List<ScoringFrame>
+	suspend fun calculateHighestScorePossible(input: ScoreKeeperInput): Int
 }

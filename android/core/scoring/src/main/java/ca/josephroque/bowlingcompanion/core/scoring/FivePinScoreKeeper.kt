@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.model.ScoringFrame
 import ca.josephroque.bowlingcompanion.core.model.ScoringRoll
 import ca.josephroque.bowlingcompanion.core.model.arePinsCleared
 import ca.josephroque.bowlingcompanion.core.model.displayAt
+import ca.josephroque.bowlingcompanion.core.model.gameScore
 import ca.josephroque.bowlingcompanion.core.model.pinCount
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -18,10 +19,51 @@ import kotlinx.coroutines.withContext
 class FivePinScoreKeeper @Inject constructor(
 	@Dispatcher(Default) private val defaultDispatcher: CoroutineDispatcher,
 ) : ScoreKeeper {
+	override suspend fun calculateHighestScorePossible(input: ScoreKeeperInput): Int =
+		withContext(defaultDispatcher) {
+			calculateHighestScorePossibleInternal(input)
+		}
+
 	override suspend fun calculateScore(input: ScoreKeeperInput): List<ScoringFrame> =
 		withContext(defaultDispatcher) {
 			calculateScoreInternal(input)
 		}
+
+	private fun calculateHighestScorePossibleInternal(input: ScoreKeeperInput): Int {
+		val scoredFrames = calculateScoreInternal(input)
+		val currentScore = scoredFrames.gameScore() ?: return Game.MAX_SCORE
+		val lastValidFrame = input.rolls.indexOfLast { it.isNotEmpty() }
+		if (lastValidFrame < 0) return Game.MAX_SCORE
+		val pinValueForFrame = pinValueRemaining(input.rolls[lastValidFrame], lastValidFrame)
+		val remainingFrameIndices = (lastValidFrame + 1)..<Game.NUMBER_OF_FRAMES
+		return currentScore + pinValueForFrame + remainingFrameIndices.count() * 45
+	}
+
+	private fun pinValueRemaining(frame: List<ScoreKeeperInput.Roll>, frameIndex: Int): Int {
+		if (frame.size == Frame.NUMBER_OF_ROLLS) return 0
+
+		val pinsDown = mutableSetOf<Pin>()
+		for (roll in frame) {
+			pinsDown += roll.pinsDowned
+			if (pinsDown.size == 5) {
+				if (Frame.isLastFrame(frameIndex)) {
+					pinsDown.clear()
+				} else {
+					return 0
+				}
+			}
+		}
+
+		val standingPinValue = Pin.fullDeck().pinCount() - pinsDown.pinCount()
+		if (Frame.isLastFrame(frameIndex)) {
+			val framesNeededForStandingPinValue = if (standingPinValue > 0) 1 else 0
+			return Pin.fullDeck().pinCount() *
+				(Frame.NUMBER_OF_ROLLS - frame.size - framesNeededForStandingPinValue) +
+				standingPinValue
+		} else {
+			return standingPinValue + (if (frame.size == 1) 15 else 0)
+		}
+	}
 
 	private fun calculateScoreInternal(input: ScoreKeeperInput): List<ScoringFrame> {
 		val steps: MutableList<ScoringFrame> = mutableListOf()
@@ -162,10 +204,13 @@ class FivePinScoreKeeper @Inject constructor(
 			pinsDown += roll.pinsDowned
 
 			// When all the pins have been cleared
-			if (pinsDown.size == 5 && !(
-					!pinsDownedOnce && ballsRolledInFinalFrame == 3 && Roll.isLastRoll(
-						roll.rollIndex,
-					)
+			if (pinsDown.size == 5 &&
+				!(
+					!pinsDownedOnce &&
+						ballsRolledInFinalFrame == 3 &&
+						Roll.isLastRoll(
+							roll.rollIndex,
+						)
 					)
 			) {
 				// Append a roll with the full deck cleared

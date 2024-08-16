@@ -44,6 +44,10 @@
 	<string name="game_editor_scoring_method_subtitle">Override your score manually here to skip recording frame-by-frame</string>
 	<string name="score_editor_score">Score</string>
 
+	<string name="game_editor_strike_out_title">What if I strike out?</string>
+	<string name="game_editor_strike_out_subtitle">Tap to see your highest possible score</string>
+	<string name="game_editor_strike_out_score">Clean up, strike out, and you could bowl %1$d</string>
+
 	<string name="scoring_method_manual">Manual</string>
 	<string name="scoring_method_frame_by_frame">Frame-by-Frame</string>
 

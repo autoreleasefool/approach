@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface ScoresRepository {
 	fun getScore(gameId: UUID): Flow<ScoringGame>
+	suspend fun getHighestScorePossible(gameId: UUID): Int
 }

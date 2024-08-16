@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor
 
-import androidx.compose.material3.ExperimentalMaterial3Api
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
@@ -45,17 +44,18 @@ object GamesEditorArguments {
 sealed interface GamesEditorScreenUiState {
 	data object Loading : GamesEditorScreenUiState
 
-	data class Loaded constructor(
+	data class Loaded(
 		val isGameLockSnackBarVisible: Boolean = false,
+		val highestScorePossibleAlert: HighestScorePossibleAlertUiState? = null,
 		val gameDetails: GameDetailsUiState,
 		val gamesEditor: GamesEditorUiState,
 		val bottomSheet: GamesEditorScreenBottomSheetUiState,
 	) : GamesEditorScreenUiState
 }
 
-data class GamesEditorScreenBottomSheetUiState
-@OptIn(ExperimentalMaterial3Api::class)
-constructor(
+data class HighestScorePossibleAlertUiState(val score: Int)
+
+data class GamesEditorScreenBottomSheetUiState(
 	val headerPeekHeight: Float = 0f,
 	val isGameDetailsSheetVisible: Boolean = true,
 )
@@ -64,6 +64,7 @@ sealed interface GamesEditorScreenUiAction {
 	data object DidAppear : GamesEditorScreenUiAction
 	data object DidDisappear : GamesEditorScreenUiAction
 	data object GameLockSnackBarDismissed : GamesEditorScreenUiAction
+	data object HighestPossibleScoreSnackBarDismissed : GamesEditorScreenUiAction
 
 	data class GearUpdated(val gearIds: Set<UUID>) : GamesEditorScreenUiAction
 	data class AlleyUpdated(val alleyId: UUID?) : GamesEditorScreenUiAction

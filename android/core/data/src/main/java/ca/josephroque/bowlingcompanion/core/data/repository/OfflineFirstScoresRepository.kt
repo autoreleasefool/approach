@@ -7,6 +7,7 @@ import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 
 class OfflineFirstScoresRepository @Inject constructor(
 	private val gamesRepository: GamesRepository,
@@ -19,5 +20,12 @@ class OfflineFirstScoresRepository @Inject constructor(
 	) { gameIndex, frames ->
 		val scoringFrames = scoreKeeper.calculateScore(ScoreKeeperInput.fromFrames(frames))
 		ScoringGame(id = gameId, index = gameIndex, frames = scoringFrames)
+	}
+
+	override suspend fun getHighestScorePossible(gameId: UUID): Int {
+		val frames = framesRepository.getScoreableFrames(gameId).first()
+		return scoreKeeper.calculateHighestScorePossible(
+			ScoreKeeperInput.fromFrames(frames),
+		)
 	}
 }
