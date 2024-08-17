@@ -318,7 +318,7 @@ class SQLiteMigrationService @Inject constructor(
 		val teamIdMappings = legacyIDMappingDao.getLegacyIDMappings(
 			legacyIds = legacyTeamIds,
 			key = LegacyIDMappingKey.TEAM,
-		).associateBy({ it.legacyId }, { it.id })
+		).associateBy({ it.legacyId }, { TeamID(it.id) })
 
 		for (legacyTeamBowler in teamBowlers) {
 			val teamId = teamIdMappings[legacyTeamBowler.teamId] ?: continue

@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.Team
 import ca.josephroque.bowlingcompanion.core.model.TeamID
+import ca.josephroque.bowlingcompanion.core.model.TeamCreate
 
 @Entity(
 	tableName = "teams",
@@ -15,6 +16,13 @@ data class TeamEntity(
 )
 
 fun Team.asEntity() = TeamEntity(
+	id = id,
+	name = name,
+)
+
+data class TeamCreateEntity(val id: UUID, val name: String)
+
+fun TeamCreate.asEntity() = TeamCreateEntity(
 	id = id,
 	name = name,
 )

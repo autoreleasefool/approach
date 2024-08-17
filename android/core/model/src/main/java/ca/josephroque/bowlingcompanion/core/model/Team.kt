@@ -15,3 +15,12 @@ value class TeamID(val value: UUID) : Parcelable {
 }
 
 data class Team(val id: TeamID, val name: String)
+
+data class TeamListItem(
+	val id: TeamID,
+	val name: String,
+	val bowlers: List<String>,
+	val average: Double?,
+)
+
+data class TeamCreate(val id: TeamID, val name: String, val bowlers: List<BowlerID>)
