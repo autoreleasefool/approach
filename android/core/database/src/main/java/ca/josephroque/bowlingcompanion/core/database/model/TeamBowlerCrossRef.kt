@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
-import java.util.UUID
+import ca.josephroque.bowlingcompanion.core.model.TeamID
 
 @Entity(
 	tableName = "team_bowler",
@@ -31,6 +31,6 @@ import java.util.UUID
 	],
 )
 data class TeamBowlerCrossRef(
-	@ColumnInfo(name = "team_id", index = true) val teamId: UUID,
+	@ColumnInfo(name = "team_id", index = true) val teamId: TeamID,
 	@ColumnInfo(name = "bowler_id", index = true) val bowlerId: BowlerID,
 )

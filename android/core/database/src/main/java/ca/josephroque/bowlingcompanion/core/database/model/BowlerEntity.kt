@@ -18,9 +18,10 @@ data class BowlerEntity(
 	@ColumnInfo(name = "archived_on", defaultValue = "NULL") val archivedOn: Instant? = null,
 )
 
+
 data class BowlerCreateEntity(val id: BowlerID, val name: String, val kind: BowlerKind)
 
-fun BowlerCreate.asEntity(): BowlerCreateEntity = BowlerCreateEntity(
+fun BowlerCreate.asEntity() = BowlerCreateEntity(
 	id = id,
 	name = name,
 	kind = kind,
@@ -28,12 +29,12 @@ fun BowlerCreate.asEntity(): BowlerCreateEntity = BowlerCreateEntity(
 
 data class BowlerUpdateEntity(val id: BowlerID, val name: String)
 
-fun BowlerUpdate.asEntity(): BowlerUpdateEntity = BowlerUpdateEntity(
+fun BowlerUpdate.asEntity() = BowlerUpdateEntity(
 	id = id,
 	name = name,
 )
 
-fun OpponentListItem.asEntity(): BowlerEntity = BowlerEntity(
+fun OpponentListItem.asEntity() = BowlerEntity(
 	id = id,
 	name = name,
 	kind = kind,

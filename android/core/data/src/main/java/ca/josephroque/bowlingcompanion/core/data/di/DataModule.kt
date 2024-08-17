@@ -23,12 +23,14 @@ import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstScoresRe
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstSeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstStatisticsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstStatisticsWidgetsRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstTeamsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstUserDataRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.ScoresRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.TeamsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.data.service.ApproachDataExportService
 import ca.josephroque.bowlingcompanion.core.data.service.ApproachDataImportService
@@ -42,6 +44,9 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 interface DataModule {
+	@Binds
+	fun bindsTeamsRepository(teamsRepository: OfflineFirstTeamsRepository): TeamsRepository
+
 	@Binds
 	fun bindsBowlersRepository(bowlersRepository: OfflineFirstBowlersRepository): BowlersRepository
 
