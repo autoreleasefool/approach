@@ -12,8 +12,10 @@ import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
+import ca.josephroque.bowlingcompanion.core.model.LeagueSortOrder
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.hasModelEntries
@@ -61,13 +63,19 @@ class BowlerDetailsViewModel @Inject constructor(
 	private val leagueToArchive: MutableStateFlow<LeagueListItem?> = MutableStateFlow(null)
 
 	private val recurrence = MutableStateFlow<LeagueRecurrence?>(null)
+	private val isLeagueSortOrderShowing = MutableStateFlow(false)
+	private val leagueSortOrder = MutableStateFlow(LeagueSortOrder.MOST_RECENTLY_USED)
 
 	private val isHidingWidgets = userDataRepository.userData
 		.map { it.isHidingWidgetsInLeaguesList }
 
-	private val leagues = recurrence.flatMapLatest {
-		leaguesRepository.getLeaguesList(bowlerId, recurrence = it)
-	}
+	private val leagues = combine(recurrence, leagueSortOrder) { recurrence, leagueSortOrder ->
+		leaguesRepository.getLeaguesList(
+			bowlerId,
+			recurrence = recurrence,
+			sortOrder = leagueSortOrder,
+		)
+	}.flatMapLatest { it }
 
 	private val leaguesListState: Flow<LeaguesListUiState> = combine(
 		leagues,
@@ -108,18 +116,35 @@ class BowlerDetailsViewModel @Inject constructor(
 		}
 	}
 
+	private val bowlerDetails = bowlersRepository.getBowlerDetails(bowlerId)
+
+	private val topBarState = combine(
+		bowlerDetails,
+		leaguesListState,
+		isLeagueSortOrderShowing,
+		leagueSortOrder,
+	) { bowler, leaguesList, isLeagueSortOrderShowing, leagueSortOrder ->
+		BowlerDetailsTopBarUiState(
+			bowlerName = bowler.name,
+			isSortOrderMenuVisible = leaguesList.list.isNotEmpty(),
+			isSortOrderMenuExpanded = isLeagueSortOrderShowing,
+			sortOrder = leagueSortOrder,
+		)
+	}
+
 	val uiState: StateFlow<BowlerDetailsScreenUiState> = combine(
 		leaguesListState,
 		widgetLayoutState,
+		topBarState,
 		bowlersRepository.getBowlerDetails(bowlerId),
 		gearRepository.getBowlerPreferredGear(bowlerId),
-	) { leaguesList, widgets, bowlerDetails, gearList ->
+	) { leaguesList, widgets, topBarState, bowlerDetails, gearList ->
 		BowlerDetailsScreenUiState.Loaded(
 			bowler = BowlerDetailsUiState(
 				bowler = bowlerDetails,
 				leaguesList = leaguesList,
 				gearList = GearListUiState(gearList, gearToDelete = null),
-				topBar = BowlerDetailsTopBarUiState(bowlerDetails.name),
+				topBar = topBarState,
 				widgets = widgets,
 			),
 		)
@@ -174,6 +199,12 @@ class BowlerDetailsViewModel @Inject constructor(
 			BowlerDetailsUiAction.EditStatisticsWidgetClicked -> sendEvent(
 				BowlerDetailsScreenEvent.EditStatisticsWidget(statisticsWidgetContext, bowlerId),
 			)
+			BowlerDetailsUiAction.SortClicked -> isLeagueSortOrderShowing.value = true
+			BowlerDetailsUiAction.SortDismissed -> isLeagueSortOrderShowing.value = false
+			is BowlerDetailsUiAction.SortOrderClicked -> {
+				leagueSortOrder.value = action.sortOrder
+				isLeagueSortOrderShowing.value = false
+			}
 			BowlerDetailsUiAction.ManageGearClicked -> showPreferredGearPicker()
 			is BowlerDetailsUiAction.GearClicked -> sendEvent(
 				BowlerDetailsScreenEvent.ShowGearDetails(action.id),

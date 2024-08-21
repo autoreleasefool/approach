@@ -9,7 +9,6 @@ import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
-import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
@@ -53,47 +52,53 @@ class LeagueDetailsViewModel @Inject constructor(
 
 	private val seriesChartModelProducers: MutableMap<UUID, ChartEntryModelProducer> = mutableMapOf()
 
-	private val config = combine(
-		seriesItemSize,
-		seriesToArchive,
-		isSeriesSortOrderShowing,
-		seriesSortOrder,
-	) { seriesItemSize, seriesToArchive, isSeriesSortOrderShowing, seriesSortOrder ->
-		Config(
-			seriesItemSize = seriesItemSize,
-			seriesToArchive = seriesToArchive,
-			isSeriesSortOrderShowing = isSeriesSortOrderShowing,
-			seriesSortOrder = seriesSortOrder,
-		)
-	}
-
 	private val seriesList = seriesSortOrder.flatMapLatest { sortOrder ->
 		seriesRepository.getSeriesList(leagueId, sortOrder, null)
 	}
 
-	val uiState: StateFlow<LeagueDetailsScreenUiState> = combine(
-		config,
-		leaguesRepository.getLeagueDetails(leagueId),
-		seriesList,
-	) { config, league, series ->
-		val (preBowlSeries, regularSeries) = buildSeriesLists(series, config.seriesSortOrder)
+	private val leagueDetails = leaguesRepository.getLeagueDetails(leagueId)
 
+	private val topBarUiState = combine(
+		leagueDetails,
+		seriesList,
+		isSeriesSortOrderShowing,
+		seriesSortOrder,
+		seriesItemSize,
+	) { league, series, isSeriesSortOrderShowing, seriesSortOrder, seriesItemSize ->
+		LeagueDetailsTopBarUiState(
+			leagueName = league.name,
+			isSortOrderMenuVisible = series.isNotEmpty(),
+			isSortOrderMenuExpanded = isSeriesSortOrderShowing,
+			sortOrder = seriesSortOrder,
+			isSeriesItemSizeVisible = series.isNotEmpty(),
+			seriesItemSize = seriesItemSize,
+		)
+	}
+
+	private val seriesListUiState = combine(
+		seriesList,
+		seriesSortOrder,
+		seriesToArchive,
+		seriesItemSize,
+	) { series, seriesSortOrder, seriesToArchive, seriesItemSize ->
+		val (preBowlSeries, regularSeries) = buildSeriesLists(series, seriesSortOrder)
+
+		SeriesListUiState(
+			preBowlSeries = preBowlSeries,
+			regularSeries = regularSeries,
+			seriesToArchive = seriesToArchive,
+			itemSize = seriesItemSize,
+		)
+	}
+
+	val uiState: StateFlow<LeagueDetailsScreenUiState> = combine(
+		topBarUiState,
+		seriesListUiState,
+	) { topBar, seriesList ->
 		LeagueDetailsScreenUiState.Loaded(
 			leagueDetails = LeagueDetailsUiState(
-				topBar = LeagueDetailsTopBarUiState(
-					leagueName = league.name,
-					isSortOrderMenuVisible = series.isNotEmpty(),
-					isSortOrderMenuExpanded = config.isSeriesSortOrderShowing,
-					sortOrder = config.seriesSortOrder,
-					isSeriesItemSizeVisible = series.isNotEmpty(),
-					seriesItemSize = config.seriesItemSize,
-				),
-				seriesList = SeriesListUiState(
-					preBowlSeries = preBowlSeries,
-					regularSeries = regularSeries,
-					seriesToArchive = config.seriesToArchive,
-					itemSize = config.seriesItemSize,
-				),
+				topBar = topBar,
+				seriesList = seriesList,
 			),
 		)
 	}.stateIn(
@@ -162,26 +167,24 @@ class LeagueDetailsViewModel @Inject constructor(
 	private fun buildSeriesLists(
 		list: List<SeriesListItem>,
 		sortOrder: SeriesSortOrder,
-	): Pair<List<SeriesListChartItem>, List<SeriesListChartItem>> {
-		return when (sortOrder) {
-			SeriesSortOrder.NEWEST_TO_OLDEST -> {
-				val preBowlSeries = list.filter {
-					when (it.properties.preBowl) {
-						SeriesPreBowl.PRE_BOWL -> it.properties.appliedDate == null
-						SeriesPreBowl.REGULAR -> false
-					}
+	): Pair<List<SeriesListChartItem>, List<SeriesListChartItem>> = when (sortOrder) {
+		SeriesSortOrder.NEWEST_TO_OLDEST -> {
+			val preBowlSeries = list.filter {
+				when (it.properties.preBowl) {
+					SeriesPreBowl.PRE_BOWL -> it.properties.appliedDate == null
+					SeriesPreBowl.REGULAR -> false
 				}
-				val preBowlSeriesIds = preBowlSeries.map { it.properties.id }.toSet()
-				val regularSeries = list.filter { !preBowlSeriesIds.contains(it.properties.id) }
+			}
+			val preBowlSeriesIds = preBowlSeries.map { it.properties.id }.toSet()
+			val regularSeries = list.filter { !preBowlSeriesIds.contains(it.properties.id) }
 
-				preBowlSeries.map(::buildSeriesListChartItem) to regularSeries.map(::buildSeriesListChartItem)
-			}
-			SeriesSortOrder.OLDEST_TO_NEWEST,
-			SeriesSortOrder.HIGHEST_TO_LOWEST,
-			SeriesSortOrder.LOWEST_TO_HIGHEST,
-			-> {
-				emptyList<SeriesListChartItem>() to list.map(::buildSeriesListChartItem)
-			}
+			preBowlSeries.map(::buildSeriesListChartItem) to regularSeries.map(::buildSeriesListChartItem)
+		}
+		SeriesSortOrder.OLDEST_TO_NEWEST,
+		SeriesSortOrder.HIGHEST_TO_LOWEST,
+		SeriesSortOrder.LOWEST_TO_HIGHEST,
+		-> {
+			emptyList<SeriesListChartItem>() to list.map(::buildSeriesListChartItem)
 		}
 	}
 
@@ -224,11 +227,4 @@ private fun SeriesListItem.withChart(
 	lowestScore = scores.minOrNull() ?: 0,
 	highestScore = scores.maxOrNull() ?: 0,
 	scores = chartModelProducer,
-)
-
-private data class Config(
-	val seriesItemSize: SeriesItemSize,
-	val seriesToArchive: SeriesListChartItem?,
-	val isSeriesSortOrderShowing: Boolean,
-	val seriesSortOrder: SeriesSortOrder,
 )

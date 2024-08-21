@@ -61,7 +61,9 @@ fun LeagueDetailsTopBar(
 				Box {
 					IconButton(onClick = { onAction(LeagueDetailsUiAction.SortClicked) }) {
 						Icon(
-							painter = painterResource(R.drawable.ic_sort),
+							painter = painterResource(
+								ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_sort,
+							),
 							contentDescription = stringResource(R.string.series_list_sort_order),
 							tint = MaterialTheme.colorScheme.onSurface,
 						)

@@ -8,4 +8,8 @@
 
 	<string name="bowler_details_leagues_filter_recurrence_repeats">Repeating</string>
 	<string name="bowler_details_leagues_filter_recurrence_one_time">One-Time</string>
+
+	<string name="bowler_details_leagues_list_sort_order">Sort order</string>
+	<string name="bowler_details_leagues_list_sort_order_alphabetical">Alphabetical</string>
+	<string name="bowler_details_leagues_list_sort_order_most_recently_used">Most Recently Used</string>
 </resources>
