@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueCreate
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
+import ca.josephroque.bowlingcompanion.core.model.LeagueSortOrder
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueUpdate
 import java.util.UUID
@@ -19,6 +20,7 @@ interface LeaguesRepository {
 	fun getLeaguesList(
 		bowlerId: UUID,
 		recurrence: LeagueRecurrence? = null,
+		sortOrder: LeagueSortOrder = LeagueSortOrder.ALPHABETICAL,
 	): Flow<List<LeagueListItem>>
 
 	fun getArchivedLeagues(): Flow<List<ArchivedLeague>>

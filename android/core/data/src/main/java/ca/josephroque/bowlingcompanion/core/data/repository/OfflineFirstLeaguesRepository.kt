@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueCreate
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
+import ca.josephroque.bowlingcompanion.core.model.LeagueSortOrder
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueUpdate
 import ca.josephroque.bowlingcompanion.core.model.Series
@@ -40,8 +41,9 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 	override fun getLeaguesList(
 		bowlerId: UUID,
 		recurrence: LeagueRecurrence?,
+		sortOrder: LeagueSortOrder,
 	): Flow<List<LeagueListItem>> =
-		leagueDao.getLeagueAverages(bowlerId = bowlerId, recurrence = recurrence)
+		leagueDao.getLeagueAverages(bowlerId = bowlerId, recurrence = recurrence, sortOrder = sortOrder)
 
 	override fun getArchivedLeagues(): Flow<List<ArchivedLeague>> = leagueDao.getArchivedLeagues()
 
