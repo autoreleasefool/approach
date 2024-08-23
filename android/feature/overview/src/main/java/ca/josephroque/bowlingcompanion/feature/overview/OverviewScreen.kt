@@ -31,6 +31,7 @@ import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.overview.ui.Overview
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewFloatingActionButton
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewTopBar
+import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewTopBarUiState
 import java.util.UUID
 import kotlinx.coroutines.launch
 
@@ -120,6 +121,10 @@ private fun OverviewScreen(
 	Scaffold(
 		topBar = {
 			OverviewTopBar(
+				state = when (state) {
+					OverviewScreenUiState.Loading -> OverviewTopBarUiState()
+					is OverviewScreenUiState.Loaded -> state.topBar
+				},
 				onAction = { onAction(OverviewScreenUiAction.OverviewAction(it)) },
 				scrollBehavior = scrollBehavior,
 			)

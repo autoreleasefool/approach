@@ -11,11 +11,13 @@ import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRep
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
+import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.hasModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersListUiAction
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersListUiState
+import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewUiAction
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewUiState
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayoutUiAction
@@ -50,9 +52,16 @@ class OverviewViewModel @Inject constructor(
 	private val bowlerToArchive: MutableStateFlow<BowlerListItem?> = MutableStateFlow(null)
 	private val isGameInProgressSnackBarVisible: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
+	private val isBowlerSortOrderMenuExpanded = MutableStateFlow(false)
+	private val bowlerSortOrder = MutableStateFlow(BowlerSortOrder.MOST_RECENTLY_USED)
+
+	private val bowlers = bowlerSortOrder.flatMapLatest { sortOrder ->
+		bowlersRepository.getBowlersList(sortOrder)
+	}
+
 	private val bowlersListState: Flow<BowlersListUiState> =
 		combine(
-			bowlersRepository.getBowlersList(),
+			bowlers,
 			bowlerToArchive,
 		) { bowlersList, bowlerToArchive ->
 			BowlersListUiState(
@@ -60,6 +69,18 @@ class OverviewViewModel @Inject constructor(
 				bowlerToArchive = bowlerToArchive,
 			)
 		}
+
+	private val topBarState: Flow<OverviewTopBarUiState> = combine(
+		bowlers,
+		isBowlerSortOrderMenuExpanded,
+		bowlerSortOrder,
+	) { bowlers, isBowlerSortOrderMenuExpanded, bowlerSortOrder ->
+		OverviewTopBarUiState(
+			isSortOrderMenuVisible = bowlers.isNotEmpty(),
+			isSortOrderMenuExpanded = isBowlerSortOrderMenuExpanded,
+			sortOrder = bowlerSortOrder,
+		)
+	}
 
 	private val widgets = userDataRepository.userData
 		.map { it.isHidingWidgetsInBowlersList }
@@ -91,16 +112,18 @@ class OverviewViewModel @Inject constructor(
 
 	val uiState: StateFlow<OverviewScreenUiState> = combine(
 		bowlersListState,
+		topBarState,
 		widgetLayoutState,
 		isGameInProgressSnackBarVisible,
 		isShowingSwipeHint,
-	) { bowlersList, widgets, isGameInProgressSnackBarVisible, isShowingSwipeHint ->
+	) { bowlersList, topBarState, widgets, isGameInProgressSnackBarVisible, isShowingSwipeHint ->
 		OverviewScreenUiState.Loaded(
 			overview = OverviewUiState(
 				bowlersList = bowlersList,
 				widgets = widgets,
 				isShowingSwipeHint = isShowingSwipeHint,
 			),
+			topBar = topBarState,
 			isGameInProgressSnackBarVisible = isGameInProgressSnackBarVisible,
 		)
 	}.stateIn(
@@ -153,6 +176,12 @@ class OverviewViewModel @Inject constructor(
 			)
 			OverviewUiAction.QuickPlayClicked -> sendEvent(OverviewScreenEvent.ShowQuickPlay)
 			OverviewUiAction.SwipeHintDismissed -> dismissSwipeHint()
+			OverviewUiAction.BowlersSortClicked -> isBowlerSortOrderMenuExpanded.value = true
+			OverviewUiAction.BowlersSortDismissed -> isBowlerSortOrderMenuExpanded.value = false
+			is OverviewUiAction.BowlersSortOrderClicked -> {
+				bowlerSortOrder.value = action.sortOrder
+				isBowlerSortOrderMenuExpanded.value = false
+			}
 			is OverviewUiAction.BowlersListAction -> handleBowlersListAction(action.action)
 			is OverviewUiAction.StatisticsWidgetLayout -> handleStatisticsWidgetLayoutAction(action.action)
 		}

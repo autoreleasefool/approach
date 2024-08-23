@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.model.ArchivedBowler
 import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
+import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
@@ -13,7 +14,9 @@ import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 
 interface BowlersRepository {
-	fun getBowlersList(): Flow<List<BowlerListItem>>
+	fun getBowlersList(
+		sortOrder: BowlerSortOrder = BowlerSortOrder.ALPHABETICAL,
+	): Flow<List<BowlerListItem>>
 	fun getOpponentsList(): Flow<List<OpponentListItem>>
 	fun getArchivedBowlers(): Flow<List<ArchivedBowler>>
 	suspend fun getDefaultQuickPlay(): Pair<BowlerSummary, LeagueSummary>?

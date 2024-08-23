@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.BowlerUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedBowler
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
+import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesBowlerSummary
@@ -61,7 +62,8 @@ abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 			SELECT
 				bowlers.id AS id,
 				bowlers.name AS name,
-				AVG(games.score) as average
+				AVG(games.score) as average,
+				MAX(series.date) as lastSeriesDate
 			FROM bowlers
 			LEFT JOIN leagues
 				ON leagues.bowler_id = bowlers.id
@@ -78,10 +80,12 @@ abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 				AND games.archived_on IS NULL
 			WHERE bowlers.kind = 'PLAYABLE' AND bowlers.archived_on IS NULL
 			GROUP BY bowlers.id
-			ORDER BY bowlers.name
+			ORDER BY
+				CASE WHEN :sortOrder = 'MOST_RECENTLY_USED' THEN lastSeriesDate END DESC,
+				CASE WHEN :sortOrder = 'ALPHABETICAL' THEN bowlers.name END ASC
 		""",
 	)
-	abstract fun getBowlersList(): Flow<List<BowlerListItem>>
+	abstract fun getBowlersList(sortOrder: BowlerSortOrder): Flow<List<BowlerListItem>>
 
 	@Query(
 		"""
