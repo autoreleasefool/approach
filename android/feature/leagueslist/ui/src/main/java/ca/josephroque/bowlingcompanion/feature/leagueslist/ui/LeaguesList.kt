@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.leagueslist.ui
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
@@ -66,6 +67,7 @@ fun LeaguesList(
 	}
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 fun LazyListScope.leaguesList(
 	list: List<LeagueListItem>,
 	onLeagueClick: (LeagueListItem) -> Unit,
@@ -93,6 +95,7 @@ fun LazyListScope.leaguesList(
 		SwipeableActionsBox(
 			startActions = listOf(archiveAction),
 			endActions = listOf(editAction),
+			modifier = Modifier.animateItemPlacement(),
 		) {
 			LeagueRow(
 				name = it.name,

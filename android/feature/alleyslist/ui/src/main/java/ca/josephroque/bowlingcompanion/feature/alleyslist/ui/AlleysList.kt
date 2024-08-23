@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.alleyslist.ui
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -53,6 +54,7 @@ fun AlleysList(
 	}
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 fun LazyListScope.alleysList(
 	list: List<AlleyListItem>,
 	onAlleyClick: (AlleyListItem) -> Unit,
@@ -84,6 +86,7 @@ fun LazyListScope.alleysList(
 		SwipeableActionsBox(
 			startActions = listOfNotNull(deleteAction),
 			endActions = listOfNotNull(editAction),
+			modifier = Modifier.animateItemPlacement(),
 		) {
 			AlleyRow(
 				name = alley.name,

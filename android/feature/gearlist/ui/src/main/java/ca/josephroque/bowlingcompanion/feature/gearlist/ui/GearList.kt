@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.gearlist.ui
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -53,6 +54,7 @@ fun GearList(
 	}
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 fun LazyListScope.gearList(
 	list: List<GearListItem>,
 	onGearClick: (GearListItem) -> Unit,
@@ -84,6 +86,7 @@ fun LazyListScope.gearList(
 		SwipeableActionsBox(
 			startActions = listOfNotNull(deleteAction),
 			endActions = listOfNotNull(editAction),
+			modifier = Modifier.animateItemPlacement(),
 		) {
 			GearRow(
 				name = gear.name,

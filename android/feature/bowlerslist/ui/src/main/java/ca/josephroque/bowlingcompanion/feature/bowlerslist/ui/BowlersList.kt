@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.bowlerslist.ui
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -70,6 +71,7 @@ fun BowlersList(
 	}
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 fun LazyListScope.bowlersList(
 	list: List<BowlerListItem>,
 	onBowlerClick: (BowlerListItem) -> Unit,
@@ -97,6 +99,7 @@ fun LazyListScope.bowlersList(
 		SwipeableActionsBox(
 			startActions = listOf(archiveAction),
 			endActions = listOf(editAction),
+			modifier = Modifier.animateItemPlacement(),
 		) {
 			BowlerRow(
 				name = it.name,

@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.bowlerslist.ui
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
@@ -65,6 +66,7 @@ fun OpponentsList(
 	}
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 fun LazyListScope.opponentsList(
 	list: List<OpponentListItem>,
 	onOpponentClick: (OpponentListItem) -> Unit,
@@ -92,6 +94,7 @@ fun LazyListScope.opponentsList(
 		SwipeableActionsBox(
 			startActions = listOf(archiveAction),
 			endActions = listOf(editAction),
+			modifier = Modifier.animateItemPlacement(),
 		) {
 			BowlerRow(
 				name = it.name,

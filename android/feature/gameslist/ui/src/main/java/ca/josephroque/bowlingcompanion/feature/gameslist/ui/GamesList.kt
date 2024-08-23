@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.gameslist.ui
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
@@ -64,6 +65,7 @@ fun GamesList(
 	}
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 fun LazyListScope.gamesList(
 	list: List<GameListItem>,
 	onGameClick: (GameListItem) -> Unit,
@@ -83,6 +85,7 @@ fun LazyListScope.gamesList(
 
 		SwipeableActionsBox(
 			startActions = listOf(archiveAction),
+			modifier = Modifier.animateItemPlacement(),
 		) {
 			GameRow(
 				index = it.index,
