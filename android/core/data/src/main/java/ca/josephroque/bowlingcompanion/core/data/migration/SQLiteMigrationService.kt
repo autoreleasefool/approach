@@ -43,6 +43,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamBowlerCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.TeamEntity
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
+import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
@@ -739,7 +740,7 @@ class SQLiteMigrationService @Inject constructor(
 			.getMatchPlaysForGames(gameIdMappings.values)
 			.associateBy { it.gameId }
 		val existingBowlers = bowlerDao
-			.getBowlersList()
+			.getBowlersList(sortOrder = BowlerSortOrder.ALPHABETICAL)
 			.first()
 			.associateBy { it.name.lowercase() }
 

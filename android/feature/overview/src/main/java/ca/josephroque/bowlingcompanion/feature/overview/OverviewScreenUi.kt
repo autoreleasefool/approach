@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.overview
 
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
+import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewUiAction
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewUiState
 import java.util.UUID
@@ -10,6 +11,7 @@ sealed interface OverviewScreenUiState {
 
 	data class Loaded(
 		val overview: OverviewUiState,
+		val topBar: OverviewTopBarUiState,
 		val isGameInProgressSnackBarVisible: Boolean,
 	) : OverviewScreenUiState
 }

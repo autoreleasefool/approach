@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
+import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
@@ -50,7 +51,8 @@ class OfflineFirstBowlersRepository @Inject constructor(
 					.map(SeriesBowlerSummary::asSummary)
 			}
 
-	override fun getBowlersList(): Flow<List<BowlerListItem>> = bowlerDao.getBowlersList()
+	override fun getBowlersList(sortOrder: BowlerSortOrder): Flow<List<BowlerListItem>> =
+		bowlerDao.getBowlersList(sortOrder = sortOrder)
 
 	override fun getOpponentsList(): Flow<List<OpponentListItem>> = bowlerDao.getOpponentsList()
 
