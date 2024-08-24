@@ -6,6 +6,7 @@ import androidx.room.Query
 import ca.josephroque.bowlingcompanion.core.database.model.TeamCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamEntity
 import ca.josephroque.bowlingcompanion.core.model.TeamListItem
+import ca.josephroque.bowlingcompanion.core.model.TeamSortOrder
 import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 
@@ -16,8 +17,9 @@ abstract class TeamDao : LegacyMigratingDao<TeamEntity> {
 			SELECT
 				teams.id AS id,
 				teams.name AS name,
-				GROUP_CONCAT(bowlers.name, ", ") AS bowlers,
-				AVG(games.score) as average
+				GROUP_CONCAT(bowlers.name, ";") AS bowlers,
+				AVG(games.score) as average,
+				MAX(series.date) as lastSeriesDate
 			FROM teams
 			LEFT JOIN team_bowler
 				ON team_bowler.team_id = teams.id
@@ -37,10 +39,13 @@ abstract class TeamDao : LegacyMigratingDao<TeamEntity> {
 				AND (games.score > 0 OR games.score IS NULL)
 				AND games.archived_on IS NULL
 			GROUP BY teams.id
-			ORDER BY teams.name, bowlers.name
+			ORDER BY
+				CASE WHEN :sortOrder = 'MOST_RECENTLY_USED' THEN lastSeriesDate END DESC,
+				CASE WHEN :sortOrder = 'ALPHABETICAL' THEN teams.name END ASC,
+				bowlers.name
 		""",
 	)
-	abstract fun getTeamList(): Flow<List<TeamListItem>>
+	abstract fun getTeamList(sortOrder: TeamSortOrder): Flow<List<TeamListItem>>
 
 	@Insert(entity = TeamEntity::class)
 	abstract suspend fun insertTeam(team: TeamCreateEntity)

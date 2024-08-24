@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -93,19 +94,21 @@ fun SeriesRow(
 @Composable
 @Preview
 fun SeriesRowPreview() {
-	Column {
-		SeriesRow(LocalDate(2022, 1, 1), total = 300)
-		SeriesRow(
-			date = LocalDate(2022, 1, 1),
-			preBowledForDate = LocalDate(2022, 1, 1),
-			total = 300,
-		)
-		SeriesRow(LocalDate(2022, 1, 1), total = 300, itemSize = SeriesItemSize.DEFAULT)
-		SeriesRow(
-			date = LocalDate(2022, 1, 1),
-			preBowledForDate = LocalDate(2022, 1, 1),
-			total = 300,
-			itemSize = SeriesItemSize.DEFAULT,
-		)
+	Surface {
+		Column {
+			SeriesRow(LocalDate(2022, 1, 1), total = 300)
+			SeriesRow(
+				date = LocalDate(2022, 1, 1),
+				preBowledForDate = LocalDate(2022, 1, 1),
+				total = 300,
+			)
+			SeriesRow(LocalDate(2022, 1, 1), total = 300, itemSize = SeriesItemSize.DEFAULT)
+			SeriesRow(
+				date = LocalDate(2022, 1, 1),
+				preBowledForDate = LocalDate(2022, 1, 1),
+				total = 300,
+				itemSize = SeriesItemSize.DEFAULT,
+			)
+		}
 	}
 }

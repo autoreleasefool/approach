@@ -33,6 +33,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.overview.ui.Overview
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewFloatingActionButton
+import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewTab
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewTopBar
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewTopBarUiState
 import kotlinx.coroutines.launch
@@ -124,7 +125,7 @@ private fun OverviewScreen(
 		topBar = {
 			OverviewTopBar(
 				state = when (state) {
-					OverviewScreenUiState.Loading -> OverviewTopBarUiState()
+					OverviewScreenUiState.Loading -> OverviewTopBarUiState.BowlerTab()
 					is OverviewScreenUiState.Loaded -> state.topBar
 				},
 				onAction = { onAction(OverviewScreenUiAction.OverviewAction(it)) },
@@ -132,10 +133,12 @@ private fun OverviewScreen(
 			)
 		},
 		floatingActionButton = {
-			OverviewFloatingActionButton(
-				modifier = Modifier.onGloballyPositioned { fabHeight = it.size.height },
-				onAction = { onAction(OverviewScreenUiAction.OverviewAction(it)) },
-			)
+			if (state is OverviewScreenUiState.Loaded && state.overview.tab == OverviewTab.BOWLERS) {
+				OverviewFloatingActionButton(
+					modifier = Modifier.onGloballyPositioned { fabHeight = it.size.height },
+					onAction = { onAction(OverviewScreenUiAction.OverviewAction(it)) },
+				)
+			}
 		},
 		snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
 		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

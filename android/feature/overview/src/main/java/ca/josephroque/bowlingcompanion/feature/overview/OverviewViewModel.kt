@@ -8,21 +8,29 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.TeamsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
+import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
+import ca.josephroque.bowlingcompanion.core.model.TeamListItem
+import ca.josephroque.bowlingcompanion.core.model.TeamSortOrder
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.hasModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetID
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersListUiAction
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersListUiState
+import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewTab
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewUiAction
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewUiState
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayoutUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayoutUiState
+import ca.josephroque.bowlingcompanion.feature.teamslist.ui.TeamsListUiAction
+import ca.josephroque.bowlingcompanion.feature.teamslist.ui.TeamsListUiState
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -44,14 +52,49 @@ private const val STATISTICS_WIDGET_CONTEXT = "overview"
 @HiltViewModel
 class OverviewViewModel @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
+	private val teamsRepository: TeamsRepository,
 	private val gamesRepository: GamesRepository,
 	statisticsWidgetsRepository: StatisticsWidgetsRepository,
 	private val userDataRepository: UserDataRepository,
 	private val analyticsClient: AnalyticsClient,
+	private val featureFlagsClient: FeatureFlagsClient,
 ) : ApproachViewModel<OverviewScreenEvent>() {
-	private val bowlerToArchive: MutableStateFlow<BowlerListItem?> = MutableStateFlow(null)
+	private val selectedTab = MutableStateFlow(OverviewTab.BOWLERS)
 	private val isGameInProgressSnackBarVisible: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
+	private val teamToDelete: MutableStateFlow<TeamListItem?> = MutableStateFlow(null)
+	private val isTeamSortOrderMenuExpanded = MutableStateFlow(false)
+	private val teamSortOrder = MutableStateFlow(TeamSortOrder.MOST_RECENTLY_USED)
+
+	private val teams = teamSortOrder.flatMapLatest { sortOrder ->
+		teamsRepository.getTeamList(sortOrder)
+	}
+
+	private val teamsListUiState: Flow<TeamsListUiState> =
+		combine(teams, teamToDelete) { teamsList, teamToDelete ->
+			TeamsListUiState(
+				list = teamsList,
+				teamToDelete = teamToDelete,
+			)
+		}
+
+	private val teamsTopBar: Flow<OverviewTopBarUiState.TeamTab> =
+		combine(
+			teams,
+			isTeamSortOrderMenuExpanded,
+			teamSortOrder,
+		) { teams, isTeamSortOrderMenuExpanded, teamSortOrder ->
+			OverviewTopBarUiState.TeamTab(
+				isSortOrderMenuVisible = teams.isNotEmpty(),
+				isSortOrderMenuExpanded = isTeamSortOrderMenuExpanded,
+				sortOrder = teamSortOrder,
+			)
+		}
+
+	private val isShowingSwipeHint = userDataRepository.userData
+		.map { !it.isSwipeRowsTipDismissed }
+
+	private val bowlerToArchive: MutableStateFlow<BowlerListItem?> = MutableStateFlow(null)
 	private val isBowlerSortOrderMenuExpanded = MutableStateFlow(false)
 	private val bowlerSortOrder = MutableStateFlow(BowlerSortOrder.MOST_RECENTLY_USED)
 
@@ -59,7 +102,7 @@ class OverviewViewModel @Inject constructor(
 		bowlersRepository.getBowlersList(kind = BowlerKind.PLAYABLE, sortOrder)
 	}
 
-	private val bowlersListState: Flow<BowlersListUiState> =
+	private val bowlersListUiState: Flow<BowlersListUiState> =
 		combine(
 			bowlers,
 			bowlerToArchive,
@@ -70,16 +113,27 @@ class OverviewViewModel @Inject constructor(
 			)
 		}
 
-	private val topBarState: Flow<OverviewTopBarUiState> = combine(
+	private val bowlersTopBar: Flow<OverviewTopBarUiState.BowlerTab> = combine(
 		bowlers,
 		isBowlerSortOrderMenuExpanded,
 		bowlerSortOrder,
 	) { bowlers, isBowlerSortOrderMenuExpanded, bowlerSortOrder ->
-		OverviewTopBarUiState(
+		OverviewTopBarUiState.BowlerTab(
 			isSortOrderMenuVisible = bowlers.isNotEmpty(),
 			isSortOrderMenuExpanded = isBowlerSortOrderMenuExpanded,
 			sortOrder = bowlerSortOrder,
 		)
+	}
+
+	private val topBarUiState: Flow<OverviewTopBarUiState> = combine(
+		selectedTab,
+		bowlersTopBar,
+		teamsTopBar,
+	) { selectedTab, bowlersTopBar, teamsTopBar ->
+		when (selectedTab) {
+			OverviewTab.BOWLERS -> bowlersTopBar
+			OverviewTab.TEAMS -> teamsTopBar
+		}
 	}
 
 	private val widgets = userDataRepository.userData
@@ -96,7 +150,7 @@ class OverviewViewModel @Inject constructor(
 		MutableStateFlow<Map<StatisticsWidgetID, StatisticsWidgetLayoutUiState.ChartContent>> =
 		MutableStateFlow(emptyMap())
 
-	private val widgetLayoutState = combine(
+	private val widgetLayoutUiState = combine(
 		widgets,
 		widgetCharts,
 	) { widgets, widgetCharts ->
@@ -108,23 +162,31 @@ class OverviewViewModel @Inject constructor(
 		}
 	}
 
-	private val isShowingSwipeHint = userDataRepository.userData
-		.map { !it.isSwipeRowsTipDismissed }
+	private val overviewUiState = combine(
+		selectedTab,
+		bowlersListUiState,
+		teamsListUiState,
+		widgetLayoutUiState,
+		isShowingSwipeHint,
+	) { selectedTab, bowlersListState, teamsListState, widgets, isShowingSwipeHint ->
+		OverviewUiState(
+			isTeamsEnabled = featureFlagsClient.isEnabled(FeatureFlag.TEAMS),
+			tab = selectedTab,
+			widgets = widgets,
+			teamsList = teamsListState,
+			bowlersList = bowlersListState,
+			isShowingSwipeHint = isShowingSwipeHint,
+		)
+	}
 
 	val uiState: StateFlow<OverviewScreenUiState> = combine(
-		bowlersListState,
-		topBarState,
-		widgetLayoutState,
+		overviewUiState,
+		topBarUiState,
 		isGameInProgressSnackBarVisible,
-		isShowingSwipeHint,
-	) { bowlersList, topBarState, widgets, isGameInProgressSnackBarVisible, isShowingSwipeHint ->
+	) { overview, topBar, isGameInProgressSnackBarVisible ->
 		OverviewScreenUiState.Loaded(
-			overview = OverviewUiState(
-				bowlersList = bowlersList,
-				widgets = widgets,
-				isShowingSwipeHint = isShowingSwipeHint,
-			),
-			topBar = topBarState,
+			overview = overview,
+			topBar = topBar,
 			isGameInProgressSnackBarVisible = isGameInProgressSnackBarVisible,
 		)
 	}.stateIn(
@@ -172,17 +234,26 @@ class OverviewViewModel @Inject constructor(
 	private fun handleOverviewAction(action: OverviewUiAction) {
 		when (action) {
 			OverviewUiAction.AddBowlerClicked -> sendEvent(OverviewScreenEvent.AddBowler)
+			OverviewUiAction.AddTeamClicked -> TODO()
 			OverviewUiAction.EditStatisticsWidgetClicked -> sendEvent(
 				OverviewScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT),
 			)
 			OverviewUiAction.QuickPlayClicked -> sendEvent(OverviewScreenEvent.ShowQuickPlay)
 			OverviewUiAction.SwipeHintDismissed -> dismissSwipeHint()
+			OverviewUiAction.TeamsSortClicked -> isTeamSortOrderMenuExpanded.value = true
+			OverviewUiAction.TeamsSortDismissed -> isTeamSortOrderMenuExpanded.value = false
+			is OverviewUiAction.TeamsSortOrderClicked -> {
+				teamSortOrder.value = action.sortOrder
+				isTeamSortOrderMenuExpanded.value = false
+			}
 			OverviewUiAction.BowlersSortClicked -> isBowlerSortOrderMenuExpanded.value = true
 			OverviewUiAction.BowlersSortDismissed -> isBowlerSortOrderMenuExpanded.value = false
 			is OverviewUiAction.BowlersSortOrderClicked -> {
 				bowlerSortOrder.value = action.sortOrder
 				isBowlerSortOrderMenuExpanded.value = false
 			}
+			is OverviewUiAction.TabClicked -> selectedTab.value = action.tab
+			is OverviewUiAction.TeamsListAction -> handleTeamsListAction(action.action)
 			is OverviewUiAction.BowlersListAction -> handleBowlersListAction(action.action)
 			is OverviewUiAction.StatisticsWidgetLayout -> handleStatisticsWidgetLayoutAction(action.action)
 		}
@@ -190,14 +261,25 @@ class OverviewViewModel @Inject constructor(
 
 	private fun handleBowlersListAction(action: BowlersListUiAction) {
 		when (action) {
+			BowlersListUiAction.AddBowlerClicked -> sendEvent(OverviewScreenEvent.AddBowler)
 			is BowlersListUiAction.BowlerClicked -> showBowlerDetails(action.bowler)
-			is BowlersListUiAction.AddBowlerClicked -> sendEvent(OverviewScreenEvent.AddBowler)
 			is BowlersListUiAction.BowlerEdited -> sendEvent(
 				OverviewScreenEvent.EditBowler(action.bowler.id),
 			)
 			is BowlersListUiAction.BowlerArchived -> setBowlerArchivePrompt(action.bowler)
-			is BowlersListUiAction.ConfirmArchiveClicked -> archiveBowler()
-			is BowlersListUiAction.DismissArchiveClicked -> setBowlerArchivePrompt(null)
+			BowlersListUiAction.ConfirmArchiveClicked -> archiveBowler()
+			BowlersListUiAction.DismissArchiveClicked -> setBowlerArchivePrompt(null)
+		}
+	}
+
+	private fun handleTeamsListAction(action: TeamsListUiAction) {
+		when (action) {
+			TeamsListUiAction.AddTeamClicked -> TODO()
+			is TeamsListUiAction.TeamClicked -> TODO()
+			is TeamsListUiAction.TeamEdited -> TODO()
+			is TeamsListUiAction.TeamDeleted -> setTeamDeletePrompt(action.team)
+			TeamsListUiAction.ConfirmDeleteClicked -> deleteTeam()
+			TeamsListUiAction.DismissDeleteClicked -> setTeamDeletePrompt(null)
 		}
 	}
 
@@ -241,6 +323,18 @@ class OverviewViewModel @Inject constructor(
 	private fun showBowlerDetails(bowler: BowlerListItem) {
 		sendEvent(OverviewScreenEvent.ShowBowlerDetails(bowler.id))
 		analyticsClient.trackEvent(BowlerViewed(BowlerKind.PLAYABLE))
+	}
+
+	private fun setTeamDeletePrompt(team: TeamListItem?) {
+		teamToDelete.value = team
+	}
+
+	private fun deleteTeam() {
+		val teamToDelete = teamToDelete.value ?: return
+		viewModelScope.launch {
+			teamsRepository.deleteTeam(teamToDelete.id)
+			setTeamDeletePrompt(null)
+		}
 	}
 
 	private fun setBowlerArchivePrompt(bowler: BowlerListItem?) {

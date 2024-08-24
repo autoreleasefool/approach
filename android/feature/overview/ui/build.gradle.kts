@@ -10,6 +10,7 @@ android {
 dependencies {
 	implementation(projects.feature.bowlerslist.ui)
 	implementation(projects.feature.statisticswidget.ui)
+	implementation(projects.feature.teamslist.ui)
 
 	implementation(libs.compose.reorderable)
 	implementation(libs.swipe)
