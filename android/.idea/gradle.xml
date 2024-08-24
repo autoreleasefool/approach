@@ -105,6 +105,8 @@
             <option value="$PROJECT_DIR$/feature/statisticsoverview/ui" />
             <option value="$PROJECT_DIR$/feature/statisticswidget" />
             <option value="$PROJECT_DIR$/feature/statisticswidget/ui" />
+            <option value="$PROJECT_DIR$/feature/teamform" />
+            <option value="$PROJECT_DIR$/feature/teamform/ui" />
             <option value="$PROJECT_DIR$/feature/teamslist" />
             <option value="$PROJECT_DIR$/feature/teamslist/ui" />
           </set>

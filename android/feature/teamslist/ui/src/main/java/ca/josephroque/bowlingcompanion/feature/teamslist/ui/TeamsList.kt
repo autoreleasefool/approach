@@ -100,7 +100,7 @@ fun LazyListScope.teamsList(
 		) {
 			TeamRow(
 				name = it.name,
-				members = it.bowlers.split(";").sorted(),
+				members = it.membersList(),
 				onClick = { onTeamClick(it) },
 			)
 		}
