@@ -29,6 +29,7 @@ sealed interface OverviewScreenUiAction {
 
 sealed interface OverviewScreenEvent {
 	data object AddBowler : OverviewScreenEvent
+	data object AddTeam : OverviewScreenEvent
 	data object ShowQuickPlay : OverviewScreenEvent
 
 	data class EditStatisticsWidget(val context: String) : OverviewScreenEvent
@@ -36,6 +37,7 @@ sealed interface OverviewScreenEvent {
 	data class ResumeGame(val seriesIds: List<SeriesID>, val currentGameId: GameID) :
 		OverviewScreenEvent
 	data class ShowBowlerDetails(val id: BowlerID) : OverviewScreenEvent
+	data class EditTeam(val id: TeamID) : OverviewScreenEvent
 	data class ShowWidgetStatistics(val filter: TrackableFilter) : OverviewScreenEvent
 	data object ShowWidgetNotEnoughDataError : OverviewScreenEvent
 	data object ShowWidgetUnavailableError : OverviewScreenEvent

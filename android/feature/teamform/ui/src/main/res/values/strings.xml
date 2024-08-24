@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="team_form_title_new">New Team</string>
+    <string name="team_form_title_edit">Edit %1$s</string>
+
+    <string name="team_form_details">Details</string>
+    <string name="team_form_property_name">Name</string>
+    <string name="team_form_property_name_missing">Name cannot be blank</string>
+
+    <string name="team_form_team_members">Team Members</string>
+    <string name="team_form_manage_team_members">Manage Team Members</string>
+    <string name="team_form_property_team_members_too_few">Must have at least 1 member</string>
+
+    <plurals name="team_form_property_team_members_created">
+        <item quantity="zero">No team members</item>
+        <item quantity="one">%1$d team member</item>
+        <item quantity="other">%1$d team members</item>
+    </plurals>
+</resources>

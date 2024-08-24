@@ -234,7 +234,7 @@ class OverviewViewModel @Inject constructor(
 	private fun handleOverviewAction(action: OverviewUiAction) {
 		when (action) {
 			OverviewUiAction.AddBowlerClicked -> sendEvent(OverviewScreenEvent.AddBowler)
-			OverviewUiAction.AddTeamClicked -> TODO()
+			OverviewUiAction.AddTeamClicked -> sendEvent(OverviewScreenEvent.AddTeam)
 			OverviewUiAction.EditStatisticsWidgetClicked -> sendEvent(
 				OverviewScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT),
 			)
@@ -274,9 +274,9 @@ class OverviewViewModel @Inject constructor(
 
 	private fun handleTeamsListAction(action: TeamsListUiAction) {
 		when (action) {
-			TeamsListUiAction.AddTeamClicked -> TODO()
+			TeamsListUiAction.AddTeamClicked -> sendEvent(OverviewScreenEvent.AddTeam)
 			is TeamsListUiAction.TeamClicked -> TODO()
-			is TeamsListUiAction.TeamEdited -> TODO()
+			is TeamsListUiAction.TeamEdited -> sendEvent(OverviewScreenEvent.EditTeam(action.team.id))
 			is TeamsListUiAction.TeamDeleted -> setTeamDeletePrompt(action.team)
 			TeamsListUiAction.ConfirmDeleteClicked -> deleteTeam()
 			TeamsListUiAction.DismissDeleteClicked -> setTeamDeletePrompt(null)

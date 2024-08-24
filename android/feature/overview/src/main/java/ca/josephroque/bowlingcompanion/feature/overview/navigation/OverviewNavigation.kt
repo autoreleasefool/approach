@@ -17,6 +17,8 @@ fun NavGraphBuilder.overviewScreen(
 	onEditBowler: (BowlerID) -> Unit,
 	onAddBowler: () -> Unit,
 	onShowBowlerDetails: (BowlerID) -> Unit,
+	onEditTeam: (TeamID) -> Unit,
+	onAddTeam: () -> Unit,
 	onEditStatisticsWidgets: (String) -> Unit,
 	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 	onShowQuickPlay: () -> Unit,
@@ -36,6 +38,8 @@ fun NavGraphBuilder.overviewScreen(
 			OverviewRoute(
 				onEditBowler = onEditBowler,
 				onAddBowler = onAddBowler,
+				onEditTeam = onEditTeam,
+				onAddTeam = onAddTeam,
 				onShowBowlerDetails = onShowBowlerDetails,
 				onEditStatisticsWidgets = onEditStatisticsWidgets,
 				onShowWidgetStatistics = onShowWidgetStatistics,

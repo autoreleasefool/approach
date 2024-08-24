@@ -43,6 +43,8 @@ internal fun OverviewRoute(
 	onEditBowler: (BowlerID) -> Unit,
 	onAddBowler: () -> Unit,
 	onShowBowlerDetails: (BowlerID) -> Unit,
+	onEditTeam: (TeamID) -> Unit,
+	onAddTeam: () -> Unit,
 	onEditStatisticsWidgets: (String) -> Unit,
 	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 	onShowQuickPlay: () -> Unit,
@@ -63,11 +65,13 @@ internal fun OverviewRoute(
 					when (it) {
 						is OverviewScreenEvent.ShowBowlerDetails -> onShowBowlerDetails(it.id)
 						is OverviewScreenEvent.EditBowler -> onEditBowler(it.id)
+						is OverviewScreenEvent.EditTeam -> onEditTeam(it.id)
 						is OverviewScreenEvent.EditStatisticsWidget -> onEditStatisticsWidgets(it.context)
 						is OverviewScreenEvent.ShowWidgetStatistics -> onShowWidgetStatistics(it.filter)
 						is OverviewScreenEvent.ResumeGame -> onResumeGame(it.seriesIds, it.currentGameId)
 						OverviewScreenEvent.ShowQuickPlay -> onShowQuickPlay()
 						OverviewScreenEvent.AddBowler -> onAddBowler()
+						OverviewScreenEvent.AddTeam -> onAddTeam()
 						OverviewScreenEvent.ShowWidgetNotEnoughDataError -> onShowWidgetNotEnoughDataError()
 						OverviewScreenEvent.ShowWidgetUnavailableError -> onShowWidgetUnavailableError()
 					}

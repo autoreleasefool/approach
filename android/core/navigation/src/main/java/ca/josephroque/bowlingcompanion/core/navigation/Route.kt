@@ -357,6 +357,15 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	data object StatisticsWidgetError : Route("statisticswidgeterror", isBottomBarVisible = false) {
 		fun createRoute(): String = "statisticswidgeterror"
 	}
+
+	// Teams
+	data object AddTeam : Route("add_team", isBottomBarVisible = false)
+	data object EditTeam : Route("edit_team/{team}", isBottomBarVisible = false) {
+		const val ARG_TEAM = "team"
+		fun createRoute(team: UUID): String = "edit_team/${Uri.encode(team.toString())}"
+		fun getTeam(savedStateHandle: SavedStateHandle): UUID? =
+			savedStateHandle.get<String>("team")?.let { UUID.fromString(it) }
+	}
 }
 
 fun <T> List<T>.encode(): String = if (isEmpty()) {
