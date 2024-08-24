@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.settings.ui
 data class SettingsUiState(
 	val isDataImportsEnabled: Boolean,
 	val isDataExportsEnabled: Boolean,
+	val isDevelopmentModeEnabled: Boolean,
 	val versionName: String,
 	val versionCode: String,
 ) {
@@ -22,4 +23,5 @@ sealed interface SettingsUiAction {
 	data object ViewSourceClicked : SettingsUiAction
 	data object SendFeedbackClicked : SettingsUiAction
 	data object ReportBugClicked : SettingsUiAction
+	data object FeatureFlagsClicked : SettingsUiAction
 }

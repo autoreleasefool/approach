@@ -80,6 +80,9 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	data object DataExport : Route("data_export", isBottomBarVisible = false)
 	data object DataImport : Route("data_import", isBottomBarVisible = false)
 
+	// Feature Flags
+	data object FeatureFlagsList : Route("feature_flags_list", isBottomBarVisible = false)
+
 	// Game
 	data object GameSettings : Route(
 		"games_settings/{series}/{current_game}",

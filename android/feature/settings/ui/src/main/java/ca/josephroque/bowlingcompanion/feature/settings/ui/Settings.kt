@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,12 @@ fun Settings(
 			.fillMaxSize()
 			.verticalScroll(rememberScrollState()),
 	) {
+		if (state.isDevelopmentModeEnabled) {
+			DevelopmentModeSection(onAction = onAction)
+
+			HorizontalDivider()
+		}
+
 		MainSection(onAction = onAction)
 
 		HorizontalDivider()
@@ -73,6 +80,20 @@ fun Settings(
 			versionCode = state.versionCode,
 		)
 	}
+}
+
+@Composable
+private fun DevelopmentModeSection(onAction: (SettingsUiAction) -> Unit) {
+	Header(
+		titleResourceId = R.string.settings_item_development_mode,
+		color = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive),
+	)
+
+	NavigationItem(
+		titleResourceId = R.string.settings_item_feature_flags,
+		descriptionResourceId = R.string.settings_item_feature_flags_description,
+		onClick = { onAction(SettingsUiAction.FeatureFlagsClicked) },
+	)
 }
 
 @Composable
