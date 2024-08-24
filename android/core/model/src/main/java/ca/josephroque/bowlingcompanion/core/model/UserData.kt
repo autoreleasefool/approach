@@ -25,6 +25,7 @@ data class UserData(
 	val recentlyUsedLeagueIds: List<String>,
 	val recentlyUsedAlleyIds: List<String>,
 	val recentlyUsedGearIds: List<String>,
+	val recentlyUsedTeamIds: List<String>,
 
 	// Series
 	val seriesItemSize: SeriesItemSize,

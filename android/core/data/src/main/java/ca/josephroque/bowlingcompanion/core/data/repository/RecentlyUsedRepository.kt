@@ -12,6 +12,7 @@ enum class RecentResource {
 	ALLEYS,
 	GEAR,
 	OPPONENTS,
+	TEAM,
 }
 
 interface RecentlyUsedRepository {
@@ -26,4 +27,5 @@ interface RecentlyUsedRepository {
 	suspend fun didRecentlyUseGear(id: GearID) = didRecentlyUse(RecentResource.GEAR, id.toString())
 	suspend fun didRecentlyUseOpponent(id: BowlerID) =
 		didRecentlyUse(RecentResource.OPPONENTS, id.toString())
+	suspend fun didRecentlyUseTeam(id: UUID) = didRecentlyUse(RecentResource.TEAM, id.toString())
 }
