@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
+import ca.josephroque.bowlingcompanion.core.model.TeamSortOrder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,60 +39,136 @@ fun OverviewTopBar(
 			)
 		},
 		actions = {
-			if (state.isSortOrderMenuVisible) {
-				Box {
-					IconButton(onClick = { onAction(OverviewUiAction.BowlersSortClicked) }) {
-						Icon(
-							painter = painterResource(
-								ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_sort,
-							),
-							contentDescription = stringResource(R.string.overview_bowler_list_sort_order),
-							tint = MaterialTheme.colorScheme.onSurface,
-						)
-					}
-
-					DropdownMenu(
-						expanded = state.isSortOrderMenuExpanded,
-						onDismissRequest = { onAction(OverviewUiAction.BowlersSortDismissed) },
-					) {
-						BowlerSortOrder.entries.forEach { order ->
-							DropdownMenuItem(
-								text = {
-									Text(
-										when (order) {
-											BowlerSortOrder.MOST_RECENTLY_USED -> stringResource(
-												R.string.overview_bowler_list_sort_order_most_recently_used,
-											)
-											BowlerSortOrder.ALPHABETICAL -> stringResource(
-												R.string.overview_bowler_list_sort_order_alphabetical,
-											)
-										},
-										style = MaterialTheme.typography.bodyMedium,
-									)
-								},
-								trailingIcon = {
-									if (state.sortOrder == order) {
-										Icon(
-											imageVector = Icons.Filled.Check,
-											contentDescription = null,
-											tint = MaterialTheme.colorScheme.primary,
-										)
-									}
-								},
-								onClick = { onAction(OverviewUiAction.BowlersSortOrderClicked(order)) },
-							)
-						}
-					}
+			when (state) {
+				is OverviewTopBarUiState.BowlerTab -> {
+					BowlerTabTopBarActions(state, onAction)
 				}
-			}
-
-			IconButton(onClick = { onAction(OverviewUiAction.AddBowlerClicked) }) {
-				Icon(
-					painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_add_person),
-					contentDescription = stringResource(R.string.bowler_list_add),
-					tint = MaterialTheme.colorScheme.onSurface,
-				)
+				is OverviewTopBarUiState.TeamTab -> {
+					TeamTabTopBarActions(state, onAction)
+				}
 			}
 		},
 	)
+}
+
+@Composable
+fun TeamTabTopBarActions(
+	state: OverviewTopBarUiState.TeamTab,
+	onAction: (OverviewUiAction) -> Unit,
+) {
+	if (state.isSortOrderMenuVisible) {
+		Box {
+			IconButton(onClick = { onAction(OverviewUiAction.TeamsSortClicked) }) {
+				Icon(
+					painter = painterResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_sort,
+					),
+					contentDescription = stringResource(R.string.overview_team_list_sort_order),
+					tint = MaterialTheme.colorScheme.onSurface,
+				)
+			}
+
+			DropdownMenu(
+				expanded = state.isSortOrderMenuExpanded,
+				onDismissRequest = { onAction(OverviewUiAction.TeamsSortDismissed) },
+			) {
+				TeamSortOrder.entries.forEach { order ->
+					DropdownMenuItem(
+						text = {
+							Text(
+								when (order) {
+									TeamSortOrder.MOST_RECENTLY_USED -> stringResource(
+										R.string.overview_team_list_sort_order_most_recently_used,
+									)
+									TeamSortOrder.ALPHABETICAL -> stringResource(
+										R.string.overview_team_list_sort_order_alphabetical,
+									)
+								},
+								style = MaterialTheme.typography.bodyMedium,
+							)
+						},
+						trailingIcon = {
+							if (state.sortOrder == order) {
+								Icon(
+									imageVector = Icons.Filled.Check,
+									contentDescription = null,
+									tint = MaterialTheme.colorScheme.primary,
+								)
+							}
+						},
+						onClick = { onAction(OverviewUiAction.TeamsSortOrderClicked(order)) },
+					)
+				}
+			}
+		}
+	}
+
+	IconButton(onClick = { onAction(OverviewUiAction.AddTeamClicked) }) {
+		Icon(
+			painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_add_group),
+			contentDescription = stringResource(R.string.team_list_add),
+			tint = MaterialTheme.colorScheme.onSurface,
+		)
+	}
+}
+
+@Composable
+fun BowlerTabTopBarActions(
+	state: OverviewTopBarUiState.BowlerTab,
+	onAction: (OverviewUiAction) -> Unit,
+) {
+	if (state.isSortOrderMenuVisible) {
+		Box {
+			IconButton(onClick = { onAction(OverviewUiAction.BowlersSortClicked) }) {
+				Icon(
+					painter = painterResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_sort,
+					),
+					contentDescription = stringResource(R.string.overview_bowler_list_sort_order),
+					tint = MaterialTheme.colorScheme.onSurface,
+				)
+			}
+
+			DropdownMenu(
+				expanded = state.isSortOrderMenuExpanded,
+				onDismissRequest = { onAction(OverviewUiAction.BowlersSortDismissed) },
+			) {
+				BowlerSortOrder.entries.forEach { order ->
+					DropdownMenuItem(
+						text = {
+							Text(
+								when (order) {
+									BowlerSortOrder.MOST_RECENTLY_USED -> stringResource(
+										R.string.overview_bowler_list_sort_order_most_recently_used,
+									)
+									BowlerSortOrder.ALPHABETICAL -> stringResource(
+										R.string.overview_bowler_list_sort_order_alphabetical,
+									)
+								},
+								style = MaterialTheme.typography.bodyMedium,
+							)
+						},
+						trailingIcon = {
+							if (state.sortOrder == order) {
+								Icon(
+									imageVector = Icons.Filled.Check,
+									contentDescription = null,
+									tint = MaterialTheme.colorScheme.primary,
+								)
+							}
+						},
+						onClick = { onAction(OverviewUiAction.BowlersSortOrderClicked(order)) },
+					)
+				}
+			}
+		}
+	}
+
+	IconButton(onClick = { onAction(OverviewUiAction.AddBowlerClicked) }) {
+		Icon(
+			painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_add_person),
+			contentDescription = stringResource(R.string.bowler_list_add),
+			tint = MaterialTheme.colorScheme.onSurface,
+		)
+	}
 }

@@ -14,6 +14,11 @@ value class TeamID(val value: UUID) : Parcelable {
 	}
 }
 
+enum class TeamSortOrder {
+	MOST_RECENTLY_USED,
+	ALPHABETICAL,
+}
+
 data class Team(val id: TeamID, val name: String)
 
 data class TeamListItem(
@@ -22,5 +27,8 @@ data class TeamListItem(
 	val bowlers: List<String>,
 	val average: Double?,
 )
+
+
+data class TeamListItem(val id: TeamID, val name: String, val bowlers: String, val average: Double?)
 
 data class TeamCreate(val id: TeamID, val name: String, val bowlers: List<BowlerID>)

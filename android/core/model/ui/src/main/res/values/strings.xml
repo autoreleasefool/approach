@@ -25,4 +25,7 @@
 
 	<string name="series_property_total">Total</string>
 	<string name="series_property_originally_bowled">Pre-bowled on %1$s</string>
+
+	<string name="team_member_names_for_2">%1$s and %2$s</string>
+	<string name="team_member_names_for_more">%1$s, %2$s, and %3$d more</string>
 </resources>

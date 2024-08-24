@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="team_list_add">Add Team</string>
+
+    <string name="team_list_empty_title">No teams found</string>
+    <string name="team_list_empty_message">You haven\'t added any teams yet. Try adding a new one to get started.</string>
+</resources>
