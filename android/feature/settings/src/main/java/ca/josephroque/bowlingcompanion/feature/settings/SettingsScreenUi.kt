@@ -6,9 +6,7 @@ import ca.josephroque.bowlingcompanion.feature.settings.ui.SettingsUiState
 sealed interface SettingsScreenUiState {
 	data object Loading : SettingsScreenUiState
 
-	data class Loaded(
-		val settings: SettingsUiState,
-	) : SettingsScreenUiState
+	data class Loaded(val settings: SettingsUiState) : SettingsScreenUiState
 }
 
 sealed interface SettingsScreenUiAction {
@@ -24,4 +22,5 @@ sealed interface SettingsScreenEvent {
 	data object NavigateToDataExportSettings : SettingsScreenEvent
 	data object NavigateToDeveloperSettings : SettingsScreenEvent
 	data object NavigateToArchives : SettingsScreenEvent
+	data object NavigateToFeatureFlags : SettingsScreenEvent
 }

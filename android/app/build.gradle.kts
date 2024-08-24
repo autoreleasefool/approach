@@ -69,6 +69,7 @@ dependencies {
 	implementation(projects.feature.bowlerdetails)
 	implementation(projects.feature.bowlerform)
 	implementation(projects.feature.datamanagement)
+	implementation(projects.feature.featureflagslist)
 	implementation(projects.feature.gameseditor)
 	implementation(projects.feature.gearlist)
 	implementation(projects.feature.gearform)

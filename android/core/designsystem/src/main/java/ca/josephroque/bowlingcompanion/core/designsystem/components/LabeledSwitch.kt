@@ -26,6 +26,27 @@ fun LabeledSwitch(
 	compact: Boolean = false,
 	@StringRes subtitleResourceId: Int? = null,
 ) {
+	LabeledSwitch(
+		title = stringResource(titleResourceId),
+		checked = checked,
+		onCheckedChange = onCheckedChange,
+		modifier = modifier,
+		enabled = enabled,
+		compact = compact,
+		subtitle = subtitleResourceId?.let { stringResource(it) },
+	)
+}
+
+@Composable
+fun LabeledSwitch(
+	title: String,
+	checked: Boolean,
+	onCheckedChange: (Boolean) -> Unit,
+	modifier: Modifier = Modifier,
+	enabled: Boolean = true,
+	compact: Boolean = false,
+	subtitle: String? = null,
+) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -41,7 +62,7 @@ fun LabeledSwitch(
 				.weight(1f),
 		) {
 			Text(
-				text = stringResource(titleResourceId),
+				text = title,
 				style = if (compact) {
 					MaterialTheme.typography.titleSmall
 				} else {
@@ -49,9 +70,9 @@ fun LabeledSwitch(
 				},
 			)
 
-			subtitleResourceId?.let {
+			subtitle?.let {
 				Text(
-					text = stringResource(subtitleResourceId),
+					text = it,
 					style = if (compact) {
 						MaterialTheme.typography.bodySmall
 					} else {

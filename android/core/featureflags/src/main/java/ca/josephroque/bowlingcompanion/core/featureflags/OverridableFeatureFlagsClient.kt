@@ -11,7 +11,8 @@ class OverridableFeatureFlagsClient @Inject constructor() : FeatureFlagsClient {
 		flag.isEnabled()
 	}
 
-	override fun setEnabled(flag: FeatureFlag, enabled: Boolean) {
-		flagOverrides[flag.key] = enabled
+	override fun setEnabled(flag: FeatureFlag, enabled: Boolean?) {
+		if (!flag.isOverridable) return
+		enabled?.let { flagOverrides[flag.key] = it } ?: flagOverrides.remove(flag.key)
 	}
 }

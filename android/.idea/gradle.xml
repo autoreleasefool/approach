@@ -61,6 +61,8 @@
             <option value="$PROJECT_DIR$/feature/bowlerslist/ui" />
             <option value="$PROJECT_DIR$/feature/datamanagement" />
             <option value="$PROJECT_DIR$/feature/datamanagement/ui" />
+            <option value="$PROJECT_DIR$/feature/featureflagslist" />
+            <option value="$PROJECT_DIR$/feature/featureflagslist/ui" />
             <option value="$PROJECT_DIR$/feature/gameseditor" />
             <option value="$PROJECT_DIR$/feature/gameseditor/ui" />
             <option value="$PROJECT_DIR$/feature/gameslist" />

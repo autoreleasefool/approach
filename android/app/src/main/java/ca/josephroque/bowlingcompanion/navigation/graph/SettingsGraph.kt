@@ -11,6 +11,8 @@ import ca.josephroque.bowlingcompanion.feature.datamanagement.navigation.dataExp
 import ca.josephroque.bowlingcompanion.feature.datamanagement.navigation.dataImportScreen
 import ca.josephroque.bowlingcompanion.feature.datamanagement.navigation.navigateToDataExport
 import ca.josephroque.bowlingcompanion.feature.datamanagement.navigation.navigateToDataImport
+import ca.josephroque.bowlingcompanion.feature.featureflagslist.navigation.featureFlagsList
+import ca.josephroque.bowlingcompanion.feature.featureflagslist.navigation.navigateToFeatureFlagsList
 import ca.josephroque.bowlingcompanion.feature.opponentslist.navigation.navigateToOpponentsList
 import ca.josephroque.bowlingcompanion.feature.opponentslist.navigation.opponentsListScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.acknowledgementDetailsScreen
@@ -35,6 +37,7 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
 		openDataExportSettings = navController::navigateToDataExport,
 		openDataImportSettings = navController::navigateToDataImport,
 		openArchives = navController::navigateToArchivesList,
+		openFeatureFlags = navController::navigateToFeatureFlagsList,
 	)
 	dataExportScreen(
 		onBackPressed = navController::popBackStack,
@@ -65,6 +68,9 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
 		onBackPressed = navController::popBackStack,
 	)
 	archivesList(
+		onBackPressed = navController::popBackStack,
+	)
+	featureFlagsList(
 		onBackPressed = navController::popBackStack,
 	)
 }

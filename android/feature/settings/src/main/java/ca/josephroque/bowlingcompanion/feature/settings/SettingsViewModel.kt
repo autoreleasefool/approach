@@ -37,6 +37,7 @@ class SettingsViewModel @Inject constructor(
 		SettingsUiState(
 			isDataImportsEnabled = featureFlagsClient.isEnabled(FeatureFlag.DATA_IMPORT),
 			isDataExportsEnabled = featureFlagsClient.isEnabled(FeatureFlag.DATA_EXPORT),
+			isDevelopmentModeEnabled = featureFlagsClient.isEnabled(FeatureFlag.DEVELOPER_MODE),
 			versionName = systemInfoService.versionName,
 			versionCode = systemInfoService.versionCode,
 		),
@@ -69,6 +70,7 @@ class SettingsViewModel @Inject constructor(
 			SettingsUiAction.ViewSourceClicked -> showSource()
 			SettingsUiAction.SendFeedbackClicked -> showFeedback()
 			SettingsUiAction.ReportBugClicked -> showBugReport()
+			SettingsUiAction.FeatureFlagsClicked -> showFeatureFlags()
 		}
 	}
 
@@ -87,6 +89,10 @@ class SettingsViewModel @Inject constructor(
 	private fun showArchives() {
 		sendEvent(SettingsScreenEvent.NavigateToArchives)
 		analyticsClient.trackEvent(ViewedArchived)
+	}
+
+	private fun showFeatureFlags() {
+		sendEvent(SettingsScreenEvent.NavigateToFeatureFlags)
 	}
 
 	private fun showDeveloperSettings() {
