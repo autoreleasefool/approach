@@ -2,6 +2,9 @@ package ca.josephroque.bowlingcompanion.feature.teamform
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.team.TeamCreated
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.team.TeamUpdated
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.TeamsRepository
@@ -25,7 +28,7 @@ class TeamFormViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val teamsRepository: TeamsRepository,
 	private var recentlyUsedRepository: RecentlyUsedRepository,
-//	private val analyticsClient: AnalyticsClient,
+	private val analyticsClient: AnalyticsClient,
 ) : ApproachViewModel<TeamFormScreenEvent>() {
 	private val isEditing = Route.EditTeam.getTeam(savedStateHandle) != null
 	private var teamId = Route.EditTeam.getTeam(savedStateHandle) ?: UUID.randomUUID().also {
@@ -128,7 +131,7 @@ class TeamFormViewModel @Inject constructor(
 					recentlyUsedRepository.didRecentlyUseTeam(team.id)
 					sendEvent(TeamFormScreenEvent.Dismissed)
 
-					// TODO: analyticsClient.trackEvent(TeamCreated)
+					analyticsClient.trackEvent(TeamCreated(team.members.size))
 				} else {
 					_uiState.updateForm {
 						it.copy(
@@ -143,7 +146,7 @@ class TeamFormViewModel @Inject constructor(
 					teamsRepository.updateTeam(team)
 					recentlyUsedRepository.didRecentlyUseTeam(team.id)
 					sendEvent(TeamFormScreenEvent.Dismissed)
-					// TODO: analyticsClient.trackEvent(TeamUpdated)
+					analyticsClient.trackEvent(TeamUpdated(team.members.size))
 				} else {
 					_uiState.updateForm {
 						it.copy(
