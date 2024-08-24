@@ -94,6 +94,10 @@ class OfflineFirstUserDataRepository @Inject constructor(
 		approachPreferencesDataSource.insertRecentlyUsedLeague(id)
 	}
 
+	override suspend fun didRecentlyUseTeam(id: String) {
+		approachPreferencesDataSource.insertRecentlyUsedTeam(id)
+	}
+
 	override suspend fun didDismissLaneFormSwipeToEditTip() {
 		approachPreferencesDataSource.setIsLaneFormSwipeToEditTipDismissed(isDismissed = true)
 	}

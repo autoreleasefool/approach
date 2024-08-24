@@ -20,6 +20,7 @@ class OfflineFirstRecentlyUsedRepository @Inject constructor(
 				RecentResource.LEAGUES -> userDataRepository.didRecentlyUseLeague(id)
 				RecentResource.GEAR -> userDataRepository.didRecentlyUseGear(id)
 				RecentResource.ALLEYS -> userDataRepository.didRecentlyUseAlley(id)
+				RecentResource.TEAM -> userDataRepository.didRecentlyUseTeam(id)
 			}
 		}
 	}
@@ -31,6 +32,7 @@ class OfflineFirstRecentlyUsedRepository @Inject constructor(
 				RecentResource.BOWLERS, RecentResource.OPPONENTS -> it.recentlyUsedBowlerIds
 				RecentResource.GEAR -> it.recentlyUsedGearIds
 				RecentResource.LEAGUES -> it.recentlyUsedLeagueIds
+				RecentResource.TEAM -> it.recentlyUsedTeamIds
 			}
 		}.distinctUntilChanged()
 }

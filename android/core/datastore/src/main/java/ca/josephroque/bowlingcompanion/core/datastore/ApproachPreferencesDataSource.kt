@@ -49,6 +49,7 @@ class ApproachPreferencesDataSource @Inject constructor(
 				recentlyUsedLeagueIds = it.recentlyUsedLeagueIdsList,
 				recentlyUsedAlleyIds = it.recentlyUsedAlleyIdsList,
 				recentlyUsedGearIds = it.recentlyUsedGearIdsList,
+				recentlyUsedTeamIds = it.recentlyUsedTeamIdsList,
 				isLaneFormSwipeToEditTipDismissed = it.isLaneFormSwipeToEditTipDismissed,
 				isQuickPlayTipDismissed = it.isQuickPlayTipDismissed,
 				isStatisticsTapToViewChartTipDismissed = it.isStatisticsTapToViewChartTipDismissed,
@@ -271,6 +272,19 @@ class ApproachPreferencesDataSource @Inject constructor(
 			it.toBuilder()
 				.clearRecentlyUsedLeagueIds()
 				.addAllRecentlyUsedLeagueIds(recentLeagues)
+				.build()
+		}
+	}
+
+	suspend fun insertRecentlyUsedTeam(id: String) {
+		userPreferences.updateData {
+			val recentTeams = it.recentlyUsedTeamIdsList
+				.toMutableList()
+				.insertAndTrim(id, RECENTLY_USED_LIMIT)
+
+			it.toBuilder()
+				.clearRecentlyUsedTeamIds()
+				.addAllRecentlyUsedTeamIds(recentTeams)
 				.build()
 		}
 	}

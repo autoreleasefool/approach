@@ -36,6 +36,7 @@ interface UserDataRepository {
 	suspend fun didRecentlyUseLeague(id: String)
 	suspend fun didRecentlyUseAlley(id: String)
 	suspend fun didRecentlyUseGear(id: String)
+	suspend fun didRecentlyUseTeam(id: String)
 
 	suspend fun didDismissLaneFormSwipeToEditTip()
 	suspend fun didDismissQuickPlayTip()
