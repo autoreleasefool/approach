@@ -21,7 +21,7 @@ sealed interface TeamFormScreenUiState {
 		val form: TeamFormUiState,
 		val topBar: TeamFormTopBarUiState,
 	) : TeamFormScreenUiState {
-		override fun isSavable(): Boolean = form.name.isNotBlank()
+		override fun isSavable(): Boolean = form.name.isNotBlank() && form.members.size >= 2
 
 		override fun hasAnyChanges(): Boolean = form != TeamFormUiState()
 	}
@@ -32,7 +32,7 @@ sealed interface TeamFormScreenUiState {
 		val topBar: TeamFormTopBarUiState,
 	) : TeamFormScreenUiState {
 		override fun isSavable(): Boolean =
-			form.name.isNotBlank() && form.updatedModel(existing = initialValue) != initialValue
+			form.name.isNotBlank() && form.members.size >= 2 && form.updatedModel(existing = initialValue) != initialValue
 
 		override fun hasAnyChanges(): Boolean = form.updatedModel(existing = initialValue) != initialValue
 	}
@@ -47,14 +47,14 @@ fun TeamFormUiState.updatedModel(existing: TeamUpdate): TeamUpdate = TeamUpdate(
 sealed interface TeamFormScreenUiAction {
 	data object LoadTeam : TeamFormScreenUiAction
 
-	data class MembersUpdated(val members: List<UUID>) : TeamFormScreenUiAction
+	data class MembersUpdated(val members: Set<UUID>) : TeamFormScreenUiAction
 	data class TeamForm(val action: TeamFormUiAction) : TeamFormScreenUiAction
 }
 
 sealed interface TeamFormScreenEvent {
 	data object Dismissed : TeamFormScreenEvent
 
-	data class ManageTeamMembers(val existingMembers: List<UUID>) : TeamFormScreenEvent
+	data class ManageTeamMembers(val existingMembers: Set<UUID>) : TeamFormScreenEvent
 }
 
 fun MutableStateFlow<TeamFormScreenUiState>.updateForm(

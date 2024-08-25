@@ -21,7 +21,7 @@ fun NavController.navigateToTeamForm(teamId: UUID, navOptions: NavOptions? = nul
 
 fun NavGraphBuilder.teamFormScreen(
 	onBackPressed: () -> Unit,
-	onManageTeamMembers: (List<UUID>, NavResultCallback<List<UUID>>) -> Unit,
+	onManageTeamMembers: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 ) {
 	composable(
 		route = Route.EditTeam.route,

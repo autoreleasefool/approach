@@ -1,13 +1,12 @@
 package ca.josephroque.bowlingcompanion.feature.teamform.ui
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.HorizontalDivider
@@ -23,8 +22,10 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DeleteDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChangesDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
-import ca.josephroque.bowlingcompanion.core.designsystem.components.form.PickableResourceCard
-import ca.josephroque.bowlingcompanion.core.designsystem.text.quantityStringResource
+import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSectionFooter
+import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSectionHeader
+import ca.josephroque.bowlingcompanion.core.designsystem.components.form.HeaderAction
+import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
 
 @Composable
 fun TeamForm(
@@ -47,35 +48,60 @@ fun TeamForm(
 		)
 	}
 	
-	Column(
+	LazyColumn(
 		modifier = modifier
-			.verticalScroll(rememberScrollState())
 			.fillMaxSize()
 			.imePadding(),
 	) {
-		FormSection(titleResourceId = R.string.team_form_details) {
-			TeamNameField(
-				name = state.name,
-				onNameChanged = { onAction(TeamFormUiAction.NameChanged(it)) },
-				errorId = state.nameErrorId,
+		item {
+			FormSection(titleResourceId = R.string.team_form_details) {
+				TeamNameField(
+					name = state.name,
+					onNameChanged = { onAction(TeamFormUiAction.NameChanged(it)) },
+					errorId = state.nameErrorId,
+				)
+			}
+
+			HorizontalDivider()
+
+			FormSectionHeader(
+				titleResourceId = R.string.team_form_team_members,
+				headerAction = HeaderAction(
+					actionResourceId = R.string.team_form_manage_team_members,
+					onClick = { onAction(TeamFormUiAction.ManageTeamMembersClicked) },
+				),
+				modifier = Modifier.padding(top = 16.dp),
+			)
+
+			if (state.members.isEmpty()) {
+				Text(
+					text = stringResource(R.string.team_form_property_team_members_none),
+					style = MaterialTheme.typography.bodyMedium,
+					modifier = Modifier.padding(16.dp),
+				)
+			}
+
+			state.membersErrorId?.let {
+				Text(
+					text = stringResource(it),
+					color = MaterialTheme.colorScheme.error,
+					modifier = Modifier.padding(16.dp),
+				)
+			}
+		}
+
+		items(
+			items = state.members,
+			key = { it.id },
+		) {
+			BowlerRow(
+				name = it.name,
+				modifier = Modifier.padding(16.dp),
 			)
 		}
 
-		HorizontalDivider()
-		
-		FormSection(
-			titleResourceId = R.string.team_form_team_members,
-			modifier = Modifier.padding(top = 16.dp),
-		) {
-			PickableResourceCard(
-				resourceName = stringResource(R.string.team_form_manage_team_members),
-				selectedName = quantityStringResource(
-					R.plurals.team_form_property_team_members_created,
-					quantity = state.members.size,
-					state.members.size,
-				),
-				onClick = { onAction(TeamFormUiAction.ManageTeamMembersClicked) },
-			)
+		item {
+			FormSectionFooter(footerResourceId = R.string.team_form_team_members_footer)
 		}
 	}
 }

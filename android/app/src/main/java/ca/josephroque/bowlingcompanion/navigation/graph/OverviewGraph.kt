@@ -256,6 +256,12 @@ fun NavGraphBuilder.overviewGraph(
 	)
 	teamFormScreen(
 		onBackPressed = navController::popBackStack,
-		onManageTeamMembers = { _, _ -> /* TODO: onManageTeamMembers */ },
+		onManageTeamMembers = { ids, result ->
+			navController.navigateToResourcePickerForResult(
+				selectedIds = ids.toSet(),
+				navResultCallback = result,
+				resourceType = ResourcePickerType.BOWLER,
+			)
+		},
 	)
 }

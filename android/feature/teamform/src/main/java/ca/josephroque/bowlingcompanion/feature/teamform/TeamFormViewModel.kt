@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.team.TeamCreated
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.team.TeamDeleted
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.team.TeamUpdated
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
@@ -112,7 +113,7 @@ class TeamFormViewModel @Inject constructor(
 
 			teamsRepository.deleteTeam(team.id)
 			sendEvent(TeamFormScreenEvent.Dismissed)
-			// TODO: analyticsClient.trackEvent(TeamDeleted)
+			analyticsClient.trackEvent(TeamDeleted)
 		}
 	}
 
@@ -159,10 +160,15 @@ class TeamFormViewModel @Inject constructor(
 		}
 	}
 
-	private fun updateMembers(members: List<UUID>) {
+	private fun updateMembers(members: Set<UUID>) {
 		viewModelScope.launch {
-			val teamMembers = teamsRepository.getTeamMembers(members).first()
-			_uiState.updateForm { it.copy(members = teamMembers) }
+			val teamMembers = teamsRepository.getTeamMembers(members.toList()).first()
+			_uiState.updateForm {
+				it.copy(
+					members = teamMembers,
+					membersErrorId = if (teamMembers.size < 2) R.string.team_form_property_team_members_too_few else null,
+				)
+			}
 		}
 	}
 
@@ -171,8 +177,8 @@ class TeamFormViewModel @Inject constructor(
 			TeamFormScreenEvent.ManageTeamMembers(
 				existingMembers = when (val state = _uiState.value) {
 					TeamFormScreenUiState.Loading -> return
-					is TeamFormScreenUiState.Create -> state.form.members.map(TeamMemberListItem::id)
-					is TeamFormScreenUiState.Edit -> state.form.members.map(TeamMemberListItem::id)
+					is TeamFormScreenUiState.Create -> state.form.members.map(TeamMemberListItem::id).toSet()
+					is TeamFormScreenUiState.Edit -> state.form.members.map(TeamMemberListItem::id).toSet()
 				}
 			),
 		)
