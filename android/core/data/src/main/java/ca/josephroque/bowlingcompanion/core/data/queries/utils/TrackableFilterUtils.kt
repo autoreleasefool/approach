@@ -8,7 +8,9 @@ fun TrackableFilter.Source.buildWhereClause(
 	seriesTableAlias: String,
 	gameTableAlias: String,
 ): List<String> = when (this) {
-	is TrackableFilter.Source.Team -> listOf() // TODO: Filter by team
+	is TrackableFilter.Source.Team -> listOf(
+		"$leagueTableAlias.bowler_id IN (SELECT bowler_id FROM team_bowler WHERE team_id = ?source)",
+	)
 	is TrackableFilter.Source.Bowler -> listOf("$leagueTableAlias.bowler_id = ?source")
 	is TrackableFilter.Source.League -> listOf("$seriesTableAlias.league_id = ?source")
 	is TrackableFilter.Source.Series -> listOf("$gameTableAlias.series_id = ?source")
