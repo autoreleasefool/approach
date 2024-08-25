@@ -32,43 +32,60 @@ fun FormSection(
 		modifier = modifier,
 	) {
 		titleResourceId?.let {
-			Row(
-				horizontalArrangement = Arrangement.spacedBy(8.dp),
-				modifier = Modifier
-					.fillMaxWidth()
-					.padding(horizontal = 16.dp, vertical = 8.dp),
-			) {
-				Text(
-					text = stringResource(it),
-					style = MaterialTheme.typography.titleMedium,
-					modifier = Modifier
-						.weight(1f)
-						.alignBy(LastBaseline),
-				)
-
-				headerAction?.let {
-					Text(
-						text = stringResource(it.actionResourceId),
-						style = MaterialTheme.typography.bodyMedium,
-						modifier = Modifier
-							.clickable(onClick = it.onClick)
-							.padding(8.dp)
-							.alignBy(LastBaseline),
-					)
-				}
-			}
+			FormSectionHeader(titleResourceId = it, headerAction = headerAction)
 		}
 
 		content()
 
 		footerResourceId?.let {
+			FormSectionFooter(footerResourceId = it)
+		}
+	}
+}
+
+@Composable
+fun FormSectionHeader(
+	titleResourceId: Int,
+	modifier: Modifier = Modifier,
+	headerAction: HeaderAction? = null,
+) {
+	Row(
+		horizontalArrangement = Arrangement.spacedBy(8.dp),
+		modifier = modifier
+			.fillMaxWidth()
+			.padding(horizontal = 16.dp, vertical = 8.dp),
+	) {
+		Text(
+			text = stringResource(titleResourceId),
+			style = MaterialTheme.typography.titleMedium,
+			modifier = Modifier
+				.weight(1f)
+				.alignBy(LastBaseline),
+		)
+
+		headerAction?.let {
 			Text(
-				text = stringResource(it),
-				style = MaterialTheme.typography.bodySmall,
+				text = stringResource(it.actionResourceId),
+				style = MaterialTheme.typography.bodyMedium,
 				modifier = Modifier
-					.fillMaxWidth()
-					.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
+					.clickable(onClick = it.onClick)
+					.padding(8.dp)
+					.alignBy(LastBaseline),
 			)
 		}
 	}
+}
+
+@Composable
+fun FormSectionFooter(
+	footerResourceId: Int,
+	modifier: Modifier = Modifier,
+) {
+	Text(
+		text = stringResource(footerResourceId),
+		style = MaterialTheme.typography.bodySmall,
+		modifier = modifier
+			.fillMaxWidth()
+			.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
+	)
 }

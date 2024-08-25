@@ -26,7 +26,7 @@ import java.util.UUID
 @Composable
 internal fun TeamFormRoute(
 	onDismiss: () -> Unit,
-	onManageTeamMembers: (List<UUID>, NavResultCallback<List<UUID>>) -> Unit,
+	onManageTeamMembers: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: TeamFormViewModel = hiltViewModel(),
 ) {

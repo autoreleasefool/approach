@@ -8,12 +8,8 @@
     <string name="team_form_property_name_missing">Name cannot be blank</string>
 
     <string name="team_form_team_members">Team Members</string>
-    <string name="team_form_manage_team_members">Manage Team Members</string>
-    <string name="team_form_property_team_members_too_few">Must have at least 1 member</string>
-
-    <plurals name="team_form_property_team_members_created">
-        <item quantity="zero">No team members</item>
-        <item quantity="one">%1$d team member</item>
-        <item quantity="other">%1$d team members</item>
-    </plurals>
+    <string name="team_form_manage_team_members">Manage</string>
+    <string name="team_form_property_team_members_none">No team members. Tap \'Manage\' to select at least 2</string>
+    <string name="team_form_property_team_members_too_few">Must have at least 2 members</string>
+    <string name="team_form_team_members_footer">Select the members of your team to bowl with. You\'ll be able to adjust the order later.</string>
 </resources>
