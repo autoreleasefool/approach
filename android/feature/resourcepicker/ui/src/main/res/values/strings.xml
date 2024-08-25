@@ -41,4 +41,9 @@
 		<item quantity="one">Select Lane</item>
 		<item quantity="other">Select Lanes</item>
 	</plurals>
+
+	<plurals name="team_picker_title">
+		<item quantity="one">Select Team</item>
+		<item quantity="other">Select Teams</item>
+	</plurals>
 </resources>

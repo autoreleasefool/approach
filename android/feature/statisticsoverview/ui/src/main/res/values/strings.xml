@@ -3,6 +3,7 @@
 	<string name="statistics_overview_title">Statistics</string>
 
 	<string name="statistics_filter">Filter Statistics</string>
+	<string name="statistics_filter_team">Team</string>
 	<string name="statistics_filter_bowler">Bowler</string>
 	<string name="statistics_filter_league">League</string>
 	<string name="statistics_filter_series">Series</string>

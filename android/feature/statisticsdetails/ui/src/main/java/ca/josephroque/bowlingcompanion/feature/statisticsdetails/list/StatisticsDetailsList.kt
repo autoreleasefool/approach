@@ -346,7 +346,7 @@ private fun StatisticsDetailsListPreview(
 			StatisticsDetailsList(
 				state = StatisticsDetailsListUiState(
 					filter = TrackableFilter(source = TrackableFilter.Source.Bowler(BowlerID.randomID())),
-					filterSources = TrackableFilter.SourceSummaries(
+					filterSources = TrackableFilter.SourceSummaries.Bowler(
 						bowler = BowlerSummaryStub.single(),
 						league = LeagueSummaryStub.single(),
 						series = null,

@@ -61,6 +61,14 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 	)
 	statisticsSourcePickerSheet(
 		onBackPressed = navController::popBackStack,
+		onPickTeam = { team, result ->
+			navController.navigateToResourcePickerForResult(
+				selectedIds = team?.let { setOf(it) } ?: emptySet(),
+				limit = 1,
+				navResultCallback = result,
+				resourceType = ResourcePickerType.TEAM,
+			)
+		},
 		onPickBowler = { bowler, result ->
 			navController.navigateToBowlerPickerForResult(
 				selectedIds = bowler?.let { setOf(it) } ?: emptySet(),

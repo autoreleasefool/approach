@@ -22,6 +22,7 @@ import ca.josephroque.bowlingcompanion.core.model.ui.GearRow
 import ca.josephroque.bowlingcompanion.core.model.ui.LaneRow
 import ca.josephroque.bowlingcompanion.core.model.ui.LeagueRow
 import ca.josephroque.bowlingcompanion.core.model.ui.SeriesRow
+import ca.josephroque.bowlingcompanion.core.model.ui.TeamRow
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourceItem
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePicker
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBar
@@ -108,6 +109,7 @@ private fun ResourcePickerScreen(
 							)
 							is ResourceItem.Alley -> AlleyRow(name = it.name)
 							is ResourceItem.Lane -> LaneRow(label = it.name, position = it.position)
+							is ResourceItem.Team -> TeamRow(name = it.name, members = it.members)
 						}
 					},
 					modifier = Modifier.padding(padding),

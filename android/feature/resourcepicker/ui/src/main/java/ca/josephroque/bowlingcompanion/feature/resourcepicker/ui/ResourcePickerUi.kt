@@ -72,6 +72,15 @@ sealed interface ResourceItem {
 		override val id: UUID
 			get() = laneId.value
 	}
+
+	data class Team(
+		val teamId: TeamID,
+		override val name: String,
+		val members: List<String>,
+	) : ResourceItem {
+		override val id: UUID
+			get() = teamId.value
+	}
 }
 
 data class ResourcePickerUiState(

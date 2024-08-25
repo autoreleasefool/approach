@@ -20,6 +20,7 @@
 	<string name="statistics_chart_title_loading">Loading Statistic</string>
 
 	<string name="statistics_filter_title">Detailed Statistics</string>
+	<string name="statistics_filter_label_team">Team</string>
 	<string name="statistics_filter_label_bowler">Bowler</string>
 	<string name="statistics_filter_label_league">League</string>
 	<string name="statistics_filter_label_league_recurrence">Repeats?</string>

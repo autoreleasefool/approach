@@ -173,6 +173,10 @@ class ApproachPreferencesDataSource @Inject constructor(
 						this.trackableFilterSource = TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_NONE
 						this.trackableFilterSourceId = ""
 					}
+					is TrackableFilter.Source.Team -> {
+						this.trackableFilterSource = TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_TEAM
+						this.trackableFilterSourceId = source.id.toString()
+					}
 					is TrackableFilter.Source.Bowler -> {
 						this.trackableFilterSource = TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_BOWLER
 						this.trackableFilterSourceId = source.id.toString()
@@ -322,6 +326,8 @@ private fun UserPreferences.parseTrackableFilterSource(): TrackableFilter.Source
 		try {
 			UUID.fromString(this.trackableFilterSourceId).let {
 				when (this.trackableFilterSource) {
+					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_TEAM ->
+						TrackableFilter.Source.Team(it)
 					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_BOWLER ->
 						TrackableFilter.Source.Bowler(BowlerID(it))
 					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_LEAGUE ->

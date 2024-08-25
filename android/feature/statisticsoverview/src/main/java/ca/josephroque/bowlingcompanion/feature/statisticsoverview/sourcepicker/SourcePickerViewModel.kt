@@ -9,6 +9,8 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
+import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerUiAction
@@ -27,6 +29,7 @@ import kotlinx.coroutines.launch
 class SourcePickerViewModel @Inject constructor(
 	private val statisticsRepository: StatisticsRepository,
 	private val userDataRepository: UserDataRepository,
+	featureFlagsClient: FeatureFlagsClient,
 	@ApplicationScope private val externalScope: CoroutineScope,
 ) : ApproachViewModel<SourcePickerScreenEvent>() {
 	private var didLoadDefaultSource = false
@@ -38,6 +41,7 @@ class SourcePickerViewModel @Inject constructor(
 			statisticsRepository.getSourceDetails(it)
 		}
 	}
+	private val isTeamsEnabled = featureFlagsClient.isEnabled(FeatureFlag.TEAMS)
 
 	val uiState = sourceSummaries
 		.map { source ->
@@ -46,6 +50,7 @@ class SourcePickerViewModel @Inject constructor(
 					isApplyEnabled = source != null,
 				),
 				sourcePicker = SourcePickerUiState(
+					isTeamsEnabled = isTeamsEnabled,
 					source = source,
 				),
 			)
@@ -58,6 +63,7 @@ class SourcePickerViewModel @Inject constructor(
 	fun handleAction(action: SourcePickerScreenUiAction) {
 		when (action) {
 			is SourcePickerScreenUiAction.DidAppear -> loadDefaultSource()
+			is SourcePickerScreenUiAction.UpdatedTeam -> setFilterTeam(action.team)
 			is SourcePickerScreenUiAction.UpdatedBowler -> setFilterBowler(action.bowler)
 			is SourcePickerScreenUiAction.UpdatedLeague -> setFilterLeague(action.league)
 			is SourcePickerScreenUiAction.UpdatedSeries -> setFilterSeries(action.series)
@@ -70,10 +76,17 @@ class SourcePickerViewModel @Inject constructor(
 		when (action) {
 			SourcePickerUiAction.Dismissed -> sendEvent(SourcePickerScreenEvent.Dismissed)
 			SourcePickerUiAction.ApplyFilterClicked -> showDetailedStatistics()
-			is SourcePickerUiAction.BowlerClicked -> showBowlerPicker()
-			is SourcePickerUiAction.LeagueClicked -> showLeaguePicker()
-			is SourcePickerUiAction.SeriesClicked -> showSeriesPicker()
-			is SourcePickerUiAction.GameClicked -> showGamePicker()
+			SourcePickerUiAction.TeamClicked -> showTeamPicker()
+			SourcePickerUiAction.BowlerClicked -> showBowlerPicker()
+			SourcePickerUiAction.LeagueClicked -> showLeaguePicker()
+			SourcePickerUiAction.SeriesClicked -> showSeriesPicker()
+			SourcePickerUiAction.GameClicked -> showGamePicker()
+		}
+	}
+
+	private fun setFilterTeam(teamId: UUID?) {
+		teamId?.let {
+			source.value = TrackableFilter.Source.Team(it)
 		}
 	}
 
@@ -121,43 +134,67 @@ class SourcePickerViewModel @Inject constructor(
 		}
 	}
 
+	private fun showTeamPicker() {
+		viewModelScope.launch {
+			when (val source = sourceSummaries.first()) {
+				is TrackableFilter.SourceSummaries.Team -> sendEvent(
+					SourcePickerScreenEvent.EditTeam(source.team.id),
+				)
+				is TrackableFilter.SourceSummaries.Bowler, null -> sendEvent(
+					SourcePickerScreenEvent.EditTeam(null),
+				)
+			}
+		}
+	}
+
 	private fun showBowlerPicker() {
 		viewModelScope.launch {
-			val source = sourceSummaries.first()
-			sendEvent(SourcePickerScreenEvent.EditBowler(source?.bowler?.id))
+			when (val source = sourceSummaries.first()) {
+				is TrackableFilter.SourceSummaries.Bowler -> sendEvent(
+					SourcePickerScreenEvent.EditBowler(source.bowler.id),
+				)
+				is TrackableFilter.SourceSummaries.Team, null -> sendEvent(
+					SourcePickerScreenEvent.EditBowler(null),
+				)
+			}
 		}
 	}
 
 	private fun showLeaguePicker() {
 		viewModelScope.launch {
-			val source = sourceSummaries.first()
-
 			// Only show league picker if bowler is selected
-			val bowler = source?.bowler ?: return@launch
+			val source = when (val sourceSummaries = sourceSummaries.first()) {
+				is TrackableFilter.SourceSummaries.Team, null -> null
+				is TrackableFilter.SourceSummaries.Bowler -> sourceSummaries
+			} ?: return@launch
 
-			sendEvent(SourcePickerScreenEvent.EditLeague(bowler.id, source.league?.id))
+			sendEvent(SourcePickerScreenEvent.EditLeague(source.bowler.id, source.league?.id))
 		}
 	}
 
 	private fun showSeriesPicker() {
 		viewModelScope.launch {
-			val source = sourceSummaries.first()
-
 			// Only show series picker if league is selected
-			val league = source?.league ?: return@launch
+			val source = when (val sourceSummaries = sourceSummaries.first()) {
+				is TrackableFilter.SourceSummaries.Team, null -> null
+				is TrackableFilter.SourceSummaries.Bowler -> sourceSummaries
+			} ?: return@launch
 
-			sendEvent(SourcePickerScreenEvent.EditSeries(league.id, source.series?.id))
+			sendEvent(
+				SourcePickerScreenEvent.EditSeries(source.league?.id ?: return@launch, source.series?.id),
+			)
 		}
 	}
 
 	private fun showGamePicker() {
 		viewModelScope.launch {
-			val source = sourceSummaries.first()
-
 			// Only show game picker if series is selected
-			val series = source?.series ?: return@launch
+			val source = when (val sourceSummaries = sourceSummaries.first()) {
+				is TrackableFilter.SourceSummaries.Team, null -> null
+				is TrackableFilter.SourceSummaries.Bowler -> sourceSummaries
+			} ?: return@launch
 
-			sendEvent(SourcePickerScreenEvent.EditGame(series.id, source.game?.id))
+			sendEvent(SourcePickerScreenEvent.EditGame(source.series?.id ?: return@launch, source.game?.id))
 		}
 	}
 }

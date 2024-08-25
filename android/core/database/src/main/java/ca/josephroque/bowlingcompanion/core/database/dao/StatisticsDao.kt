@@ -23,6 +23,18 @@ interface StatisticsDao {
 	@Query(
 		"""
 			SELECT
+				teams.id AS team_id,
+				teams.name AS team_name
+			FROM teams
+			WHERE teams.id = :teamId
+		"""
+	)
+	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+	fun getTeamSourceDetails(teamId: UUID): TrackableFilterSourceSummariesEntity
+
+	@Query(
+		"""
+			SELECT
 				bowlers.id AS bowler_id,
 				bowlers.name AS bowler_name
 			FROM bowlers

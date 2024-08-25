@@ -26,6 +26,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.SeriesSummary
+import ca.josephroque.bowlingcompanion.core.model.TeamSummary
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.ui.title
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.ui.R
@@ -48,22 +49,26 @@ fun FilterDetails(
 	) {
 		Spacer(modifier = Modifier.width(8.dp))
 
+		TeamFilters(
+			team = filterSource.team(),
+		)
+
 		BowlerFilters(
-			bowler = filterSource.bowler,
+			bowler = filterSource.bowler(),
 		)
 
 		LeagueFilters(
-			league = filterSource.league,
+			league = filterSource.league(),
 			filter = filter,
 		)
 
 		SeriesFilters(
-			series = filterSource.series,
+			series = filterSource.series(),
 			filter = filter,
 		)
 
 		GameFilters(
-			game = filterSource.game,
+			game = filterSource.game(),
 			filter = filter,
 		)
 
@@ -75,13 +80,51 @@ fun FilterDetails(
 	}
 }
 
+private fun TrackableFilter.SourceSummaries.team() = when (this) {
+	is TrackableFilter.SourceSummaries.Team -> this.team
+	else -> null
+}
+
+private fun TrackableFilter.SourceSummaries.bowler() = when (this) {
+	is TrackableFilter.SourceSummaries.Bowler -> this.bowler
+	else -> null
+}
+
+private fun TrackableFilter.SourceSummaries.league() = when (this) {
+	is TrackableFilter.SourceSummaries.Bowler -> this.league
+	else -> null
+}
+
+private fun TrackableFilter.SourceSummaries.series() = when (this) {
+	is TrackableFilter.SourceSummaries.Bowler -> this.series
+	else -> null
+}
+
+private fun TrackableFilter.SourceSummaries.game() = when (this) {
+	is TrackableFilter.SourceSummaries.Bowler -> this.game
+	else -> null
+}
+
 @Composable
-private fun BowlerFilters(bowler: BowlerSummary) {
-	FilterItem(
-		label = stringResource(R.string.statistics_filter_label_bowler),
-		text = bowler.name,
-		modifier = Modifier.filterItem(),
-	)
+private fun TeamFilters(team: TeamSummary?) {
+	if (team != null) {
+		FilterItem(
+			label = stringResource(R.string.statistics_filter_label_team),
+			text = team.name,
+			modifier = Modifier.filterItem(),
+		)
+	}
+}
+
+@Composable
+private fun BowlerFilters(bowler: BowlerSummary?) {
+	if (bowler != null) {
+		FilterItem(
+			label = stringResource(R.string.statistics_filter_label_bowler),
+			text = bowler.name,
+			modifier = Modifier.filterItem(),
+		)
+	}
 }
 
 @Composable

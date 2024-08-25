@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
@@ -21,6 +22,7 @@ fun NavController.navigateToStatisticsSourcePicker(navOptions: NavOptions? = nul
 @OptIn(ExperimentalMaterialNavigationApi::class)
 fun NavGraphBuilder.statisticsSourcePickerSheet(
 	onBackPressed: () -> Unit,
+	onPickTeam: (TeamID?, NavResultCallback<Set<TeamID>>) -> Unit,
 	onPickBowler: (BowlerID?, NavResultCallback<Set<BowlerID>>) -> Unit,
 	onPickLeague: (BowlerID, LeagueID?, NavResultCallback<Set<LeagueID>>) -> Unit,
 	onPickSeries: (LeagueID, SeriesID?, NavResultCallback<Set<SeriesID>>) -> Unit,
@@ -32,6 +34,7 @@ fun NavGraphBuilder.statisticsSourcePickerSheet(
 	) {
 		SourcePickerRoute(
 			onDismiss = onBackPressed,
+			onPickTeam = onPickTeam,
 			onPickBowler = onPickBowler,
 			onPickLeague = onPickLeague,
 			onPickSeries = onPickSeries,

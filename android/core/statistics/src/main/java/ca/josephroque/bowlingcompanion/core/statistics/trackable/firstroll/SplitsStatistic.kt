@@ -38,6 +38,7 @@ data class SplitsStatistic(
 	}
 
 	override fun supportsSource(source: TrackableFilter.Source): Boolean = when (source) {
+		is TrackableFilter.Source.Team -> true
 		is TrackableFilter.Source.Bowler -> true
 		is TrackableFilter.Source.League -> true
 		is TrackableFilter.Source.Series -> true
