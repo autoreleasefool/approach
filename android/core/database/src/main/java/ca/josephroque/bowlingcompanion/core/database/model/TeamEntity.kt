@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.model.Team
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamCreate
 import ca.josephroque.bowlingcompanion.core.model.TeamMemberListItem
+import ca.josephroque.bowlingcompanion.core.model.TeamSummary
 import ca.josephroque.bowlingcompanion.core.model.TeamUpdate
 
 @Entity(
@@ -20,7 +21,7 @@ data class TeamEntity(
 	@ColumnInfo(name = "name") val name: String,
 )
 
-fun Team.asEntity() = TeamEntity(
+fun TeamSummary.asEntity() = TeamEntity(
 	id = id,
 	name = name,
 )

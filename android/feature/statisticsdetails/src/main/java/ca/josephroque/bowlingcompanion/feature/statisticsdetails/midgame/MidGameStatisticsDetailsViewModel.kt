@@ -40,6 +40,7 @@ class MidGameStatisticsDetailsViewModel @Inject constructor(
 	private val sourceId = Route.MidGameStatisticsDetails.getSourceId(savedStateHandle)
 		?: UUID.randomUUID()
 	private val initialFilterSource = when (sourceType) {
+		StatisticsDetailsSourceType.TEAM -> TrackableFilter.Source.Team(TeamID(sourceId))
 		StatisticsDetailsSourceType.BOWLER -> TrackableFilter.Source.Bowler(BowlerID(sourceId))
 		StatisticsDetailsSourceType.LEAGUE -> TrackableFilter.Source.League(LeagueID(sourceId))
 		StatisticsDetailsSourceType.SERIES -> TrackableFilter.Source.Series(SeriesID(sourceId))

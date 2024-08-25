@@ -5,4 +5,5 @@ enum class StatisticsDetailsSourceType {
 	LEAGUE,
 	SERIES,
 	GAME,
+	TEAM,
 }

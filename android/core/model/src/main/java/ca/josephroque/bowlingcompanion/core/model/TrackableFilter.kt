@@ -14,6 +14,10 @@ data class TrackableFilter(
 	sealed interface Source {
 		val id: UUID
 
+		data class Team(val teamId: TeamID) : Source {
+			override val id: UUID
+				get() = teamId.value
+		}
 		data class Bowler(val bowlerId: BowlerID) : Source {
 			override val id: UUID
 				get() = bowlerId.value
@@ -75,10 +79,16 @@ data class TrackableFilter(
 			}
 	}
 
-	data class SourceSummaries(
-		val bowler: BowlerSummary,
-		val league: LeagueSummary? = null,
-		val series: SeriesSummary? = null,
-		val game: GameSummary? = null,
-	)
+	sealed interface SourceSummaries {
+		data class Team(
+			val team: TeamSummary,
+		) : SourceSummaries
+
+		data class Bowler(
+			val bowler: BowlerSummary,
+			val league: LeagueSummary? = null,
+			val series: SeriesSummary? = null,
+			val game: GameSummary? = null,
+		) : SourceSummaries
+	}
 }

@@ -37,6 +37,7 @@ class StatisticsDetailsChartViewModel @Inject constructor(
 	private val sourceId = Route.StatisticsDetailsChart.getSourceId(savedStateHandle)!!
 	private val statisticId = Route.StatisticsDetailsChart.getStatisticId(savedStateHandle)!!
 	private val initialFilterSource = when (sourceType) {
+		StatisticsDetailsSourceType.TEAM -> TrackableFilter.Source.Team(TeamID(sourceId))
 		StatisticsDetailsSourceType.BOWLER -> TrackableFilter.Source.Bowler(BowlerID(sourceId))
 		StatisticsDetailsSourceType.LEAGUE -> TrackableFilter.Source.League(LeagueID(sourceId))
 		StatisticsDetailsSourceType.SERIES -> TrackableFilter.Source.Series(SeriesID(sourceId))

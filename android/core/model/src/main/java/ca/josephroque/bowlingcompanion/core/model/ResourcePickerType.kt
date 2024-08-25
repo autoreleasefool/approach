@@ -8,4 +8,5 @@ enum class ResourcePickerType {
 	GEAR,
 	ALLEY,
 	LANE,
+	TEAM,
 }

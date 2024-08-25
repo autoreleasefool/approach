@@ -120,7 +120,7 @@ private fun StatisticsDetailsChartPreview() {
 		StatisticsDetailsChart(
 			state = StatisticsDetailsChartUiState(
 				filter = TrackableFilter(source = TrackableFilter.Source.Bowler(BowlerID.randomID())),
-				filterSources = TrackableFilter.SourceSummaries(
+				filterSources = TrackableFilter.SourceSummaries.Bowler(
 					bowler = BowlerSummaryStub.single(),
 				),
 				isFilterTooNarrow = false,

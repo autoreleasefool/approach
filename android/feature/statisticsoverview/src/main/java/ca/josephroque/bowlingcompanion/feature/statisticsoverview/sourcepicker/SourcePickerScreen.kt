@@ -20,6 +20,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePicker
@@ -31,6 +32,7 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun SourcePickerRoute(
 	onDismiss: () -> Unit,
+	onPickTeam: (TeamID?, NavResultCallback<Set<TeamID>>) -> Unit,
 	onPickBowler: (BowlerID?, NavResultCallback<Set<BowlerID>>) -> Unit,
 	onPickLeague: (BowlerID, LeagueID?, NavResultCallback<Set<LeagueID>>) -> Unit,
 	onPickSeries: (LeagueID, SeriesID?, NavResultCallback<Set<SeriesID>>) -> Unit,
@@ -50,6 +52,10 @@ internal fun SourcePickerRoute(
 					when (it) {
 						SourcePickerScreenEvent.Dismissed -> onDismiss()
 						is SourcePickerScreenEvent.ShowStatistics -> onShowStatistics(it.filter)
+						is SourcePickerScreenEvent.EditTeam ->
+							onPickTeam(it.team) @JvmSerializableLambda { ids ->
+								viewModel.handleAction(SourcePickerScreenUiAction.UpdatedTeam(ids.firstOrNull()))
+							}
 						is SourcePickerScreenEvent.EditBowler ->
 							onPickBowler(it.bowler) @JvmSerializableLambda { ids ->
 								viewModel.handleAction(SourcePickerScreenUiAction.UpdatedBowler(ids.firstOrNull()))

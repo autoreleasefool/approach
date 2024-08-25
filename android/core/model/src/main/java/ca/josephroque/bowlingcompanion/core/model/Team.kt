@@ -21,13 +21,15 @@ enum class TeamSortOrder {
 
 data class Team(val id: TeamID, val name: String)
 
-data class TeamCreate(val id: UUID, val name: String, val members: List<TeamMemberListItem>)
+data class TeamCreate(val id: TeamID, val name: String, val members: List<TeamMemberListItem>)
 
-data class TeamListItem(val id: UUID, val name: String, val members: String, val average: Double?) {
+data class TeamSummary(val id: TeamID, val name: String)
+
+data class TeamListItem(val id: TeamID, val name: String, val members: String, val average: Double?) {
 	fun membersList() = members.split(";").sorted()
 }
 
-data class TeamMemberListItem(val id: UUID, val name: String)
+data class TeamMemberListItem(val id: TeamID, val name: String)
 
 data class TeamUpdate(val id: TeamID, val name: String, val members: List<TeamMemberListItem>) {
 	data class Properties(val id: TeamID, val name: String)

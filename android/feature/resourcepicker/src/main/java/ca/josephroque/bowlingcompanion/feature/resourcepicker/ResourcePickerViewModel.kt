@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.TeamsRepository
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.GearKind
@@ -24,6 +25,7 @@ import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.LanePickerDat
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.LeaguePickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.ResourcePickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.SeriesPickerDataProvider
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.TeamPickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.R
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerFilter
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBarUiState
@@ -45,6 +47,7 @@ class ResourcePickerViewModel @Inject constructor(
 	gearRepository: GearRepository,
 	alleysRepository: AlleysRepository,
 	lanesRepository: LanesRepository,
+	teamsRepository: TeamsRepository,
 	savedStateHandle: SavedStateHandle,
 ) : ApproachViewModel<ResourcePickerScreenEvent>() {
 	private val _uiState: MutableStateFlow<ResourcePickerScreenUiState> =
@@ -68,7 +71,7 @@ class ResourcePickerViewModel @Inject constructor(
 				ResourcePickerType.SERIES -> ResourcePickerFilter.Str(it)
 				ResourcePickerType.GAME -> ResourcePickerFilter.Series(SeriesID.fromString(it))
 				ResourcePickerType.BOWLER -> ResourcePickerFilter.BowlerKind(BowlerKind.valueOf(it))
-				ResourcePickerType.ALLEY -> null
+				ResourcePickerType.ALLEY, ResourcePickerType.TEAM -> null
 			}
 		}
 
@@ -98,6 +101,7 @@ class ResourcePickerViewModel @Inject constructor(
 			lanesRepository,
 			(filter as? ResourcePickerFilter.Alley)?.id,
 		)
+		ResourcePickerType.TEAM -> TeamPickerDataProvider(teamsRepository)
 	}
 
 	private fun getPickerUiState(): ResourcePickerUiState? = when (val state = _uiState.value) {
@@ -147,6 +151,7 @@ class ResourcePickerViewModel @Inject constructor(
 						ResourcePickerType.GEAR -> R.plurals.gear_picker_title
 						ResourcePickerType.ALLEY -> R.plurals.alley_picker_title
 						ResourcePickerType.LANE -> R.plurals.lane_picker_title
+						ResourcePickerType.TEAM -> R.plurals.team_picker_title
 					},
 					titleOverride = titleOverride,
 					limit = limit,

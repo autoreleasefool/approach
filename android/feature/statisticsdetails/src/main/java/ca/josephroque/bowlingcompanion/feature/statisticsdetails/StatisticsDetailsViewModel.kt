@@ -46,6 +46,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 	private val sourceType = Route.StatisticsDetails.getSourceType(savedStateHandle)!!
 	private val sourceId = Route.StatisticsDetails.getSourceId(savedStateHandle) ?: UUID.randomUUID()
 	private val initialFilterSource = when (sourceType) {
+		StatisticsDetailsSourceType.TEAM -> TrackableFilter.Source.Team(TeamID(sourceId))
 		StatisticsDetailsSourceType.BOWLER -> TrackableFilter.Source.Bowler(BowlerID(sourceId))
 		StatisticsDetailsSourceType.LEAGUE -> TrackableFilter.Source.League(LeagueID(sourceId))
 		StatisticsDetailsSourceType.SERIES -> TrackableFilter.Source.Series(SeriesID(sourceId))
@@ -184,6 +185,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 }
 
 fun TrackableFilter.Source.sourceType(): StatisticsDetailsSourceType = when (this) {
+	is TrackableFilter.Source.Team -> StatisticsDetailsSourceType.TEAM
 	is TrackableFilter.Source.Bowler -> StatisticsDetailsSourceType.BOWLER
 	is TrackableFilter.Source.League -> StatisticsDetailsSourceType.LEAGUE
 	is TrackableFilter.Source.Series -> StatisticsDetailsSourceType.SERIES

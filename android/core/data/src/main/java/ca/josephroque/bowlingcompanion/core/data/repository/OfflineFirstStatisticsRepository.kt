@@ -36,8 +36,9 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 ) : StatisticsRepository {
 	override suspend fun getSourceDetails(
 		source: TrackableFilter.Source,
-	): TrackableFilter.SourceSummaries = withContext(ioDispatcher) {
+	): TrackableFilter.SourceSummaries? = withContext(ioDispatcher) {
 		when (source) {
+			is TrackableFilter.Source.Team -> statisticsDao.getTeamSourceDetails(source.teamId)
 			is TrackableFilter.Source.Bowler -> statisticsDao.getBowlerSourceDetails(source.bowlerId)
 			is TrackableFilter.Source.League -> statisticsDao.getLeagueSourceDetails(source.leagueId)
 			is TrackableFilter.Source.Series -> statisticsDao.getSeriesSourceDetails(source.seriesId)
@@ -51,7 +52,7 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 		val bowlers = bowlersRepository.getBowlersList(kind = BowlerKind.PLAYABLE).first()
 		if (bowlers.size != 1) return@withContext null
 
-		TrackableFilter.SourceSummaries(
+		TrackableFilter.SourceSummaries.Bowler(
 			bowlers.first().asSummary(),
 			league = null,
 			series = null,
@@ -140,6 +141,7 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 		val userData = userDataRepository.userData.first()
 
 		val chartContent = when (filter.source) {
+			is TrackableFilter.Source.Team,
 			is TrackableFilter.Source.Bowler,
 			is TrackableFilter.Source.League,
 			is TrackableFilter.Source.Game,
