@@ -31,6 +31,6 @@ data class TeamListItem(val id: TeamID, val name: String, val members: String, v
 
 data class TeamMemberListItem(val id: TeamID, val name: String)
 
-data class TeamUpdate(val id: TeamID, val name: String, val members: List<TeamMemberListItem>) {
-	data class Properties(val id: TeamID, val name: String)
-}
+data class TeamCreate(val id: TeamID, val name: String, val members: List<TeamMemberListItem>)
+
+data class TeamUpdate(val id: TeamID, val name: String, val members: List<TeamMemberListItem>)

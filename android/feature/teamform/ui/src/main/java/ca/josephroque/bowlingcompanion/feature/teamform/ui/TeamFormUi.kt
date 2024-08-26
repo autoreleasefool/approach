@@ -26,6 +26,7 @@ sealed interface TeamFormUiAction {
 	data object CancelDiscardChangesClicked : TeamFormUiAction
 
 	data class NameChanged(val name: String) : TeamFormUiAction
+	data class MemberMoved(val from: Int, val to: Int) : TeamFormUiAction
 
 	data object ManageTeamMembersClicked : TeamFormUiAction
 }

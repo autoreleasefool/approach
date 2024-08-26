@@ -328,6 +328,7 @@ class SQLiteMigrationService @Inject constructor(
 				TeamBowlerCrossRef(
 					teamId = teamId,
 					bowlerId = BowlerID(bowlerId),
+					position = 0,
 				),
 			)
 		}
