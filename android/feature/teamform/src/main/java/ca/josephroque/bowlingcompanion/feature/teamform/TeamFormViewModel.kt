@@ -11,18 +11,19 @@ import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedReposito
 import ca.josephroque.bowlingcompanion.core.data.repository.TeamsRepository
 import ca.josephroque.bowlingcompanion.core.model.TeamCreate
 import ca.josephroque.bowlingcompanion.core.model.TeamMemberListItem
+import ca.josephroque.bowlingcompanion.core.model.TeamUpdate
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.R
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.TeamFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.TeamFormUiAction
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.TeamFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class TeamFormViewModel @Inject constructor(
@@ -62,24 +63,30 @@ class TeamFormViewModel @Inject constructor(
 			TeamFormUiAction.DiscardChangesClicked -> sendEvent(TeamFormScreenEvent.Dismissed)
 			TeamFormUiAction.CancelDiscardChangesClicked -> setDiscardChangesDialog(isVisible = false)
 			is TeamFormUiAction.NameChanged -> updateName(action.name)
+			is TeamFormUiAction.MemberMoved -> moveMember(action.from, action.to)
 		}
 	}
 
 	private fun loadTeam() {
 		if (hasLoadedInitialState) return
 		viewModelScope.launch {
-			val team = if (isEditing) teamsRepository.getTeamUpdate(teamId).first() else null
+			val team = if (isEditing) teamsRepository.getTeamSummary(teamId).first() else null
 			val uiState = if (team == null) {
 				TeamFormScreenUiState.Create(
 					form = TeamFormUiState(),
 					topBar = TeamFormTopBarUiState(),
 				)
 			} else {
+				val teamMembers = teamsRepository.getTeamMembers(teamId).first()
 				TeamFormScreenUiState.Edit(
-					initialValue = team,
+					initialValue = TeamUpdate(
+						id = team.id,
+						name = team.name,
+						members = teamMembers,
+					),
 					form = TeamFormUiState(
 						name = team.name,
-						members = team.members,
+						members = teamMembers,
 					),
 					topBar = TeamFormTopBarUiState(
 						existingName = team.name,
@@ -93,7 +100,7 @@ class TeamFormViewModel @Inject constructor(
 
 	private fun handleBackClicked() {
 		if (_uiState.value.hasAnyChanges()) {
-		setDiscardChangesDialog(isVisible = true)
+			setDiscardChangesDialog(isVisible = true)
 		} else {
 			sendEvent(TeamFormScreenEvent.Dismissed)
 		}
@@ -136,8 +143,16 @@ class TeamFormViewModel @Inject constructor(
 				} else {
 					_uiState.updateForm {
 						it.copy(
-							nameErrorId = if (state.form.name.isBlank()) R.string.team_form_property_name_missing else null,
-							membersErrorId = if (state.form.members.size < 2) R.string.team_form_property_team_members_too_few else null,
+							nameErrorId = if (state.form.name.isBlank()) {
+								R.string.team_form_property_name_missing
+							} else {
+								null
+							},
+							membersErrorId = if (state.form.members.size < 2) {
+								R.string.team_form_property_team_members_too_few
+							} else {
+								null
+							},
 						)
 					}
 				}
@@ -151,8 +166,16 @@ class TeamFormViewModel @Inject constructor(
 				} else {
 					_uiState.updateForm {
 						it.copy(
-							nameErrorId = if (it.name.isBlank()) R.string.team_form_property_name_missing else null,
-							membersErrorId = if (it.members.size < 2) R.string.team_form_property_team_members_too_few else null,
+							nameErrorId = if (it.name.isBlank()) {
+								R.string.team_form_property_name_missing
+							} else {
+								null
+							},
+							membersErrorId = if (it.members.size < 2) {
+								R.string.team_form_property_team_members_too_few
+							} else {
+								null
+							},
 						)
 					}
 				}
@@ -166,7 +189,11 @@ class TeamFormViewModel @Inject constructor(
 			_uiState.updateForm {
 				it.copy(
 					members = teamMembers,
-					membersErrorId = if (teamMembers.size < 2) R.string.team_form_property_team_members_too_few else null,
+					membersErrorId = if (teamMembers.size < 2) {
+						R.string.team_form_property_team_members_too_few
+					} else {
+						null
+					},
 				)
 			}
 		}
@@ -179,9 +206,22 @@ class TeamFormViewModel @Inject constructor(
 					TeamFormScreenUiState.Loading -> return
 					is TeamFormScreenUiState.Create -> state.form.members.map(TeamMemberListItem::id).toSet()
 					is TeamFormScreenUiState.Edit -> state.form.members.map(TeamMemberListItem::id).toSet()
-				}
+				},
 			),
 		)
+	}
+
+	private fun moveMember(fromListIndex: Int, toListIndex: Int) {
+		// Depends on number of `item` before bowlers in `TeamForm#LazyColumn`
+		val from = fromListIndex - 1
+		val to = toListIndex - 1
+		_uiState.updateForm {
+			if (from == to || !it.members.indices.contains(from) || !it.members.indices.contains(to)) {
+				return@updateForm it
+			}
+
+			it.copy(members = it.members.toMutableList().apply { add(to, removeAt(from)) })
+		}
 	}
 
 	private fun updateName(name: String) {

@@ -3,14 +3,14 @@ package ca.josephroque.bowlingcompanion.core.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.TeamCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamDetailsUpdateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamEntity
-import ca.josephroque.bowlingcompanion.core.database.model.TeamUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.TeamListItem
+import ca.josephroque.bowlingcompanion.core.model.TeamMemberListItem
 import ca.josephroque.bowlingcompanion.core.model.TeamSortOrder
+import ca.josephroque.bowlingcompanion.core.model.TeamSummary
 import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 
@@ -57,19 +57,29 @@ abstract class TeamDao : LegacyMigratingDao<TeamEntity> {
 	)
 	abstract fun getTeamList(sortOrder: TeamSortOrder): Flow<List<TeamListItem>>
 
-	@Transaction
 	@Query(
 		"""
 			SELECT
-				teams.id AS id,
+				teams.id as id,
 				teams.name as name
 			FROM teams
-			LEFT JOIN team_bowler ON team_bowler.team_id = teams.id
-			LEFT JOIN bowlers ON bowlers.id = team_bowler.bowler_id
 			WHERE teams.id = :teamId
-		"""
+		""",
 	)
-	abstract fun getTeamUpdate(teamId: UUID): Flow<TeamUpdateEntity>
+	abstract fun getTeamSummary(teamId: UUID): Flow<TeamSummary>
+
+	@Query(
+		"""
+			SELECT
+				bowlers.id as id,
+				bowlers.name as name
+			FROM bowlers
+			JOIN team_bowler ON team_bowler.bowler_id = bowlers.id
+			WHERE team_bowler.team_id = :teamId
+			ORDER BY team_bowler.position ASC
+		""",
+	)
+	abstract fun getTeamMembers(teamId: UUID): Flow<List<TeamMemberListItem>>
 
 	@Insert(entity = TeamEntity::class)
 	abstract suspend fun insertTeam(team: TeamCreateEntity)

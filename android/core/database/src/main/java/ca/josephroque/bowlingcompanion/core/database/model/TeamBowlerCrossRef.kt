@@ -33,4 +33,5 @@ import ca.josephroque.bowlingcompanion.core.model.TeamID
 data class TeamBowlerCrossRef(
 	@ColumnInfo(name = "team_id", index = true) val teamId: TeamID,
 	@ColumnInfo(name = "bowler_id", index = true) val bowlerId: BowlerID,
+	@ColumnInfo(defaultValue = "0") val position: Int = 0,
 )
