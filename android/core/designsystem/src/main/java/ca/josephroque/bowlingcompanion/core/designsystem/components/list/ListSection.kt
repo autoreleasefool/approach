@@ -76,6 +76,11 @@ fun LazyListScope.footer(footer: String) {
 }
 
 @Composable
+fun ListSectionFooter(@StringRes footerResourceId: Int) {
+	ListSectionFooter(footer = stringResource(footerResourceId))
+}
+
+@Composable
 fun ListSectionFooter(footer: String, modifier: Modifier = Modifier) {
 	Text(
 		text = footer,

@@ -13,8 +13,7 @@ data class SeriesListChartItem(
 	val preBowl: SeriesPreBowl,
 	val total: Int,
 	val numberOfGames: Int,
-	val lowestScore: Int,
-	val highestScore: Int,
+	val scoreRange: IntRange,
 	val scores: ChartEntryModelProducer?,
 )
 

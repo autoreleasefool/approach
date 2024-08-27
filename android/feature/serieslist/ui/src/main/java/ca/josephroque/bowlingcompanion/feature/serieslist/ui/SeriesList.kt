@@ -18,6 +18,8 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.list.HeaderA
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
+import ca.josephroque.bowlingcompanion.core.model.charts.ui.SeriesChartData
+import ca.josephroque.bowlingcompanion.core.model.charts.ui.SeriesChartRow
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -170,14 +172,13 @@ private fun SeriesRow(
 		startActions = startActions,
 		endActions = endActions,
 	) {
-		SeriesRow(
+		SeriesChartRow(
 			date = series.date,
 			preBowledForDate = series.appliedDate,
 			total = series.total,
-			scores = series.scores?.let {
-				ScoreData(
-					seriesLow = series.lowestScore,
-					seriesHigh = series.highestScore,
+			chart = series.scores?.let {
+				SeriesChartData(
+					scoreRange = series.scoreRange,
 					numberOfGames = series.numberOfGames,
 					model = it,
 				)
