@@ -40,6 +40,8 @@ import ca.josephroque.bowlingcompanion.core.database.model.SeriesLaneCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.StatisticsWidgetEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamBowlerCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.TeamEntity
+import ca.josephroque.bowlingcompanion.core.database.model.TeamSeriesEntity
+import ca.josephroque.bowlingcompanion.core.database.model.TeamSeriesSeriesCrossRef
 import ca.josephroque.bowlingcompanion.core.database.util.AvatarConverter
 import ca.josephroque.bowlingcompanion.core.database.util.InstantConverter
 import ca.josephroque.bowlingcompanion.core.database.util.LocalDateConverter
@@ -50,10 +52,11 @@ const val DATABASE_SHM_NAME = "$DATABASE_NAME-shm"
 const val DATABASE_WAL_NAME = "$DATABASE_NAME-wal"
 
 @Database(
-	version = 3,
+	version = 4,
 	autoMigrations = [
 		AutoMigration(from = 1, to = 2),
 		AutoMigration(from = 2, to = 3),
+		AutoMigration(from = 3, to = 4),
 	],
 	entities = [
 		BowlerEntity::class,
@@ -74,6 +77,8 @@ const val DATABASE_WAL_NAME = "$DATABASE_NAME-wal"
 		TeamBowlerCrossRef::class,
 		LegacyIDMappingEntity::class,
 		StatisticsWidgetEntity::class,
+		TeamSeriesEntity::class,
+		TeamSeriesSeriesCrossRef::class,
 	],
 )
 @TypeConverters(
