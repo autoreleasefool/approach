@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.serieslist.ui
+package ca.josephroque.bowlingcompanion.core.model.charts.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,6 +28,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
 import com.patrykandpatrick.vico.compose.chart.scroll.rememberChartScrollSpec
+import com.patrykandpatrick.vico.compose.style.ChartStyle
 import com.patrykandpatrick.vico.compose.style.ProvideChartStyle
 import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
 import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
@@ -35,24 +36,23 @@ import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
 import kotlinx.datetime.LocalDate
 
-data class ScoreData(
+data class SeriesChartData(
 	val numberOfGames: Int,
-	val seriesLow: Int,
-	val seriesHigh: Int,
+	val scoreRange: IntRange,
 	val model: ChartEntryModelProducer,
 )
 
 @Composable
-fun SeriesRow(
+fun SeriesChartRow(
 	date: LocalDate,
-	total: Int,
 	itemSize: SeriesItemSize,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 	preBowledForDate: LocalDate? = null,
-	scores: ScoreData? = null,
+	total: Int? = null,
+	chart: SeriesChartData? = null,
 ) {
-	if (scores == null) {
+	if (chart == null) {
 		CompactSeriesRow(date, preBowledForDate, total, onClick, modifier)
 		return
 	}
@@ -62,7 +62,7 @@ fun SeriesRow(
 			date = date,
 			preBowledForDate = preBowledForDate,
 			total = total,
-			scores = scores,
+			chart = chart,
 			onClick = onClick,
 			modifier = modifier,
 		)
@@ -74,7 +74,7 @@ fun SeriesRow(
 private fun CompactSeriesRow(
 	date: LocalDate,
 	preBowledForDate: LocalDate?,
-	total: Int,
+	total: Int?,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
@@ -93,8 +93,8 @@ private fun CompactSeriesRow(
 private fun DefaultSeriesRow(
 	date: LocalDate,
 	preBowledForDate: LocalDate?,
-	total: Int,
-	scores: ScoreData,
+	total: Int?,
+	chart: SeriesChartData,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
@@ -106,11 +106,11 @@ private fun DefaultSeriesRow(
 			.clickable(onClick = onClick)
 			.padding(bottom = 8.dp),
 	) {
-		ScoreChart(
-			numberOfGames = scores.numberOfGames,
-			scores = scores.model,
-			seriesLow = scores.seriesLow,
-			seriesHigh = scores.seriesHigh,
+		SeriesScoreChart(
+			numberOfGames = chart.numberOfGames,
+			scoreRange = chart.scoreRange,
+			model = chart.model,
+			modifier = Modifier.height(48.dp),
 		)
 
 		Column(
@@ -127,36 +127,22 @@ private fun DefaultSeriesRow(
 			)
 
 			ScoreSummary(
-				numberOfGames = scores.numberOfGames,
-				seriesLow = scores.seriesLow,
-				seriesHigh = scores.seriesHigh,
-				scores = scores.model,
+				numberOfGames = chart.numberOfGames,
+				scoreRange = chart.scoreRange,
 			)
 		}
 	}
 }
 
 @Composable
-private fun ScoreSummary(
-	numberOfGames: Int,
-	seriesLow: Int,
-	seriesHigh: Int,
-	scores: ChartEntryModelProducer?,
-) {
+private fun ScoreSummary(numberOfGames: Int, scoreRange: IntRange) {
 	Column(
 		modifier = Modifier
-			.then(
-				if (scores == null) {
-					Modifier
-				} else {
-					Modifier
-						.background(
-							colorResource(
-								ca.josephroque.bowlingcompanion.core.designsystem.R.color.yellow_300,
-							).copy(alpha = 0.5F),
-							MaterialTheme.shapes.medium,
-						)
-				},
+			.background(
+				colorResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.color.yellow_300,
+				).copy(alpha = 0.5F),
+				MaterialTheme.shapes.medium,
 			)
 			.padding(vertical = 2.dp, horizontal = 4.dp),
 	) {
@@ -168,8 +154,8 @@ private fun ScoreSummary(
 		Text(
 			text = stringResource(
 				R.string.series_list_score_range,
-				seriesLow,
-				seriesHigh,
+				scoreRange.first,
+				scoreRange.last,
 			),
 			style = MaterialTheme.typography.bodyMedium,
 			fontStyle = FontStyle.Italic,
@@ -178,25 +164,24 @@ private fun ScoreSummary(
 }
 
 @Composable
-private fun ScoreChart(
+fun SeriesScoreChart(
 	numberOfGames: Int,
-	seriesLow: Int,
-	seriesHigh: Int,
-	scores: ChartEntryModelProducer,
+	scoreRange: IntRange,
+	model: ChartEntryModelProducer,
+	modifier: Modifier = Modifier,
+	chartStyle: ChartStyle = rememberChartStyle(
+		lineChartColors = listOf(
+			Pair(
+				colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
+				colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
+			),
+		),
+	),
 ) {
-	BoxWithConstraints {
+	BoxWithConstraints(modifier = modifier) {
 		val chartWidth = maxWidth
 
-		ProvideChartStyle(
-			chartStyle = rememberChartStyle(
-				lineChartColors = listOf(
-					Pair(
-						colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
-						colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
-					),
-				),
-			),
-		) {
+		ProvideChartStyle(chartStyle = chartStyle) {
 			Chart(
 				chartScrollSpec = rememberChartScrollSpec(isScrollEnabled = false),
 				chart = lineChart(
@@ -207,16 +192,14 @@ private fun ScoreChart(
 						// Android sets the range to minScore..maxScore
 						// Results in iOS having less dramatic charts, but are relative to one another
 						// Android has greater variation in charts, but cannot be compared to one another
-						minY = seriesLow.toFloat() - 5,
-						maxY = seriesHigh.toFloat() + 5,
+						minY = scoreRange.first.toFloat() - 5,
+						maxY = scoreRange.last.toFloat() + 5,
 					),
 				),
 				runInitialAnimation = false,
-				chartModelProducer = scores,
+				chartModelProducer = model,
 				horizontalLayout = HorizontalLayout.FullWidth(unscalableEndPaddingDp = 1f),
-				modifier = Modifier
-					.fillMaxWidth()
-					.height(48.dp),
+				modifier = Modifier.fillMaxWidth(),
 			)
 		}
 	}
@@ -227,14 +210,13 @@ private fun ScoreChart(
 private fun SeriesItemPreview() {
 	Surface {
 		Column {
-			SeriesRow(
+			SeriesChartRow(
 				date = LocalDate.parse("2023-09-24"),
 				preBowledForDate = LocalDate.parse("2023-09-24"),
 				total = 880,
-				scores = ScoreData(
+				chart = SeriesChartData(
 					numberOfGames = 4,
-					seriesLow = 215,
-					seriesHigh = 230,
+					scoreRange = 215..230,
 					model = ChartEntryModelProducer(
 						listOf(
 							entryOf(0, 220),
@@ -250,20 +232,20 @@ private fun SeriesItemPreview() {
 
 			HorizontalDivider(modifier = Modifier.padding(start = 16.dp))
 
-			SeriesRow(
+			SeriesChartRow(
 				date = LocalDate.parse("2023-10-01"),
 				total = 880,
-				scores = null,
+				chart = null,
 				itemSize = SeriesItemSize.DEFAULT,
 				onClick = {},
 			)
 
 			HorizontalDivider(modifier = Modifier.padding(start = 16.dp))
 
-			SeriesRow(
+			SeriesChartRow(
 				date = LocalDate.parse("2023-10-01"),
 				total = 880,
-				scores = null,
+				chart = null,
 				itemSize = SeriesItemSize.COMPACT,
 				onClick = {},
 			)

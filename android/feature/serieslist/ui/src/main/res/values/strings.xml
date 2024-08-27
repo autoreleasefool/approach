@@ -6,13 +6,6 @@
 
 	<string name="series_list_add">Add Series</string>
 
-	<string name="series_list_score_range">%1$d — %2$d</string>
-
 	<string name="series_list_empty_title">No series found</string>
 	<string name="series_list_empty_message">You haven\'t added a series yet. Create a new series every time you bowl to see your stats mapped accurately over time.</string>
-
-	<plurals name="games_count">
-		<item quantity="one">%1$d game</item>
-		<item quantity="other">%1$d games</item>
-	</plurals>
 </resources>

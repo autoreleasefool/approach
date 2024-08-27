@@ -211,8 +211,7 @@ private fun SeriesListItem.withoutChart(): SeriesListChartItem = SeriesListChart
 	preBowl = properties.preBowl,
 	total = properties.total,
 	numberOfGames = scores.size,
-	lowestScore = scores.minOrNull() ?: 0,
-	highestScore = scores.maxOrNull() ?: 0,
+	scoreRange = (scores.minOrNull() ?: 0)..(scores.maxOrNull() ?: 0),
 	scores = null,
 )
 
@@ -225,7 +224,6 @@ private fun SeriesListItem.withChart(
 	preBowl = properties.preBowl,
 	total = properties.total,
 	numberOfGames = scores.size,
-	lowestScore = scores.minOrNull() ?: 0,
-	highestScore = scores.maxOrNull() ?: 0,
+	scoreRange = (scores.minOrNull() ?: 0)..(scores.maxOrNull() ?: 0),
 	scores = chartModelProducer,
 )

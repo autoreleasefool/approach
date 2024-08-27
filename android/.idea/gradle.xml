@@ -35,6 +35,8 @@
             <option value="$PROJECT_DIR$/core/error" />
             <option value="$PROJECT_DIR$/core/featureflags" />
             <option value="$PROJECT_DIR$/core/model" />
+            <option value="$PROJECT_DIR$/core/model/charts" />
+            <option value="$PROJECT_DIR$/core/model/charts/ui" />
             <option value="$PROJECT_DIR$/core/model/ui" />
             <option value="$PROJECT_DIR$/core/navigation" />
             <option value="$PROJECT_DIR$/core/scoresheet" />
