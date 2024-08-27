@@ -9,4 +9,7 @@ android {
 
 dependencies {
 	implementation(projects.core.common)
+
+	implementation(libs.compose.reorderable)
+	implementation(libs.swipe)
 }

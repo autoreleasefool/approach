@@ -11,7 +11,6 @@ import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedReposito
 import ca.josephroque.bowlingcompanion.core.data.repository.TeamsRepository
 import ca.josephroque.bowlingcompanion.core.model.TeamCreate
 import ca.josephroque.bowlingcompanion.core.model.TeamMemberListItem
-import ca.josephroque.bowlingcompanion.core.model.TeamUpdate
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.R
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.TeamFormTopBarUiState
@@ -70,23 +69,18 @@ class TeamFormViewModel @Inject constructor(
 	private fun loadTeam() {
 		if (hasLoadedInitialState) return
 		viewModelScope.launch {
-			val team = if (isEditing) teamsRepository.getTeamSummary(teamId).first() else null
+			val team = if (isEditing) teamsRepository.getTeamUpdate(teamId) else null
 			val uiState = if (team == null) {
 				TeamFormScreenUiState.Create(
 					form = TeamFormUiState(),
 					topBar = TeamFormTopBarUiState(),
 				)
 			} else {
-				val teamMembers = teamsRepository.getTeamMembers(teamId).first()
 				TeamFormScreenUiState.Edit(
-					initialValue = TeamUpdate(
-						id = team.id,
-						name = team.name,
-						members = teamMembers,
-					),
+					initialValue = team,
 					form = TeamFormUiState(
 						name = team.name,
-						members = teamMembers,
+						members = team.members,
 					),
 					topBar = TeamFormTopBarUiState(
 						existingName = team.name,

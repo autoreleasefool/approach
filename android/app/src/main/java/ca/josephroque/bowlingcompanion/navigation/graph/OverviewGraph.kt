@@ -56,6 +56,8 @@ import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.navig
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.navigateToStatisticsWidgetLayoutEditor
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.statisticsWidgetEditorScreen
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.statisticsWidgetLayoutEditorScreen
+import ca.josephroque.bowlingcompanion.feature.teamdetails.navigation.navigateToTeamDetails
+import ca.josephroque.bowlingcompanion.feature.teamdetails.navigation.teamDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.teamform.navigation.navigateToNewTeamForm
 import ca.josephroque.bowlingcompanion.feature.teamform.navigation.navigateToTeamForm
 import ca.josephroque.bowlingcompanion.feature.teamform.navigation.teamFormScreen
@@ -86,6 +88,7 @@ fun NavGraphBuilder.overviewGraph(
 		onEditBowler = navController::navigateToBowlerForm,
 		onAddBowler = { navController.navigateToNewBowlerForm(BowlerKind.PLAYABLE) },
 		onShowBowlerDetails = navController::navigateToBowlerDetails,
+		onShowTeamDetails = navController::navigateToTeamDetails,
 		onEditStatisticsWidgets = {
 			navController.navigateToStatisticsWidgetLayoutEditor(it, null)
 		},
@@ -263,5 +266,9 @@ fun NavGraphBuilder.overviewGraph(
 				resourceType = ResourcePickerType.BOWLER,
 			)
 		},
+	)
+	teamDetailsScreen(
+		onBackPressed = navController::popBackStack,
+		onAddSeries = { _, _ -> TODO() },
 	)
 }

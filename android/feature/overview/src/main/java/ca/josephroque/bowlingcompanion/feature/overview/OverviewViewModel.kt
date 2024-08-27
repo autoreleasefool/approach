@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.overview
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.bowler.BowlerViewed
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.team.TeamViewed
 import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
@@ -275,7 +276,7 @@ class OverviewViewModel @Inject constructor(
 	private fun handleTeamsListAction(action: TeamsListUiAction) {
 		when (action) {
 			TeamsListUiAction.AddTeamClicked -> sendEvent(OverviewScreenEvent.AddTeam)
-			is TeamsListUiAction.TeamClicked -> TODO()
+			is TeamsListUiAction.TeamClicked -> showTeamDetails(action.team)
 			is TeamsListUiAction.TeamEdited -> sendEvent(OverviewScreenEvent.EditTeam(action.team.id))
 			is TeamsListUiAction.TeamDeleted -> setTeamDeletePrompt(action.team)
 			TeamsListUiAction.ConfirmDeleteClicked -> deleteTeam()
@@ -323,6 +324,11 @@ class OverviewViewModel @Inject constructor(
 	private fun showBowlerDetails(bowler: BowlerListItem) {
 		sendEvent(OverviewScreenEvent.ShowBowlerDetails(bowler.id))
 		analyticsClient.trackEvent(BowlerViewed(BowlerKind.PLAYABLE))
+	}
+
+	private fun showTeamDetails(team: TeamListItem) {
+		sendEvent(OverviewScreenEvent.ShowTeamDetails(team.id))
+		analyticsClient.trackEvent(TeamViewed)
 	}
 
 	private fun setTeamDeletePrompt(team: TeamListItem?) {

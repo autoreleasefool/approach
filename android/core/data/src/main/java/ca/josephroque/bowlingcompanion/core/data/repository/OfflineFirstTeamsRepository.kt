@@ -9,14 +9,16 @@ import ca.josephroque.bowlingcompanion.core.database.model.TeamBowlerCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.TeamCreate
 import ca.josephroque.bowlingcompanion.core.model.TeamID
+import ca.josephroque.bowlingcompanion.core.model.TeamDetails
 import ca.josephroque.bowlingcompanion.core.model.TeamListItem
 import ca.josephroque.bowlingcompanion.core.model.TeamMemberListItem
 import ca.josephroque.bowlingcompanion.core.model.TeamSortOrder
-import ca.josephroque.bowlingcompanion.core.model.TeamSummary
 import ca.josephroque.bowlingcompanion.core.model.TeamUpdate
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 class OfflineFirstTeamsRepository @Inject constructor(
@@ -35,6 +37,27 @@ class OfflineFirstTeamsRepository @Inject constructor(
 
 	override fun getTeamMembers(teamId: TeamID): Flow<List<TeamMemberListItem>> =
 		teamDao.getTeamMembers(teamId)
+
+	override fun getTeamDetails(id: UUID): Flow<TeamDetails> = combine(
+		teamDao.getTeamSummary(id),
+		teamDao.getTeamMembers(id),
+	) { team, members ->
+		TeamDetails(
+			id = team.id,
+			name = team.name,
+			members = members,
+		)
+	}
+
+	override suspend fun getTeamUpdate(id: UUID): TeamUpdate {
+		val team = teamDao.getTeamSummary(id).first()
+		val teamMembers = teamDao.getTeamMembers(id).first()
+		return TeamUpdate(
+			id = team.id,
+			name = team.name,
+			members = teamMembers,
+		)
+	} (feat(android): load and display simple team details)
 
 	override suspend fun insertTeam(team: TeamCreate) = withContext(ioDispatcher) {
 		transactionRunner {
