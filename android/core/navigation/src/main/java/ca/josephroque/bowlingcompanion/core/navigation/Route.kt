@@ -366,6 +366,12 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		fun getTeam(savedStateHandle: SavedStateHandle): UUID? =
 			savedStateHandle.get<String>("team")?.let { UUID.fromString(it) }
 	}
+	data object TeamDetails : Route("team/{team}") {
+		const val ARG_TEAM = "team"
+		fun createRoute(team: UUID): String = "team/${Uri.encode(team.toString())}"
+		fun getTeam(savedStateHandle: SavedStateHandle): UUID? =
+			savedStateHandle.get<String>("team")?.let { UUID.fromString(it) }
+	}
 }
 
 fun <T> List<T>.encode(): String = if (isEmpty()) {

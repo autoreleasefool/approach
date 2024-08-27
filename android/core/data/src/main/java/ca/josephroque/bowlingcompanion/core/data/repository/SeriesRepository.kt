@@ -25,9 +25,12 @@ interface SeriesRepository {
 	suspend fun setSeriesAlley(seriesId: SeriesID, alleyId: AlleyID?)
 
 	suspend fun addGameToSeries(seriesId: SeriesID)
+
+	suspend fun usePreBowl(id: SeriesID, date: LocalDate)
+
 	suspend fun insertSeries(series: SeriesCreate)
 	suspend fun updateSeries(series: SeriesUpdate)
+
 	suspend fun archiveSeries(id: SeriesID)
 	suspend fun unarchiveSeries(id: SeriesID)
-	suspend fun usePreBowl(id: SeriesID, date: LocalDate)
 }

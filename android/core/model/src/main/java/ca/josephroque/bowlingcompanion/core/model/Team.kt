@@ -34,3 +34,5 @@ data class TeamMemberListItem(val id: TeamID, val name: String)
 data class TeamCreate(val id: TeamID, val name: String, val members: List<TeamMemberListItem>)
 
 data class TeamUpdate(val id: TeamID, val name: String, val members: List<TeamMemberListItem>)
+
+data class TeamDetails(val id: TeamID, val name: String, val members: List<TeamMemberListItem>)

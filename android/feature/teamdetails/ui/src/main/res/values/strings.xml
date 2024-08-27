@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="team_series_list_add">Add Series</string>
+
+    <string name="team_details_team_members_list">Team Members</string>
+    <string name="team_details_recent_series">Recent Series</string>
+</resources>

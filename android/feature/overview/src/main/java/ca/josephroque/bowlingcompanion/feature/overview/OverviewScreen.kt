@@ -45,6 +45,7 @@ internal fun OverviewRoute(
 	onShowBowlerDetails: (BowlerID) -> Unit,
 	onEditTeam: (TeamID) -> Unit,
 	onAddTeam: () -> Unit,
+	onShowTeamDetails: (TeamID) -> Unit,
 	onEditStatisticsWidgets: (String) -> Unit,
 	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 	onShowQuickPlay: () -> Unit,
@@ -63,6 +64,7 @@ internal fun OverviewRoute(
 				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
 				.collect {
 					when (it) {
+						is OverviewScreenEvent.ShowTeamDetails -> onShowTeamDetails(it.id)
 						is OverviewScreenEvent.ShowBowlerDetails -> onShowBowlerDetails(it.id)
 						is OverviewScreenEvent.EditBowler -> onEditBowler(it.id)
 						is OverviewScreenEvent.EditTeam -> onEditTeam(it.id)
