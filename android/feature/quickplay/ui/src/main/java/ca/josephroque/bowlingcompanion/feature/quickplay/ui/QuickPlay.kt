@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -117,6 +118,7 @@ fun QuickPlay(
 		item {
 			Button(
 				onClick = { onAction(QuickPlayUiAction.StartClicked) },
+				enabled = state.isStartButtonEnabled,
 				modifier = Modifier
 					.fillMaxWidth()
 					.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -160,12 +162,15 @@ private fun QuickPlayBowler(
 			)
 
 			val leagueName = bowler.second?.name
-			if (leagueName != null) {
-				Text(
-					text = leagueName,
-					style = MaterialTheme.typography.bodyMedium,
-				)
-			}
+			Text(
+				text = leagueName ?: stringResource(R.string.quick_play_no_league_selected),
+				style = MaterialTheme.typography.bodyMedium,
+				color = if (leagueName == null) {
+					MaterialTheme.colorScheme.error
+				} else {
+					Color.Unspecified
+				},
+			)
 		}
 
 		Icon(
