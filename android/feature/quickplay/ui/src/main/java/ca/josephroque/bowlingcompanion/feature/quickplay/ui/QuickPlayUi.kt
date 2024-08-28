@@ -18,6 +18,7 @@ sealed interface QuickPlayTopBarUiAction {
 data class QuickPlayUiState(
 	val bowlers: List<Pair<BowlerSummary, LeagueSummary?>> = emptyList(),
 	val numberOfGames: Int = Series.DEFAULT_NUMBER_OF_GAMES,
+	val isStartButtonEnabled: Boolean = false,
 	val isShowingQuickPlayTip: Boolean = false,
 	val isDeleteBowlersEnabled: Boolean = false,
 )

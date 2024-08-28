@@ -83,6 +83,7 @@ class QuickPlayViewModel @Inject constructor(
 				bowlers = bowlers,
 				numberOfGames = numberOfGames,
 				isShowingQuickPlayTip = isQuickPlayTipVisible,
+				isStartButtonEnabled = bowlers.isNotEmpty() && bowlers.all { it.second != null },
 			)
 		}
 			.map {
