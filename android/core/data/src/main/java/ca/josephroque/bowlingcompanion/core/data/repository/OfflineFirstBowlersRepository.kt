@@ -4,6 +4,7 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatcher
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.dao.MatchPlayDao
+import ca.josephroque.bowlingcompanion.core.database.dao.TeamDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
@@ -32,6 +33,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 
 class OfflineFirstBowlersRepository @Inject constructor(
+	private val teamDao: TeamDao,
 	private val bowlerDao: BowlerDao,
 	private val matchPlayDao: MatchPlayDao,
 	private val leaguesRepository: LeaguesRepository,
@@ -52,6 +54,10 @@ class OfflineFirstBowlersRepository @Inject constructor(
 					.sortedBy { seriesBowler -> series.indexOf(seriesBowler.seriesId) }
 					.map(SeriesBowlerSummary::asSummary)
 			}
+
+	override fun getTeamBowlers(teamId: UUID): Flow<List<BowlerSummary>> =
+		teamDao.getTeamMembers(teamId)
+			.map { it.map { BowlerSummary(id = it.id, name = it.name) } }
 
 	override fun getBowlersList(
 		kind: BowlerKind?,

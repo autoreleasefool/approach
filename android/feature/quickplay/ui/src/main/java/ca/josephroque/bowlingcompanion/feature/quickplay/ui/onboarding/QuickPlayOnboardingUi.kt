@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.onboarding
+package ca.josephroque.bowlingcompanion.feature.quickplay.ui.onboarding
 
 @Suppress("unused")
 data object QuickPlayOnboardingUiState

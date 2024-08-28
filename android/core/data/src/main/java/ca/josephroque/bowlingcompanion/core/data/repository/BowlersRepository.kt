@@ -27,6 +27,7 @@ interface BowlersRepository {
 	fun getBowlerSummary(bowlerId: BowlerID): Flow<BowlerSummary>
 	fun getBowlerDetails(bowlerId: BowlerID): Flow<BowlerDetails>
 	fun getSeriesBowlers(series: List<SeriesID>): Flow<List<BowlerSummary>>
+	fun getTeamBowlers(teamId: TeamID): Flow<List<BowlerSummary>>
 
 	suspend fun insertBowler(bowler: BowlerCreate)
 	suspend fun updateBowler(bowler: BowlerUpdate)

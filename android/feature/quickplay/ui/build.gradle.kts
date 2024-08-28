@@ -4,14 +4,13 @@ plugins {
 }
 
 android {
-	namespace = "ca.josephroque.bowlingcompanion.feature.teamdetails.ui"
+	namespace = "ca.josephroque.bowlingcompanion.feature.quickplay.ui"
 }
 
 dependencies {
-	implementation(projects.core.charts)
 	implementation(projects.core.common)
-	implementation(projects.core.model.charts.ui)
 
+	implementation(libs.compose.reorderable)
 	implementation(libs.kotlinx.datetime)
-	implementation(libs.vico.compose)
+	implementation(libs.swipe)
 }

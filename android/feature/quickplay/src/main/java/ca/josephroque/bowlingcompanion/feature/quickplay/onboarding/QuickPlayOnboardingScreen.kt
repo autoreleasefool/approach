@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.overview.quickplay.onboarding
+package ca.josephroque.bowlingcompanion.feature.quickplay.onboarding
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
@@ -13,9 +13,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.onboarding.QuickPlayOnboarding
-import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.onboarding.QuickPlayOnboardingTopBar
-import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.onboarding.QuickPlayOnboardingUiAction
+import ca.josephroque.bowlingcompanion.feature.quickplay.ui.onboarding.QuickPlayOnboarding
+import ca.josephroque.bowlingcompanion.feature.quickplay.ui.onboarding.QuickPlayOnboardingTopBar
+import ca.josephroque.bowlingcompanion.feature.quickplay.ui.onboarding.QuickPlayOnboardingUiAction
 import kotlinx.coroutines.launch
 
 @Composable

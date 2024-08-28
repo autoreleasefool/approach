@@ -11,9 +11,9 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateTo
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.scoreEditorScreen
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.scoresListScreen
 import ca.josephroque.bowlingcompanion.feature.matchplayeditor.navigation.matchPlayEditorScreen
-import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToQuickPlayOnboarding
-import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlay
-import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlayOnboarding
+import ca.josephroque.bowlingcompanion.feature.quickplay.navigation.navigateToQuickPlayOnboarding
+import ca.josephroque.bowlingcompanion.feature.quickplay.navigation.quickPlay
+import ca.josephroque.bowlingcompanion.feature.quickplay.navigation.quickPlayOnboarding
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToGamePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToLeaguePickerForResult

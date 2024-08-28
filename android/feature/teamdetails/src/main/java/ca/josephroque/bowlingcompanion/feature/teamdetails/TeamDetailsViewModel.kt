@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedReposito
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.TeamsRepository
 import ca.josephroque.bowlingcompanion.core.navigation.Route
+import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsFloatingActionButtonUiAction
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsTopBarUiAction
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsUiState
@@ -69,6 +70,9 @@ class TeamDetailsViewModel @Inject constructor(
 		when (action) {
 			is TeamDetailsScreenUiAction.SeriesAdded -> showSeriesDetails(action.teamSeriesId)
 			is TeamDetailsScreenUiAction.TopBar -> handleTopBarAction(action.action)
+			is TeamDetailsScreenUiAction.FloatingActionButton -> handleFloatingActionButtonAction(
+				action.action,
+			)
 			is TeamDetailsScreenUiAction.TeamDetails -> TODO()
 		}
 	}
@@ -76,7 +80,14 @@ class TeamDetailsViewModel @Inject constructor(
 	private fun handleTopBarAction(action: TeamDetailsTopBarUiAction) {
 		when (action) {
 			TeamDetailsTopBarUiAction.BackClicked -> sendEvent(TeamDetailsScreenEvent.Dismissed)
-			TeamDetailsTopBarUiAction.AddSeriesClicked -> sendEvent(TeamDetailsScreenEvent.AddSeries(teamId))
+		}
+	}
+
+	private fun handleFloatingActionButtonAction(action: TeamDetailsFloatingActionButtonUiAction) {
+		when (action) {
+			TeamDetailsFloatingActionButtonUiAction.AddSeriesClicked -> sendEvent(
+				TeamDetailsScreenEvent.AddSeries(teamId),
+			)
 		}
 	}
 

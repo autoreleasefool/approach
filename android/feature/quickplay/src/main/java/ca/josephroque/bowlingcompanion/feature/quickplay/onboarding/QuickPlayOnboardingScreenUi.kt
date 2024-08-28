@@ -1,6 +1,6 @@
-package ca.josephroque.bowlingcompanion.feature.overview.quickplay.onboarding
+package ca.josephroque.bowlingcompanion.feature.quickplay.onboarding
 
-import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.onboarding.QuickPlayOnboardingUiAction
+import ca.josephroque.bowlingcompanion.feature.quickplay.ui.onboarding.QuickPlayOnboardingUiAction
 
 sealed interface QuickPlayOnboardingScreenUiState {
 	data object Loading : QuickPlayOnboardingScreenUiState
@@ -8,9 +8,8 @@ sealed interface QuickPlayOnboardingScreenUiState {
 }
 
 sealed interface QuickPlayOnboardingScreenUiAction {
-	data class QuickPlayOnboarding(
-		val action: QuickPlayOnboardingUiAction,
-	) : QuickPlayOnboardingScreenUiAction
+	data class QuickPlayOnboarding(val action: QuickPlayOnboardingUiAction) :
+		QuickPlayOnboardingScreenUiAction
 }
 
 sealed interface QuickPlayOnboardingScreenEvent {

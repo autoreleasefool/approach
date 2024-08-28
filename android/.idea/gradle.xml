@@ -91,6 +91,8 @@
             <option value="$PROJECT_DIR$/feature/opponentslist/ui" />
             <option value="$PROJECT_DIR$/feature/overview" />
             <option value="$PROJECT_DIR$/feature/overview/ui" />
+            <option value="$PROJECT_DIR$/feature/quickplay" />
+            <option value="$PROJECT_DIR$/feature/quickplay/ui" />
             <option value="$PROJECT_DIR$/feature/resourcepicker" />
             <option value="$PROJECT_DIR$/feature/resourcepicker/ui" />
             <option value="$PROJECT_DIR$/feature/seriesdetails" />

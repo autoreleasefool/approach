@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.overview.quickplay
+package ca.josephroque.bowlingcompanion.feature.quickplay
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,8 +20,9 @@ import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
-import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.QuickPlay
-import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.QuickPlayTopBar
+import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlay
+import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayTopBar
+import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayTopBarUiState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -87,7 +88,11 @@ private fun QuickPlayScreen(
 	Scaffold(
 		topBar = {
 			QuickPlayTopBar(
-				onAction = { onAction(QuickPlayScreenUiAction.QuickPlay(it)) },
+				state = when (state) {
+					QuickPlayScreenUiState.Loading -> QuickPlayTopBarUiState()
+					is QuickPlayScreenUiState.Loaded -> state.topBar
+				},
+				onAction = { onAction(QuickPlayScreenUiAction.TopBar(it)) },
 				scrollBehavior = scrollBehavior,
 			)
 		},
