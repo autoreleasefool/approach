@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay
+package ca.josephroque.bowlingcompanion.feature.quickplay.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,7 +33,6 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.stub.BowlerSummaryStub
 import ca.josephroque.bowlingcompanion.core.model.stub.LeagueSummaryStub
-import ca.josephroque.bowlingcompanion.feature.overview.ui.R
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 import org.burnoutcrew.reorderable.ReorderableItem
@@ -77,7 +76,7 @@ fun QuickPlay(
 			state.bowlers,
 			key = { it.first.id },
 		) { bowler ->
-			val deleteAction = if (state.bowlers.size > 1) {
+			val deleteAction = if (state.bowlers.size > 1 && state.isDeleteBowlersEnabled) {
 				SwipeAction(
 					icon = rememberVectorPainter(Icons.Filled.Delete),
 					background = colorResource(
@@ -106,7 +105,7 @@ fun QuickPlay(
 
 		item {
 			Stepper(
-				title = stringResource(R.string.overview_quick_play_number_of_games),
+				title = stringResource(R.string.quick_play_number_of_games),
 				value = state.numberOfGames,
 				onValueChanged = { onAction(QuickPlayUiAction.NumberOfGamesChanged(it)) },
 				modifier = Modifier
@@ -123,7 +122,7 @@ fun QuickPlay(
 					.padding(horizontal = 16.dp, vertical = 8.dp),
 			) {
 				Text(
-					text = stringResource(R.string.overview_quick_play_get_started),
+					text = stringResource(R.string.quick_play_get_started),
 					style = MaterialTheme.typography.bodyMedium,
 				)
 			}
@@ -133,7 +132,7 @@ fun QuickPlay(
 
 @Composable
 private fun QuickPlayBowler(
-	bowler: Pair<BowlerSummary, LeagueSummary>,
+	bowler: Pair<BowlerSummary, LeagueSummary?>,
 	onAction: (QuickPlayUiAction) -> Unit,
 ) {
 	Row(
@@ -160,10 +159,13 @@ private fun QuickPlayBowler(
 				style = MaterialTheme.typography.bodyLarge,
 			)
 
-			Text(
-				text = bowler.second.name,
-				style = MaterialTheme.typography.bodyMedium,
-			)
+			val leagueName = bowler.second?.name
+			if (leagueName != null) {
+				Text(
+					text = leagueName,
+					style = MaterialTheme.typography.bodyMedium,
+				)
+			}
 		}
 
 		Icon(

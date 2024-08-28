@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay
+package ca.josephroque.bowlingcompanion.feature.quickplay.ui
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -11,29 +11,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import ca.josephroque.bowlingcompanion.core.designsystem.components.CloseButton
-import ca.josephroque.bowlingcompanion.feature.overview.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuickPlayTopBar(
-	onAction: (QuickPlayUiAction) -> Unit,
+	state: QuickPlayTopBarUiState,
+	onAction: (QuickPlayTopBarUiAction) -> Unit,
 	scrollBehavior: TopAppBarScrollBehavior,
 ) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
 		title = {
 			Text(
-				text = stringResource(R.string.overview_quick_play),
+				text = stringResource(state.title),
 				style = MaterialTheme.typography.titleMedium,
 			)
 		},
-		navigationIcon = { CloseButton(onClick = { onAction(QuickPlayUiAction.BackClicked) }) },
+		navigationIcon = { CloseButton(onClick = { onAction(QuickPlayTopBarUiAction.BackClicked) }) },
 		actions = {
-			IconButton(onClick = { onAction(QuickPlayUiAction.AddBowlerClicked) }) {
-				Icon(
-					painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_add_person),
-					contentDescription = stringResource(R.string.cd_add_bowler),
-				)
+			if (state.isAddBowlerEnabled) {
+				IconButton(onClick = { onAction(QuickPlayTopBarUiAction.AddBowlerClicked) }) {
+					Icon(
+						painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_add_person),
+						contentDescription = stringResource(R.string.cd_add_bowler),
+					)
+				}
 			}
 		},
 	)

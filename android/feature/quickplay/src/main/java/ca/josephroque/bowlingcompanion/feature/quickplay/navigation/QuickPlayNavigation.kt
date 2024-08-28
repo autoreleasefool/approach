@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.overview.navigation
+package ca.josephroque.bowlingcompanion.feature.quickplay.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -9,13 +9,13 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
-import ca.josephroque.bowlingcompanion.feature.overview.quickplay.QuickPlayRoute
-import ca.josephroque.bowlingcompanion.feature.overview.quickplay.onboarding.QuickPlayOnboardingRoute
+import ca.josephroque.bowlingcompanion.feature.quickplay.QuickPlayRoute
+import ca.josephroque.bowlingcompanion.feature.quickplay.onboarding.QuickPlayOnboardingRoute
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.bottomSheet
 
-fun NavController.navigateToQuickPlay(navOptions: NavOptions? = null) {
-	this.navigate(Route.QuickPlay.route, navOptions)
+fun NavController.navigateToQuickPlay(team: UUID?, navOptions: NavOptions? = null) {
+	this.navigate(Route.QuickPlay.createRoute(team), navOptions)
 }
 
 fun NavController.navigateToQuickPlayOnboarding(navOptions: NavOptions? = null) {

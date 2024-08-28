@@ -29,8 +29,8 @@ import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.navigateToO
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.navigateToOpponentMigration
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.onboardingScreen
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.opponentMigrationScreen
-import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToQuickPlay
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewScreen
+import ca.josephroque.bowlingcompanion.feature.quickplay.navigation.navigateToQuickPlay
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToAlleyPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToGearPickerForResult
@@ -93,7 +93,7 @@ fun NavGraphBuilder.overviewGraph(
 			navController.navigateToStatisticsWidgetLayoutEditor(it, null)
 		},
 		onShowWidgetStatistics = navController::navigateToStatisticsDetails,
-		onShowQuickPlay = navController::navigateToQuickPlay,
+		onShowQuickPlay = { navController.navigateToQuickPlay(null) },
 		onResumeGame = navController::navigateToGamesEditor,
 		onShowWidgetError = navController::navigateToStatisticsWidgetError,
 	)
@@ -269,6 +269,6 @@ fun NavGraphBuilder.overviewGraph(
 	)
 	teamDetailsScreen(
 		onBackPressed = navController::popBackStack,
-		onAddSeries = { _, _ -> TODO() },
+		onAddSeries = { teamId, result -> navController.navigateToQuickPlay(teamId) },
 	)
 }

@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.teamdetails.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,8 +32,10 @@ fun TeamDetails(
 	state: TeamDetailsUiState,
 	@Suppress("UNUSED_PARAMETER") onAction: (TeamDetailsUiAction) -> Unit,
 	modifier: Modifier = Modifier,
+	contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
 	LazyColumn(
+		contentPadding = contentPadding,
 		modifier = modifier
 			.fillMaxSize(),
 	) {

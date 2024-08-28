@@ -1,16 +1,21 @@
-package ca.josephroque.bowlingcompanion.feature.overview.quickplay
+package ca.josephroque.bowlingcompanion.feature.quickplay
 
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
-import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.QuickPlayUiAction
-import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.QuickPlayUiState
+import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayTopBarUiAction
+import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayTopBarUiState
+import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayUiAction
+import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayUiState
 
 sealed interface QuickPlayScreenUiState {
 	data object Loading : QuickPlayScreenUiState
 
-	data class Loaded(val quickPlay: QuickPlayUiState = QuickPlayUiState()) : QuickPlayScreenUiState
+	data class Loaded(
+		val quickPlay: QuickPlayUiState = QuickPlayUiState(),
+		val topBar: QuickPlayTopBarUiState = QuickPlayTopBarUiState(),
+	) : QuickPlayScreenUiState
 }
 
 sealed interface QuickPlayScreenUiAction {
@@ -20,6 +25,7 @@ sealed interface QuickPlayScreenUiAction {
 	data class EditedLeague(val bowlerId: BowlerID, val leagueId: LeagueID?) : QuickPlayScreenUiAction
 
 	data class QuickPlay(val action: QuickPlayUiAction) : QuickPlayScreenUiAction
+	data class TopBar(val action: QuickPlayTopBarUiAction) : QuickPlayScreenUiAction
 }
 
 sealed interface QuickPlayScreenEvent {

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="quick_play">Quick Play</string>
+	<string name="team_play">Team Play</string>
+	<string name="quick_play_get_started">Start Bowling</string>
+	<string name="quick_play_number_of_games">Number of Games</string>
+	<string name="cd_add_bowler">Add Bowler</string>
+
+	<string name="quick_play_learn_how_to_use">Learn how to use Quick Play</string>
+	<string name="quick_play_how_to_use">How to use Quick Play</string>
+	<string name="quick_play_start_with_a_bowler">Start with a bowler</string>
+	<string name="quick_play_start_with_a_bowler_description">Your most recently used bowler and league are automatically selected</string>
+	<string name="quick_play_choose_bowlers">Add more bowlers and leagues</string>
+	<string name="quick_play_choose_bowlers_description">Pick bowlers and the league they\'re each bowling in. You\'ll create a new series for each league</string>
+	<string name="quick_play_tap_to_edit">Tap a bowler to choose a different league</string>
+	<string name="quick_play_swipe_to_delete">Swipe a bowler to remove them from your recording</string>
+	<string name="quick_play_long_press_to_reorder">Long press a bowler to change their order</string>
+</resources>

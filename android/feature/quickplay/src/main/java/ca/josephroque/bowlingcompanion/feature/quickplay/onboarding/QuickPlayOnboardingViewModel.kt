@@ -1,10 +1,10 @@
-package ca.josephroque.bowlingcompanion.feature.overview.quickplay.onboarding
+package ca.josephroque.bowlingcompanion.feature.quickplay.onboarding
 
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.di.ApplicationScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
-import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.onboarding.QuickPlayOnboardingUiAction
+import ca.josephroque.bowlingcompanion.feature.quickplay.ui.onboarding.QuickPlayOnboardingUiAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope

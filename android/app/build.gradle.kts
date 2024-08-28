@@ -80,6 +80,7 @@ dependencies {
 	implementation(projects.feature.onboarding)
 	implementation(projects.feature.opponentslist)
 	implementation(projects.feature.overview)
+	implementation(projects.feature.quickplay)
 	implementation(projects.feature.resourcepicker)
 	// Require UI module to get `ResourcePickerType`
 	implementation(projects.feature.resourcepicker.ui)

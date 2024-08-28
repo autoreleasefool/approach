@@ -28,12 +28,15 @@ data class TeamDetailsUiState(
 )
 
 sealed interface TeamDetailsUiAction {
-//	data class MemberMoved(val from: Int, val to: Int) : TeamDetailsUiAction
+// 	data class MemberMoved(val from: Int, val to: Int) : TeamDetailsUiAction
 }
 
 data class TeamDetailsTopBarUiState(val teamName: String? = null)
 
 sealed interface TeamDetailsTopBarUiAction {
 	data object BackClicked : TeamDetailsTopBarUiAction
-	data object AddSeriesClicked : TeamDetailsTopBarUiAction
+}
+
+sealed interface TeamDetailsFloatingActionButtonUiAction {
+	data object AddSeriesClicked : TeamDetailsFloatingActionButtonUiAction
 }
