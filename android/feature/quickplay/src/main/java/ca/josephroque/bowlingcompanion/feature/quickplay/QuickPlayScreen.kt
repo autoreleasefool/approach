@@ -28,7 +28,8 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun QuickPlayRoute(
 	onDismiss: () -> Unit,
-	onBeginRecording: (List<SeriesID>, GameID) -> Unit,
+	onBeginRecordingSeries: (List<SeriesID>, GameID) -> Unit,
+	onBeginRecordingTeam: (TeamID, List<LeagueID>) -> Unit,
 	onPickBowler: (Set<BowlerID>, NavResultCallback<Set<BowlerID>>) -> Unit,
 	onPickLeague: (BowlerID, LeagueID?, NavResultCallback<Set<LeagueID>>) -> Unit,
 	onShowQuickPlayOnboarding: () -> Unit,
@@ -46,7 +47,11 @@ internal fun QuickPlayRoute(
 					when (it) {
 						QuickPlayScreenEvent.Dismissed -> onDismiss()
 						QuickPlayScreenEvent.ShowHowToUseQuickPlay -> onShowQuickPlayOnboarding()
-						is QuickPlayScreenEvent.BeganRecording -> onBeginRecording(it.seriesIds, it.initialGameId)
+						is QuickPlayScreenEvent.BeganRecordingSeries -> onBeginRecordingSeries(
+							it.seriesIds,
+							it.initialGameId,
+						)
+						is QuickPlayScreenEvent.BeganRecordingTeam -> onBeginRecordingTeam(it.teamId, it.leagues)
 						is QuickPlayScreenEvent.AddBowler -> onPickBowler(
 							it.existingBowlers,
 						) @JvmSerializableLambda { bowler ->

@@ -32,8 +32,9 @@ sealed interface QuickPlayScreenEvent {
 	data object Dismissed : QuickPlayScreenEvent
 	data object ShowHowToUseQuickPlay : QuickPlayScreenEvent
 
-	data class BeganRecording(val seriesIds: List<SeriesID>, val initialGameId: GameID) :
+	data class BeganRecordingSeries(val seriesIds: List<SeriesID>, val initialGameId: GameID) :
 		QuickPlayScreenEvent
+	data class BeganRecordingTeam(val teamId: TeamID, val leagues: List<LeagueID>) : QuickPlayScreenEvent
 	data class AddBowler(val existingBowlers: Set<BowlerID>) : QuickPlayScreenEvent
 	data class EditLeague(val bowlerId: BowlerID, val leagueId: LeagueID?) : QuickPlayScreenEvent
 }
