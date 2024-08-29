@@ -10,7 +10,6 @@ import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
-import ca.josephroque.bowlingcompanion.core.data.repository.TeamsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
@@ -44,7 +43,6 @@ import kotlinx.datetime.Clock
 
 @HiltViewModel
 class QuickPlayViewModel @Inject constructor(
-	private val teamsRepository: TeamsRepository,
 	private val bowlersRepository: BowlersRepository,
 	private val leaguesRepository: LeaguesRepository,
 	private val seriesRepository: SeriesRepository,
@@ -54,7 +52,7 @@ class QuickPlayViewModel @Inject constructor(
 	userDataRepository: UserDataRepository,
 	savedStateHandle: SavedStateHandle,
 ) : ApproachViewModel<QuickPlayScreenEvent>() {
-	private val teamId = Route.QuickPlay.getTeam(savedStateHandle)
+	private val teamId = Route.TeamPlay.getTeam(savedStateHandle)
 	private val isTeamQuickPlay = teamId != null
 
 	private val isQuickPlayTipVisible = userDataRepository.userData.map {
@@ -168,11 +166,17 @@ class QuickPlayViewModel @Inject constructor(
 	}
 
 	private fun startRecording() {
+		val teamId = teamId ?: return
 		val bowlers = bowlers.value
 		val bowlerIds = bowlers.map { it.first.id }
 		val leagueIds = bowlers.mapNotNull { it.second?.id }
 		val numberOfGames = numberOfGames.value
 		if (bowlerIds.isEmpty() || bowlerIds.size != leagueIds.size) return
+
+		if (isTeamQuickPlay) {
+			sendEvent(QuickPlayScreenEvent.BeganRecordingTeam(teamId, leagueIds))
+			return
+		}
 
 		viewModelScope.launch {
 			var firstGameId: GameID? = null
@@ -208,7 +212,7 @@ class QuickPlayViewModel @Inject constructor(
 			}
 
 			val initialGameId = firstGameId ?: return@launch
-			sendEvent(QuickPlayScreenEvent.BeganRecording(seriesIds, initialGameId))
+			sendEvent(QuickPlayScreenEvent.BeganRecordingSeries(seriesIds, initialGameId))
 		}
 	}
 

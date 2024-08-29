@@ -18,16 +18,7 @@ import java.util.UUID
 
 sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	// Sheets
-	data object QuickPlay : Route("quick_play/{team}", isBottomBarVisible = true) {
-		const val ARG_TEAM = "team"
-		fun createRoute(team: UUID?): String = if (team == null) {
-			"quick_play"
-		} else {
-			"quick_play/${Uri.encode(team.toString())}"
-		}
-		fun getTeam(savedStateHandle: SavedStateHandle): UUID? =
-			savedStateHandle.get<String>("team")?.let { UUID.fromString(it) }
-	}
+	data object QuickPlay : Route("quick_play", isBottomBarVisible = true)
 	data object QuickPlayOnboarding : Route("quick_play_onboarding", isBottomBarVisible = false)
 
 	// Accessories
@@ -378,6 +369,16 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	data object TeamDetails : Route("team/{team}") {
 		const val ARG_TEAM = "team"
 		fun createRoute(team: UUID): String = "team/${Uri.encode(team.toString())}"
+		fun getTeam(savedStateHandle: SavedStateHandle): UUID? =
+			savedStateHandle.get<String>("team")?.let { UUID.fromString(it) }
+	}
+	data object TeamPlay : Route("team_play/{team}", isBottomBarVisible = false) {
+		const val ARG_TEAM = "team"
+		fun createRoute(team: UUID?): String = if (team == null) {
+			"team_play"
+		} else {
+			"team_play/${Uri.encode(team.toString())}"
+		}
 		fun getTeam(savedStateHandle: SavedStateHandle): UUID? =
 			savedStateHandle.get<String>("team")?.let { UUID.fromString(it) }
 	}

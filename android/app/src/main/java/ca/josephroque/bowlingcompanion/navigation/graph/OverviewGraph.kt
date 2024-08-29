@@ -31,6 +31,9 @@ import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.onboardingS
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.opponentMigrationScreen
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewScreen
 import ca.josephroque.bowlingcompanion.feature.quickplay.navigation.navigateToQuickPlay
+import ca.josephroque.bowlingcompanion.feature.quickplay.navigation.navigateToQuickPlayOnboarding
+import ca.josephroque.bowlingcompanion.feature.quickplay.navigation.navigateToTeamPlay
+import ca.josephroque.bowlingcompanion.feature.quickplay.navigation.teamPlay
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToAlleyPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToGearPickerForResult
@@ -269,6 +272,21 @@ fun NavGraphBuilder.overviewGraph(
 	)
 	teamDetailsScreen(
 		onBackPressed = navController::popBackStack,
-		onAddSeries = { teamId, result -> navController.navigateToQuickPlay(teamId) },
+		onAddSeries = { teamId -> navController.navigateToTeamPlay(teamId) },
+	)
+	teamPlay(
+		onDismiss = navController::popBackStack,
+		onBeginRecordingTeam = navController::navigateToNewTeamSeriesForm,
+		onPickLeague = { bowler, league, result ->
+			navController.navigateToResourcePickerForResult(
+				selectedIds = league?.let { setOf(it) } ?: emptySet(),
+				limit = 1,
+				navResultCallback = result,
+				resourceType = ResourcePickerType.LEAGUE,
+				filter = bowler.toString(),
+			)
+		},
+		onShowTeamPlayOnboarding = navController::navigateToQuickPlayOnboarding,
+	)
 	)
 }

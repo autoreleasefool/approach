@@ -68,7 +68,6 @@ class TeamDetailsViewModel @Inject constructor(
 
 	fun handleAction(action: TeamDetailsScreenUiAction) {
 		when (action) {
-			is TeamDetailsScreenUiAction.SeriesAdded -> showSeriesDetails(action.teamSeriesId)
 			is TeamDetailsScreenUiAction.TopBar -> handleTopBarAction(action.action)
 			is TeamDetailsScreenUiAction.FloatingActionButton -> handleFloatingActionButtonAction(
 				action.action,
@@ -89,9 +88,5 @@ class TeamDetailsViewModel @Inject constructor(
 				TeamDetailsScreenEvent.AddSeries(teamId),
 			)
 		}
-	}
-
-	private fun showSeriesDetails(teamSeriesId: UUID) {
-		TODO()
 	}
 }
