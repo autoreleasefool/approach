@@ -21,37 +21,8 @@ fun NavController.navigateToQuickPlay(navOptions: NavOptions? = null) {
 	this.navigate(Route.QuickPlay.route, navOptions)
 }
 
-fun NavController.navigateToTeamPlay(team: TeamID?, navOptions: NavOptions? = null) {
-	this.navigate(Route.TeamPlay.createRoute(team), navOptions)
-}
-
 fun NavController.navigateToQuickPlayOnboarding(navOptions: NavOptions? = null) {
 	this.navigate(Route.QuickPlayOnboarding.route, navOptions)
-}
-
-fun NavGraphBuilder.teamPlay(
-	onDismiss: () -> Unit,
-	onPickLeague: (BowlerID, LeagueID?, NavResultCallback<Set<LeagueID>>) -> Unit,
-	onBeginRecordingTeam: (TeamID, List<LeagueID>) -> Unit,
-	onShowTeamPlayOnboarding: () -> Unit,
-) {
-	composable(
-		route = Route.TeamPlay.route,
-		arguments = listOf(
-			navArgument(Route.TeamPlay.ARG_TEAM) { type = NavType.StringType },
-		),
-	) {
-		QuickPlayRoute(
-			onDismiss = onDismiss,
-			onBeginRecordingTeam = onBeginRecordingTeam,
-			onPickLeague = onPickLeague,
-			onShowQuickPlayOnboarding = onShowTeamPlayOnboarding,
-			onPickBowler = { _, _ -> throw NotImplementedError("Team Play should not pick Bowler") },
-			onBeginRecordingSeries = { _, _ ->
-				throw NotImplementedError("Team Play should not record Series")
-			},
-		)
-	}
 }
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
@@ -71,8 +42,11 @@ fun NavGraphBuilder.quickPlay(
 			onPickBowler = onPickBowler,
 			onPickLeague = onPickLeague,
 			onShowQuickPlayOnboarding = onShowQuickPlayOnboarding,
-			onBeginRecordingTeam = { _, _ ->
-				throw NotImplementedError("Quick Play should not record Team")
+			onTeamLeaguesSelected = { _, _ ->
+				throw NotImplementedError("Quick Play should not record Team Series")
+			},
+			onTeamEventsCreated = { _, _ ->
+				throw NotImplementedError("Quick Play should not record Team Event")
 			},
 		)
 	}

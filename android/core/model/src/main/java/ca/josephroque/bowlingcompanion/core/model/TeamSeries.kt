@@ -15,3 +15,10 @@ data class TeamSeriesListItem(
 	val teamSeries: TeamSeriesDetails,
 	val memberSeries: List<TeamMemberSeriesDetails>,
 )
+
+data class TeamSeriesConnect(
+	val id: UUID,
+	val teamId: UUID,
+	val seriesIds: List<UUID>,
+	val date: LocalDate,
+)

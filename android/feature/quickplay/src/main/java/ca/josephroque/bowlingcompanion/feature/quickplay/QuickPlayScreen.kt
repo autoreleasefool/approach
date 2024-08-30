@@ -29,7 +29,8 @@ import kotlinx.coroutines.launch
 internal fun QuickPlayRoute(
 	onDismiss: () -> Unit,
 	onBeginRecordingSeries: (List<SeriesID>, GameID) -> Unit,
-	onBeginRecordingTeam: (TeamID, List<LeagueID>) -> Unit,
+	onTeamLeaguesSelected: (TeamID, List<SeriesID>) -> Unit,
+	onTeamEventsCreated: (TeamSeriesID, GameID) -> Unit,
 	onPickBowler: (Set<BowlerID>, NavResultCallback<Set<BowlerID>>) -> Unit,
 	onPickLeague: (BowlerID, LeagueID?, NavResultCallback<Set<LeagueID>>) -> Unit,
 	onShowQuickPlayOnboarding: () -> Unit,
@@ -51,7 +52,11 @@ internal fun QuickPlayRoute(
 							it.seriesIds,
 							it.initialGameId,
 						)
-						is QuickPlayScreenEvent.BeganRecordingTeam -> onBeginRecordingTeam(it.teamId, it.leagues)
+						is QuickPlayScreenEvent.TeamLeaguesSelected -> onTeamLeaguesSelected(it.teamId, it.leagueIds)
+						is QuickPlayScreenEvent.TeamEventsCreated -> onTeamEventsCreated(
+							it.teamSeriesId,
+							it.initialGameId,
+						)
 						is QuickPlayScreenEvent.AddBowler -> onPickBowler(
 							it.existingBowlers,
 						) @JvmSerializableLambda { bowler ->

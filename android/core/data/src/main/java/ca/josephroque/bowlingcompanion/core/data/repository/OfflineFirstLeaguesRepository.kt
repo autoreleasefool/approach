@@ -71,6 +71,12 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 		}
 	}
 
+	override suspend fun insertAllLeagues(leagues: List<LeagueCreate>) = withContext(ioDispatcher) {
+		transactionRunner {
+			leagues.forEach { insertLeague(it) }
+		}
+	}
+
 	override suspend fun updateLeague(league: LeagueUpdate) = withContext(ioDispatcher) {
 		leagueDao.updateLeague(league.asEntity())
 	}

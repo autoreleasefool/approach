@@ -20,6 +20,14 @@ fun NavController.navigateToGamesEditor(
 	this.navigate(Route.EditGame.createRoute(seriesIds, initialGameId), navOptions)
 }
 
+fun NavController.navigateToGamesEditor(
+	teamSeriesId: UUID,
+	initialGameId: UUID,
+	navOptions: NavOptions? = null,
+) {
+	this.navigate(Route.EditTeamSeries.createRoute(teamSeriesId, initialGameId), navOptions)
+}
+
 fun NavGraphBuilder.gamesEditorScreen(
 	onBackPressed: () -> Unit,
 	onEditMatchPlay: (GamesEditorArguments.EditMatchPlay) -> Unit,
@@ -37,6 +45,27 @@ fun NavGraphBuilder.gamesEditorScreen(
 		arguments = listOf(
 			navArgument(Route.EditGame.ARG_SERIES) { type = NavType.StringType },
 			navArgument(Route.EditGame.ARG_GAME) { type = NavType.StringType },
+		),
+	) {
+		GamesEditorRoute(
+			onBackPressed = onBackPressed,
+			onEditMatchPlay = onEditMatchPlay,
+			onEditGear = onEditGear,
+			onEditAlley = onEditAlley,
+			onEditLanes = onEditLanes,
+			onShowGamesSettings = onShowGamesSettings,
+			onEditRolledBall = onEditRolledBall,
+			onShowStatistics = onShowStatistics,
+			onShowBowlerScores = onShowBowlerScores,
+			onEditScore = onEditScore,
+		)
+	}
+
+	composable(
+		route = Route.EditTeamSeries.route,
+		arguments = listOf(
+			navArgument(Route.EditTeamSeries.ARG_TEAM_SERIES) { type = NavType.StringType },
+			navArgument(Route.EditTeamSeries.ARG_GAME) { type = NavType.StringType },
 		),
 	) {
 		GamesEditorRoute(

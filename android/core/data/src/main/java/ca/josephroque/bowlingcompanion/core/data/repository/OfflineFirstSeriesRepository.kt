@@ -4,9 +4,11 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatcher
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.SeriesDao
+import ca.josephroque.bowlingcompanion.core.database.dao.TeamSeriesDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesDetailsEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesListEntity
+import ca.josephroque.bowlingcompanion.core.database.model.TeamSeriesSeriesCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
@@ -23,6 +25,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesConnect
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -34,6 +37,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 
 class OfflineFirstSeriesRepository @Inject constructor(
+	private val teamSeriesDao: TeamSeriesDao,
 	private val seriesDao: SeriesDao,
 	private val gameDao: GameDao,
 	private val gamesRepository: GamesRepository,
@@ -50,7 +54,37 @@ class OfflineFirstSeriesRepository @Inject constructor(
 	): Flow<List<SeriesListItem>> =
 		seriesDao.getSeriesList(leagueId, sortOrder, preBowl).map { it.map(SeriesListEntity::asModel) }
 
+	override fun getEventSeriesIdsList(eventIds: List<UUID>): Flow<List<UUID>> =
+		seriesDao.getEventSeriesList(eventIds).map { series ->
+			series
+				.sortedBy { eventIds.indexOf(it.leagueId) }
+				.map { it.id }
+		}
+
 	override fun getArchivedSeries(): Flow<List<ArchivedSeries>> = seriesDao.getArchivedSeries()
+
+	override suspend fun insertTeamSeries(teamSeries: TeamSeriesConnect) = withContext(ioDispatcher) {
+		transactionRunner {
+			teamSeriesDao.insertSeries(
+				TeamSeriesCreateEntity(
+					id = teamSeries.id,
+					teamId = teamSeries.teamId,
+					date = teamSeries.date,
+				),
+			)
+
+			val teamSeriesSeries = teamSeries.seriesIds.mapIndexed { index, seriesId ->
+				TeamSeriesSeriesCrossRef(
+					teamSeriesId = teamSeries.id,
+					seriesId = seriesId,
+					position = index,
+				)
+			}
+
+			teamSeriesDao.insertAll(teamSeriesSeries)
+		}
+	}
+
 
 	override suspend fun insertSeries(series: SeriesCreate) = withContext(ioDispatcher) {
 		transactionRunner {

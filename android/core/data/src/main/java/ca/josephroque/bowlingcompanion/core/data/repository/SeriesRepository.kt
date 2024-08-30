@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesConnect
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 
@@ -21,6 +22,7 @@ interface SeriesRepository {
 		preBowl: SeriesPreBowl?,
 	): Flow<List<SeriesListItem>>
 	fun getArchivedSeries(): Flow<List<ArchivedSeries>>
+	fun getEventSeriesIdsList(eventIds: List<LeagueID>): Flow<List<SeriesID>>
 
 	suspend fun setSeriesAlley(seriesId: SeriesID, alleyId: AlleyID?)
 
@@ -28,6 +30,7 @@ interface SeriesRepository {
 
 	suspend fun usePreBowl(id: SeriesID, date: LocalDate)
 
+	suspend fun insertTeamSeries(teamSeries: TeamSeriesConnect)
 	suspend fun insertSeries(series: SeriesCreate)
 	suspend fun updateSeries(series: SeriesUpdate)
 

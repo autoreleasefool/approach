@@ -9,15 +9,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,10 +31,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.Stepper
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
+import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.stub.BowlerSummaryStub
 import ca.josephroque.bowlingcompanion.core.model.stub.LeagueSummaryStub
@@ -60,14 +67,32 @@ fun QuickPlay(
 			.detectReorderAfterLongPress(reorderableState)
 			.padding(bottom = 8.dp),
 	) {
-		if (state.isShowingQuickPlayTip) {
-			item {
+		item {
+			if (state.isShowingQuickPlayTip) {
 				QuickPlayTip(
 					onClick = { onAction(QuickPlayUiAction.TipClicked) },
 					modifier = Modifier
 						.padding(horizontal = 16.dp)
 						.padding(bottom = 8.dp),
 				)
+			}
+			
+			if (state.isShowingLeagueRecurrencePicker) {
+				RecurrencePicker(
+					recurrence = state.leagueRecurrence,
+					onRecurrenceChanged = { onAction(QuickPlayUiAction.LeagueRecurrenceChanged(it)) },
+				)
+
+				when (state.leagueRecurrence) {
+					LeagueRecurrence.REPEATING -> Unit
+					LeagueRecurrence.ONCE -> LeagueNameField(
+						name = state.leagueName,
+						onNameChanged = { onAction(QuickPlayUiAction.LeagueNameChanged(it)) },
+						errorId = state.leagueNameErrorId,
+					)
+				}
+
+				HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 			}
 		}
 
@@ -205,6 +230,64 @@ private fun QuickPlayTip(onClick: () -> Unit, modifier: Modifier = Modifier) {
 			)
 		}
 	}
+}
+
+@Composable
+private fun LeagueNameField(name: String, onNameChanged: (String) -> Unit, errorId: Int?) {
+	OutlinedTextField(
+		value = name,
+		onValueChange = onNameChanged,
+		label = { Text(stringResource(R.string.team_play_league_recurrence_league_name)) },
+		singleLine = true,
+		isError = errorId != null,
+		keyboardOptions = KeyboardOptions(KeyboardCapitalization.Words),
+		supportingText = {
+			errorId?.let {
+				Text(
+					text = stringResource(it),
+					color = MaterialTheme.colorScheme.error,
+					modifier = Modifier.fillMaxWidth(),
+				)
+			}
+		},
+		trailingIcon = {
+			if (errorId != null) {
+				Icon(
+					Icons.Default.Warning,
+					tint = MaterialTheme.colorScheme.error,
+					contentDescription = null,
+				)
+			}
+		},
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(horizontal = 16.dp)
+			.padding(top = 8.dp),
+	)
+}
+
+@Composable
+private fun RecurrencePicker(
+	recurrence: LeagueRecurrence,
+	onRecurrenceChanged: (LeagueRecurrence) -> Unit,
+) {
+	FormRadioGroup(
+		title = stringResource(R.string.team_play_league_recurrence),
+		subtitle = stringResource(R.string.team_play_league_recurrence_subtitle),
+		options = LeagueRecurrence.entries.toTypedArray(),
+		selected = recurrence,
+		titleForOption = {
+			when (it) {
+				LeagueRecurrence.REPEATING -> stringResource(R.string.team_play_league_recurrence_league)
+				LeagueRecurrence.ONCE -> stringResource(R.string.team_play_league_recurrence_one_time_event)
+				null -> ""
+			}
+		},
+		onOptionSelected = {
+			it ?: return@FormRadioGroup
+			onRecurrenceChanged(it)
+		},
+	)
 }
 
 @Preview

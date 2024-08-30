@@ -78,6 +78,15 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 
 	@Query(
 		"""
+			SELECT *
+			FROM series
+			WHERE series.league_id IN (:eventIds)
+		""",
+	)
+	abstract fun getEventSeriesList(eventIds: List<UUID>): Flow<List<SeriesEntity>>
+
+	@Query(
+		"""
 			SELECT
 				series.id AS id,
 				series.'date' AS 'date',
