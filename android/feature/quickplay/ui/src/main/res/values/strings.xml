@@ -16,4 +16,11 @@
 	<string name="quick_play_tap_to_edit">Tap a bowler to choose a different league</string>
 	<string name="quick_play_swipe_to_delete">Swipe a bowler to remove them from your recording</string>
 	<string name="quick_play_long_press_to_reorder">Long press a bowler to change their order</string>
+
+	<string name="team_play_league_recurrence">League or One-Time Event?</string>
+	<string name="team_play_league_recurrence_subtitle">Select a league for each bowler that these games will be recorded in, or create a new one-time event for all the bowlers.</string>
+	<string name="team_play_league_recurrence_league">League</string>
+	<string name="team_play_league_recurrence_one_time_event">One-Time Event</string>
+	<string name="team_play_league_recurrence_league_name">Event Name</string>
+	<string name="team_play_league_recurrence_league_name_required_error">Name cannot be blank</string>
 </resources>

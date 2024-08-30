@@ -28,6 +28,9 @@ interface LeaguesRepository {
 
 	suspend fun insertLeague(league: LeagueCreate)
 	suspend fun updateLeague(league: LeagueUpdate)
+
+	suspend fun insertAllLeagues(leagues: List<LeagueCreate>)
+
 	suspend fun archiveLeague(id: LeagueID)
 	suspend fun unarchiveLeague(id: LeagueID)
 }

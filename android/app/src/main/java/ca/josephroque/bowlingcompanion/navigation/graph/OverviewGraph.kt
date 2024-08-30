@@ -276,7 +276,10 @@ fun NavGraphBuilder.overviewGraph(
 	)
 	teamPlay(
 		onDismiss = navController::popBackStack,
-		onBeginRecordingTeam = navController::navigateToNewTeamSeriesForm,
+		onTeamLeaguesSelected = navController::navigateToNewTeamSeriesForm,
+		onTeamEventsCreated = { teamSeriesId, initialGameId ->
+			navController.navigateToGamesEditor(teamSeriesId, initialGameId)
+		},
 		onPickLeague = { bowler, league, result ->
 			navController.navigateToResourcePickerForResult(
 				selectedIds = league?.let { setOf(it) } ?: emptySet(),

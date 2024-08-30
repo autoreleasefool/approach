@@ -17,11 +17,14 @@ import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.League
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
+import ca.josephroque.bowlingcompanion.core.model.LeagueCreate
+import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.Series
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesConnect
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayTopBarUiAction
 import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayTopBarUiState
@@ -61,6 +64,8 @@ class QuickPlayViewModel @Inject constructor(
 	}
 	private val bowlers = MutableStateFlow(emptyList<Pair<BowlerSummary, LeagueSummary?>>())
 	private val numberOfGames = MutableStateFlow(Series.DEFAULT_NUMBER_OF_GAMES)
+	private val leagueRecurrence = MutableStateFlow(LeagueRecurrence.REPEATING)
+	private val leagueName = MutableStateFlow("")
 
 	private val topBar = QuickPlayTopBarUiState(
 		title = if (isTeamQuickPlay) {
@@ -76,12 +81,39 @@ class QuickPlayViewModel @Inject constructor(
 			bowlers,
 			numberOfGames,
 			isQuickPlayTipVisible,
-		) { bowlers, numberOfGames, isQuickPlayTipVisible ->
+			leagueRecurrence,
+			leagueName,
+		) { bowlers, numberOfGames, isQuickPlayTipVisible, leagueRecurrence, leagueName ->
 			QuickPlayUiState(
-				bowlers = bowlers,
+				bowlers = when (leagueRecurrence) {
+					LeagueRecurrence.REPEATING -> bowlers
+					LeagueRecurrence.ONCE -> {
+						if (leagueName.isBlank()) {
+							bowlers.map { it.first to null }
+						} else {
+							val league = LeagueSummary(
+								id = UUID.randomUUID(),
+								name = leagueName,
+							)
+							bowlers.map { it.first to league }
+						}
+					}
+				},
 				numberOfGames = numberOfGames,
 				isShowingQuickPlayTip = isQuickPlayTipVisible,
-				isStartButtonEnabled = bowlers.isNotEmpty() && bowlers.all { it.second != null },
+				isStartButtonEnabled = bowlers.isNotEmpty() &&
+					bowlers.all { it.second != null } &&
+					(leagueRecurrence == LeagueRecurrence.REPEATING || leagueName.isNotBlank()),
+				leagueRecurrence = leagueRecurrence,
+				leagueName = leagueName,
+				leagueNameErrorId = if (leagueName.isBlank()) {
+					ca.josephroque.bowlingcompanion.feature.quickplay.ui.R.string
+						.team_play_league_recurrence_league_name_required_error
+				} else {
+					null
+				},
+				isShowingLeagueRecurrencePicker = isTeamQuickPlay,
+				isDeleteBowlersEnabled = !isTeamQuickPlay,
 			)
 		}
 			.map {
@@ -118,6 +150,8 @@ class QuickPlayViewModel @Inject constructor(
 			QuickPlayUiAction.StartClicked -> startRecording()
 			QuickPlayUiAction.TipClicked -> sendEvent(QuickPlayScreenEvent.ShowHowToUseQuickPlay)
 			is QuickPlayUiAction.NumberOfGamesChanged -> updateNumberOfGames(action.numberOfGames)
+			is QuickPlayUiAction.LeagueNameChanged -> updateLeagueName(action.name)
+			is QuickPlayUiAction.LeagueRecurrenceChanged -> updateLeagueRecurrence(action.recurrence)
 			is QuickPlayUiAction.BowlerClicked -> selectBowlerLeague(action.bowler.id)
 			is QuickPlayUiAction.BowlerDeleted -> removeBowler(action.bowler.id)
 			is QuickPlayUiAction.BowlerMoved -> moveBowler(action.from, action.to)
@@ -166,54 +200,117 @@ class QuickPlayViewModel @Inject constructor(
 	}
 
 	private fun startRecording() {
-		val teamId = teamId ?: return
 		val bowlers = bowlers.value
 		val bowlerIds = bowlers.map { it.first.id }
 		val leagueIds = bowlers.mapNotNull { it.second?.id }
-		val numberOfGames = numberOfGames.value
 		if (bowlerIds.isEmpty() || bowlerIds.size != leagueIds.size) return
 
-		if (isTeamQuickPlay) {
-			sendEvent(QuickPlayScreenEvent.BeganRecordingTeam(teamId, leagueIds))
-			return
-		}
-
 		viewModelScope.launch {
-			var firstGameId: GameID? = null
-			val seriesIds = leagueIds.map {
-				val id = SeriesID.randomID()
-				seriesRepository.insertSeries(
-					SeriesCreate(
-						leagueId = it,
-						id = id,
-						date = Clock.System.now().toLocalDate(),
-						appliedDate = null,
+			if (isTeamQuickPlay) {
+				startRecordingTeamSeries(
+					teamId = teamId ?: return@launch,
+					bowlerIds = bowlerIds,
+					leagueIds = leagueIds,
+					recurrence = leagueRecurrence.value,
+					leagueName = leagueName.value,
+					numberOfGames = numberOfGames.value,
+				)
+			} else {
+				startRecordingSeries(
+					bowlerIds = bowlerIds,
+					leagueIds = leagueIds,
+					numberOfGames = numberOfGames.value,
+				)
+			}
+		}
+	}
+
+	private suspend fun startRecordingTeamSeries(
+		teamId: TeamID,
+		bowlerIds: List<BowlerID>,
+		leagueIds: List<LeagueID>,
+		recurrence: LeagueRecurrence,
+		leagueName: String,
+		numberOfGames: Int,
+	) {
+		when (recurrence) {
+			LeagueRecurrence.REPEATING -> {
+				sendEvent(QuickPlayScreenEvent.TeamLeaguesSelected(teamId, leagueIds))
+			}
+			LeagueRecurrence.ONCE -> {
+				if (leagueName.isBlank()) return
+
+				val events = bowlerIds.map {
+					LeagueCreate(
+						id = UUID.randomUUID(),
+						bowlerId = it,
+						name = leagueName,
+						recurrence = LeagueRecurrence.ONCE,
 						numberOfGames = numberOfGames,
-						preBowl = SeriesPreBowl.REGULAR,
+						additionalPinFall = null,
+						additionalGames = null,
 						excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
-						alleyId = null,
-						manualScores = null,
+					)
+				}
+
+				leaguesRepository.insertAllLeagues(events)
+				val eventSeries = seriesRepository.getEventSeriesIdsList(events.map { it.id }).first()
+				val teamSeriesId = UUID.randomUUID()
+				seriesRepository.insertTeamSeries(
+					TeamSeriesConnect(
+						id = teamSeriesId,
+						teamId = teamId,
+						seriesIds = eventSeries,
+						date = Clock.System.now().toLocalDate(),
 					),
 				)
-
-				if (firstGameId == null) {
-					val games = gamesRepository.getGameIds(seriesId = id).first()
-					firstGameId = games.first()
-				}
-
-				return@map id
+				val initialGameId = gamesRepository.getGamesList(eventSeries.first()).first().first().id
+				sendEvent(QuickPlayScreenEvent.TeamEventsCreated(teamSeriesId, initialGameId))
 			}
-
-			globalScope.launch {
-				bowlerIds.zip(leagueIds).forEach {
-					recentlyUsedRepository.didRecentlyUseBowler(it.first)
-					recentlyUsedRepository.didRecentlyUseLeague(it.second)
-				}
-			}
-
-			val initialGameId = firstGameId ?: return@launch
-			sendEvent(QuickPlayScreenEvent.BeganRecordingSeries(seriesIds, initialGameId))
 		}
+	}
+
+	private suspend fun startRecordingSeries(
+		bowlerIds: List<BowlerID>,
+		leagueIds: List<LeagueID>,
+		numberOfGames: Int,
+	) {
+		if (bowlerIds.isEmpty() || bowlerIds.size != leagueIds.size) return
+
+		var firstGameId: GameID? = null
+		val seriesIds = leagueIds.map {
+			val id = SeriesID.randomID()
+			seriesRepository.insertSeries(
+				SeriesCreate(
+					leagueId = it,
+					id = id,
+					date = Clock.System.now().toLocalDate(),
+					appliedDate = null,
+					numberOfGames = numberOfGames,
+					preBowl = SeriesPreBowl.REGULAR,
+					excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+					alleyId = null,
+					manualScores = null,
+				),
+			)
+
+			if (firstGameId == null) {
+				val games = gamesRepository.getGameIds(seriesId = id).first()
+				firstGameId = games.first()
+			}
+
+			return@map id
+		}
+
+		globalScope.launch {
+			bowlerIds.zip(leagueIds).forEach {
+				recentlyUsedRepository.didRecentlyUseBowler(it.first)
+				recentlyUsedRepository.didRecentlyUseLeague(it.second)
+			}
+		}
+
+		val initialGameId = firstGameId ?: return
+		sendEvent(QuickPlayScreenEvent.BeganRecordingSeries(seriesIds, initialGameId))
 	}
 
 	private fun selectBowlerLeague(bowlerId: BowlerID?) {
@@ -229,10 +326,8 @@ class QuickPlayViewModel @Inject constructor(
 	private fun moveBowler(fromListIndex: Int, toListIndex: Int) {
 		viewModelScope.launch {
 			// Depends on number of `item` before bowlers in `QuickPlay#LazyColumn`
-			val listOffset: Int = if (isQuickPlayTipVisible.first()) -1 else 0
-
-			val from = fromListIndex + listOffset
-			val to = toListIndex + listOffset
+			val from = fromListIndex - 1
+			val to = toListIndex - 1
 			bowlers.update {
 				if (from == to || !it.indices.contains(from) || !it.indices.contains(to)) return@update it
 				it.toMutableList().apply { add(to, removeAt(from)) }
@@ -242,5 +337,13 @@ class QuickPlayViewModel @Inject constructor(
 
 	private fun updateNumberOfGames(numberOfGames: Int) {
 		this.numberOfGames.update { numberOfGames.coerceIn(League.NumberOfGamesRange) }
+	}
+
+	private fun updateLeagueName(name: String) {
+		leagueName.update { name }
+	}
+
+	private fun updateLeagueRecurrence(recurrence: LeagueRecurrence) {
+		leagueRecurrence.update { recurrence }
 	}
 }
