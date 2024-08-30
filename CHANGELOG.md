@@ -6,12 +6,14 @@
 - Fix: Support widget resizing on larger screens
 ```
 
-## Android 4.0.2b325
+## Android 4.1.0b326
 
 ```
-- Fix: Resolved crash when migrating large databases
-- Fix: Resolved crash on older devices when migrating database
-- Fix: Resolved crash when editing manual games
+- Feat: Add hint to teach users about swiping pins
+- Feat: Add sorting menu to bowlers and leagues
+- Fix: Archiving games actually archives
+- Chore: Capture better error messages
+- Chore: Bumped Kotlint to 2.0.0
 ```
 
 ---
@@ -177,6 +179,14 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.0.2b325
+
+```
+- Fix: Resolved crash when migrating large databases
+- Fix: Resolved crash on older devices when migrating database
+- Fix: Resolved crash when editing manual games
+```
 
 ## Android 4.0.1b324
 
