@@ -327,8 +327,7 @@ public struct GamesEditor: Reducer, Sendable {
 					return .none
 
 				case let .didCalculateHighestScorePossible(.success(highestScore)):
-					state.presentStrikeOutAlert(withFinalScore: highestScore)
-					return .none
+					return state.presentStrikeOutAlert(withFinalScore: highestScore)
 
 				case let .bowlersResponse(.success(bowlers)):
 					state.elementsRefreshing.remove(.bowlers)

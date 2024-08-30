@@ -642,8 +642,6 @@ final class ScoresRepositoryTests: XCTestCase {
 			[],
 		]
 
-
-
 		framesContinuation.yield(rolls)
 
 		let highestScore = try await withDependencies {

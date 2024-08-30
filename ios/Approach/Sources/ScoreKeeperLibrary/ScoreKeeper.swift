@@ -49,7 +49,9 @@ public class ScoreKeeper {
 		let standingPinValue = Pin.fullDeck.value - pinsDowned.value
 		if Frame.isLast(frameIndex) {
 			let framesNeededForStandingPinValue = standingPinValue > 0 ? 1 : 0
-			return Pin.fullDeck.value * (Frame.NUMBER_OF_ROLLS - frame.count - framesNeededForStandingPinValue) + standingPinValue
+			return Pin.fullDeck.value * 
+				(Frame.NUMBER_OF_ROLLS - frame.count - framesNeededForStandingPinValue) +
+				standingPinValue
 		} else {
 			return standingPinValue + (frame.count == 1 ? 15 : 0)
 		}
