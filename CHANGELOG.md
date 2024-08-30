@@ -1,9 +1,11 @@
 # Most recent version
 
-## iOS 1.5.2b24
+## iOS 1.6.0b25
 
 ```
-- Fix: Support widget resizing on larger screens
+- Feat: Import Data
+- Feat: Split leagues and events into two separate lists
+- Feat: Add hint to teach users about swiping pins
 ```
 
 ## Android 4.1.0b326
@@ -19,6 +21,12 @@
 ---
 
 # Legacy iOS Versions
+
+## iOS 1.5.2b24
+
+```
+- Fix: Support widget resizing on larger screens
+```
 
 ## iOS 1.5.1b23
 
