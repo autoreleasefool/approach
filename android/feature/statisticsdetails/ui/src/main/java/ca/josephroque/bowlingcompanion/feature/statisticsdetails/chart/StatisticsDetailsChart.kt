@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.charts.ProvideDefaultChartStyle
 import ca.josephroque.bowlingcompanion.core.designsystem.components.LabeledSwitch
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.stub.BowlerSummaryStub
 import ca.josephroque.bowlingcompanion.core.statistics.charts.AveragingChart
@@ -24,7 +25,6 @@ import ca.josephroque.bowlingcompanion.core.statistics.models.ChartSize
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.components.FilterDetails
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.ui.R
-import java.util.UUID
 
 @Composable
 fun StatisticsDetailsChart(
@@ -119,7 +119,7 @@ private fun StatisticsDetailsChartPreview() {
 	Surface {
 		StatisticsDetailsChart(
 			state = StatisticsDetailsChartUiState(
-				filter = TrackableFilter(source = TrackableFilter.Source.Bowler(UUID.randomUUID())),
+				filter = TrackableFilter(source = TrackableFilter.Source.Bowler(BowlerID.randomID())),
 				filterSources = TrackableFilter.SourceSummaries(
 					bowler = BowlerSummaryStub.single(),
 				),

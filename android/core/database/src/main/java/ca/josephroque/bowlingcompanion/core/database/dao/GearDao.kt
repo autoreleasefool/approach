@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.GameGearCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.GearCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GearEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GearUpdateEntity
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GearDetails
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
@@ -34,7 +35,7 @@ abstract class GearDao {
 			ORDER BY gear.name
 		""",
 	)
-	abstract fun getBowlerPreferredGear(bowlerId: UUID): Flow<List<GearListItem>>
+	abstract fun getBowlerPreferredGear(bowlerId: BowlerID): Flow<List<GearListItem>>
 
 	@Query(
 		"""
@@ -103,7 +104,7 @@ abstract class GearDao {
 			WHERE bowler_id = :bowlerId
 		""",
 	)
-	abstract fun removeBowlerPreferredGear(bowlerId: UUID)
+	abstract fun removeBowlerPreferredGear(bowlerId: BowlerID)
 
 	@Insert
 	abstract fun setBowlerPreferredGear(gear: List<BowlerPreferredGearCrossRef>)

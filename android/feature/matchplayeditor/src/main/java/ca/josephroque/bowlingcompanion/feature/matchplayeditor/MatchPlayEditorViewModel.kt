@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.MatchPlaysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayCreate
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
@@ -93,7 +94,7 @@ class MatchPlayEditorViewModel @Inject constructor(
 		}
 	}
 
-	private fun updateOpponent(opponentId: UUID?) {
+	private fun updateOpponent(opponentId: BowlerID?) {
 		viewModelScope.launch {
 			val opponent = opponentId?.let { bowlersRepository.getBowlerSummary(it).first() }
 			matchPlayEditor.update { it?.copy(opponent = opponent) }

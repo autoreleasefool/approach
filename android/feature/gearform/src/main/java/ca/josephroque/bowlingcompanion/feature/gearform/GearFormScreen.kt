@@ -16,19 +16,19 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.Avatar
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearForm
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBar
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiAction
-import java.util.UUID
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun GearFormRoute(
 	onDismiss: () -> Unit,
 	onEditAvatar: (Avatar, NavResultCallback<Avatar>) -> Unit,
-	onEditOwner: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onEditOwner: (BowlerID?, NavResultCallback<Set<BowlerID>>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: GearFormViewModel = hiltViewModel(),
 ) {

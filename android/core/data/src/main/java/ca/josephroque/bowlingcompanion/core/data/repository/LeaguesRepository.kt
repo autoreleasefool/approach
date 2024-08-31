@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.model.ArchivedLeague
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueCreate
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
@@ -18,7 +19,7 @@ interface LeaguesRepository {
 	fun getLeagueDetails(id: UUID): Flow<LeagueDetails>
 
 	fun getLeaguesList(
-		bowlerId: UUID,
+		bowlerId: BowlerID,
 		recurrence: LeagueRecurrence? = null,
 		sortOrder: LeagueSortOrder = LeagueSortOrder.ALPHABETICAL,
 	): Flow<List<LeagueListItem>>

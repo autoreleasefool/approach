@@ -1,13 +1,14 @@
 package ca.josephroque.bowlingcompanion.core.statistics.models
 
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import java.util.UUID
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.minus
 
 sealed interface StatisticsWidgetSource {
-	data class Bowler(val bowlerId: UUID) : StatisticsWidgetSource
-	data class League(val bowlerId: UUID, val leagueId: UUID) : StatisticsWidgetSource
+	data class Bowler(val bowlerId: BowlerID) : StatisticsWidgetSource
+	data class League(val bowlerId: BowlerID, val leagueId: UUID) : StatisticsWidgetSource
 }
 
 enum class StatisticsWidgetTimeline {

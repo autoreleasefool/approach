@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.navigation.Route
@@ -55,7 +56,7 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 		)?.let {
 			val split = it.split("_")
 			when (split[0]) {
-				"bowler" -> StatisticsWidgetInitialSource.Bowler(UUID.fromString(split[1]))
+				"bowler" -> StatisticsWidgetInitialSource.Bowler(BowlerID.fromString(split[1]))
 				else -> null
 			}
 		}
@@ -223,7 +224,7 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 		}
 	}
 
-	private fun updateSourceBowler(bowlerId: UUID?) {
+	private fun updateSourceBowler(bowlerId: BowlerID?) {
 		source.value = bowlerId?.let { StatisticsWidgetSource.Bowler(it) }
 	}
 

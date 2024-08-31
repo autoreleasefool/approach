@@ -15,6 +15,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.QuickPlay
 import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.QuickPlayTopBar
@@ -25,8 +26,8 @@ import kotlinx.coroutines.launch
 internal fun QuickPlayRoute(
 	onDismiss: () -> Unit,
 	onBeginRecording: (List<UUID>, UUID) -> Unit,
-	onPickBowler: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
-	onPickLeague: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onPickBowler: (Set<BowlerID>, NavResultCallback<Set<BowlerID>>) -> Unit,
+	onPickLeague: (BowlerID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onShowQuickPlayOnboarding: () -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: QuickPlayViewModel = hiltViewModel(),

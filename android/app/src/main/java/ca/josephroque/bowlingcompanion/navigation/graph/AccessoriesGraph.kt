@@ -2,7 +2,6 @@ package ca.josephroque.bowlingcompanion.navigation.graph
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.accessoriesScreen
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.navigateToAccessoriesOnboarding
 import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.alleyFormScreen
@@ -17,7 +16,7 @@ import ca.josephroque.bowlingcompanion.feature.gearform.navigation.navigateToNew
 import ca.josephroque.bowlingcompanion.feature.gearlist.navigation.gearListScreen
 import ca.josephroque.bowlingcompanion.feature.gearlist.navigation.navigateToGearList
 import ca.josephroque.bowlingcompanion.feature.laneform.navigation.navigateToLaneFormForResult
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
 
 fun NavGraphBuilder.accessoriesGraph(navController: NavController) {
 	accessoriesScreen(
@@ -54,11 +53,10 @@ fun NavGraphBuilder.accessoriesGraph(navController: NavController) {
 		onBackPressed = navController::popBackStack,
 		onEditAvatar = navController::navigateToAvatarFormForResult,
 		onEditOwner = { owner, result ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToBowlerPickerForResult(
 				selectedIds = owner?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = result,
-				resourceType = ResourcePickerType.BOWLER,
 			)
 		},
 	)

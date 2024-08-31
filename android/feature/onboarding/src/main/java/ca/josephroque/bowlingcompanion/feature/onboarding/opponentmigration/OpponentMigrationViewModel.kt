@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
 import ca.josephroque.bowlingcompanion.core.error.ErrorReporting
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.opponentmigration.MergedBowler
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.opponentmigration.OpponentMigrationBottomBarUiAction
@@ -20,7 +21,6 @@ import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.opponent
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.opponentmigration.OpponentMigrationUiState
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.opponentmigration.TooManyBowlersDialogUiAction
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,7 +41,7 @@ class OpponentMigrationViewModel @Inject constructor(
 	val uiState = _uiState.asStateFlow()
 
 	private val opponentHistory: MutableList<List<MergedBowler>> = mutableListOf()
-	private val mergedOpponentIds: MutableMap<UUID, UUID> = mutableMapOf()
+	private val mergedOpponentIds: MutableMap<BowlerID, BowlerID> = mutableMapOf()
 
 	init {
 		viewModelScope.launch {

@@ -15,6 +15,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditor
@@ -25,8 +26,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun StatisticsWidgetEditorRoute(
 	onBackPressed: () -> Unit,
-	onPickBowler: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onPickLeague: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onPickBowler: (BowlerID?, NavResultCallback<Set<BowlerID>>) -> Unit,
+	onPickLeague: (BowlerID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onPickStatistic: (StatisticID, NavResultCallback<StatisticID>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: StatisticsWidgetEditorViewModel = hiltViewModel(),

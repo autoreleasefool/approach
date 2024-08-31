@@ -4,6 +4,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedBowler
 import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
@@ -21,15 +22,15 @@ interface BowlersRepository {
 	fun getArchivedBowlers(): Flow<List<ArchivedBowler>>
 	suspend fun getDefaultQuickPlay(): Pair<BowlerSummary, LeagueSummary>?
 
-	fun getBowlerSummary(bowlerId: UUID): Flow<BowlerSummary>
-	fun getBowlerDetails(bowlerId: UUID): Flow<BowlerDetails>
+	fun getBowlerSummary(bowlerId: BowlerID): Flow<BowlerSummary>
+	fun getBowlerDetails(bowlerId: BowlerID): Flow<BowlerDetails>
 	fun getSeriesBowlers(series: List<UUID>): Flow<List<BowlerSummary>>
 
 	suspend fun insertBowler(bowler: BowlerCreate)
 	suspend fun updateBowler(bowler: BowlerUpdate)
-	suspend fun archiveBowler(id: UUID)
-	suspend fun unarchiveBowler(id: UUID)
+	suspend fun archiveBowler(bowlerId: BowlerID)
+	suspend fun unarchiveBowler(bowlerId: BowlerID)
 
 	suspend fun hasOpponents(): Boolean
-	suspend fun mergeBowlers(bowlers: List<BowlerEntity>, associateBy: Map<UUID, UUID>)
+	suspend fun mergeBowlers(bowlers: List<BowlerEntity>, associateBy: Map<BowlerID, BowlerID>)
 }

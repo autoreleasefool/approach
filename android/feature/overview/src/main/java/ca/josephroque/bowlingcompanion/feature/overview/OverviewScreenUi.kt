@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.overview
 
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewUiAction
@@ -30,9 +31,9 @@ sealed interface OverviewScreenEvent {
 	data object ShowQuickPlay : OverviewScreenEvent
 
 	data class EditStatisticsWidget(val context: String) : OverviewScreenEvent
-	data class EditBowler(val id: UUID) : OverviewScreenEvent
+	data class EditBowler(val id: BowlerID) : OverviewScreenEvent
 	data class ResumeGame(val seriesIds: List<UUID>, val currentGameId: UUID) : OverviewScreenEvent
-	data class ShowBowlerDetails(val id: UUID) : OverviewScreenEvent
+	data class ShowBowlerDetails(val id: BowlerID) : OverviewScreenEvent
 	data class ShowWidgetStatistics(val filter: TrackableFilter) : OverviewScreenEvent
 	data object ShowWidgetNotEnoughDataError : OverviewScreenEvent
 	data object ShowWidgetUnavailableError : OverviewScreenEvent

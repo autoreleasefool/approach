@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.statistics.models
 
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import java.util.UUID
@@ -29,7 +30,7 @@ data class StatisticsWidget(
 }
 
 data class StatisticsWidgetCreate(
-	val bowlerId: UUID,
+	val bowlerId: BowlerID,
 	val leagueId: UUID?,
 	val id: UUID,
 	val timeline: StatisticsWidgetTimeline,

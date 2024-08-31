@@ -1,17 +1,17 @@
 package ca.josephroque.bowlingcompanion.core.model.stub
 
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
-import java.util.UUID
 
 object BowlerSummaryStub {
 	fun list(): List<BowlerSummary> = listOf(
 		BowlerSummary(
-			id = UUID.randomUUID(),
+			id = BowlerID.randomID(),
 			name = "Joseph",
 		),
 		BowlerSummary(
-			id = UUID.randomUUID(),
+			id = BowlerID.randomID(),
 			name = "Sarah",
 		),
 	)
@@ -23,12 +23,12 @@ object BowlerSummaryStub {
 object BowlerListItemStub {
 	fun list(): List<BowlerListItem> = listOf(
 		BowlerListItem(
-			id = UUID.randomUUID(),
+			id = BowlerID.randomID(),
 			name = "Joseph",
 			average = 200.0,
 		),
 		BowlerListItem(
-			id = UUID.randomUUID(),
+			id = BowlerID.randomID(),
 			name = "Sarah",
 			average = 213.5,
 		),

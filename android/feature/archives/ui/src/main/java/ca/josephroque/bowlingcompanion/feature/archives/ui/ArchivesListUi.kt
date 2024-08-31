@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.archives.ui
 
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import java.util.UUID
 import kotlinx.datetime.Instant
@@ -10,13 +11,16 @@ sealed interface ArchiveListItem {
 	val archivedOn: Instant
 
 	data class Bowler(
-		override val id: UUID,
+		val bowlerId: BowlerID,
 		val name: String,
 		val numberOfLeagues: Int,
 		val numberOfSeries: Int,
 		val numberOfGames: Int,
 		override val archivedOn: Instant,
-	) : ArchiveListItem
+	) : ArchiveListItem {
+		override val id: UUID
+			get() = bowlerId.value
+	}
 
 	data class League(
 		override val id: UUID,

@@ -23,6 +23,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
@@ -100,7 +101,7 @@ class GamesEditorViewModel @Inject constructor(
 
 	private val series = MutableStateFlow(Route.EditGame.getSeries(savedStateHandle))
 	private val bowlers = series.flatMapLatest { bowlersRepository.getSeriesBowlers(it) }
-	private val currentBowlerId = MutableStateFlow<UUID?>(null)
+	private val currentBowlerId = MutableStateFlow<BowlerID?>(null)
 
 	private var initialGameLoaded = false
 	private val currentGameId = MutableStateFlow(initialGameId)
@@ -275,7 +276,7 @@ class GamesEditorViewModel @Inject constructor(
 		loadGame(initialGameId)
 	}
 
-	private fun loadBowlerGame(bowlerId: UUID, gameIndex: Int? = null) {
+	private fun loadBowlerGame(bowlerId: BowlerID, gameIndex: Int? = null) {
 		viewModelScope.launch {
 			val gameIndexToLoad = gameIndex ?: gameDetailsState.value.currentGameIndex
 			val bowlerSeriesId = getBowlerSeriesId(bowlerId)
@@ -1049,7 +1050,7 @@ class GamesEditorViewModel @Inject constructor(
 		.map { getBowlerSeriesId(it) }
 		.first()
 
-	private suspend fun getBowlerSeriesId(bowlerId: UUID): UUID = bowlers.map { bowlers ->
+	private suspend fun getBowlerSeriesId(bowlerId: BowlerID): UUID = bowlers.map { bowlers ->
 		val bowlerIndex = bowlers.indexOfFirst { it.id == bowlerId }
 		if (bowlerIndex == -1) return@map null
 		series.value[bowlerIndex]

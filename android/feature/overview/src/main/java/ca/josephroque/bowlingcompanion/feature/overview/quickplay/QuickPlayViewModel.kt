@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.League
@@ -102,7 +103,7 @@ class QuickPlayViewModel @Inject constructor(
 		sendEvent(QuickPlayScreenEvent.AddBowler(bowlers.value.map { it.first.id }.toSet()))
 	}
 
-	private fun updateBowlerLeague(bowlerId: UUID, leagueId: UUID?) {
+	private fun updateBowlerLeague(bowlerId: BowlerID, leagueId: UUID?) {
 		if (leagueId == null) {
 			removeBowler(bowlerId)
 			return
@@ -167,13 +168,13 @@ class QuickPlayViewModel @Inject constructor(
 		}
 	}
 
-	private fun selectBowlerLeague(bowlerId: UUID?) {
+	private fun selectBowlerLeague(bowlerId: BowlerID?) {
 		bowlerId ?: return
 		val leagueId = bowlers.value.find { it.first.id == bowlerId }?.second?.id
 		sendEvent(QuickPlayScreenEvent.EditLeague(bowlerId = bowlerId, leagueId = leagueId))
 	}
 
-	private fun removeBowler(bowlerId: UUID) {
+	private fun removeBowler(bowlerId: BowlerID) {
 		bowlers.update { it.filter { bowler -> bowler.first.id != bowlerId } }
 	}
 

@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails
 
 import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
@@ -17,8 +18,8 @@ sealed interface NextGameEditableElement {
 	data class Roll(val rollIndex: Int) : NextGameEditableElement
 	data class Frame(val frameIndex: Int) : NextGameEditableElement
 	data class Game(val gameIndex: Int, val game: UUID) : NextGameEditableElement
-	data class BowlerGame(val gameIndex: Int, val bowler: UUID) : NextGameEditableElement
-	data class Bowler(val name: String, val bowler: UUID) : NextGameEditableElement
+	data class BowlerGame(val gameIndex: Int, val bowler: BowlerID) : NextGameEditableElement
+	data class Bowler(val name: String, val bowler: BowlerID) : NextGameEditableElement
 }
 
 data class GameDetailsUiState(
@@ -83,9 +84,8 @@ sealed interface GameDetailsUiAction {
 
 	data class LockToggled(val locked: Boolean) : GameDetailsUiAction
 	data class ExcludeFromStatisticsToggled(val excludeFromStatistics: Boolean) : GameDetailsUiAction
-	data class NextGameElementClicked(
-		val nextGameElement: NextGameEditableElement,
-	) : GameDetailsUiAction
+	data class NextGameElementClicked(val nextGameElement: NextGameEditableElement) :
+		GameDetailsUiAction
 	data class HeaderHeightMeasured(val height: Float) : GameDetailsUiAction
 	data class CopyLanesDialog(val action: CopyLanesDialogUiAction) : GameDetailsUiAction
 }

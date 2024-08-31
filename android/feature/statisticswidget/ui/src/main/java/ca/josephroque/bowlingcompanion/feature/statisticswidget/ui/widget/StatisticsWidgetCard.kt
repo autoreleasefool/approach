@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.charts.ProvideWidgetChartStyle
 import ca.josephroque.bowlingcompanion.core.designsystem.components.LoadingState
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.charts.AveragingChart
 import ca.josephroque.bowlingcompanion.core.statistics.charts.CountingChart
@@ -304,7 +305,7 @@ private fun StatisticsWidgetCardPreview() {
 	StatisticsWidgetCard(
 		widget = StatisticsWidget(
 			id = UUID.randomUUID(),
-			source = StatisticsWidgetSource.Bowler(UUID.randomUUID()),
+			source = StatisticsWidgetSource.Bowler(BowlerID.randomID()),
 			priority = 0,
 			statistic = StatisticID.ACES,
 			timeline = StatisticsWidgetTimeline.ONE_YEAR,

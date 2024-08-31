@@ -42,6 +42,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamBowlerCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.TeamEntity
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
@@ -253,7 +254,7 @@ class SQLiteMigrationService @Inject constructor(
 
 			migratedBowlers.add(
 				BowlerEntity(
-					id = id,
+					id = BowlerID(id),
 					name = legacyBowler.name,
 					kind = BowlerKind.PLAYABLE,
 				),
@@ -321,7 +322,7 @@ class SQLiteMigrationService @Inject constructor(
 			migratedTeamBowlers.add(
 				TeamBowlerCrossRef(
 					teamId = teamId,
-					bowlerId = bowlerId,
+					bowlerId = BowlerID(bowlerId),
 				),
 			)
 		}
@@ -450,7 +451,7 @@ class SQLiteMigrationService @Inject constructor(
 					} else {
 						legacyLeague.gamesPerSeries
 					},
-					bowlerId = bowlerId,
+					bowlerId = BowlerID(bowlerId),
 				),
 			)
 		}
@@ -751,7 +752,7 @@ class SQLiteMigrationService @Inject constructor(
 
 			val processedOpponentName = legacyMatchPlay.opponentName?.trim()
 			val comparableOpponentName = processedOpponentName?.lowercase()
-			val opponentId: UUID?
+			val opponentId: BowlerID?
 
 			if (processedOpponentName != null &&
 				comparableOpponentName != null &&
@@ -762,7 +763,7 @@ class SQLiteMigrationService @Inject constructor(
 				} else if (migratedOpponents.containsKey(comparableOpponentName)) {
 					opponentId = migratedOpponents[comparableOpponentName]?.id
 				} else {
-					opponentId = UUID.randomUUID()
+					opponentId = BowlerID.randomID()
 					migratedOpponents[comparableOpponentName] = BowlerEntity(
 						id = opponentId,
 						name = processedOpponentName,

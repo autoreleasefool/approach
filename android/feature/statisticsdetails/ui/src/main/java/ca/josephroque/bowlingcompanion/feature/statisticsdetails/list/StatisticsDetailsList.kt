@@ -29,6 +29,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.LabeledSwitc
 import ca.josephroque.bowlingcompanion.core.designsystem.components.Tip
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.MutedEmptyState
 import ca.josephroque.bowlingcompanion.core.designsystem.theme.ApproachTheme
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.stub.BowlerSummaryStub
 import ca.josephroque.bowlingcompanion.core.model.stub.LeagueSummaryStub
@@ -37,7 +38,6 @@ import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticListEntry
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticListEntryGroup
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.components.FilterDetails
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.ui.R
-import java.util.UUID
 
 @Composable
 fun StatisticsDetailsList(
@@ -345,7 +345,7 @@ private fun StatisticsDetailsListPreview(
 		Surface {
 			StatisticsDetailsList(
 				state = StatisticsDetailsListUiState(
-					filter = TrackableFilter(source = TrackableFilter.Source.Bowler(UUID.randomUUID())),
+					filter = TrackableFilter(source = TrackableFilter.Source.Bowler(BowlerID.randomID())),
 					filterSources = TrackableFilter.SourceSummaries(
 						bowler = BowlerSummaryStub.single(),
 						league = LeagueSummaryStub.single(),

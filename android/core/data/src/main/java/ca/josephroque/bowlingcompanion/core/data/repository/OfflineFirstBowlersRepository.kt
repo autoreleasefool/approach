@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedBowler
 import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
@@ -37,10 +38,10 @@ class OfflineFirstBowlersRepository @Inject constructor(
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ) : BowlersRepository {
-	override fun getBowlerSummary(bowlerId: UUID): Flow<BowlerSummary> =
+	override fun getBowlerSummary(bowlerId: BowlerID): Flow<BowlerSummary> =
 		bowlerDao.getBowlerSummary(bowlerId)
 
-	override fun getBowlerDetails(bowlerId: UUID): Flow<BowlerDetails> =
+	override fun getBowlerDetails(bowlerId: BowlerID): Flow<BowlerDetails> =
 		bowlerDao.getBowlerDetails(bowlerId)
 
 	override fun getSeriesBowlers(series: List<UUID>): Flow<List<BowlerSummary>> =
@@ -64,7 +65,7 @@ class OfflineFirstBowlersRepository @Inject constructor(
 			.first()
 			.firstOrNull() ?: return null
 
-		val recentBowlerId = UUID.fromString(recentBowlerIdStr)
+		val recentBowlerId = BowlerID.fromString(recentBowlerIdStr)
 		val recentBowler = getBowlerSummary(recentBowlerId).first()
 		val bowlerLeagues = leaguesRepository.getLeaguesList(
 			recentBowlerId,
@@ -91,33 +92,35 @@ class OfflineFirstBowlersRepository @Inject constructor(
 		bowlerDao.updateBowler(bowler.asEntity())
 	}
 
-	override suspend fun archiveBowler(id: UUID) = withContext(ioDispatcher) {
-		bowlerDao.archiveBowlers(listOf(id), archivedOn = Clock.System.now())
+	override suspend fun archiveBowler(bowlerId: BowlerID) = withContext(ioDispatcher) {
+		bowlerDao.archiveBowlers(listOf(bowlerId), archivedOn = Clock.System.now())
 	}
 
-	override suspend fun unarchiveBowler(id: UUID) = withContext(ioDispatcher) {
-		bowlerDao.unarchiveBowler(id)
+	override suspend fun unarchiveBowler(bowlerId: BowlerID) = withContext(ioDispatcher) {
+		bowlerDao.unarchiveBowler(bowlerId)
 	}
 
 	override suspend fun hasOpponents(): Boolean = withContext(ioDispatcher) {
 		bowlerDao.getOpponentsList().first().any { it.kind == BowlerKind.OPPONENT }
 	}
 
-	override suspend fun mergeBowlers(bowlers: List<BowlerEntity>, associateBy: Map<UUID, UUID>) =
-		withContext(ioDispatcher) {
-			transactionRunner {
-				for ((oldId, newId) in associateBy) {
-					matchPlayDao.replaceOpponentId(oldId, newId)
-				}
+	override suspend fun mergeBowlers(
+		bowlers: List<BowlerEntity>,
+		associateBy: Map<BowlerID, BowlerID>,
+	) = withContext(ioDispatcher) {
+		transactionRunner {
+			for ((oldId, newId) in associateBy) {
+				matchPlayDao.replaceOpponentId(oldId, newId)
+			}
 
-				val bowlersToArchive = associateBy.keys - associateBy.values.toSet()
-				bowlerDao.archiveBowlers(bowlersToArchive.toList(), archivedOn = Clock.System.now())
+			val bowlersToArchive = associateBy.keys - associateBy.values.toSet()
+			bowlerDao.archiveBowlers(bowlersToArchive.toList(), archivedOn = Clock.System.now())
 
-				val updatedBowlerIds = associateBy.values.toSet()
-				val bowlersToUpdate = bowlers.filter { it.id in updatedBowlerIds }
-				for (bowler in bowlersToUpdate) {
-					bowlerDao.updateBowlerEntity(bowler)
-				}
+			val updatedBowlerIds = associateBy.values.toSet()
+			val bowlersToUpdate = bowlers.filter { it.id in updatedBowlerIds }
+			for (bowler in bowlersToUpdate) {
+				bowlerDao.updateBowlerEntity(bowler)
 			}
 		}
+	}
 }

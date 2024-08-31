@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.model.Avatar
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GearCreate
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.navigation.Route
@@ -127,7 +128,7 @@ class GearFormViewModel @Inject constructor(
 		)
 	}
 
-	private fun updateOwner(owner: UUID?) {
+	private fun updateOwner(owner: BowlerID?) {
 		viewModelScope.launch {
 			val ownerDetails = owner?.let { bowlersRepository.getBowlerDetails(it).first() }
 			_uiState.updateForm { it.copy(owner = ownerDetails) }

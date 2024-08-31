@@ -14,15 +14,16 @@ data class TrackableFilter(
 	sealed interface Source {
 		val id: UUID
 
-		data class Bowler(override val id: UUID) : Source
+		data class Bowler(val bowlerId: BowlerID) : Source {
+			override val id: UUID
+				get() = bowlerId.value
+		}
 		data class League(override val id: UUID) : Source
 		data class Series(override val id: UUID) : Source
 		data class Game(override val id: UUID) : Source
 	}
 
-	data class LeagueFilter(
-		val recurrence: LeagueRecurrence? = null,
-	)
+	data class LeagueFilter(val recurrence: LeagueRecurrence? = null)
 
 	data class SeriesFilter(
 		val startDate: LocalDate? = null,
@@ -51,9 +52,7 @@ data class TrackableFilter(
 		data class Positions(val positions: Set<LanePosition>) : LaneFilter
 	}
 
-	data class FrameFilter(
-		val bowlingBallsUsed: Set<UUID> = emptySet(),
-	)
+	data class FrameFilter(val bowlingBallsUsed: Set<UUID> = emptySet())
 
 	enum class AggregationFilter {
 		ACCUMULATE,

@@ -18,9 +18,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
-import java.util.UUID
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -119,12 +119,12 @@ private fun BowlersListPreview() {
 				bowlerToArchive = null,
 				list = listOf(
 					BowlerListItem(
-						id = UUID.randomUUID(),
+						id = BowlerID.randomID(),
 						name = "Joseph Roque",
 						average = 200.0,
 					),
 					BowlerListItem(
-						id = UUID.randomUUID(),
+						id = BowlerID.randomID(),
 						name = "John Doe",
 						average = 150.0,
 					),

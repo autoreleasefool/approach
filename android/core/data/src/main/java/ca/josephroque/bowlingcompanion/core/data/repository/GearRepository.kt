@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GearCreate
 import ca.josephroque.bowlingcompanion.core.model.GearDetails
 import ca.josephroque.bowlingcompanion.core.model.GearKind
@@ -9,7 +10,7 @@ import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 
 interface GearRepository {
-	fun getBowlerPreferredGear(bowlerId: UUID): Flow<List<GearListItem>>
+	fun getBowlerPreferredGear(bowlerId: BowlerID): Flow<List<GearListItem>>
 	fun getGameGear(gameId: UUID): Flow<List<GearListItem>>
 
 	fun getRecentlyUsedGear(kind: GearKind? = null, limit: Int): Flow<List<GearListItem>>
@@ -18,7 +19,7 @@ interface GearRepository {
 	fun getGearUpdate(id: UUID): Flow<GearUpdate>
 	fun getGearDetails(id: UUID): Flow<GearDetails>
 
-	suspend fun setBowlerPreferredGear(bowlerId: UUID, gear: Set<UUID>)
+	suspend fun setBowlerPreferredGear(bowlerId: BowlerID, gear: Set<UUID>)
 	suspend fun setGameGear(gameId: UUID, gear: Set<UUID>)
 
 	suspend fun insertGear(gear: GearCreate)

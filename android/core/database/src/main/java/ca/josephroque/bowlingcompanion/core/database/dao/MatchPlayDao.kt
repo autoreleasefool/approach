@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayDetailsUpdateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayEntity
 import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayUpdateEntity
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 
@@ -41,5 +42,5 @@ abstract class MatchPlayDao : LegacyMigratingDao<MatchPlayEntity> {
 	abstract suspend fun getMatchPlaysForGames(gameIds: Collection<UUID>): List<MatchPlayEntity>
 
 	@Query("UPDATE match_plays SET opponent_id = :newOpponentId WHERE opponent_id = :oldOpponentId")
-	abstract suspend fun replaceOpponentId(oldOpponentId: UUID, newOpponentId: UUID)
+	abstract suspend fun replaceOpponentId(oldOpponentId: BowlerID, newOpponentId: BowlerID)
 }

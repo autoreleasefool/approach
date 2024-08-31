@@ -16,10 +16,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
-import java.util.UUID
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -114,12 +114,12 @@ private fun OpponentsListPreview() {
 				opponentToArchive = null,
 				list = listOf(
 					OpponentListItem(
-						id = UUID.randomUUID(),
+						id = BowlerID.randomID(),
 						name = "Joseph Roque",
 						kind = BowlerKind.OPPONENT,
 					),
 					OpponentListItem(
-						id = UUID.randomUUID(),
+						id = BowlerID.randomID(),
 						name = "John Doe",
 						kind = BowlerKind.PLAYABLE,
 					),

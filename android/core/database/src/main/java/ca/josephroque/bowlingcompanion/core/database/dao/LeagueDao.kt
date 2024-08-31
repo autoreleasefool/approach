@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.LeagueCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedLeague
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
@@ -89,7 +90,7 @@ abstract class LeagueDao : LegacyMigratingDao<LeagueEntity> {
 		""",
 	)
 	abstract fun getLeagueAverages(
-		bowlerId: UUID,
+		bowlerId: BowlerID,
 		recurrence: LeagueRecurrence?,
 		sortOrder: LeagueSortOrder,
 	): Flow<List<LeagueListItem>>

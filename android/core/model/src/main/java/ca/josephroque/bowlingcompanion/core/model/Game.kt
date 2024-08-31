@@ -13,11 +13,7 @@ object Game {
 	fun frameIndicesAfter(after: Int, upTo: Int = NUMBER_OF_FRAMES): IntRange = (after + 1)..<upTo
 }
 
-data class GameSummary(
-	val id: UUID,
-	val index: Int,
-	val score: Int,
-)
+data class GameSummary(val id: UUID, val index: Int, val score: Int)
 
 data class TrackableGame(
 	val seriesId: UUID,
@@ -27,10 +23,7 @@ data class TrackableGame(
 	val date: LocalDate,
 	val matchPlay: MatchPlay?,
 ) {
-	data class MatchPlay(
-		val id: UUID,
-		val result: MatchPlayResult?,
-	)
+	data class MatchPlay(val id: UUID, val result: MatchPlayResult?)
 }
 
 data class GameCreate(
@@ -74,19 +67,12 @@ data class GameEdit(
 		fun toSummary(): LeagueSummary = LeagueSummary(id = id, name = name)
 	}
 
-	data class Bowler(
-		val id: UUID,
-		val name: String,
-	) {
+	data class Bowler(val id: BowlerID, val name: String) {
 		fun toSummary(): BowlerSummary = BowlerSummary(id = id, name = name)
 	}
 }
 
-data class GameListItem(
-	val id: UUID,
-	val index: Int,
-	val score: Int,
-)
+data class GameListItem(val id: UUID, val index: Int, val score: Int)
 
 data class ArchivedGame(
 	val id: UUID,
@@ -115,7 +101,4 @@ enum class GameScoringMethod {
 	BY_FRAME,
 }
 
-data class GameInProgress(
-	val seriesIds: List<UUID>,
-	val currentGameId: UUID,
-)
+data class GameInProgress(val seriesIds: List<UUID>, val currentGameId: UUID)

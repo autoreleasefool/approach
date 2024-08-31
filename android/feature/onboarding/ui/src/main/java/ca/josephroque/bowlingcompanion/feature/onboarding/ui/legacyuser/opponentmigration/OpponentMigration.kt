@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.CheckBoxRow
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
@@ -264,13 +265,13 @@ private fun OpponentMigrationPreview() {
 		state = OpponentMigrationUiState(
 			list = listOf(
 				MergedBowler(
-					id = java.util.UUID.randomUUID(),
+					id = BowlerID.randomID(),
 					name = "John Doe",
 					mergedBowlerNames = listOf("John Doe", "Jane Doe"),
 					kind = BowlerKind.PLAYABLE,
 				),
 				MergedBowler(
-					id = java.util.UUID.randomUUID(),
+					id = BowlerID.randomID(),
 					name = "Jane Doe",
 					mergedBowlerNames = listOf("John Doe", "Jane Doe"),
 					kind = BowlerKind.PLAYABLE,

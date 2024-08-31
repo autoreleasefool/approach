@@ -6,12 +6,12 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.bowlerform.BowlerFormRoute
-import java.util.UUID
 
-fun NavController.navigateToBowlerForm(bowlerId: UUID, navOptions: NavOptions? = null) {
+fun NavController.navigateToBowlerForm(bowlerId: BowlerID, navOptions: NavOptions? = null) {
 	this.navigate(Route.EditBowler.createRoute(bowlerId), navOptions)
 }
 

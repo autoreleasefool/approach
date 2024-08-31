@@ -1,9 +1,9 @@
 package ca.josephroque.bowlingcompanion.feature.resourcepicker.data
 
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourceItem
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -12,7 +12,7 @@ class LeaguePickerDataProvider @Inject constructor(
 	private val leaguesRepository: LeaguesRepository,
 	filter: String,
 ) : ResourcePickerDataProvider {
-	private val bowlerId: UUID?
+	private val bowlerId: BowlerID?
 	private val recurrence: LeagueRecurrence?
 
 	init {
@@ -21,7 +21,7 @@ class LeaguePickerDataProvider @Inject constructor(
 			bowlerId = null
 			recurrence = null
 		} else {
-			bowlerId = if (parts[0].isNotBlank()) UUID.fromString(parts[0]) else null
+			bowlerId = if (parts[0].isNotBlank()) BowlerID.fromString(parts[0]) else null
 			recurrence = if (parts.size > 1) LeagueRecurrence.valueOf(parts[1]) else null
 		}
 	}

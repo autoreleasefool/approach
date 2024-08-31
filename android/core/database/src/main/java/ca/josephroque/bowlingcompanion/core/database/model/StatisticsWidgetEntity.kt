@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetCreate
@@ -32,7 +33,7 @@ import java.util.UUID
 )
 data class StatisticsWidgetEntity(
 	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: UUID,
-	@ColumnInfo(name = "bowler_id", index = true) val bowlerId: UUID,
+	@ColumnInfo(name = "bowler_id", index = true) val bowlerId: BowlerID,
 	@ColumnInfo(name = "league_id", index = true) val leagueId: UUID?,
 	@ColumnInfo(name = "timeline") val timeline: StatisticsWidgetTimeline,
 	@ColumnInfo(name = "statistic") val statistic: StatisticID,
@@ -53,13 +54,10 @@ fun StatisticsWidgetEntity.asModel(): StatisticsWidget = StatisticsWidget(
 	priority = priority,
 )
 
-data class StatisticsWidgetPriorityUpdateEntity(
-	val id: UUID,
-	val priority: Int,
-)
+data class StatisticsWidgetPriorityUpdateEntity(val id: UUID, val priority: Int)
 
 data class StatisticsWidgetCreateEntity(
-	@ColumnInfo(name = "bowler_id") val bowlerId: UUID,
+	@ColumnInfo(name = "bowler_id") val bowlerId: BowlerID,
 	@ColumnInfo(name = "league_id") val leagueId: UUID?,
 	val id: UUID,
 	val timeline: StatisticsWidgetTimeline,

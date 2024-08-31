@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.navigation.Route
@@ -34,7 +35,7 @@ class GamesSettingsViewModel @Inject constructor(
 	private val currentGameId = MutableStateFlow(initialGameId)
 	private val games: MutableStateFlow<List<GameListItem>> = MutableStateFlow(emptyList())
 
-	private val currentBowlerId = MutableStateFlow(UUID.randomUUID())
+	private val currentBowlerId = MutableStateFlow(BowlerID.randomID())
 	private val bowlers: MutableStateFlow<List<Pair<UUID, BowlerSummary>>> =
 		MutableStateFlow(emptyList())
 
@@ -101,7 +102,7 @@ class GamesSettingsViewModel @Inject constructor(
 		dismiss()
 	}
 
-	private fun setCurrentBowler(bowlerId: UUID) {
+	private fun setCurrentBowler(bowlerId: BowlerID) {
 		viewModelScope.launch {
 			val currentGameIndex = games.value.indexOfFirst { it.id == currentGameId.value }
 			val currentSeriesId = bowlers.value.first { it.second.id == bowlerId }.first

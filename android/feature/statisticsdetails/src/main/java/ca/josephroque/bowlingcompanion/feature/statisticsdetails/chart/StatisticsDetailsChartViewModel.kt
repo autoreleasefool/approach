@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.StatisticsDetailsSourceType
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.Route
@@ -33,7 +34,7 @@ class StatisticsDetailsChartViewModel @Inject constructor(
 	private val sourceId = Route.StatisticsDetailsChart.getSourceId(savedStateHandle)!!
 	private val statisticId = Route.StatisticsDetailsChart.getStatisticId(savedStateHandle)!!
 	private val initialFilterSource = when (sourceType) {
-		StatisticsDetailsSourceType.BOWLER -> TrackableFilter.Source.Bowler(sourceId)
+		StatisticsDetailsSourceType.BOWLER -> TrackableFilter.Source.Bowler(BowlerID(sourceId))
 		StatisticsDetailsSourceType.LEAGUE -> TrackableFilter.Source.League(sourceId)
 		StatisticsDetailsSourceType.SERIES -> TrackableFilter.Source.Series(sourceId)
 		StatisticsDetailsSourceType.GAME -> TrackableFilter.Source.Game(sourceId)

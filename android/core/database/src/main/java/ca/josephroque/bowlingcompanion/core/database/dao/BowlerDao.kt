@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedBowler
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
@@ -29,7 +30,7 @@ abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 			WHERE bowlers.id = :bowlerId
 		""",
 	)
-	abstract fun getBowlerSummary(bowlerId: UUID): Flow<BowlerSummary>
+	abstract fun getBowlerSummary(bowlerId: BowlerID): Flow<BowlerSummary>
 
 	@Query(
 		"""
@@ -55,7 +56,7 @@ abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 			WHERE id = :bowlerId
 		""",
 	)
-	abstract fun getBowlerDetails(bowlerId: UUID): Flow<BowlerDetails>
+	abstract fun getBowlerDetails(bowlerId: BowlerID): Flow<BowlerDetails>
 
 	@Query(
 		"""
@@ -130,8 +131,8 @@ abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 	abstract fun updateBowlerEntity(bowler: BowlerEntity)
 
 	@Query("UPDATE bowlers SET archived_on = :archivedOn WHERE id IN (:bowlerIds)")
-	abstract fun archiveBowlers(bowlerIds: List<UUID>, archivedOn: Instant)
+	abstract fun archiveBowlers(bowlerIds: List<BowlerID>, archivedOn: Instant)
 
 	@Query("UPDATE bowlers SET archived_on = NULL WHERE id = :bowlerId")
-	abstract fun unarchiveBowler(bowlerId: UUID)
+	abstract fun unarchiveBowler(bowlerId: BowlerID)
 }

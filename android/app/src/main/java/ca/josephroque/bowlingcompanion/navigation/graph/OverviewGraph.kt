@@ -32,6 +32,7 @@ import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.onboardingS
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.opponentMigrationScreen
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToQuickPlay
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewScreen
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToEvent
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToSeriesDetails
@@ -226,11 +227,10 @@ fun NavGraphBuilder.overviewGraph(
 	statisticsWidgetEditorScreen(
 		onBackPressed = navController::popBackStack,
 		onPickBowler = { bowler, result ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToBowlerPickerForResult(
 				selectedIds = bowler?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = result,
-				resourceType = ResourcePickerType.BOWLER,
 			)
 		},
 		onPickLeague = { bowler, league, result ->

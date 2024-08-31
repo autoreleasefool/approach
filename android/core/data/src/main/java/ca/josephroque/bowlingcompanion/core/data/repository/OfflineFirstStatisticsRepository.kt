@@ -37,7 +37,7 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 		source: TrackableFilter.Source,
 	): TrackableFilter.SourceSummaries = withContext(ioDispatcher) {
 		when (source) {
-			is TrackableFilter.Source.Bowler -> statisticsDao.getBowlerSourceDetails(source.id)
+			is TrackableFilter.Source.Bowler -> statisticsDao.getBowlerSourceDetails(source.bowlerId)
 			is TrackableFilter.Source.League -> statisticsDao.getLeagueSourceDetails(source.id)
 			is TrackableFilter.Source.Series -> statisticsDao.getSeriesSourceDetails(source.id)
 			is TrackableFilter.Source.Game -> statisticsDao.getGameSourceDetails(source.id)
@@ -192,31 +192,29 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 
 private fun StatisticCategory.description(
 	frameConfiguration: TrackablePerFrameConfiguration,
-): Int? {
-	return when (this) {
-		StatisticCategory.OVERALL -> null
-		StatisticCategory.MIDDLE_HITS -> R.string.statistic_category_middle_hits_description
-		StatisticCategory.STRIKES_AND_SPARES -> R.string.statistic_category_strikes_and_spares_description
-		StatisticCategory.FIRST_ROLL -> R.string.statistic_category_first_roll_description
-		StatisticCategory.HEAD_PINS -> if (frameConfiguration.countHeadPin2AsHeadPin) {
-			R.string.statistic_category_head_pins_description_with_H2
-		} else {
-			R.string.statistic_category_head_pins_description_without_H2
-		}
-		StatisticCategory.FIVES -> R.string.statistic_category_fives_description
-		StatisticCategory.THREES -> R.string.statistic_category_threes_description
-		StatisticCategory.ACES -> R.string.statistic_category_aces_description
-		StatisticCategory.CHOPS -> R.string.statistic_category_chops_descriptions
-		StatisticCategory.SPLITS -> if (frameConfiguration.countSplitWithBonusAsSplit) {
-			R.string.statistic_category_splits_description_with_bonus
-		} else {
-			R.string.statistic_category_splits_description_without_bonus
-		}
-		StatisticCategory.TAPS -> R.string.statistic_category_taps_description
-		StatisticCategory.TWELVES -> R.string.statistic_category_twelves_description
-		StatisticCategory.FOULS -> R.string.statistic_category_fouls_description
-		StatisticCategory.PINS_LEFT_ON_DECK -> null
-		StatisticCategory.MATCH_PLAY_RESULTS -> null
-		StatisticCategory.SERIES -> null
+): Int? = when (this) {
+	StatisticCategory.OVERALL -> null
+	StatisticCategory.MIDDLE_HITS -> R.string.statistic_category_middle_hits_description
+	StatisticCategory.STRIKES_AND_SPARES -> R.string.statistic_category_strikes_and_spares_description
+	StatisticCategory.FIRST_ROLL -> R.string.statistic_category_first_roll_description
+	StatisticCategory.HEAD_PINS -> if (frameConfiguration.countHeadPin2AsHeadPin) {
+		R.string.statistic_category_head_pins_description_with_H2
+	} else {
+		R.string.statistic_category_head_pins_description_without_H2
 	}
+	StatisticCategory.FIVES -> R.string.statistic_category_fives_description
+	StatisticCategory.THREES -> R.string.statistic_category_threes_description
+	StatisticCategory.ACES -> R.string.statistic_category_aces_description
+	StatisticCategory.CHOPS -> R.string.statistic_category_chops_descriptions
+	StatisticCategory.SPLITS -> if (frameConfiguration.countSplitWithBonusAsSplit) {
+		R.string.statistic_category_splits_description_with_bonus
+	} else {
+		R.string.statistic_category_splits_description_without_bonus
+	}
+	StatisticCategory.TAPS -> R.string.statistic_category_taps_description
+	StatisticCategory.TWELVES -> R.string.statistic_category_twelves_description
+	StatisticCategory.FOULS -> R.string.statistic_category_fouls_description
+	StatisticCategory.PINS_LEFT_ON_DECK -> null
+	StatisticCategory.MATCH_PLAY_RESULTS -> null
+	StatisticCategory.SERIES -> null
 }

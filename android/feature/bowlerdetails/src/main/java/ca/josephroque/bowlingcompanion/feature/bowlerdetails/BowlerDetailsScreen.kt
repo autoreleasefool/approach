@@ -15,6 +15,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetails
@@ -27,12 +28,12 @@ import kotlinx.coroutines.launch
 internal fun BowlerDetailsRoute(
 	onBackPressed: () -> Unit,
 	onEditLeague: (UUID) -> Unit,
-	onAddLeague: (UUID) -> Unit,
+	onAddLeague: (BowlerID) -> Unit,
 	onShowLeagueDetails: (UUID) -> Unit,
 	onShowEventDetails: (UUID) -> Unit,
 	onShowGearDetails: (UUID) -> Unit,
 	onShowPreferredGearPicker: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
-	onEditStatisticsWidgets: (String, UUID) -> Unit,
+	onEditStatisticsWidgets: (String, BowlerID) -> Unit,
 	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 	onShowWidgetNotEnoughDataError: () -> Unit,
 	onShowWidgetUnavailableError: () -> Unit,

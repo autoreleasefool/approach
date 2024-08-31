@@ -5,7 +5,7 @@ import java.util.UUID
 data class MatchPlayCreate(
 	val id: UUID,
 	val gameId: UUID,
-	val opponentId: UUID?,
+	val opponentId: BowlerID?,
 	val opponentScore: Int?,
 	val result: MatchPlayResult?,
 )
@@ -18,7 +18,7 @@ data class MatchPlayUpdate(
 ) {
 	data class Properties(
 		val id: UUID,
-		val opponentId: UUID?,
+		val opponentId: BowlerID?,
 		val opponentScore: Int?,
 		val result: MatchPlayResult?,
 	)

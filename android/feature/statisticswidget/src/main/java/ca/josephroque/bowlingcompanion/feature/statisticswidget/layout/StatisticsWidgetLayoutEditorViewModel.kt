@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.analytics.trackable.widget.WidgetDel
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.widget.WidgetLayoutUpdated
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.hasModelEntries
@@ -18,7 +19,6 @@ import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorUiState
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,7 +38,7 @@ class StatisticsWidgetLayoutEditorViewModel @Inject constructor(
 			?.let {
 				val split = it.split("_")
 				when (split[0]) {
-					"bowler" -> StatisticsWidgetInitialSource.Bowler(UUID.fromString(split[1]))
+					"bowler" -> StatisticsWidgetInitialSource.Bowler(BowlerID.fromString(split[1]))
 					else -> null
 				}
 			}

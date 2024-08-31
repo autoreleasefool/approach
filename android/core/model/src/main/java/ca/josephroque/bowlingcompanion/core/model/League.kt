@@ -43,7 +43,7 @@ data class ArchivedLeague(
 )
 
 data class LeagueCreate(
-	val bowlerId: UUID,
+	val bowlerId: BowlerID,
 	val id: UUID,
 	val name: String,
 	val recurrence: LeagueRecurrence,

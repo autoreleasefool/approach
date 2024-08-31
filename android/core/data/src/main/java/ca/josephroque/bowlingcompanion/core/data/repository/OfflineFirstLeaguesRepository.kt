@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedLeague
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.LeagueCreate
@@ -39,7 +40,7 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 	override fun getLeagueDetails(id: UUID): Flow<LeagueDetails> = leagueDao.getLeagueDetails(id)
 
 	override fun getLeaguesList(
-		bowlerId: UUID,
+		bowlerId: BowlerID,
 		recurrence: LeagueRecurrence?,
 		sortOrder: LeagueSortOrder,
 	): Flow<List<LeagueListItem>> =

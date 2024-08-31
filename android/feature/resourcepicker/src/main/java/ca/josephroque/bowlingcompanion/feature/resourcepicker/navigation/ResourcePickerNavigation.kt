@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
@@ -14,6 +15,25 @@ import ca.josephroque.bowlingcompanion.feature.resourcepicker.ResourcePickerRout
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.bottomSheet
 import java.util.UUID
+
+fun NavController.navigateToBowlerPickerForResult(
+	selectedIds: Set<BowlerID>,
+	hiddenIds: Set<BowlerID> = emptySet(),
+	limit: Int = 0,
+	navResultCallback: NavResultCallback<Set<BowlerID>>,
+	navOptions: NavOptions? = null,
+) {
+	this.navigateToResourcePickerForResult(
+		selectedIds = selectedIds.map { it.value }.toSet(),
+		hiddenIds = hiddenIds.map { it.value }.toSet(),
+		limit = limit,
+		resourceType = ResourcePickerType.BOWLER,
+		navResultCallback = @JvmSerializableLambda { ids ->
+			navResultCallback(ids.map { BowlerID(it) }.toSet())
+		},
+		navOptions = navOptions,
+	)
+}
 
 fun NavController.navigateToResourcePickerForResult(
 	selectedIds: Set<UUID>,

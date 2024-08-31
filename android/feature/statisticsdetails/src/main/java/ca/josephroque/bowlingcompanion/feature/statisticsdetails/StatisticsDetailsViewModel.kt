@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.di.ApplicationScop
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.StatisticsDetailsSourceType
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.Route
@@ -42,7 +43,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 	private val sourceType = Route.StatisticsDetails.getSourceType(savedStateHandle)!!
 	private val sourceId = Route.StatisticsDetails.getSourceId(savedStateHandle) ?: UUID.randomUUID()
 	private val initialFilterSource = when (sourceType) {
-		StatisticsDetailsSourceType.BOWLER -> TrackableFilter.Source.Bowler(sourceId)
+		StatisticsDetailsSourceType.BOWLER -> TrackableFilter.Source.Bowler(BowlerID(sourceId))
 		StatisticsDetailsSourceType.LEAGUE -> TrackableFilter.Source.League(sourceId)
 		StatisticsDetailsSourceType.SERIES -> TrackableFilter.Source.Series(sourceId)
 		StatisticsDetailsSourceType.GAME -> TrackableFilter.Source.Game(sourceId)

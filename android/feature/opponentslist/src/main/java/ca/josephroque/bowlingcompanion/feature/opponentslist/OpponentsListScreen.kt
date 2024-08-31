@@ -15,17 +15,17 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.feature.opponentslist.ui.OpponentsList
 import ca.josephroque.bowlingcompanion.feature.opponentslist.ui.OpponentsListTopBar
-import java.util.UUID
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun OpponentsListRoute(
 	onBackPressed: () -> Unit,
 	onAddOpponent: () -> Unit,
-	onOpenOpponentDetails: (UUID) -> Unit,
-	onEditOpponent: (UUID) -> Unit,
+	onOpenOpponentDetails: (BowlerID) -> Unit,
+	onEditOpponent: (BowlerID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: OpponentsListViewModel = hiltViewModel(),
 ) {

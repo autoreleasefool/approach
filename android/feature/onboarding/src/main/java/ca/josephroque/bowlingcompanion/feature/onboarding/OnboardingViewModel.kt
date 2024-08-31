@@ -15,6 +15,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.database.legacy.LegacyDatabaseHelper
 import ca.josephroque.bowlingcompanion.core.error.ErrorReporting
 import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.AppNameChangeUiAction
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.DataImportUiAction
@@ -24,7 +25,6 @@ import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUs
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.NewUserOnboardingUiAction
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.NewUserOnboardingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -100,7 +100,7 @@ class OnboardingViewModel @Inject constructor(
 			viewModelScope.launch {
 				bowlersRepository.insertBowler(
 					BowlerCreate(
-						id = UUID.randomUUID(),
+						id = BowlerID.randomID(),
 						name = newUserState.name,
 						kind = BowlerKind.PLAYABLE,
 					),

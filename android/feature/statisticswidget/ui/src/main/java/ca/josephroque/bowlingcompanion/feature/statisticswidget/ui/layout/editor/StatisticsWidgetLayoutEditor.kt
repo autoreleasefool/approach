@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.animation.Wiggle
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetSource
@@ -145,7 +146,7 @@ private fun StatisticsWidgetLayoutEditorPreview() {
 			StatisticsWidgetLayoutEditorUiState(
 				widgets = listOf(
 					StatisticsWidget(
-						source = StatisticsWidgetSource.Bowler(UUID.randomUUID()),
+						source = StatisticsWidgetSource.Bowler(BowlerID.randomID()),
 						id = UUID.randomUUID(),
 						timeline = StatisticsWidgetTimeline.THREE_MONTHS,
 						statistic = StatisticID.ACES,
@@ -153,7 +154,7 @@ private fun StatisticsWidgetLayoutEditorPreview() {
 						priority = 0,
 					),
 					StatisticsWidget(
-						source = StatisticsWidgetSource.Bowler(UUID.randomUUID()),
+						source = StatisticsWidgetSource.Bowler(BowlerID.randomID()),
 						id = UUID.randomUUID(),
 						timeline = StatisticsWidgetTimeline.THREE_MONTHS,
 						statistic = StatisticID.ACES,

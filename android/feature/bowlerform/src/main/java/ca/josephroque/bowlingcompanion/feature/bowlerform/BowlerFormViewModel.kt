@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
 import ca.josephroque.bowlingcompanion.core.navigation.Route
@@ -18,7 +19,6 @@ import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormUiAction
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormUiState
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.R
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -145,7 +145,7 @@ class BowlerFormViewModel @Inject constructor(
 				is BowlerFormScreenUiState.Create ->
 					if (state.isSavable()) {
 						val bowler = BowlerCreate(
-							id = bowlerId ?: UUID.randomUUID(),
+							id = bowlerId ?: BowlerID.randomID(),
 							name = state.form.name,
 							kind = kind,
 						)

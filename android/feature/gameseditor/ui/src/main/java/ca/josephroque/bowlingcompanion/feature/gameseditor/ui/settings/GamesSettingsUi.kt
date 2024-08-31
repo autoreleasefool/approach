@@ -1,11 +1,12 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings
 
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import java.util.UUID
 
 data class GamesSettingsUiState(
-	val currentBowlerId: UUID,
+	val currentBowlerId: BowlerID,
 	val bowlers: List<BowlerSummary> = emptyList(),
 	val currentGameId: UUID,
 	val games: List<GameListItem> = emptyList(),

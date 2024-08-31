@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.resourcepicker.ui
 import androidx.annotation.PluralsRes
 import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
 import ca.josephroque.bowlingcompanion.core.model.Avatar
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
@@ -21,29 +22,18 @@ sealed interface ResourceItem {
 	val id: UUID
 	val name: String
 
-	data class Bowler(
-		override val id: UUID,
-		override val name: String,
-	) : ResourceItem
+	data class Bowler(val bowlerId: BowlerID, override val name: String) : ResourceItem {
+		override val id: UUID
+			get() = bowlerId.value
+	}
 
-	data class League(
-		override val id: UUID,
-		override val name: String,
-	) : ResourceItem
+	data class League(override val id: UUID, override val name: String) : ResourceItem
 
-	data class Series(
-		override val id: UUID,
-		val date: LocalDate,
-		val total: Int,
-	) : ResourceItem {
+	data class Series(override val id: UUID, val date: LocalDate, val total: Int) : ResourceItem {
 		override val name: String = date.simpleFormat()
 	}
 
-	data class Game(
-		override val id: UUID,
-		val index: Int,
-		val score: Int,
-	) : ResourceItem {
+	data class Game(override val id: UUID, val index: Int, val score: Int) : ResourceItem {
 		override val name: String = "Game ${index + 1}"
 	}
 
@@ -55,16 +45,10 @@ sealed interface ResourceItem {
 		val avatar: Avatar,
 	) : ResourceItem
 
-	data class Alley(
-		override val id: UUID,
-		override val name: String,
-	) : ResourceItem
+	data class Alley(override val id: UUID, override val name: String) : ResourceItem
 
-	data class Lane(
-		override val id: UUID,
-		override val name: String,
-		val position: LanePosition,
-	) : ResourceItem
+	data class Lane(override val id: UUID, override val name: String, val position: LanePosition) :
+		ResourceItem
 }
 
 data class ResourcePickerUiState(

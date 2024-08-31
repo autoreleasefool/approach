@@ -1,11 +1,11 @@
 package ca.josephroque.bowlingcompanion.feature.gearform
 
 import ca.josephroque.bowlingcompanion.core.model.Avatar
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GearUpdate
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiAction
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiState
-import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -18,10 +18,8 @@ sealed interface GearFormScreenUiState {
 		override fun isSavable(): Boolean = false
 	}
 
-	data class Create(
-		val form: GearFormUiState,
-		val topBar: GearFormTopBarUiState,
-	) : GearFormScreenUiState {
+	data class Create(val form: GearFormUiState, val topBar: GearFormTopBarUiState) :
+		GearFormScreenUiState {
 		override fun isSavable(): Boolean = form.name.isNotBlank()
 
 		override fun hasAnyChanges(): Boolean = form != GearFormUiState()
@@ -48,18 +46,16 @@ fun GearFormUiState.updatedModel(existing: GearUpdate): GearUpdate = existing.co
 sealed interface GearFormScreenUiAction {
 	data object LoadGear : GearFormScreenUiAction
 	data class UpdatedAvatar(val avatar: Avatar) : GearFormScreenUiAction
-	data class UpdatedOwner(val owner: UUID?) : GearFormScreenUiAction
+	data class UpdatedOwner(val owner: BowlerID?) : GearFormScreenUiAction
 
-	data class GearFormAction(
-		val action: GearFormUiAction,
-	) : GearFormScreenUiAction
+	data class GearFormAction(val action: GearFormUiAction) : GearFormScreenUiAction
 }
 
 sealed interface GearFormScreenEvent {
 	data object Dismissed : GearFormScreenEvent
 
 	data class EditAvatar(val avatar: Avatar) : GearFormScreenEvent
-	data class EditOwner(val owner: UUID?) : GearFormScreenEvent
+	data class EditOwner(val owner: BowlerID?) : GearFormScreenEvent
 }
 
 fun MutableStateFlow<GearFormScreenUiState>.updateForm(

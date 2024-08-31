@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.matchplayeditor.MatchPlayEditorRoute
@@ -19,7 +20,7 @@ fun NavController.navigateToMatchPlayEditor(gameId: UUID, navOptions: NavOptions
 @OptIn(ExperimentalMaterialNavigationApi::class)
 fun NavGraphBuilder.matchPlayEditorScreen(
 	onBackPressed: () -> Unit,
-	onEditOpponent: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onEditOpponent: (BowlerID?, NavResultCallback<Set<BowlerID>>) -> Unit,
 ) {
 	bottomSheet(
 		route = Route.EditMatchPlay.route,

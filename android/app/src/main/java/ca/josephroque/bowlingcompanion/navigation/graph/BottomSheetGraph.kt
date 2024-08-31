@@ -14,6 +14,7 @@ import ca.josephroque.bowlingcompanion.feature.matchplayeditor.navigation.matchP
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToQuickPlayOnboarding
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlay
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlayOnboarding
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.resourcePickerSheet
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.midGameStatisticsDetailsScreen
@@ -34,12 +35,11 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 		onBackPressed = navController::popBackStack,
 		onBeginRecording = navController::navigateToGamesEditor,
 		onPickBowler = { excluded, result ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToBowlerPickerForResult(
 				selectedIds = emptySet(),
 				hiddenIds = excluded,
 				limit = 1,
 				navResultCallback = result,
-				resourceType = ResourcePickerType.BOWLER,
 			)
 		},
 		onPickLeague = { bowler, league, result ->
@@ -59,11 +59,10 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 	statisticsSourcePickerSheet(
 		onBackPressed = navController::popBackStack,
 		onPickBowler = { bowler, result ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToBowlerPickerForResult(
 				selectedIds = bowler?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = result,
-				resourceType = ResourcePickerType.BOWLER,
 			)
 		},
 		onPickLeague = { bowler, league, result ->
@@ -110,11 +109,10 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 	matchPlayEditorScreen(
 		onBackPressed = navController::popBackStack,
 		onEditOpponent = { opponent, result ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToBowlerPickerForResult(
 				selectedIds = opponent?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = result,
-				resourceType = ResourcePickerType.BOWLER,
 			)
 		},
 	)
