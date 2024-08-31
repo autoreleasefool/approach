@@ -98,21 +98,23 @@ fun SeriesForm(
 
 		HorizontalDivider()
 
-		PreBowlSection(
-			preBowl = state.preBowl,
-			isPreBowlFormEnabled = state.isPreBowlFormEnabled,
-			onPreBowlChanged = { onAction(SeriesFormUiAction.PreBowlChanged(it)) },
-			isAppliedDatePickerVisible = state.isAppliedDatePickerVisible,
-			appliedDate = state.appliedDate,
-			onAppliedDateClicked = { onAction(SeriesFormUiAction.AppliedDateClicked) },
-			onAppliedDatePickerDismissed = { onAction(SeriesFormUiAction.AppliedDatePickerDismissed) },
-			onAppliedDateChanged = { onAction(SeriesFormUiAction.AppliedDateChanged(it)) },
-			isUsingPreBowl = state.isUsingPreBowl,
-			onIsUsingPreBowlChanged = { onAction(SeriesFormUiAction.IsUsingPreBowlChanged(it)) },
-			modifier = Modifier.padding(top = 16.dp),
-		)
+		if (state.isPreBowlSectionVisible) {
+			PreBowlSection(
+				preBowl = state.preBowl,
+				isPreBowlFormEnabled = state.isPreBowlFormEnabled,
+				onPreBowlChanged = { onAction(SeriesFormUiAction.PreBowlChanged(it)) },
+				isAppliedDatePickerVisible = state.isAppliedDatePickerVisible,
+				appliedDate = state.appliedDate,
+				onAppliedDateClicked = { onAction(SeriesFormUiAction.AppliedDateClicked) },
+				onAppliedDatePickerDismissed = { onAction(SeriesFormUiAction.AppliedDatePickerDismissed) },
+				onAppliedDateChanged = { onAction(SeriesFormUiAction.AppliedDateChanged(it)) },
+				isUsingPreBowl = state.isUsingPreBowl,
+				onIsUsingPreBowlChanged = { onAction(SeriesFormUiAction.IsUsingPreBowlChanged(it)) },
+				modifier = Modifier.padding(top = 16.dp),
+			)
 
-		HorizontalDivider()
+			HorizontalDivider()
+		}
 
 		ExcludeFromStatisticsSection(
 			excludeFromStatistics = state.excludeFromStatistics,
@@ -350,9 +352,9 @@ private fun SeriesFormPreview() {
 				date = LocalDate(2021, 1, 1),
 				appliedDate = LocalDate(2021, 1, 1),
 				isUsingPreBowl = true,
-				preBowl = SeriesPreBowl.PRE_BOWL,
+				preBowl = SeriesPreBowl.REGULAR,
 				excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
-				leagueExcludeFromStatistics = ExcludeFromStatistics.EXCLUDE,
+				leagueExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 				alley = AlleyDetails(
 					id = AlleyID.randomID(),
 					name = "Test Alley",
@@ -366,10 +368,11 @@ private fun SeriesFormPreview() {
 				isShowingArchiveDialog = false,
 				isArchiveButtonEnabled = true,
 				isShowingDiscardChangesDialog = false,
+				isPreBowlSectionVisible = false,
 				isPreBowlFormEnabled = true,
 				isCreatingManualSeries = true,
 				manualScores = listOf(100, 200),
-				isManualSeriesEnabled = true,
+				isManualSeriesEnabled = false,
 			),
 			onAction = {},
 		)

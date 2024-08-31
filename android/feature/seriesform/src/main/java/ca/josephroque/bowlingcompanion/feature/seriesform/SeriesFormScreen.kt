@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun SeriesFormRoute(
 	onDismissWithResult: (SeriesID?) -> Unit,
+	onStartTeamSeries: (TeamSeriesID, GameID) -> Unit,
 	onEditAlley: (AlleyID?, NavResultCallback<Set<AlleyID>>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: SeriesFormViewModel = hiltViewModel(),
@@ -45,6 +46,10 @@ internal fun SeriesFormRoute(
 							onEditAlley(it.alleyId) @JvmSerializableLambda { ids ->
 								viewModel.handleAction(SeriesFormScreenUiAction.AlleyUpdated(ids.firstOrNull()))
 							}
+						is SeriesFormScreenEvent.StartTeamSeries -> onStartTeamSeries(
+							it.teamSeriesId,
+							it.initialGameId,
+						)
 					}
 				}
 		}
@@ -81,6 +86,7 @@ private fun SeriesFormScreen(
 					is SeriesFormScreenUiState.Loading -> SeriesFormTopBarUiState()
 					is SeriesFormScreenUiState.Create -> state.topBar
 					is SeriesFormScreenUiState.Edit -> state.topBar
+					is SeriesFormScreenUiState.TeamCreate -> state.topBar
 				},
 				onAction = { onAction(SeriesFormScreenUiAction.SeriesForm(it)) },
 				scrollBehavior = scrollBehavior,
@@ -90,6 +96,11 @@ private fun SeriesFormScreen(
 	) { padding ->
 		when (state) {
 			is SeriesFormScreenUiState.Loading -> Unit
+			is SeriesFormScreenUiState.TeamCreate -> SeriesForm(
+				state = state.form,
+				onAction = { onAction(SeriesFormScreenUiAction.SeriesForm(it)) },
+				modifier = Modifier.padding(padding),
+			)
 			is SeriesFormScreenUiState.Create -> SeriesForm(
 				state = state.form,
 				onAction = { onAction(SeriesFormScreenUiAction.SeriesForm(it)) },

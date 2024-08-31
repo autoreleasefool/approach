@@ -22,3 +22,15 @@ data class TeamSeriesConnect(
 	val seriesIds: List<UUID>,
 	val date: LocalDate,
 )
+
+data class TeamSeriesCreate(
+	val teamId: UUID,
+	val id: UUID,
+	val leagues: List<UUID>,
+	val date: LocalDate,
+	val numberOfGames: Int,
+	val preBowl: SeriesPreBowl,
+	val manualScores: Map<UUID, List<Int>>?,
+	val excludeFromStatistics: ExcludeFromStatistics,
+	val alleyId: UUID?,
+)

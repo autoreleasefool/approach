@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
+import ca.josephroque.bowlingcompanion.core.model.TeamCreate
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiState
@@ -18,6 +19,12 @@ sealed interface SeriesFormScreenUiState {
 	data object Loading : SeriesFormScreenUiState {
 		override fun hasAnyChanges(): Boolean = false
 		override fun isSavable(): Boolean = false
+	}
+
+	data class TeamCreate(val form: SeriesFormUiState, val topBar: SeriesFormTopBarUiState) :
+		SeriesFormScreenUiState {
+		override fun isSavable(): Boolean = true
+		override fun hasAnyChanges(): Boolean = true
 	}
 
 	data class Create(val form: SeriesFormUiState, val topBar: SeriesFormTopBarUiState) :
@@ -59,6 +66,7 @@ sealed interface SeriesFormScreenUiAction {
 sealed interface SeriesFormScreenEvent {
 	data class Dismissed(val seriesId: SeriesID?) : SeriesFormScreenEvent
 	data class EditAlley(val alleyId: AlleyID?) : SeriesFormScreenEvent
+	data class StartTeamSeries(val teamSeriesId: TeamSeriesID, val initialGameId: GameID) : SeriesFormScreenEvent
 }
 
 fun MutableStateFlow<SeriesFormScreenUiState>.updateForm(
@@ -67,6 +75,7 @@ fun MutableStateFlow<SeriesFormScreenUiState>.updateForm(
 	this.update { state ->
 		when (state) {
 			SeriesFormScreenUiState.Loading -> state
+			is SeriesFormScreenUiState.TeamCreate -> state.copy(form = function(state.form))
 			is SeriesFormScreenUiState.Create -> state.copy(form = function(state.form))
 			is SeriesFormScreenUiState.Edit -> state.copy(form = function(state.form))
 		}

@@ -44,10 +44,12 @@ import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigate
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToSeriesDetails
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.seriesDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.navigateToNewSeriesForm
+import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.navigateToNewTeamSeriesForm
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.navigateToSeriesForm
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.navigateToSeriesPreBowlForm
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.seriesFormScreen
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.seriesPreBowlFormScreen
+import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.teamSeriesFormScreen
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToMidGameStatisticsDetails
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetails
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetailsChart
@@ -277,9 +279,7 @@ fun NavGraphBuilder.overviewGraph(
 	teamPlay(
 		onDismiss = navController::popBackStack,
 		onTeamLeaguesSelected = navController::navigateToNewTeamSeriesForm,
-		onTeamEventsCreated = { teamSeriesId, initialGameId ->
-			navController.navigateToGamesEditor(teamSeriesId, initialGameId)
-		},
+		onTeamEventsCreated = navController::navigateToGamesEditor,
 		onPickLeague = { bowler, league, result ->
 			navController.navigateToResourcePickerForResult(
 				selectedIds = league?.let { setOf(it) } ?: emptySet(),
@@ -291,5 +291,16 @@ fun NavGraphBuilder.overviewGraph(
 		},
 		onShowTeamPlayOnboarding = navController::navigateToQuickPlayOnboarding,
 	)
+	teamSeriesFormScreen(
+		onDismiss = navController::popBackStack,
+		onStartTeamSeries = navController::navigateToGamesEditor,
+		onEditAlley = { alley, result ->
+			navController.navigateToResourcePickerForResult(
+				selectedIds = alley?.let { setOf(it) } ?: emptySet(),
+				limit = 1,
+				navResultCallback = result,
+				resourceType = ResourcePickerType.ALLEY,
+			)
+		},
 	)
 }

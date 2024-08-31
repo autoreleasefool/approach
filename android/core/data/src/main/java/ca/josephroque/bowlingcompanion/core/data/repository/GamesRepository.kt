@@ -20,6 +20,7 @@ interface GamesRepository {
 	fun getGamesList(seriesId: SeriesID): Flow<List<GameListItem>>
 	fun getGameIds(seriesId: SeriesID): Flow<List<GameID>>
 	fun getGameIndex(gameId: GameID): Flow<Int>
+	fun getTeamSeriesGameIds(teamSeriesId: TeamSeriesID): Flow<List<GameID>>
 
 	suspend fun isGameInProgress(): Boolean
 	suspend fun getGameInProgress(): GameInProgress?

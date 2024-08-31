@@ -111,6 +111,19 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 				SeriesID.fromString(it)
 			} ?: emptyList()
 	}
+	data object EditTeamSeries : Route(
+		"edit_team_series/{teamSeries}/{game}",
+		isBottomBarVisible = false,
+	) {
+		const val ARG_TEAM_SERIES = "teamSeries"
+		const val ARG_GAME = "game"
+		fun createRoute(teamSeries: UUID, game: UUID): String =
+			"edit_team_series/${Uri.encode(teamSeries.toString())}/${Uri.encode(game.toString())}"
+		fun getTeamSeries(savedStateHandle: SavedStateHandle): UUID? =
+			savedStateHandle.get<String>("teamSeries")?.let { UUID.fromString(it) }
+		fun getGame(savedStateHandle: SavedStateHandle): UUID? =
+			savedStateHandle.get<String>("game")?.let { UUID.fromString(it) }
+	}
 	data object ScoresList : Route("scores_list/{series}/{gameIndex}", isBottomBarVisible = false) {
 		const val ARG_SERIES = "series"
 		const val ARG_GAME_INDEX = "gameIndex"
@@ -234,6 +247,19 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	}
 
 	// Series
+	data object AddTeamSeries : Route("add_team_series/{team}/{leagues}", isBottomBarVisible = false) {
+		const val ARG_TEAM = "team"
+		const val ARG_LEAGUES = "leagues"
+		fun createRoute(team: UUID, leagues: List<UUID>): String = "add_team_series/" +
+			"${Uri.encode(team.toString())}/" +
+			leagues.encode()
+		fun getTeam(savedStateHandle: SavedStateHandle): UUID? =
+			savedStateHandle.get<String>("team")?.let { UUID.fromString(it) }
+		fun getLeagues(savedStateHandle: SavedStateHandle): List<UUID> =
+			savedStateHandle.get<String>("leagues")?.decodeList()?.mapNotNull {
+				UUID.fromString(it)
+			} ?: emptyList()
+	}
 	data object AddSeries : Route("add_series/{league}", isBottomBarVisible = false) {
 		const val ARG_LEAGUE = "league"
 		fun createRoute(league: LeagueID): String = "add_series/${Uri.encode(league.toString())}"
