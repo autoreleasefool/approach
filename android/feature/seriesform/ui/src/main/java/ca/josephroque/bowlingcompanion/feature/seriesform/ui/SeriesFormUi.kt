@@ -21,6 +21,7 @@ data class SeriesFormUiState(
 	val isShowingDiscardChangesDialog: Boolean,
 	val isCreatingManualSeries: Boolean?,
 	val manualScores: List<Int>,
+	val isPreBowlSectionVisible: Boolean,
 	val isPreBowlFormEnabled: Boolean,
 	val isManualSeriesEnabled: Boolean,
 )

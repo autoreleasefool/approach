@@ -74,6 +74,19 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 	@Query(
 		"""
 			SELECT
+				games.id
+			FROM games
+			JOIN team_series_series
+				ON team_series_series.series_id = games.series_id
+			WHERE team_series_series.team_series_id = :teamSeriesId
+			ORDER BY team_series_series.position ASC
+		""",
+	)
+	abstract fun getTeamSeriesGameIds(teamSeriesId: UUID): Flow<List<UUID>>
+
+	@Query(
+		"""
+			SELECT
 				games.`index`
 			FROM games
 			WHERE games.id = :gameId

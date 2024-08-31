@@ -26,6 +26,14 @@ fun NavController.navigateToNewSeriesForm(
 	this.navigateForResult(Route.AddSeries.createRoute(leagueId), result, navOptions)
 }
 
+fun NavController.navigateToNewTeamSeriesForm(
+	teamId: UUID,
+	leagues: List<UUID>,
+	navOptions: NavOptions? = null,
+) {
+	this.navigate(Route.AddTeamSeries.createRoute(teamId, leagues), navOptions)
+}
+
 fun NavGraphBuilder.seriesFormScreen(
 	onDismissWithResult: (SeriesID?) -> Unit,
 	onEditAlley: (AlleyID?, NavResultCallback<Set<AlleyID>>) -> Unit,
@@ -39,6 +47,9 @@ fun NavGraphBuilder.seriesFormScreen(
 		SeriesFormRoute(
 			onDismissWithResult = onDismissWithResult,
 			onEditAlley = onEditAlley,
+			onStartTeamSeries = { _, _ ->
+				throw NotImplementedError("SeriesFormRoute should not start Team Series")
+			},
 		)
 	}
 	composable(
@@ -49,6 +60,29 @@ fun NavGraphBuilder.seriesFormScreen(
 	) {
 		SeriesFormRoute(
 			onDismissWithResult = onDismissWithResult,
+			onEditAlley = onEditAlley,
+			onStartTeamSeries = { _, _ ->
+				throw NotImplementedError("SeriesFormRoute should not start Team Series")
+			},
+		)
+	}
+}
+
+fun NavGraphBuilder.teamSeriesFormScreen(
+	onDismiss: () -> Unit,
+	onStartTeamSeries: (UUID, UUID) -> Unit,
+	onEditAlley: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+) {
+	composable(
+		route = Route.AddTeamSeries.route,
+		arguments = listOf(
+			navArgument(Route.AddTeamSeries.ARG_TEAM) { type = NavType.StringType },
+			navArgument(Route.AddTeamSeries.ARG_LEAGUES) { type = NavType.StringType },
+		),
+	) {
+		SeriesFormRoute(
+			onDismissWithResult = { _ -> onDismiss() },
+			onStartTeamSeries = onStartTeamSeries,
 			onEditAlley = onEditAlley,
 		)
 	}

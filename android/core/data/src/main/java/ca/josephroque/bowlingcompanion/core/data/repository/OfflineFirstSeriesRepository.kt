@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.database.dao.TeamSeriesDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesDetailsEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesListEntity
+import ca.josephroque.bowlingcompanion.core.database.model.TeamSeriesCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamSeriesSeriesCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
@@ -26,6 +27,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesConnect
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesCreate
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -85,6 +87,35 @@ class OfflineFirstSeriesRepository @Inject constructor(
 		}
 	}
 
+	override suspend fun insertTeamSeries(teamSeries: TeamSeriesCreate) = withContext(ioDispatcher) {
+		transactionRunner {
+			teamSeriesDao.insertSeries(teamSeries.asEntity())
+			val series = teamSeries.leagues.map { leagueId ->
+				SeriesCreate(
+					id = UUID.randomUUID(),
+					leagueId = leagueId,
+					date = teamSeries.date,
+					preBowl = teamSeries.preBowl,
+					numberOfGames = teamSeries.numberOfGames,
+					manualScores = teamSeries.manualScores?.get(leagueId),
+					excludeFromStatistics = teamSeries.excludeFromStatistics,
+					appliedDate = null,
+					alleyId = teamSeries.alleyId,
+				)
+			}
+
+			val teamSeriesSeries = series.mapIndexed { index, it ->
+				insertSeries(it)
+				TeamSeriesSeriesCrossRef(
+					teamSeriesId = teamSeries.id,
+					seriesId = it.id,
+					position = index,
+				)
+			}
+
+			teamSeriesDao.insertAll(teamSeriesSeries)
+		}
+	}
 
 	override suspend fun insertSeries(series: SeriesCreate) = withContext(ioDispatcher) {
 		transactionRunner {

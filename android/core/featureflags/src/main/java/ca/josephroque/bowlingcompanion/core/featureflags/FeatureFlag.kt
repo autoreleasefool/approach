@@ -26,6 +26,7 @@ enum class FeatureFlag(
 	DATA_IMPORT("DataImport", "2023-10-13", RolloutStage.RELEASE),
 	HIGHEST_SCORE_POSSIBLE("HighestScorePossible", "2024-08-14", RolloutStage.DEVELOPMENT),
 	MANUAL_SERIES_FORM("ManualSeriesForm", "2024-03-28", RolloutStage.RELEASE),
+	MANUAL_TEAM_SERIES_FORM("ManualTeamSeriesForm", "2024-08-30", RolloutStage.RELEASE),
 	PRE_BOWL_FORM("PreBowlForm", "2024-03-24", RolloutStage.RELEASE),
 	TEAMS("Teams", "2024-08-16", RolloutStage.DEVELOPMENT),
 }

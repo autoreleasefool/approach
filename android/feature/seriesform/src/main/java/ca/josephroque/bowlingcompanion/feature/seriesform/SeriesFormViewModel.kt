@@ -6,8 +6,10 @@ import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.series.SeriesArchived
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.series.SeriesCreated
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.series.SeriesUpdated
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.teamseries.TeamSeriesCreated
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
@@ -21,6 +23,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesCreate
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiAction
@@ -42,6 +45,7 @@ class SeriesFormViewModel @Inject constructor(
 	private val alleysRepository: AlleysRepository,
 	private val seriesRepository: SeriesRepository,
 	private val leaguesRepository: LeaguesRepository,
+	private val gamesRepository: GamesRepository,
 	private val analyticsClient: AnalyticsClient,
 	private val featureFlags: FeatureFlagsClient,
 ) : ApproachViewModel<SeriesFormScreenEvent>() {
@@ -52,8 +56,10 @@ class SeriesFormViewModel @Inject constructor(
 	private val hasLoadedInitialState: Boolean
 		get() = _uiState.value !is SeriesFormScreenUiState.Loading
 
-	private val leagueId = Route.AddSeries.getLeague(savedStateHandle)
-	private val seriesId = Route.EditSeries.getSeries(savedStateHandle)
+	private val teamId by lazy { Route.AddTeamSeries.getTeam(savedStateHandle) }
+	private val teamLeagues by lazy { Route.AddTeamSeries.getLeagues(savedStateHandle) }
+	private val leagueId by lazy { Route.AddSeries.getLeague(savedStateHandle) }
+	private val seriesId by lazy { Route.EditSeries.getSeries(savedStateHandle) }
 
 	fun handleAction(action: SeriesFormScreenUiAction) {
 		when (action) {
@@ -97,9 +103,34 @@ class SeriesFormViewModel @Inject constructor(
 			val series = seriesId?.let { seriesRepository.getSeriesDetails(it).first() }
 			val league = (leagueId ?: series?.properties?.leagueId)?.let {
 				leaguesRepository.getLeagueDetails(it).first()
-			} ?: return@launch
+			}
 
-			val uiState = if (series == null) {
+			val uiState = if (league == null) {
+				val currentDate = Clock.System.todayIn(TimeZone.currentSystemDefault())
+				SeriesFormScreenUiState.TeamCreate(
+					form = SeriesFormUiState(
+						numberOfGames = Series.DEFAULT_NUMBER_OF_GAMES,
+						date = currentDate,
+						appliedDate = currentDate,
+						preBowl = SeriesPreBowl.REGULAR,
+						excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+						leagueExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+						alley = null,
+						isDatePickerVisible = false,
+						isShowingArchiveDialog = false,
+						isArchiveButtonEnabled = false,
+						isShowingDiscardChangesDialog = false,
+						isPreBowlSectionVisible = false,
+						isPreBowlFormEnabled = false,
+						isAppliedDatePickerVisible = false,
+						isUsingPreBowl = false,
+						isCreatingManualSeries = false,
+						manualScores = emptyList(),
+						isManualSeriesEnabled = featureFlags.isEnabled(FeatureFlag.MANUAL_TEAM_SERIES_FORM),
+					),
+					topBar = SeriesFormTopBarUiState(existingDate = null),
+				)
+			} else if (series == null) {
 				val currentDate = Clock.System.todayIn(TimeZone.currentSystemDefault())
 				SeriesFormScreenUiState.Create(
 					form = SeriesFormUiState(
@@ -114,6 +145,7 @@ class SeriesFormViewModel @Inject constructor(
 						isShowingArchiveDialog = false,
 						isArchiveButtonEnabled = false,
 						isShowingDiscardChangesDialog = false,
+						isPreBowlSectionVisible = true,
 						isPreBowlFormEnabled = featureFlags.isEnabled(FeatureFlag.PRE_BOWL_FORM),
 						isAppliedDatePickerVisible = false,
 						isUsingPreBowl = false,
@@ -148,6 +180,7 @@ class SeriesFormViewModel @Inject constructor(
 						isArchiveButtonEnabled = true,
 						isShowingDiscardChangesDialog = false,
 						isAppliedDatePickerVisible = false,
+						isPreBowlSectionVisible = true,
 						isUsingPreBowl = series.properties.appliedDate != null &&
 							series.properties.preBowl == SeriesPreBowl.PRE_BOWL,
 						isPreBowlFormEnabled = featureFlags.isEnabled(FeatureFlag.PRE_BOWL_FORM),
@@ -170,6 +203,7 @@ class SeriesFormViewModel @Inject constructor(
 			SeriesFormScreenEvent.EditAlley(
 				alleyId = when (val state = _uiState.value) {
 					SeriesFormScreenUiState.Loading -> return
+					is SeriesFormScreenUiState.TeamCreate -> state.form.alley?.id
 					is SeriesFormScreenUiState.Create -> state.form.alley?.id
 					is SeriesFormScreenUiState.Edit -> state.form.alley?.id
 				},
@@ -212,8 +246,10 @@ class SeriesFormViewModel @Inject constructor(
 	private fun archiveSeries() {
 		viewModelScope.launch {
 			val series = when (val uiState = _uiState.value) {
-				SeriesFormScreenUiState.Loading -> return@launch
-				is SeriesFormScreenUiState.Create -> return@launch
+				SeriesFormScreenUiState.Loading,
+				is SeriesFormScreenUiState.Create,
+				is SeriesFormScreenUiState.TeamCreate,
+				-> return@launch
 				is SeriesFormScreenUiState.Edit -> uiState.initialValue
 			}
 
@@ -348,6 +384,29 @@ class SeriesFormViewModel @Inject constructor(
 		viewModelScope.launch {
 			when (val state = _uiState.value) {
 				SeriesFormScreenUiState.Loading -> return@launch
+				is SeriesFormScreenUiState.TeamCreate -> {
+					val teamSeries = TeamSeriesCreate(
+						teamId = teamId ?: return@launch,
+						id = UUID.randomUUID(),
+						leagues = teamLeagues.takeIf { it.isNotEmpty() } ?: return@launch,
+						date = state.form.date,
+						numberOfGames = state.form.numberOfGames ?: Series.DEFAULT_NUMBER_OF_GAMES,
+						preBowl = SeriesPreBowl.REGULAR,
+						alleyId = state.form.alley?.id,
+						excludeFromStatistics = state.form.excludeFromStatistics,
+						manualScores = null, // FIXME: Should be able to select manual scores
+					)
+
+					seriesRepository.insertTeamSeries(teamSeries)
+					val initialGameId = gamesRepository.getTeamSeriesGameIds(teamSeries.id).first().first()
+					sendEvent(
+						SeriesFormScreenEvent.StartTeamSeries(
+							teamSeriesId = teamSeries.id,
+							initialGameId = initialGameId,
+						),
+					)
+					analyticsClient.trackEvent(TeamSeriesCreated)
+				}
 				is SeriesFormScreenUiState.Create -> {
 					val isUnusedPreBowl = state.form.preBowl == SeriesPreBowl.PRE_BOWL &&
 						!state.form.isUsingPreBowl
