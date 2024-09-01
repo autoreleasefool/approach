@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Relation
 import ca.josephroque.bowlingcompanion.core.model.AlleyCreate
 import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
 import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
@@ -29,7 +30,7 @@ import java.util.UUID
 	],
 )
 data class AlleyEntity(
-	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: UUID,
+	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: AlleyID,
 	@ColumnInfo(name = "name") val name: String,
 	@ColumnInfo(name = "material") val material: AlleyMaterial?,
 	@ColumnInfo(name = "pin_fall") val pinFall: AlleyPinFall?,
@@ -39,7 +40,7 @@ data class AlleyEntity(
 )
 
 data class AlleyDetailsEntity(
-	val id: UUID,
+	val id: AlleyID,
 	val name: String,
 	val material: AlleyMaterial?,
 	@ColumnInfo(name = "pin_fall") val pinFall: AlleyPinFall?,
@@ -57,7 +58,7 @@ data class AlleyDetailsEntity(
 }
 
 data class AlleyCreateEntity(
-	val id: UUID,
+	val id: AlleyID,
 	val name: String,
 	val material: AlleyMaterial?,
 	@ColumnInfo(name = "pin_fall") val pinFall: AlleyPinFall?,
@@ -96,7 +97,7 @@ data class AlleyUpdateEntity(
 }
 
 data class AlleyDetailsUpdateEntity(
-	val id: UUID,
+	val id: AlleyID,
 	val name: String,
 	val material: AlleyMaterial?,
 	@ColumnInfo(name = "pin_fall") val pinFall: AlleyPinFall?,

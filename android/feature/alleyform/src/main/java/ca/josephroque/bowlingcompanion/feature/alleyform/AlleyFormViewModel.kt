@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.model.AlleyCreate
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
 import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
@@ -38,7 +39,7 @@ class AlleyFormViewModel @Inject constructor(
 	private val analyticsClient: AnalyticsClient,
 ) : ApproachViewModel<AlleyFormScreenEvent>() {
 	private val isEditing = Route.EditAlley.getAlley(savedStateHandle) != null
-	private val alleyId = Route.EditAlley.getAlley(savedStateHandle) ?: UUID.randomUUID().also {
+	private val alleyId = Route.EditAlley.getAlley(savedStateHandle) ?: AlleyID.randomID().also {
 		savedStateHandle[Route.EditAlley.ARG_ALLEY] = it.toString()
 	}
 

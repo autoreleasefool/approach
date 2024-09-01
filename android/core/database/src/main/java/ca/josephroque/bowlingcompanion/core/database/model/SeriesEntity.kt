@@ -7,6 +7,7 @@ import androidx.room.ForeignKey
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
@@ -18,7 +19,6 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesListProperties
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.TrackableSeries
-import java.util.UUID
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 
@@ -48,7 +48,7 @@ data class SeriesEntity(
 	@ColumnInfo(name = "applied_date") val appliedDate: LocalDate? = null,
 	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
-	@ColumnInfo(name = "alley_id", index = true) val alleyId: UUID?,
+	@ColumnInfo(name = "alley_id", index = true) val alleyId: AlleyID?,
 	@ColumnInfo(name = "archived_on", defaultValue = "NULL") val archivedOn: Instant? = null,
 )
 
@@ -73,7 +73,7 @@ data class SeriesCreateEntity(
 	@Ignore val numberOfGames: Int,
 	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
-	@ColumnInfo(name = "alley_id") val alleyId: UUID?,
+	@ColumnInfo(name = "alley_id") val alleyId: AlleyID?,
 )
 
 fun SeriesCreate.asEntity(): SeriesCreateEntity = SeriesCreateEntity(

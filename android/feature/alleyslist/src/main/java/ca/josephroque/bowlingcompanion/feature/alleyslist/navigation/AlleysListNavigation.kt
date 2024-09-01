@@ -4,9 +4,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.alleyslist.AlleysListRoute
-import java.util.UUID
 
 fun NavController.navigateToAlleysList(navOptions: NavOptions? = null) {
 	this.navigate(Route.AlleysList.route, navOptions)
@@ -14,8 +14,8 @@ fun NavController.navigateToAlleysList(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.alleysListScreen(
 	onBackPressed: () -> Unit,
-	onEditAlley: (UUID) -> Unit,
-	onShowAlleyDetails: (UUID) -> Unit,
+	onEditAlley: (AlleyID) -> Unit,
+	onShowAlleyDetails: (AlleyID) -> Unit,
 	onAddAlley: () -> Unit,
 ) {
 	composable(

@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.seriesform
 
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
@@ -7,7 +8,6 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiState
-import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -51,14 +51,14 @@ fun SeriesFormUiState.updatedModel(existing: SeriesUpdate): SeriesUpdate = exist
 
 sealed interface SeriesFormScreenUiAction {
 	data object LoadSeries : SeriesFormScreenUiAction
-	data class AlleyUpdated(val alleyId: UUID?) : SeriesFormScreenUiAction
+	data class AlleyUpdated(val alleyId: AlleyID?) : SeriesFormScreenUiAction
 
 	data class SeriesForm(val action: SeriesFormUiAction) : SeriesFormScreenUiAction
 }
 
 sealed interface SeriesFormScreenEvent {
 	data class Dismissed(val seriesId: SeriesID?) : SeriesFormScreenEvent
-	data class EditAlley(val alleyId: UUID?) : SeriesFormScreenEvent
+	data class EditAlley(val alleyId: AlleyID?) : SeriesFormScreenEvent
 }
 
 fun MutableStateFlow<SeriesFormScreenUiState>.updateForm(

@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor
 
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
@@ -18,10 +19,10 @@ object GamesEditorArguments {
 
 	data class EditRolledBall(val ballId: UUID?, val onBallUpdated: NavResultCallback<Set<UUID>>)
 
-	data class EditAlley(val alleyId: UUID?, val onAlleyUpdated: NavResultCallback<Set<UUID>>)
+	data class EditAlley(val alleyId: AlleyID?, val onAlleyUpdated: NavResultCallback<Set<AlleyID>>)
 
 	data class EditLanes(
-		val alleyId: UUID,
+		val alleyId: AlleyID,
 		val laneIds: Set<UUID>,
 		val onLanesUpdated: NavResultCallback<Set<UUID>>,
 	)
@@ -69,7 +70,7 @@ sealed interface GamesEditorScreenUiAction {
 	data object HighestPossibleScoreSnackBarDismissed : GamesEditorScreenUiAction
 
 	data class GearUpdated(val gearIds: Set<UUID>) : GamesEditorScreenUiAction
-	data class AlleyUpdated(val alleyId: UUID?) : GamesEditorScreenUiAction
+	data class AlleyUpdated(val alleyId: AlleyID?) : GamesEditorScreenUiAction
 	data class LanesUpdated(val laneIds: Set<UUID>) : GamesEditorScreenUiAction
 	data class GamesEditor(val action: GamesEditorUiAction) : GamesEditorScreenUiAction
 	data class GameDetails(val action: GameDetailsUiAction) : GamesEditorScreenUiAction
@@ -85,8 +86,8 @@ sealed interface GamesEditorScreenEvent {
 
 	data class EditMatchPlay(val gameId: GameID) : GamesEditorScreenEvent
 	data class EditGear(val gearIds: Set<UUID>) : GamesEditorScreenEvent
-	data class EditAlley(val alleyId: UUID?) : GamesEditorScreenEvent
-	data class EditLanes(val alleyId: UUID, val laneIds: Set<UUID>) : GamesEditorScreenEvent
+	data class EditAlley(val alleyId: AlleyID?) : GamesEditorScreenEvent
+	data class EditLanes(val alleyId: AlleyID, val laneIds: Set<UUID>) : GamesEditorScreenEvent
 	data class EditRolledBall(val ballId: UUID?) : GamesEditorScreenEvent
 	data class ShowGamesSettings(val series: List<SeriesID>, val currentGameId: GameID) :
 		GamesEditorScreenEvent

@@ -41,7 +41,7 @@ data class TrackableFilter(
 	)
 
 	sealed interface AlleyFilter {
-		data class Alley(val id: UUID) : AlleyFilter
+		data class Alley(val id: AlleyID) : AlleyFilter
 		data class Properties(
 			val material: AlleyMaterial? = null,
 			val mechanism: AlleyMechanism? = null,

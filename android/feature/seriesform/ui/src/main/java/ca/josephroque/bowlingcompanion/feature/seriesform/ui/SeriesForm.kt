@@ -30,6 +30,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSwi
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.PickableResourceCard
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.Stepper
 import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.components.SeriesDatePicker
@@ -354,7 +355,7 @@ private fun SeriesFormPreview() {
 				excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 				leagueExcludeFromStatistics = ExcludeFromStatistics.EXCLUDE,
 				alley = AlleyDetails(
-					id = UUID.randomUUID(),
+					id = AlleyID.randomID(),
 					name = "Test Alley",
 					material = null,
 					mechanism = null,

@@ -23,6 +23,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
@@ -960,7 +961,7 @@ class GamesEditorViewModel @Inject constructor(
 		}
 	}
 
-	private fun updateAlley(alleyId: UUID?) {
+	private fun updateAlley(alleyId: AlleyID?) {
 		if (isGameLocked) return
 
 		viewModelScope.launch {

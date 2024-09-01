@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
@@ -62,9 +63,9 @@ class ResourcePickerViewModel @Inject constructor(
 			when (resourceType) {
 				ResourcePickerType.LEAGUE -> ResourcePickerFilter.Str(it)
 				ResourcePickerType.GEAR -> ResourcePickerFilter.Gear(GearKind.valueOf(it))
-				ResourcePickerType.LANE -> ResourcePickerFilter.Alley(UUID.fromString(it))
+				ResourcePickerType.LANE -> ResourcePickerFilter.Alley(AlleyID.fromString(it))
 				ResourcePickerType.SERIES -> ResourcePickerFilter.Str(it)
-				ResourcePickerType.GAME -> ResourcePickerFilter.Series(UUID.fromString(it))
+				ResourcePickerType.GAME -> ResourcePickerFilter.Series(SeriesID.fromString(it))
 				ResourcePickerType.BOWLER, ResourcePickerType.ALLEY -> null
 			}
 		}
@@ -81,7 +82,7 @@ class ResourcePickerViewModel @Inject constructor(
 		)
 		ResourcePickerType.GAME -> GamePickerDataProvider(
 			gamesRepository,
-			(filter as? ResourcePickerFilter.Series)?.id?.let { SeriesID(it) },
+			(filter as? ResourcePickerFilter.Series)?.id,
 		)
 		ResourcePickerType.GEAR -> GearPickerDataProvider(
 			gearRepository,

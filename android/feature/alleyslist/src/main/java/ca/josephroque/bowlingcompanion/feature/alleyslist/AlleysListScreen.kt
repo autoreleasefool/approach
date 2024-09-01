@@ -15,17 +15,17 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysList
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListTopBar
-import java.util.UUID
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun AlleysListRoute(
 	onBackPressed: () -> Unit,
-	onEditAlley: (UUID) -> Unit,
+	onEditAlley: (AlleyID) -> Unit,
 	onAddAlley: () -> Unit,
-	onShowAlleyDetails: (UUID) -> Unit,
+	onShowAlleyDetails: (AlleyID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: AlleysListViewModel = hiltViewModel(),
 ) {

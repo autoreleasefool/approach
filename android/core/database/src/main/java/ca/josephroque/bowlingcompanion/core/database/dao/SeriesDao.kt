@@ -10,12 +10,12 @@ import ca.josephroque.bowlingcompanion.core.database.model.SeriesDetailsEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesListEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesUpdateEntity
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
-import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -97,7 +97,7 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 	abstract fun getArchivedSeries(): Flow<List<ArchivedSeries>>
 
 	@Query("UPDATE series SET alley_id = :alleyId WHERE id = :seriesId")
-	abstract fun setSeriesAlley(seriesId: SeriesID, alleyId: UUID?)
+	abstract fun setSeriesAlley(seriesId: SeriesID, alleyId: AlleyID?)
 
 	@Insert(entity = SeriesEntity::class)
 	abstract fun insertSeries(series: SeriesCreateEntity)

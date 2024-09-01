@@ -6,6 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.alleyform.AlleyFormRoute
@@ -15,7 +16,7 @@ fun NavController.navigateToNewAlleyForm(navOptions: NavOptions? = null) {
 	this.navigate(Route.AddAlley.route, navOptions)
 }
 
-fun NavController.navigateToAlleyForm(alleyId: UUID, navOptions: NavOptions? = null) {
+fun NavController.navigateToAlleyForm(alleyId: AlleyID, navOptions: NavOptions? = null) {
 	this.navigate(Route.EditAlley.createRoute(alleyId), navOptions)
 }
 

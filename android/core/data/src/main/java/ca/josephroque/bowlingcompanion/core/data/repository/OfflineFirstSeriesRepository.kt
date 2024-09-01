@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesDetailsEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesListEntity
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameCreate
@@ -22,7 +23,6 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -80,7 +80,7 @@ class OfflineFirstSeriesRepository @Inject constructor(
 		}
 	}
 
-	override suspend fun setSeriesAlley(seriesId: SeriesID, alleyId: UUID?) =
+	override suspend fun setSeriesAlley(seriesId: SeriesID, alleyId: AlleyID?) =
 		withContext(ioDispatcher) {
 			transactionRunner {
 				val series = seriesDao.getSeriesDetails(seriesId).firstOrNull() ?: return@transactionRunner

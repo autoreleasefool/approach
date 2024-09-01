@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
@@ -110,6 +111,25 @@ fun NavController.navigateToGamePickerForResult(
 		resourceType = ResourcePickerType.GAME,
 		navResultCallback = @JvmSerializableLambda { ids ->
 			navResultCallback(ids.map { GameID(it) }.toSet())
+		},
+		navOptions = navOptions,
+	)
+}
+
+fun NavController.navigateToAlleyPickerForResult(
+	selectedIds: Set<AlleyID>,
+	hiddenIds: Set<AlleyID> = emptySet(),
+	limit: Int = 0,
+	navResultCallback: NavResultCallback<Set<AlleyID>>,
+	navOptions: NavOptions? = null,
+) {
+	this.navigateToResourcePickerForResult(
+		selectedIds = selectedIds.map { it.value }.toSet(),
+		hiddenIds = hiddenIds.map { it.value }.toSet(),
+		limit = limit,
+		resourceType = ResourcePickerType.ALLEY,
+		navResultCallback = @JvmSerializableLambda { ids ->
+			navResultCallback(ids.map { AlleyID(it) }.toSet())
 		},
 		navOptions = navOptions,
 	)

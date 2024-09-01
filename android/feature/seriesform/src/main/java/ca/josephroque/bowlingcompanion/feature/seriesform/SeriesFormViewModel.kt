@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.League
@@ -25,7 +26,6 @@ import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBarUiS
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -177,7 +177,7 @@ class SeriesFormViewModel @Inject constructor(
 		)
 	}
 
-	private fun updateAlley(alleyId: UUID?) {
+	private fun updateAlley(alleyId: AlleyID?) {
 		if (!hasLoadedInitialState) return
 		viewModelScope.launch {
 			val alleyDetails = alleyId?.let { alleysRepository.getAlleyDetails(it).first() }

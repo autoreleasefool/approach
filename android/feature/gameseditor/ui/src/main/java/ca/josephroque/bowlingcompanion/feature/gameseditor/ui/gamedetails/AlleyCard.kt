@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.RoundIconButton
 import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import ca.josephroque.bowlingcompanion.core.model.ui.LaneRow
@@ -94,7 +95,7 @@ private fun AlleyCardPreview() {
 			state = GameDetailsUiState.AlleyCardUiState(
 // 				selectedAlley = null,
 				selectedAlley = AlleyDetails(
-					id = UUID.randomUUID(),
+					id = AlleyID.randomID(),
 					name = "Grandview Lanes",
 					material = null,
 					pinFall = null,

@@ -75,7 +75,7 @@ data class SeriesDetails(
 
 data class SeriesDetailsProperties(
 	val leagueId: LeagueID,
-	val alleyId: UUID?,
+	val alleyId: AlleyID?,
 	val id: SeriesID,
 	val date: LocalDate,
 	val appliedDate: LocalDate?,
@@ -94,7 +94,7 @@ data class SeriesCreate(
 	val preBowl: SeriesPreBowl,
 	val manualScores: List<Int>?,
 	val excludeFromStatistics: ExcludeFromStatistics,
-	val alleyId: UUID?,
+	val alleyId: AlleyID?,
 )
 
 data class SeriesUpdate(
@@ -103,7 +103,7 @@ data class SeriesUpdate(
 	val appliedDate: LocalDate?,
 	val preBowl: SeriesPreBowl,
 	val excludeFromStatistics: ExcludeFromStatistics,
-	val alleyId: UUID?,
+	val alleyId: AlleyID?,
 )
 
 enum class SeriesPreBowl {

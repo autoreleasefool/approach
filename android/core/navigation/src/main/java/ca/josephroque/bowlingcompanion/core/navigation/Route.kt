@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.core.navigation
 
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.GameID
@@ -37,9 +38,9 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	data object AddAlley : Route("add_alley", isBottomBarVisible = false)
 	data object EditAlley : Route("edit_alley/{alley}", isBottomBarVisible = false) {
 		const val ARG_ALLEY = "alley"
-		fun createRoute(alley: UUID): String = "edit_alley/${Uri.encode(alley.toString())}"
-		fun getAlley(savedStateHandle: SavedStateHandle): UUID? =
-			savedStateHandle.get<String>("alley")?.let { UUID.fromString(it) }
+		fun createRoute(alley: AlleyID): String = "edit_alley/${Uri.encode(alley.toString())}"
+		fun getAlley(savedStateHandle: SavedStateHandle): AlleyID? =
+			savedStateHandle.get<String>("alley")?.let { AlleyID.fromString(it) }
 	}
 
 	// Archives

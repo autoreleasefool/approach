@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.LaneDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import java.util.UUID
@@ -18,7 +19,7 @@ class OfflineFirstLanesRepository @Inject constructor(
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ) : LanesRepository {
-	override fun getAlleyLanes(alleyId: UUID): Flow<List<LaneListItem>> =
+	override fun getAlleyLanes(alleyId: AlleyID): Flow<List<LaneListItem>> =
 		laneDao.getAlleyLanes(alleyId)
 
 	override fun getLanes(ids: List<UUID>): Flow<List<LaneListItem>> = laneDao.getLanes(ids)
@@ -29,7 +30,7 @@ class OfflineFirstLanesRepository @Inject constructor(
 		laneDao.insertAll(lanes.map(LaneListItem::asEntity))
 	}
 
-	override suspend fun setAlleyLanes(alleyId: UUID, lanes: List<LaneListItem>) =
+	override suspend fun setAlleyLanes(alleyId: AlleyID, lanes: List<LaneListItem>) =
 		withContext(ioDispatcher) {
 			transactionRunner {
 				laneDao.deleteAlleyLanes(alleyId)

@@ -10,9 +10,9 @@ import ca.josephroque.bowlingcompanion.core.database.model.AlleyDetailsEntity
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyDetailsUpdateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyEntity
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyUpdateEntity
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
 import ca.josephroque.bowlingcompanion.core.model.GameID
-import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -20,7 +20,7 @@ abstract class AlleyDao {
 	@Query(
 		"""
 			SELECT 
-				alleys.id AS id,
+				alleys.id AS alleyId,
 				alleys.name AS name,
 				alleys.material AS material,
 				alleys.pin_fall AS pinFall,
@@ -33,7 +33,7 @@ abstract class AlleyDao {
 	abstract fun getAlleysList(): Flow<List<AlleyListItem>>
 
 	@Query("SELECT * FROM alleys WHERE alleys.id = :id")
-	abstract fun getAlleyDetails(id: UUID): Flow<AlleyDetailsEntity>
+	abstract fun getAlleyDetails(id: AlleyID): Flow<AlleyDetailsEntity>
 
 	@Query(
 		"""
@@ -67,7 +67,7 @@ abstract class AlleyDao {
 			WHERE alleys.id = :alleyId
 		""",
 	)
-	abstract fun getAlleyUpdate(alleyId: UUID): Flow<AlleyUpdateEntity>
+	abstract fun getAlleyUpdate(alleyId: AlleyID): Flow<AlleyUpdateEntity>
 
 	@Insert(entity = AlleyEntity::class)
 	abstract fun insertAlley(alley: AlleyCreateEntity)
@@ -76,5 +76,5 @@ abstract class AlleyDao {
 	abstract fun updateAlley(alley: AlleyDetailsUpdateEntity)
 
 	@Query("DELETE FROM alleys WHERE id = :alleyId")
-	abstract fun deleteAlley(alleyId: UUID)
+	abstract fun deleteAlley(alleyId: AlleyID)
 }

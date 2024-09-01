@@ -46,9 +46,9 @@ fun AlleysList(
 		} else {
 			alleysList(
 				list = state.list,
-				onAlleyClick = { onAction(AlleysListUiAction.AlleyClicked(it.id)) },
+				onAlleyClick = { onAction(AlleysListUiAction.AlleyClicked(it.alleyId)) },
 				onAlleyDelete = { onAction(AlleysListUiAction.AlleyDeleted(it)) },
-				onAlleyEdit = { onAction(AlleysListUiAction.AlleyEdited(it.id)) },
+				onAlleyEdit = { onAction(AlleysListUiAction.AlleyEdited(it.alleyId)) },
 			)
 		}
 	}

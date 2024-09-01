@@ -16,9 +16,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class AlleysListViewModel @Inject constructor(
-	private val alleysRepository: AlleysRepository,
-) : ApproachViewModel<AlleysListScreenEvent>() {
+class AlleysListViewModel @Inject constructor(private val alleysRepository: AlleysRepository) :
+	ApproachViewModel<AlleysListScreenEvent>() {
 	private val alleyToDelete: MutableStateFlow<AlleyListItem?> = MutableStateFlow(null)
 
 	val uiState: StateFlow<AlleysListScreenUiState> =
@@ -67,7 +66,7 @@ class AlleysListViewModel @Inject constructor(
 	private fun deleteAlley() {
 		val alley = alleyToDelete.value ?: return
 		viewModelScope.launch {
-			alleysRepository.deleteAlley(alley.id)
+			alleysRepository.deleteAlley(alley.alleyId)
 			setDeleteAlleyPrompt(null)
 		}
 	}

@@ -1,19 +1,34 @@
 package ca.josephroque.bowlingcompanion.core.model
 
+import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.core.model.utils.SortableByUUID
 import java.util.UUID
+import kotlinx.parcelize.Parcelize
+
+@JvmInline
+@Parcelize
+value class AlleyID(val value: UUID) : Parcelable {
+	override fun toString(): String = value.toString()
+	companion object {
+		fun randomID(): AlleyID = AlleyID(UUID.randomUUID())
+		fun fromString(string: String): AlleyID = AlleyID(UUID.fromString(string))
+	}
+}
 
 data class AlleyListItem(
-	override val id: UUID,
+	val alleyId: AlleyID,
 	val name: String,
 	val material: AlleyMaterial?,
 	val pinFall: AlleyPinFall?,
 	val mechanism: AlleyMechanism?,
 	val pinBase: AlleyPinBase?,
-) : SortableByUUID
+) : SortableByUUID {
+	override val id: UUID
+		get() = alleyId.value
+}
 
 data class AlleyDetails(
-	val id: UUID,
+	val id: AlleyID,
 	val name: String,
 	val material: AlleyMaterial?,
 	val pinFall: AlleyPinFall?,
@@ -22,7 +37,7 @@ data class AlleyDetails(
 )
 
 data class AlleyCreate(
-	val id: UUID,
+	val id: AlleyID,
 	val name: String,
 	val material: AlleyMaterial?,
 	val pinFall: AlleyPinFall?,
@@ -32,7 +47,7 @@ data class AlleyCreate(
 )
 
 data class AlleyUpdate(
-	val id: UUID,
+	val id: AlleyID,
 	val name: String,
 	val material: AlleyMaterial?,
 	val pinFall: AlleyPinFall?,
@@ -41,7 +56,7 @@ data class AlleyUpdate(
 	val lanes: List<LaneListItem>,
 ) {
 	data class Properties(
-		val id: UUID,
+		val id: AlleyID,
 		val name: String,
 		val material: AlleyMaterial?,
 		val pinFall: AlleyPinFall?,

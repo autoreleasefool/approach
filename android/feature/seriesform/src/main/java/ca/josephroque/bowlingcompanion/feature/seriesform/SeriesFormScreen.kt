@@ -15,19 +15,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesForm
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBar
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiAction
-import java.util.UUID
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun SeriesFormRoute(
 	onDismissWithResult: (SeriesID?) -> Unit,
-	onEditAlley: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onEditAlley: (AlleyID?, NavResultCallback<Set<AlleyID>>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: SeriesFormViewModel = hiltViewModel(),
 ) {

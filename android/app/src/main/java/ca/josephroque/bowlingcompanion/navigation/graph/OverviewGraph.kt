@@ -32,6 +32,7 @@ import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.onboardingS
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.opponentMigrationScreen
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToQuickPlay
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewScreen
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToAlleyPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToLeaguePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
@@ -138,11 +139,10 @@ fun NavGraphBuilder.overviewGraph(
 	seriesFormScreen(
 		onDismissWithResult = navController::popBackStackWithResult,
 		onEditAlley = { alley, result ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToAlleyPickerForResult(
 				selectedIds = alley?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = result,
-				resourceType = ResourcePickerType.ALLEY,
 			)
 		},
 	)
@@ -181,11 +181,10 @@ fun NavGraphBuilder.overviewGraph(
 			)
 		},
 		onEditAlley = { args ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToAlleyPickerForResult(
 				selectedIds = args.alleyId?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = args.onAlleyUpdated,
-				resourceType = ResourcePickerType.ALLEY,
 			)
 		},
 		onEditLanes = { args ->
