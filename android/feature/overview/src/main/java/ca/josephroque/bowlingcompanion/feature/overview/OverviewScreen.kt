@@ -28,13 +28,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.overview.ui.Overview
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewFloatingActionButton
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewTopBar
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewTopBarUiState
-import java.util.UUID
 import kotlinx.coroutines.launch
 
 @Composable
@@ -45,7 +45,7 @@ internal fun OverviewRoute(
 	onEditStatisticsWidgets: (String) -> Unit,
 	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 	onShowQuickPlay: () -> Unit,
-	onResumeGame: (List<SeriesID>, UUID) -> Unit,
+	onResumeGame: (List<SeriesID>, GameID) -> Unit,
 	onShowWidgetNotEnoughDataError: () -> Unit,
 	onShowWidgetUnavailableError: () -> Unit,
 	modifier: Modifier = Modifier,

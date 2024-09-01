@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.gameseditor.utils
 
 import ca.josephroque.bowlingcompanion.core.model.Frame
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.Roll
@@ -11,15 +12,14 @@ import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.NextGameEditableElement
-import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 
-data class GameLoadDate(val gameId: UUID, val durationMillisWhenLoaded: Long, val loadedAt: Long)
+data class GameLoadDate(val gameId: GameID, val durationMillisWhenLoaded: Long, val loadedAt: Long)
 
 inline fun MutableStateFlow<GameDetailsUiState>.updateGameDetails(
-	gameId: UUID,
+	gameId: GameID,
 	function: (GameDetailsUiState) -> GameDetailsUiState,
 ) {
 	this.update { state ->
@@ -32,7 +32,7 @@ inline fun MutableStateFlow<GameDetailsUiState>.updateGameDetails(
 }
 
 inline fun MutableStateFlow<GameDetailsUiState>.updateGameDetailsAndGet(
-	gameId: UUID,
+	gameId: GameID,
 	function: (GameDetailsUiState) -> GameDetailsUiState,
 ) = this.updateAndGet { state ->
 	if (state.gameId != gameId) {
@@ -43,7 +43,7 @@ inline fun MutableStateFlow<GameDetailsUiState>.updateGameDetailsAndGet(
 }
 
 inline fun MutableStateFlow<GamesEditorUiState>.updateGamesEditor(
-	gameId: UUID,
+	gameId: GameID,
 	function: (GamesEditorUiState) -> GamesEditorUiState,
 ) {
 	this.update { state ->
@@ -56,7 +56,7 @@ inline fun MutableStateFlow<GamesEditorUiState>.updateGamesEditor(
 }
 
 inline fun MutableStateFlow<GamesEditorUiState>.updateGamesEditorAndGet(
-	gameId: UUID,
+	gameId: GameID,
 	function: (GamesEditorUiState) -> GamesEditorUiState,
 ): GamesEditorUiState = this.updateAndGet { state ->
 	if (state.gameId != gameId) {

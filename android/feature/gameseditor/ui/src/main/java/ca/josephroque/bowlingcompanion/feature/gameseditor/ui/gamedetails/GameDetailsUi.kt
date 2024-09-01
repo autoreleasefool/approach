@@ -4,6 +4,7 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
@@ -12,22 +13,21 @@ import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.lanes.CopyLanesDialogUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.lanes.CopyLanesDialogUiState
-import java.util.UUID
 
 sealed interface NextGameEditableElement {
 	data class Roll(val rollIndex: Int) : NextGameEditableElement
 	data class Frame(val frameIndex: Int) : NextGameEditableElement
-	data class Game(val gameIndex: Int, val game: UUID) : NextGameEditableElement
+	data class Game(val gameIndex: Int, val game: GameID) : NextGameEditableElement
 	data class BowlerGame(val gameIndex: Int, val bowler: BowlerID) : NextGameEditableElement
 	data class Bowler(val name: String, val bowler: BowlerID) : NextGameEditableElement
 }
 
 data class GameDetailsUiState(
-	val gameId: UUID,
+	val gameId: GameID,
 	val currentGameIndex: Int = 0,
 	val bowlers: List<BowlerSummary> = emptyList(),
 	val currentBowlerIndex: Int = 0,
-	val seriesGameIds: List<UUID> = emptyList(),
+	val seriesGameIds: List<GameID> = emptyList(),
 	val header: HeaderUiState = HeaderUiState(),
 	val gear: GearCardUiState = GearCardUiState(),
 	val alley: AlleyCardUiState = AlleyCardUiState(),

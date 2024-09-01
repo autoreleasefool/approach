@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.ScoresRepository
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScorePosition
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetConfiguration
@@ -13,7 +14,6 @@ import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scores.ScoresListUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scores.ScoresListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,7 +32,7 @@ class ScoresListViewModel @Inject constructor(
 ) : ApproachViewModel<ScoresListScreenEvent>() {
 	private val series = Route.ScoresList.getSeries(savedStateHandle)
 	private val gameIndex = Route.ScoresList.getGameIndex(savedStateHandle) ?: 0
-	private val gameIdOrder: MutableStateFlow<Map<UUID, Int>> = MutableStateFlow(emptyMap())
+	private val gameIdOrder: MutableStateFlow<Map<GameID, Int>> = MutableStateFlow(emptyMap())
 
 	private val _uiState = MutableStateFlow(ScoresListUiState(gameIndex = gameIndex))
 	val uiState: StateFlow<ScoresListScreenUiState> = _uiState

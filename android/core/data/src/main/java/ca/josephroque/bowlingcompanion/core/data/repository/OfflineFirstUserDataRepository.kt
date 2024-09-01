@@ -2,12 +2,12 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.datastore.ApproachPreferencesDataSource
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
@@ -124,7 +124,7 @@ class OfflineFirstUserDataRepository @Inject constructor(
 		}
 	}
 
-	override suspend fun setLatestGameInEditor(id: UUID) {
+	override suspend fun setLatestGameInEditor(id: GameID) {
 		approachPreferencesDataSource.setLatestGameInEditor(id.toString())
 	}
 

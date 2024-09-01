@@ -1,12 +1,12 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
-import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 
 interface UserDataRepository {
@@ -44,7 +44,7 @@ interface UserDataRepository {
 	suspend fun didDismissFrameDragHint()
 
 	suspend fun setLatestSeriesInEditor(ids: List<SeriesID>)
-	suspend fun setLatestGameInEditor(id: UUID)
+	suspend fun setLatestGameInEditor(id: GameID)
 	suspend fun dismissLatestGameInEditor()
 }
 

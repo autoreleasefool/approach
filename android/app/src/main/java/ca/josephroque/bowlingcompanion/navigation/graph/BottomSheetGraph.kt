@@ -3,7 +3,6 @@ package ca.josephroque.bowlingcompanion.navigation.graph
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
-import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.core.navigation.popBackStackWithResult
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.accessoriesOnboardingSheet
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.gamesSettingsScreen
@@ -15,8 +14,8 @@ import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToQui
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlay
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlayOnboarding
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToGamePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToLeaguePickerForResult
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToSeriesPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.resourcePickerSheet
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.midGameStatisticsDetailsScreen
@@ -84,12 +83,11 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 			)
 		},
 		onPickGame = { series, game, result ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToGamePickerForResult(
 				selectedIds = game?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = result,
-				resourceType = ResourcePickerType.GAME,
-				filter = series.toString(),
+				seriesId = series,
 			)
 		},
 		onShowStatistics = navController::navigateToStatisticsDetails,

@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.StatisticsDetailsSourceType
@@ -42,7 +43,7 @@ class MidGameStatisticsDetailsViewModel @Inject constructor(
 		StatisticsDetailsSourceType.BOWLER -> TrackableFilter.Source.Bowler(BowlerID(sourceId))
 		StatisticsDetailsSourceType.LEAGUE -> TrackableFilter.Source.League(LeagueID(sourceId))
 		StatisticsDetailsSourceType.SERIES -> TrackableFilter.Source.Series(SeriesID(sourceId))
-		StatisticsDetailsSourceType.GAME -> TrackableFilter.Source.Game(sourceId)
+		StatisticsDetailsSourceType.GAME -> TrackableFilter.Source.Game(GameID(sourceId))
 	}
 
 	private val filter: MutableStateFlow<TrackableFilter> =

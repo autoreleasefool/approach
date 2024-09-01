@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyCreate
 import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
 import ca.josephroque.bowlingcompanion.core.model.AlleyUpdate
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.utils.sortByUUIDs
 import java.util.UUID
 import javax.inject.Inject
@@ -35,7 +36,7 @@ class OfflineFirstAlleysRepository @Inject constructor(
 
 	override fun getAlleysList(): Flow<List<AlleyListItem>> = alleyDao.getAlleysList()
 
-	override fun getGameAlleyDetails(gameId: UUID): Flow<AlleyDetails?> =
+	override fun getGameAlleyDetails(gameId: GameID): Flow<AlleyDetails?> =
 		alleyDao.getGameAlleyDetails(gameId).map { it?.asModel() }
 
 	override fun getAlleyUpdate(id: UUID): Flow<AlleyUpdate> =

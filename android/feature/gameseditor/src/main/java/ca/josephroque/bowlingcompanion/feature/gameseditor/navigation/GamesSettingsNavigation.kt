@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
@@ -12,12 +13,11 @@ import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
 import ca.josephroque.bowlingcompanion.feature.gameseditor.settings.GamesSettingsRoute
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.bottomSheet
-import java.util.UUID
 
 fun NavController.navigateToGamesSettingsForResult(
 	series: List<SeriesID>,
-	currentGameId: UUID,
-	navResultCallback: NavResultCallback<Pair<List<SeriesID>, UUID>>,
+	currentGameId: GameID,
+	navResultCallback: NavResultCallback<Pair<List<SeriesID>, GameID>>,
 	navOptions: NavOptions? = null,
 ) {
 	this.navigateForResult(
@@ -28,7 +28,9 @@ fun NavController.navigateToGamesSettingsForResult(
 }
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
-fun NavGraphBuilder.gamesSettingsScreen(onDismissWithResult: (Pair<List<SeriesID>, UUID>) -> Unit) {
+fun NavGraphBuilder.gamesSettingsScreen(
+	onDismissWithResult: (Pair<List<SeriesID>, GameID>) -> Unit,
+) {
 	bottomSheet(
 		route = Route.GameSettings.route,
 		arguments = listOf(

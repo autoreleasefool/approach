@@ -8,7 +8,7 @@ import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.FrameEditEntity
 import ca.josephroque.bowlingcompanion.core.database.model.FrameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.ScoreableFrameEntity
-import java.util.UUID
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -45,7 +45,7 @@ abstract class FrameDao : LegacyMigratingDao<FrameEntity> {
 			ORDER BY frames.`index` ASC
 		""",
 	)
-	abstract fun getFrames(gameId: UUID): Flow<List<FrameEditEntity>>
+	abstract fun getFrames(gameId: GameID): Flow<List<FrameEditEntity>>
 
 	@Query(
 		"""
@@ -59,7 +59,7 @@ abstract class FrameDao : LegacyMigratingDao<FrameEntity> {
 			ORDER BY frames.`index` ASC
 		""",
 	)
-	abstract fun getScoreableFrames(gameId: UUID): Flow<List<ScoreableFrameEntity>>
+	abstract fun getScoreableFrames(gameId: GameID): Flow<List<ScoreableFrameEntity>>
 
 	@Update
 	abstract fun updateFrame(frame: FrameEntity)

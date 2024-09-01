@@ -1,13 +1,13 @@
 package ca.josephroque.bowlingcompanion.feature.statisticsoverview.sourcepicker
 
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerUiState
-import java.util.UUID
 
 sealed interface SourcePickerScreenUiState {
 	data object Loading : SourcePickerScreenUiState
@@ -22,7 +22,7 @@ sealed interface SourcePickerScreenUiAction {
 	data class UpdatedBowler(val bowler: BowlerID?) : SourcePickerScreenUiAction
 	data class UpdatedLeague(val league: LeagueID?) : SourcePickerScreenUiAction
 	data class UpdatedSeries(val series: SeriesID?) : SourcePickerScreenUiAction
-	data class UpdatedGame(val game: UUID?) : SourcePickerScreenUiAction
+	data class UpdatedGame(val game: GameID?) : SourcePickerScreenUiAction
 
 	data class SourcePicker(val action: SourcePickerUiAction) : SourcePickerScreenUiAction
 }
@@ -34,5 +34,5 @@ sealed interface SourcePickerScreenEvent {
 	data class EditBowler(val bowler: BowlerID?) : SourcePickerScreenEvent
 	data class EditLeague(val bowler: BowlerID, val league: LeagueID?) : SourcePickerScreenEvent
 	data class EditSeries(val league: LeagueID, val series: SeriesID?) : SourcePickerScreenEvent
-	data class EditGame(val series: SeriesID, val game: UUID?) : SourcePickerScreenEvent
+	data class EditGame(val series: SeriesID, val game: GameID?) : SourcePickerScreenEvent
 }

@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameCreate
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
@@ -57,7 +58,7 @@ class OfflineFirstSeriesRepository @Inject constructor(
 			val games = (0..<series.numberOfGames).map { index ->
 				val score = series.manualScores?.getOrNull(index)
 				GameCreate(
-					id = UUID.randomUUID(),
+					id = GameID.randomID(),
 					seriesId = series.id,
 					index = index,
 					score = score ?: 0,
@@ -101,7 +102,7 @@ class OfflineFirstSeriesRepository @Inject constructor(
 			val existingGames = gamesRepository.getGamesList(seriesId).first()
 
 			val game = GameCreate(
-				id = UUID.randomUUID(),
+				id = GameID.randomID(),
 				seriesId = seriesId,
 				index = if (existingGames.isEmpty()) 0 else existingGames.maxOf { it.index } + 1,
 			)

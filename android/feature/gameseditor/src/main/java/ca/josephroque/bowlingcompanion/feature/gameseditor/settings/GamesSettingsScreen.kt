@@ -15,15 +15,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings.GamesSettings
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings.GamesSettingsTopBar
-import java.util.UUID
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun GamesSettingsRoute(
-	onDismissWithResult: (Pair<List<SeriesID>, UUID>) -> Unit,
+	onDismissWithResult: (Pair<List<SeriesID>, GameID>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: GamesSettingsViewModel = hiltViewModel(),
 ) {

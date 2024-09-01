@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.AlleyDetailsUpdateEnt
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyEntity
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 
@@ -49,7 +50,7 @@ abstract class AlleyDao {
 			WHERE games.id = :gameId
 		""",
 	)
-	abstract fun getGameAlleyDetails(gameId: UUID): Flow<AlleyDetailsEntity?>
+	abstract fun getGameAlleyDetails(gameId: GameID): Flow<AlleyDetailsEntity?>
 
 	@Transaction
 	@Query(

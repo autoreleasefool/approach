@@ -7,6 +7,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
@@ -88,6 +89,27 @@ fun NavController.navigateToSeriesPickerForResult(
 		resourceType = ResourcePickerType.SERIES,
 		navResultCallback = @JvmSerializableLambda { ids ->
 			navResultCallback(ids.map { SeriesID(it) }.toSet())
+		},
+		navOptions = navOptions,
+	)
+}
+
+fun NavController.navigateToGamePickerForResult(
+	selectedIds: Set<GameID>,
+	hiddenIds: Set<GameID> = emptySet(),
+	limit: Int = 0,
+	seriesId: SeriesID? = null,
+	navResultCallback: NavResultCallback<Set<GameID>>,
+	navOptions: NavOptions? = null,
+) {
+	this.navigateToResourcePickerForResult(
+		selectedIds = selectedIds.map { it.value }.toSet(),
+		hiddenIds = hiddenIds.map { it.value }.toSet(),
+		limit = limit,
+		filter = seriesId?.value?.toString(),
+		resourceType = ResourcePickerType.GAME,
+		navResultCallback = @JvmSerializableLambda { ids ->
+			navResultCallback(ids.map { GameID(it) }.toSet())
 		},
 		navOptions = navOptions,
 	)

@@ -1,8 +1,10 @@
 package ca.josephroque.bowlingcompanion.core.model
 
+import android.os.Parcelable
 import java.util.UUID
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlinx.parcelize.Parcelize
 
 object Game {
 	const val NUMBER_OF_FRAMES = 10
@@ -13,11 +15,19 @@ object Game {
 	fun frameIndicesAfter(after: Int, upTo: Int = NUMBER_OF_FRAMES): IntRange = (after + 1)..<upTo
 }
 
-data class GameSummary(val id: UUID, val index: Int, val score: Int)
+@JvmInline
+@Parcelize
+value class GameID(val value: UUID) : Parcelable {
+	override fun toString(): String = value.toString()
+	companion object {
+		fun randomID(): GameID = GameID(UUID.randomUUID())
+		fun fromString(string: String): GameID = GameID(UUID.fromString(string))
+	}
+} data class GameSummary(val id: GameID, val index: Int, val score: Int)
 
 data class TrackableGame(
 	val seriesId: SeriesID,
-	val id: UUID,
+	val id: GameID,
 	val index: Int,
 	val score: Int,
 	val date: LocalDate,
@@ -27,7 +37,7 @@ data class TrackableGame(
 }
 
 data class GameCreate(
-	val id: UUID,
+	val id: GameID,
 	val seriesId: SeriesID,
 	val index: Int,
 	val score: Int = 0,
@@ -43,7 +53,7 @@ data class GameEdit(
 	val bowler: Bowler,
 ) {
 	data class Properties(
-		val id: UUID,
+		val id: GameID,
 		val index: Int,
 		val score: Int,
 		val locked: GameLockState,
@@ -72,10 +82,10 @@ data class GameEdit(
 	}
 }
 
-data class GameListItem(val id: UUID, val index: Int, val score: Int)
+data class GameListItem(val id: GameID, val index: Int, val score: Int)
 
 data class ArchivedGame(
-	val id: UUID,
+	val id: GameID,
 	val scoringMethod: GameScoringMethod,
 	val score: Int,
 	val bowlerName: String,
@@ -101,4 +111,4 @@ enum class GameScoringMethod {
 	BY_FRAME,
 }
 
-data class GameInProgress(val seriesIds: List<SeriesID>, val currentGameId: UUID)
+data class GameInProgress(val seriesIds: List<SeriesID>, val currentGameId: GameID)

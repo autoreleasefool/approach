@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.archives.ui
 
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
@@ -49,14 +50,17 @@ sealed interface ArchiveListItem {
 	}
 
 	data class Game(
-		override val id: UUID,
+		val gameId: GameID,
 		val scoringMethod: GameScoringMethod,
 		val score: Int,
 		val bowlerName: String,
 		val leagueName: String,
 		val seriesDate: LocalDate,
 		override val archivedOn: Instant,
-	) : ArchiveListItem
+	) : ArchiveListItem {
+		override val id: UUID
+			get() = gameId.value
+	}
 }
 
 data class ArchivesListUiState(

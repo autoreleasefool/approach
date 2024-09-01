@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Relation
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayCreate
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayUpdate
@@ -34,7 +35,7 @@ import java.util.UUID
 )
 data class MatchPlayEntity(
 	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: UUID,
-	@ColumnInfo(name = "game_id", index = true) val gameId: UUID,
+	@ColumnInfo(name = "game_id", index = true) val gameId: GameID,
 	@ColumnInfo(name = "opponent_id", index = true) val opponentId: BowlerID?,
 	@ColumnInfo(name = "opponent_score") val opponentScore: Int?,
 	@ColumnInfo(name = "result") val result: MatchPlayResult?,
@@ -42,7 +43,7 @@ data class MatchPlayEntity(
 
 data class MatchPlayCreateEntity(
 	val id: UUID,
-	@ColumnInfo(name = "game_id") val gameId: UUID,
+	@ColumnInfo(name = "game_id") val gameId: GameID,
 	@ColumnInfo(name = "opponent_id") val opponentId: BowlerID?,
 	@ColumnInfo(name = "opponent_score") val opponentScore: Int?,
 	val result: MatchPlayResult?,

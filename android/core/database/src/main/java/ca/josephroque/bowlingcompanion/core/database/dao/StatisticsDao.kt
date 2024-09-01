@@ -14,9 +14,9 @@ import ca.josephroque.bowlingcompanion.core.database.model.TrackableFrameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TrackableGameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TrackableSeriesEntity
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
-import java.util.UUID
 
 @Dao
 interface StatisticsDao {
@@ -85,7 +85,7 @@ interface StatisticsDao {
 		""",
 	)
 	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-	fun getGameSourceDetails(gameId: UUID): TrackableFilterSourceSummariesEntity
+	fun getGameSourceDetails(gameId: GameID): TrackableFilterSourceSummariesEntity
 
 	@RawQuery(observedEntities = [SeriesEntity::class])
 	fun getTrackableSeries(query: SimpleSQLiteQuery): PagingSource<Int, TrackableSeriesEntity>

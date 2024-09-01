@@ -26,6 +26,7 @@ import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.GearKind
@@ -266,7 +267,7 @@ class GamesEditorViewModel @Inject constructor(
 		this.series.update { series }
 	}
 
-	private fun loadGameIfChanged(gameId: UUID) {
+	private fun loadGameIfChanged(gameId: GameID) {
 		if (currentGameId.value == gameId) return
 		loadGame(gameId)
 	}
@@ -289,12 +290,12 @@ class GamesEditorViewModel @Inject constructor(
 		}
 	}
 
-	private fun loadGame(gameId: UUID) {
+	private fun loadGame(gameId: GameID) {
 		val gameToLoad = currentGameId.updateAndGet { gameId }
 		gameDetailsState.update { it.copy(gameId = gameToLoad) }
 		gamesEditorState.update { it.copy(gameId = gameToLoad) }
 
-		analyticsClient.trackEvent(GameViewed(eventId = gameId))
+		analyticsClient.trackEvent(GameViewed(gameId = gameId))
 		setLatestGameId(gameId)
 
 		viewModelScope.launch {
@@ -544,7 +545,7 @@ class GamesEditorViewModel @Inject constructor(
 		}
 	}
 
-	private fun setLatestGameId(gameId: UUID) {
+	private fun setLatestGameId(gameId: GameID) {
 		viewModelScope.launch {
 			userDataRepository.setLatestGameInEditor(gameId)
 			userDataRepository.setLatestSeriesInEditor(series.value)
@@ -931,7 +932,7 @@ class GamesEditorViewModel @Inject constructor(
 
 		if (scoringMethod != gameDetailsState.value.scoringMethod.scoringMethod) {
 			when (scoringMethod) {
-				GameScoringMethod.MANUAL -> analyticsClient.trackEvent(GameManualScoreSet(eventId = gameId))
+				GameScoringMethod.MANUAL -> analyticsClient.trackEvent(GameManualScoreSet(gameId = gameId))
 				GameScoringMethod.BY_FRAME -> Unit
 			}
 		}
@@ -1032,7 +1033,7 @@ class GamesEditorViewModel @Inject constructor(
 	private fun saveFrame(frame: FrameEdit) {
 		if (isGameLocked) return
 
-		analyticsClient.trackEvent(GameUpdated(eventId = currentGameId.value))
+		analyticsClient.trackEvent(GameUpdated(gameId = currentGameId.value))
 
 		viewModelScope.launch {
 			framesRepository.updateFrame(frame)

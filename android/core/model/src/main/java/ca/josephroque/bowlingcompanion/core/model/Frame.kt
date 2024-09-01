@@ -18,7 +18,7 @@ data class ScoreableFrame(val index: Int, val rolls: List<Roll>) {
 
 data class TrackableFrame(
 	val seriesId: SeriesID,
-	val gameId: UUID,
+	val gameId: GameID,
 	val gameIndex: Int,
 	val index: Int,
 	val rolls: List<Roll>,
@@ -41,10 +41,10 @@ data class TrackableFrame(
 		}
 }
 
-data class FrameCreate(val gameId: UUID, val index: Int)
+data class FrameCreate(val gameId: GameID, val index: Int)
 
 data class FrameEdit(val properties: Properties, val rolls: List<Roll>) {
-	data class Properties(val gameId: UUID, val index: Int)
+	data class Properties(val gameId: GameID, val index: Int)
 
 	data class Roll(
 		val index: Int,

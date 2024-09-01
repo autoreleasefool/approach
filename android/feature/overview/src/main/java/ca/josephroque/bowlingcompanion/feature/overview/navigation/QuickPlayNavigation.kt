@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
@@ -12,7 +13,6 @@ import ca.josephroque.bowlingcompanion.feature.overview.quickplay.QuickPlayRoute
 import ca.josephroque.bowlingcompanion.feature.overview.quickplay.onboarding.QuickPlayOnboardingRoute
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.bottomSheet
-import java.util.UUID
 
 fun NavController.navigateToQuickPlay(navOptions: NavOptions? = null) {
 	this.navigate(Route.QuickPlay.route, navOptions)
@@ -25,7 +25,7 @@ fun NavController.navigateToQuickPlayOnboarding(navOptions: NavOptions? = null) 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 fun NavGraphBuilder.quickPlay(
 	onBackPressed: () -> Unit,
-	onBeginRecording: (List<SeriesID>, UUID) -> Unit,
+	onBeginRecording: (List<SeriesID>, GameID) -> Unit,
 	onPickBowler: (Set<BowlerID>, NavResultCallback<Set<BowlerID>>) -> Unit,
 	onPickLeague: (BowlerID, LeagueID?, NavResultCallback<Set<LeagueID>>) -> Unit,
 	onShowQuickPlayOnboarding: () -> Unit,

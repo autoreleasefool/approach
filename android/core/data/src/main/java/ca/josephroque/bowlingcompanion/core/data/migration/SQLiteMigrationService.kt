@@ -46,6 +46,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
@@ -634,10 +635,10 @@ class SQLiteMigrationService @Inject constructor(
 
 		for (legacyGame in games) {
 			val seriesId = seriesIdMappings[legacyGame.seriesId] ?: continue
-			val gameId = UUID.randomUUID()
+			val gameId = GameID.randomID()
 			gameIdMappings.add(
 				LegacyIDMappingEntity(
-					id = gameId,
+					id = gameId.value,
 					legacyId = legacyGame.id,
 					key = LegacyIDMappingKey.GAME,
 				),
@@ -738,7 +739,7 @@ class SQLiteMigrationService @Inject constructor(
 		val gameIdMappings = legacyIDMappingDao.getLegacyIDMappings(
 			legacyIds = legacyGameIds,
 			key = LegacyIDMappingKey.GAME,
-		).associateBy({ it.legacyId }, { it.id })
+		).associateBy({ it.legacyId }, { GameID(it.id) })
 		val existingMatchPlays = matchPlayDao
 			.getMatchPlaysForGames(gameIdMappings.values)
 			.associateBy { it.gameId }
@@ -875,7 +876,7 @@ class SQLiteMigrationService @Inject constructor(
 		val gameIdMappings = legacyIDMappingDao.getLegacyIDMappings(
 			legacyIds = legacyGameIds,
 			key = LegacyIDMappingKey.GAME,
-		).associateBy({ it.legacyId }, { it.id })
+		).associateBy({ it.legacyId }, { GameID(it.id) })
 
 		for (legacyFrame in frames) {
 			val gameId = gameIdMappings[legacyFrame.gameId] ?: continue

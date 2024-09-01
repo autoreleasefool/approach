@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.GearKind
@@ -139,7 +140,7 @@ private fun GameDetailsPreview() {
 	Surface {
 		GameDetails(
 			state = GameDetailsUiState(
-				gameId = UUID.randomUUID(),
+				gameId = GameID.randomID(),
 				currentGameIndex = 0,
 				header = GameDetailsUiState.HeaderUiState(
 					bowlerName = "Jordan",

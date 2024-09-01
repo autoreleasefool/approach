@@ -17,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
@@ -25,7 +26,6 @@ import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicke
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerTopBar
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerUiAction
-import java.util.UUID
 import kotlinx.coroutines.launch
 
 @Composable
@@ -34,7 +34,7 @@ internal fun SourcePickerRoute(
 	onPickBowler: (BowlerID?, NavResultCallback<Set<BowlerID>>) -> Unit,
 	onPickLeague: (BowlerID, LeagueID?, NavResultCallback<Set<LeagueID>>) -> Unit,
 	onPickSeries: (LeagueID, SeriesID?, NavResultCallback<Set<SeriesID>>) -> Unit,
-	onPickGame: (SeriesID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onPickGame: (SeriesID, GameID?, NavResultCallback<Set<GameID>>) -> Unit,
 	onShowStatistics: (TrackableFilter) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: SourcePickerViewModel = hiltViewModel(),

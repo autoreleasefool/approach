@@ -4,6 +4,7 @@ import androidx.annotation.PluralsRes
 import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
@@ -41,7 +42,9 @@ sealed interface ResourceItem {
 			get() = date.simpleFormat()
 	}
 
-	data class Game(override val id: UUID, val index: Int, val score: Int) : ResourceItem {
+	data class Game(val gameId: GameID, val index: Int, val score: Int) : ResourceItem {
+		override val id: UUID
+			get() = gameId.value
 		override val name: String
 			get() = "Game ${index + 1}"
 	}

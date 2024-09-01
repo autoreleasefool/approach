@@ -7,6 +7,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import ca.josephroque.bowlingcompanion.core.model.FrameCreate
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.ScoreableFrame
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
@@ -52,7 +53,7 @@ import kotlinx.datetime.LocalDate
 	],
 )
 data class FrameEntity(
-	@ColumnInfo(name = "game_id", index = true) val gameId: UUID,
+	@ColumnInfo(name = "game_id", index = true) val gameId: GameID,
 	@ColumnInfo(name = "index", index = true) val index: Int,
 	@ColumnInfo(name = "roll0") val roll0: Roll?,
 	@ColumnInfo(name = "roll1") val roll1: Roll?,
@@ -110,7 +111,7 @@ fun FrameCreate.asEntity(): FrameEntity = FrameEntity(
 
 data class TrackableFrameEntity(
 	val seriesId: SeriesID,
-	val gameId: UUID,
+	val gameId: GameID,
 	val gameIndex: Int,
 	val index: Int,
 	@ColumnInfo(name = "roll0") val roll0: FrameEntity.Roll?,
@@ -139,7 +140,7 @@ data class FrameEditEntity(
 	@Embedded(prefix = "ball2_") val ball2: FrameEdit.Gear?,
 ) {
 	data class Properties(
-		val gameId: UUID,
+		val gameId: GameID,
 		val index: Int,
 		val roll0: FrameEntity.Roll?,
 		val roll1: FrameEntity.Roll?,

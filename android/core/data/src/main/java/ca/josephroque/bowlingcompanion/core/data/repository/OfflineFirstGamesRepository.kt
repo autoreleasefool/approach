@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.core.model.FrameCreate
 import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.GameCreate
 import ca.josephroque.bowlingcompanion.core.model.GameEdit
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameInProgress
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
@@ -42,17 +43,17 @@ class OfflineFirstGamesRepository @Inject constructor(
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ) : GamesRepository {
-	override fun getGameDetails(gameId: UUID): Flow<GameEdit> =
+	override fun getGameDetails(gameId: GameID): Flow<GameEdit> =
 		gameDao.getGameDetails(gameId).map { it.asModel() }
 
 	override fun getGamesList(seriesId: SeriesID): Flow<List<GameListItem>> =
 		gameDao.getGamesList(seriesId)
 
-	override fun getGameIds(seriesId: SeriesID): Flow<List<UUID>> = gameDao.getGameIds(seriesId)
+	override fun getGameIds(seriesId: SeriesID): Flow<List<GameID>> = gameDao.getGameIds(seriesId)
 
 	override fun getArchivedGames(): Flow<List<ArchivedGame>> = gameDao.getArchivedGames()
 
-	override fun getGameIndex(gameId: UUID): Flow<Int> = gameDao.getGameIndex(gameId)
+	override fun getGameIndex(gameId: GameID): Flow<Int> = gameDao.getGameIndex(gameId)
 
 	override suspend fun isGameInProgress(): Boolean = getGameInProgress() != null
 
@@ -62,7 +63,7 @@ class OfflineFirstGamesRepository @Inject constructor(
 		val latestSeriesIdsStr = userData.latestSeriesInEditor
 		if (latestGameIdStr == null || latestSeriesIdsStr.isEmpty()) return null
 
-		val latestGameId = UUID.fromString(latestGameIdStr)
+		val latestGameId = GameID.fromString(latestGameIdStr)
 		val latestSeriesIds = latestSeriesIdsStr.map { SeriesID.fromString(it) }
 
 		val frames = framesRepository.getFrames(latestGameId).first()
@@ -74,7 +75,7 @@ class OfflineFirstGamesRepository @Inject constructor(
 	}
 
 	override suspend fun setGameScoringMethod(
-		gameId: UUID,
+		gameId: GameID,
 		scoringMethod: GameScoringMethod,
 		score: Int,
 	) = withContext(ioDispatcher) {
@@ -82,28 +83,28 @@ class OfflineFirstGamesRepository @Inject constructor(
 	}
 
 	override suspend fun setGameExcludedFromStatistics(
-		gameId: UUID,
+		gameId: GameID,
 		excludeFromStatistics: ExcludeFromStatistics,
 	) = withContext(ioDispatcher) {
 		gameDao.setGameExcludedFromStatistics(gameId, excludeFromStatistics)
 	}
 
-	override suspend fun setGameLockState(gameId: UUID, locked: GameLockState) = withContext(
+	override suspend fun setGameLockState(gameId: GameID, locked: GameLockState) = withContext(
 		ioDispatcher,
 	) {
 		gameDao.setGameLockState(gameId, locked)
 	}
 
-	override suspend fun setGameScore(gameId: UUID, score: Int) = withContext(ioDispatcher) {
+	override suspend fun setGameScore(gameId: GameID, score: Int) = withContext(ioDispatcher) {
 		gameDao.setGameScore(gameId, score)
 	}
 
-	override suspend fun setGameDuration(gameId: UUID, durationMillis: Long) =
+	override suspend fun setGameDuration(gameId: GameID, durationMillis: Long) =
 		withContext(ioDispatcher) {
 			gameDao.setGameDuration(gameId, durationMillis)
 		}
 
-	override suspend fun setGameLanes(gameId: UUID, lanes: Set<UUID>) = withContext(ioDispatcher) {
+	override suspend fun setGameLanes(gameId: GameID, lanes: Set<UUID>) = withContext(ioDispatcher) {
 		transactionRunner {
 			gameDao.deleteGameLanes(gameId)
 			gameDao.insertGameLanes(lanes.map { GameLaneCrossRef(gameId, it) })
@@ -146,11 +147,11 @@ class OfflineFirstGamesRepository @Inject constructor(
 		}
 	}
 
-	override suspend fun archiveGame(gameId: UUID) = withContext(ioDispatcher) {
+	override suspend fun archiveGame(gameId: GameID) = withContext(ioDispatcher) {
 		gameDao.archiveGame(gameId, archivedOn = Clock.System.now())
 	}
 
-	override suspend fun unarchiveGame(gameId: UUID) = withContext(ioDispatcher) {
+	override suspend fun unarchiveGame(gameId: GameID) = withContext(ioDispatcher) {
 		gameDao.unarchiveGame(gameId)
 	}
 

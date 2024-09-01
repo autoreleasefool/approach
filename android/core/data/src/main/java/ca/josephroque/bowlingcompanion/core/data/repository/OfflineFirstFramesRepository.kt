@@ -9,8 +9,8 @@ import ca.josephroque.bowlingcompanion.core.database.model.ScoreableFrameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.FrameCreate
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.ScoreableFrame
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -22,10 +22,10 @@ class OfflineFirstFramesRepository @Inject constructor(
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ) : FramesRepository {
-	override fun getFrames(gameId: UUID): Flow<List<FrameEdit>> =
+	override fun getFrames(gameId: GameID): Flow<List<FrameEdit>> =
 		frameDao.getFrames(gameId).map { it.map(FrameEditEntity::asModel) }
 
-	override fun getScoreableFrames(gameId: UUID): Flow<List<ScoreableFrame>> =
+	override fun getScoreableFrames(gameId: GameID): Flow<List<ScoreableFrame>> =
 		frameDao.getScoreableFrames(gameId).map { it.map(ScoreableFrameEntity::asModel) }
 
 	override suspend fun insertFrames(frames: List<FrameCreate>) = withContext(ioDispatcher) {

@@ -14,9 +14,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.GameRow
-import java.util.UUID
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -104,12 +104,12 @@ private fun GamesListPreview() {
 			state = GamesListUiState(
 				list = listOf(
 					GameListItem(
-						id = UUID.randomUUID(),
+						id = GameID.randomID(),
 						index = 0,
 						score = 300,
 					),
 					GameListItem(
-						id = UUID.randomUUID(),
+						id = GameID.randomID(),
 						index = 1,
 						score = 250,
 					),

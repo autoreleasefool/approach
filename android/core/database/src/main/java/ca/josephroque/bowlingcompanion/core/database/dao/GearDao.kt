@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.GearCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GearEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GearUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GearDetails
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
@@ -54,7 +55,7 @@ abstract class GearDao {
 			ORDER BY gear.name
 		""",
 	)
-	abstract fun getGameGear(gameId: UUID): Flow<List<GearListItem>>
+	abstract fun getGameGear(gameId: GameID): Flow<List<GearListItem>>
 
 	@Query(
 		"""
@@ -115,7 +116,7 @@ abstract class GearDao {
 			WHERE game_id = :gameId
 		""",
 	)
-	abstract fun removeGameGear(gameId: UUID)
+	abstract fun removeGameGear(gameId: GameID)
 
 	@Insert
 	abstract fun setGameGear(gear: List<GameGearCrossRef>)

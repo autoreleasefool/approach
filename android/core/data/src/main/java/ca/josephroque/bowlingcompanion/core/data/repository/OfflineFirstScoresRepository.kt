@@ -1,9 +1,9 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.ScoringGame
 import ca.josephroque.bowlingcompanion.core.scoring.ScoreKeeper
 import ca.josephroque.bowlingcompanion.core.scoring.ScoreKeeperInput
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -14,7 +14,7 @@ class OfflineFirstScoresRepository @Inject constructor(
 	private val framesRepository: FramesRepository,
 	private val scoreKeeper: ScoreKeeper,
 ) : ScoresRepository {
-	override fun getScore(gameId: UUID): Flow<ScoringGame> = combine(
+	override fun getScore(gameId: GameID): Flow<ScoringGame> = combine(
 		gamesRepository.getGameIndex(gameId),
 		framesRepository.getScoreableFrames(gameId),
 	) { gameIndex, frames ->
@@ -22,7 +22,7 @@ class OfflineFirstScoresRepository @Inject constructor(
 		ScoringGame(id = gameId, index = gameIndex, frames = scoringFrames)
 	}
 
-	override suspend fun getHighestScorePossible(gameId: UUID): Int {
+	override suspend fun getHighestScorePossible(gameId: GameID): Int {
 		val frames = framesRepository.getScoreableFrames(gameId).first()
 		return scoreKeeper.calculateHighestScorePossible(
 			ScoreKeeperInput.fromFrames(frames),

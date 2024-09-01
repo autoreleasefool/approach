@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.statistics.trackable.pinsleft
 
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.model.pinCount
@@ -11,12 +12,12 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.AveragingStatistic
 import ca.josephroque.bowlingcompanion.core.statistics.utils.pinsLeftOnDeck
-import java.util.UUID
 
 data class AveragePinsLeftOnDeckStatistic(
 	var totalPinsLeftOnDeck: Int = 0,
-	var gamesPlayed: MutableSet<UUID> = mutableSetOf(),
-) : TrackablePerFrame, AveragingStatistic {
+	var gamesPlayed: MutableSet<GameID> = mutableSetOf(),
+) : TrackablePerFrame,
+	AveragingStatistic {
 	override val id = StatisticID.AVERAGE_PINS_LEFT_ON_DECK
 	override val category = StatisticCategory.PINS_LEFT_ON_DECK
 	override val isEligibleForNewLabel = false

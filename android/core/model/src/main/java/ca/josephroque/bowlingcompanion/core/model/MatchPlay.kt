@@ -4,7 +4,7 @@ import java.util.UUID
 
 data class MatchPlayCreate(
 	val id: UUID,
-	val gameId: UUID,
+	val gameId: GameID,
 	val opponentId: BowlerID?,
 	val opponentScore: Int?,
 	val result: MatchPlayResult?,

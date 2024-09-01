@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.datastore
 import androidx.datastore.core.DataStore
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
@@ -314,7 +315,7 @@ private fun UserPreferences.parseTrackableFilterSource(): TrackableFilter.Source
 					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_SERIES ->
 						TrackableFilter.Source.Series(SeriesID(it))
 					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_GAME ->
-						TrackableFilter.Source.Game(it)
+						TrackableFilter.Source.Game(GameID(it))
 					null,
 					TrackableFilterSourceProto.UNRECOGNIZED,
 					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_NONE,

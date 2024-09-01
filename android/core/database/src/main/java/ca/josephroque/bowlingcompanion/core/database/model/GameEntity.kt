@@ -8,11 +8,11 @@ import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameCreate
 import ca.josephroque.bowlingcompanion.core.model.GameEdit
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableGame
-import java.util.UUID
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 
@@ -29,7 +29,7 @@ import kotlinx.datetime.LocalDate
 	],
 )
 data class GameEntity(
-	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: UUID,
+	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: GameID,
 	@ColumnInfo(name = "series_id", index = true) val seriesId: SeriesID,
 	@ColumnInfo(name = "index") val index: Int,
 	@ColumnInfo(name = "score") val score: Int,
@@ -52,7 +52,7 @@ fun GameCreate.asEntity(): GameEntity = GameEntity(
 
 data class TrackableGameEntity(
 	val seriesId: SeriesID,
-	val id: UUID,
+	val id: GameID,
 	val index: Int,
 	val score: Int,
 	val date: LocalDate,

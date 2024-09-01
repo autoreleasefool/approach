@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import ca.josephroque.bowlingcompanion.core.database.model.LaneEntity
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import java.util.UUID
 import kotlinx.coroutines.flow.Flow
@@ -49,7 +50,7 @@ abstract class LaneDao {
 			ORDER BY lanes.label * 1
 		""",
 	)
-	abstract fun getGameLanes(gameId: UUID): Flow<List<LaneListItem>>
+	abstract fun getGameLanes(gameId: GameID): Flow<List<LaneListItem>>
 
 	@Query("DELETE FROM lanes WHERE alley_id = :alleyId")
 	abstract fun deleteAlleyLanes(alleyId: UUID)

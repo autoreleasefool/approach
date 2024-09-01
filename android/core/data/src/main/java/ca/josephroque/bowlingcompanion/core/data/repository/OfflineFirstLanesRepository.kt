@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.LaneDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import java.util.UUID
 import javax.inject.Inject
@@ -22,7 +23,7 @@ class OfflineFirstLanesRepository @Inject constructor(
 
 	override fun getLanes(ids: List<UUID>): Flow<List<LaneListItem>> = laneDao.getLanes(ids)
 
-	override fun getGameLanes(gameId: UUID): Flow<List<LaneListItem>> = laneDao.getGameLanes(gameId)
+	override fun getGameLanes(gameId: GameID): Flow<List<LaneListItem>> = laneDao.getGameLanes(gameId)
 
 	override suspend fun insertLanes(lanes: List<LaneListItem>) = withContext(ioDispatcher) {
 		laneDao.insertAll(lanes.map(LaneListItem::asEntity))

@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.ScoringFrame
 import ca.josephroque.bowlingcompanion.core.model.ScoringGame
 import ca.josephroque.bowlingcompanion.core.model.ScoringRoll
@@ -43,7 +44,6 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.DragHi
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.FrameEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiState
-import java.util.UUID
 
 @Composable
 fun GamesEditor(
@@ -226,7 +226,7 @@ private fun GamesEditorPreview() {
 				configuration = ScoreSheetConfiguration(ScoreSheetConfiguration.Style.PLAIN),
 				selection = ScoreSheetUiState.Selection(frameIndex = 0, rollIndex = 0),
 				game = ScoringGame(
-					id = UUID.randomUUID(),
+					id = GameID.randomID(),
 					index = 0,
 					frames = listOf(
 						ScoringFrame(
@@ -322,7 +322,7 @@ private fun GamesEditorPreview() {
 					),
 				),
 			),
-			gameId = UUID.randomUUID(),
+			gameId = GameID.randomID(),
 		),
 		onAction = {},
 	)

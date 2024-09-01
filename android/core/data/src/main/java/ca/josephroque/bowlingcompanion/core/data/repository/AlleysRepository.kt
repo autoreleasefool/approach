@@ -4,6 +4,7 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyCreate
 import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
 import ca.josephroque.bowlingcompanion.core.model.AlleyUpdate
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 
@@ -14,7 +15,7 @@ interface AlleysRepository {
 
 	fun getAlleyUpdate(id: UUID): Flow<AlleyUpdate>
 
-	fun getGameAlleyDetails(gameId: UUID): Flow<AlleyDetails?>
+	fun getGameAlleyDetails(gameId: GameID): Flow<AlleyDetails?>
 
 	suspend fun insertAlley(alley: AlleyCreate)
 	suspend fun updateAlley(alley: AlleyUpdate)

@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.BowlerPreferredGearCr
 import ca.josephroque.bowlingcompanion.core.database.model.GameGearCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GearCreate
 import ca.josephroque.bowlingcompanion.core.model.GearDetails
 import ca.josephroque.bowlingcompanion.core.model.GearKind
@@ -29,7 +30,7 @@ class OfflineFirstGearRepository @Inject constructor(
 	override fun getBowlerPreferredGear(bowlerId: BowlerID): Flow<List<GearListItem>> =
 		gearDao.getBowlerPreferredGear(bowlerId)
 
-	override fun getGameGear(gameId: UUID): Flow<List<GearListItem>> = gearDao.getGameGear(gameId)
+	override fun getGameGear(gameId: GameID): Flow<List<GearListItem>> = gearDao.getGameGear(gameId)
 
 	override fun getRecentlyUsedGear(kind: GearKind?, limit: Int): Flow<List<GearListItem>> = combine(
 		gearDao.getGearList(kind),
@@ -53,7 +54,7 @@ class OfflineFirstGearRepository @Inject constructor(
 		gearDao.setBowlerPreferredGear(gear.map { BowlerPreferredGearCrossRef(bowlerId, it) })
 	}
 
-	override suspend fun setGameGear(gameId: UUID, gear: Set<UUID>) = withContext(ioDispatcher) {
+	override suspend fun setGameGear(gameId: GameID, gear: Set<UUID>) = withContext(ioDispatcher) {
 		gearDao.removeGameGear(gameId)
 		gearDao.setGameGear(gear.map { GameGearCrossRef(gameId, it) })
 	}

@@ -8,11 +8,11 @@ import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GameLaneCrossRef
 import ca.josephroque.bowlingcompanion.core.model.ArchivedGame
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
-import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -45,7 +45,7 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 			WHERE games.id = :gameId
 		""",
 	)
-	abstract fun getGameDetails(gameId: UUID): Flow<GameEditEntity>
+	abstract fun getGameDetails(gameId: GameID): Flow<GameEditEntity>
 
 	@Query(
 		"""
@@ -69,7 +69,7 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 			ORDER BY games.`index` ASC
 		""",
 	)
-	abstract fun getGameIds(seriesId: SeriesID): Flow<List<UUID>>
+	abstract fun getGameIds(seriesId: SeriesID): Flow<List<GameID>>
 
 	@Query(
 		"""
@@ -79,7 +79,7 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 			WHERE games.id = :gameId
 		""",
 	)
-	abstract fun getGameIndex(gameId: UUID): Flow<Int>
+	abstract fun getGameIndex(gameId: GameID): Flow<Int>
 
 	@Query(
 		"""
@@ -102,34 +102,34 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 	abstract fun getArchivedGames(): Flow<List<ArchivedGame>>
 
 	@Query("UPDATE games SET scoring_method = :scoringMethod, score = :score WHERE id = :gameId")
-	abstract fun setGameScoringMethod(gameId: UUID, scoringMethod: GameScoringMethod, score: Int)
+	abstract fun setGameScoringMethod(gameId: GameID, scoringMethod: GameScoringMethod, score: Int)
 
 	@Query("UPDATE games SET locked = :locked WHERE id = :gameId")
-	abstract fun setGameLockState(gameId: UUID, locked: GameLockState)
+	abstract fun setGameLockState(gameId: GameID, locked: GameLockState)
 
 	@Query("UPDATE games SET score = :score WHERE id = :gameId")
-	abstract fun setGameScore(gameId: UUID, score: Int)
+	abstract fun setGameScore(gameId: GameID, score: Int)
 
 	@Query("UPDATE games SET durationMillis = :durationMillis WHERE id = :gameId")
-	abstract fun setGameDuration(gameId: UUID, durationMillis: Long)
+	abstract fun setGameDuration(gameId: GameID, durationMillis: Long)
 
 	@Query("UPDATE games SET exclude_from_statistics = :excludeFromStatistics WHERE id = :gameId")
 	abstract fun setGameExcludedFromStatistics(
-		gameId: UUID,
+		gameId: GameID,
 		excludeFromStatistics: ExcludeFromStatistics,
 	)
 
 	@Query("DELETE FROM game_lanes WHERE game_id = :gameId")
-	abstract fun deleteGameLanes(gameId: UUID)
+	abstract fun deleteGameLanes(gameId: GameID)
 
 	@Insert
 	abstract fun insertGameLanes(gameLanes: List<GameLaneCrossRef>)
 
 	@Query("UPDATE games SET archived_on = NULL WHERE id = :gameId")
-	abstract fun unarchiveGame(gameId: UUID)
+	abstract fun unarchiveGame(gameId: GameID)
 
 	@Query("UPDATE games SET archived_on = :archivedOn WHERE id = :gameId")
-	abstract fun archiveGame(gameId: UUID, archivedOn: Instant)
+	abstract fun archiveGame(gameId: GameID, archivedOn: Instant)
 
 	@Insert
 	abstract fun insertGames(games: List<GameEntity>)

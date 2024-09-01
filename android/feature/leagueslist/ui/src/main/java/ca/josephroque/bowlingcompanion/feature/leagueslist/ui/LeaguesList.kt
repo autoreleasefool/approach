@@ -20,7 +20,6 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.ui.LeagueRow
-import java.util.UUID
 import kotlinx.datetime.LocalDate
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox

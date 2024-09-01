@@ -4,6 +4,7 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatcher
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.MatchPlayDao
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayCreate
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayUpdate
 import java.util.UUID
@@ -17,7 +18,7 @@ class OfflineFirstMatchPlaysRepository @Inject constructor(
 	private val matchPlayDao: MatchPlayDao,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ) : MatchPlaysRepository {
-	override fun getMatchPlay(gameId: UUID): Flow<MatchPlayUpdate?> =
+	override fun getMatchPlay(gameId: GameID): Flow<MatchPlayUpdate?> =
 		matchPlayDao.getMatchPlayForGame(gameId).map { it?.asModel() }
 
 	override suspend fun insertMatchPlay(matchPlay: MatchPlayCreate) = withContext(ioDispatcher) {
