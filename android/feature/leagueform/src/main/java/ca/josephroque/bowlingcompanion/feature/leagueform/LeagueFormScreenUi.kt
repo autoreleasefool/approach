@@ -1,11 +1,11 @@
 package ca.josephroque.bowlingcompanion.feature.leagueform
 
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueUpdate
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.IncludeAdditionalPinFall
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormUiAction
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormUiState
-import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -18,10 +18,8 @@ sealed interface LeagueFormScreenUiState {
 		override fun isSavable(): Boolean = false
 	}
 
-	data class Create(
-		val form: LeagueFormUiState,
-		val topBar: LeagueFormTopBarUiState,
-	) : LeagueFormScreenUiState {
+	data class Create(val form: LeagueFormUiState, val topBar: LeagueFormTopBarUiState) :
+		LeagueFormScreenUiState {
 		override fun isSavable(): Boolean = form.name.isNotBlank()
 
 		override fun hasAnyChanges(): Boolean = form != LeagueFormUiState()
@@ -39,7 +37,7 @@ sealed interface LeagueFormScreenUiState {
 	}
 }
 
-fun LeagueFormUiState.updatedModel(id: UUID): LeagueUpdate = LeagueUpdate(
+fun LeagueFormUiState.updatedModel(id: LeagueID): LeagueUpdate = LeagueUpdate(
 	id = id,
 	name = name,
 	additionalGames = when (includeAdditionalPinFall) {
@@ -55,9 +53,7 @@ fun LeagueFormUiState.updatedModel(id: UUID): LeagueUpdate = LeagueUpdate(
 
 sealed interface LeagueFormScreenUiAction {
 	data object LoadLeague : LeagueFormScreenUiAction
-	data class LeagueForm(
-		val action: LeagueFormUiAction,
-	) : LeagueFormScreenUiAction
+	data class LeagueForm(val action: LeagueFormUiAction) : LeagueFormScreenUiAction
 }
 
 sealed interface LeagueFormScreenEvent {

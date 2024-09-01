@@ -16,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.ui.LeagueRow
@@ -119,14 +120,14 @@ private fun LeaguesListPreview() {
 				filter = LeaguesListUiState.Filter(),
 				list = listOf(
 					LeagueListItem(
-						id = UUID.randomUUID(),
+						id = LeagueID.randomID(),
 						name = "Majors 23/24",
 						average = 200.0,
 						recurrence = LeagueRecurrence.REPEATING,
 						lastSeriesDate = LocalDate(2023, 1, 1),
 					),
 					LeagueListItem(
-						id = UUID.randomUUID(),
+						id = LeagueID.randomID(),
 						name = "Minors 22/23",
 						average = 150.0,
 						recurrence = LeagueRecurrence.ONCE,

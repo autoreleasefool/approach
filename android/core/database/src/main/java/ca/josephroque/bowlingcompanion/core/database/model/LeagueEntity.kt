@@ -7,9 +7,9 @@ import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.LeagueCreate
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueUpdate
-import java.util.UUID
 import kotlinx.datetime.Instant
 
 @Entity(
@@ -25,7 +25,7 @@ import kotlinx.datetime.Instant
 	],
 )
 data class LeagueEntity(
-	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: UUID,
+	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: LeagueID,
 	@ColumnInfo(name = "bowler_id", index = true) val bowlerId: BowlerID,
 	@ColumnInfo(name = "name") val name: String,
 	@ColumnInfo(name = "recurrence") val recurrence: LeagueRecurrence,
@@ -38,7 +38,7 @@ data class LeagueEntity(
 
 data class LeagueCreateEntity(
 	@ColumnInfo(name = "bowler_id") val bowlerId: BowlerID,
-	val id: UUID,
+	val id: LeagueID,
 	val name: String,
 	val recurrence: LeagueRecurrence,
 	@ColumnInfo(name = "number_of_games") val numberOfGames: Int?,
@@ -59,7 +59,7 @@ fun LeagueCreate.asEntity(): LeagueCreateEntity = LeagueCreateEntity(
 )
 
 data class LeagueUpdateEntity(
-	val id: UUID,
+	val id: LeagueID,
 	val name: String,
 	@ColumnInfo(name = "additional_pin_fall") val additionalPinFall: Int?,
 	@ColumnInfo(name = "additional_games") val additionalGames: Int?,

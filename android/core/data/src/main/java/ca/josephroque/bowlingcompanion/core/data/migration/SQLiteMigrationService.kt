@@ -48,6 +48,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -406,10 +407,10 @@ class SQLiteMigrationService @Inject constructor(
 
 		for (legacyLeague in leagues) {
 			val bowlerId = bowlerIdMappings[legacyLeague.bowlerId] ?: continue
-			val id = UUID.randomUUID()
+			val id = LeagueID.randomID()
 			idMappings.add(
 				LegacyIDMappingEntity(
-					id = id,
+					id = id.value,
 					legacyId = legacyLeague.id,
 					key = LegacyIDMappingKey.LEAGUE,
 				),
@@ -525,7 +526,7 @@ class SQLiteMigrationService @Inject constructor(
 		val leagueIdMappings = legacyIDMappingDao.getLegacyIDMappings(
 			legacyIds = legacyLeagueIds,
 			key = LegacyIDMappingKey.LEAGUE,
-		).associateBy({ it.legacyId }, { it.id })
+		).associateBy({ it.legacyId }, { LeagueID(it.id) })
 
 		for (legacySeries in series) {
 			val leagueId = leagueIdMappings[legacySeries.leagueId] ?: continue

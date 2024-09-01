@@ -33,6 +33,7 @@ import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.opponentMig
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToQuickPlay
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewScreen
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToLeaguePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToEvent
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToSeriesDetails
@@ -234,12 +235,11 @@ fun NavGraphBuilder.overviewGraph(
 			)
 		},
 		onPickLeague = { bowler, league, result ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToLeaguePickerForResult(
 				selectedIds = league?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = result,
-				resourceType = ResourcePickerType.LEAGUE,
-				filter = bowler.toString(),
+				bowlerId = bowler,
 			)
 		},
 		onPickStatistic = { statistic, result ->

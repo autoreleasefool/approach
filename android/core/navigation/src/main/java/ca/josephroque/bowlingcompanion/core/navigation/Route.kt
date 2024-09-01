@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.core.model.StatisticsDetailsSourceType
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
@@ -147,9 +148,9 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	// Leagues
 	data object LeagueDetails : Route("league/{league}") {
 		const val ARG_LEAGUE = "league"
-		fun createRoute(league: UUID): String = "league/${Uri.encode(league.toString())}"
-		fun getLeague(savedStateHandle: SavedStateHandle): UUID? =
-			savedStateHandle.get<String>("league")?.let { UUID.fromString(it) }
+		fun createRoute(league: LeagueID): String = "league/${Uri.encode(league.toString())}"
+		fun getLeague(savedStateHandle: SavedStateHandle): LeagueID? =
+			savedStateHandle.get<String>("league")?.let { LeagueID.fromString(it) }
 	}
 	data object AddLeague : Route("add_league/{bowler}", isBottomBarVisible = false) {
 		const val ARG_BOWLER = "bowler"
@@ -159,9 +160,9 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	}
 	data object EditLeague : Route("edit_league/{league}", isBottomBarVisible = false) {
 		const val ARG_LEAGUE = "league"
-		fun createRoute(league: UUID): String = "edit_league/${Uri.encode(league.toString())}"
-		fun getLeague(savedStateHandle: SavedStateHandle): UUID? =
-			savedStateHandle.get<String>("league")?.let { UUID.fromString(it) }
+		fun createRoute(league: LeagueID): String = "edit_league/${Uri.encode(league.toString())}"
+		fun getLeague(savedStateHandle: SavedStateHandle): LeagueID? =
+			savedStateHandle.get<String>("league")?.let { LeagueID.fromString(it) }
 	}
 
 	// Match Plays
@@ -227,9 +228,9 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	// Series
 	data object AddSeries : Route("add_series/{league}", isBottomBarVisible = false) {
 		const val ARG_LEAGUE = "league"
-		fun createRoute(league: UUID): String = "add_series/${Uri.encode(league.toString())}"
-		fun getLeague(savedStateHandle: SavedStateHandle): UUID? =
-			savedStateHandle.get<String>("league")?.let { UUID.fromString(it) }
+		fun createRoute(league: LeagueID): String = "add_series/${Uri.encode(league.toString())}"
+		fun getLeague(savedStateHandle: SavedStateHandle): LeagueID? =
+			savedStateHandle.get<String>("league")?.let { LeagueID.fromString(it) }
 	}
 	data object EditSeries : Route("edit_series/{series}", isBottomBarVisible = false) {
 		const val ARG_SERIES = "series"
@@ -245,15 +246,15 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	}
 	data object EventDetails : Route("event/{event}") {
 		const val ARG_EVENT = "event"
-		fun createRoute(event: UUID): String = "event/${Uri.encode(event.toString())}"
-		fun getEvent(savedStateHandle: SavedStateHandle): UUID? =
-			savedStateHandle.get<String>("event")?.let { UUID.fromString(it) }
+		fun createRoute(event: LeagueID): String = "event/${Uri.encode(event.toString())}"
+		fun getEvent(savedStateHandle: SavedStateHandle): LeagueID? =
+			savedStateHandle.get<String>("event")?.let { LeagueID.fromString(it) }
 	}
 	data object SeriesPreBowl : Route("edit_pre_bowl/{league}", isBottomBarVisible = false) {
 		const val ARG_LEAGUE = "league"
-		fun createRoute(league: UUID): String = "edit_pre_bowl/${Uri.encode(league.toString())}"
-		fun getLeague(savedStateHandle: SavedStateHandle): UUID? =
-			savedStateHandle.get<String>("league")?.let { UUID.fromString(it) }
+		fun createRoute(league: LeagueID): String = "edit_pre_bowl/${Uri.encode(league.toString())}"
+		fun getLeague(savedStateHandle: SavedStateHandle): LeagueID? =
+			savedStateHandle.get<String>("league")?.let { LeagueID.fromString(it) }
 	}
 
 	// Settings

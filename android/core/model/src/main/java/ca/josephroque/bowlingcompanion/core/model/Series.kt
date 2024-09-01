@@ -27,15 +27,9 @@ enum class SeriesItemSize {
 		}
 }
 
-data class SeriesSummary(
-	val id: UUID,
-	val date: LocalDate,
-)
+data class SeriesSummary(val id: UUID, val date: LocalDate)
 
-data class SeriesListItem(
-	val properties: SeriesListProperties,
-	val scores: List<Int>,
-)
+data class SeriesListItem(val properties: SeriesListProperties, val scores: List<Int>)
 
 data class SeriesListProperties(
 	val id: UUID,
@@ -68,7 +62,7 @@ data class SeriesDetails(
 )
 
 data class SeriesDetailsProperties(
-	val leagueId: UUID,
+	val leagueId: LeagueID,
 	val alleyId: UUID?,
 	val id: UUID,
 	val date: LocalDate,
@@ -80,7 +74,7 @@ data class SeriesDetailsProperties(
 )
 
 data class SeriesCreate(
-	val leagueId: UUID,
+	val leagueId: LeagueID,
 	val id: UUID,
 	val date: LocalDate,
 	val appliedDate: LocalDate?,

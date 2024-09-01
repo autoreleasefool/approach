@@ -60,7 +60,7 @@ data class GameEdit(
 	)
 
 	data class League(
-		val id: UUID,
+		val id: LeagueID,
 		val name: String,
 		val excludeFromStatistics: ExcludeFromStatistics,
 	) {

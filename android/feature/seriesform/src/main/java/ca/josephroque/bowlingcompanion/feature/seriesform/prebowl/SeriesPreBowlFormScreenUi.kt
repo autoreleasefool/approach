@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.seriesform.prebowl
 
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.prebowl.SeriesPreBowlFormTopBarUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.prebowl.SeriesPreBowlFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.prebowl.SeriesPreBowlFormUiAction
@@ -24,7 +25,8 @@ sealed interface SeriesPreBowlFormScreenUiAction {
 
 sealed interface SeriesPreBowlFormScreenEvent {
 	data object Dismissed : SeriesPreBowlFormScreenEvent
-	data class ShowSeriesPicker(val leagueId: UUID, val seriesId: UUID?) : SeriesPreBowlFormScreenEvent
+	data class ShowSeriesPicker(val leagueId: LeagueID, val seriesId: UUID?) :
+		SeriesPreBowlFormScreenEvent
 }
 
 fun MutableStateFlow<SeriesPreBowlFormScreenUiState>.updateForm(

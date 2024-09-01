@@ -7,6 +7,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
+import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
@@ -30,6 +32,33 @@ fun NavController.navigateToBowlerPickerForResult(
 		resourceType = ResourcePickerType.BOWLER,
 		navResultCallback = @JvmSerializableLambda { ids ->
 			navResultCallback(ids.map { BowlerID(it) }.toSet())
+		},
+		navOptions = navOptions,
+	)
+}
+
+fun NavController.navigateToLeaguePickerForResult(
+	selectedIds: Set<LeagueID>,
+	hiddenIds: Set<LeagueID> = emptySet(),
+	limit: Int = 0,
+	bowlerId: BowlerID? = null,
+	recurrence: LeagueRecurrence? = null,
+	navResultCallback: NavResultCallback<Set<LeagueID>>,
+	navOptions: NavOptions? = null,
+) {
+	this.navigateToResourcePickerForResult(
+		selectedIds = selectedIds.map { it.value }.toSet(),
+		hiddenIds = hiddenIds.map { it.value }.toSet(),
+		limit = limit,
+		filter = if (bowlerId != null && recurrence != null) {
+			"$bowlerId:$recurrence"
+		} else {
+			bowlerId?.value?.toString()
+				?: recurrence?.toString()
+		},
+		resourceType = ResourcePickerType.LEAGUE,
+		navResultCallback = @JvmSerializableLambda { ids ->
+			navResultCallback(ids.map { LeagueID(it) }.toSet())
 		},
 		navOptions = navOptions,
 	)

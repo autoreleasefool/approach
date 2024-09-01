@@ -1,11 +1,11 @@
 package ca.josephroque.bowlingcompanion.feature.statisticswidget.editor
 
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditorUiState
-import java.util.UUID
 
 sealed interface StatisticsWidgetInitialSource {
 	data class Bowler(val bowlerId: BowlerID) : StatisticsWidgetInitialSource
@@ -23,7 +23,7 @@ sealed interface StatisticsWidgetEditorScreenUiAction {
 		StatisticsWidgetEditorScreenUiAction
 
 	data class UpdatedBowler(val bowler: BowlerID?) : StatisticsWidgetEditorScreenUiAction
-	data class UpdatedLeague(val league: UUID?) : StatisticsWidgetEditorScreenUiAction
+	data class UpdatedLeague(val league: LeagueID?) : StatisticsWidgetEditorScreenUiAction
 	data class UpdatedStatistic(val statistic: StatisticID) : StatisticsWidgetEditorScreenUiAction
 }
 
@@ -32,6 +32,6 @@ sealed interface StatisticsWidgetEditorScreenEvent {
 
 	data class EditStatistic(val statistic: Statistic) : StatisticsWidgetEditorScreenEvent
 	data class EditBowler(val bowlerId: BowlerID?) : StatisticsWidgetEditorScreenEvent
-	data class EditLeague(val bowlerId: BowlerID, val leagueId: UUID?) :
+	data class EditLeague(val bowlerId: BowlerID, val leagueId: LeagueID?) :
 		StatisticsWidgetEditorScreenEvent
 }

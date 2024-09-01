@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameCreate
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
@@ -41,7 +42,7 @@ class OfflineFirstSeriesRepository @Inject constructor(
 		seriesDao.getSeriesDetails(seriesId).map(SeriesDetailsEntity::asModel)
 
 	override fun getSeriesList(
-		leagueId: UUID,
+		leagueId: LeagueID,
 		sortOrder: SeriesSortOrder,
 		preBowl: SeriesPreBowl?,
 	): Flow<List<SeriesListItem>> =

@@ -15,6 +15,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetails
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsTopBar
@@ -26,9 +27,9 @@ import kotlinx.coroutines.launch
 internal fun LeagueDetailsRoute(
 	onBackPressed: () -> Unit,
 	onEditSeries: (UUID) -> Unit,
-	onAddSeries: (UUID, NavResultCallback<UUID?>) -> Unit,
+	onAddSeries: (LeagueID, NavResultCallback<UUID?>) -> Unit,
 	onShowSeriesDetails: (UUID) -> Unit,
-	onUsePreBowl: (UUID) -> Unit,
+	onUsePreBowl: (LeagueID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: LeagueDetailsViewModel = hiltViewModel(),
 ) {

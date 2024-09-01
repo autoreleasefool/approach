@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedReposito
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.League
 import ca.josephroque.bowlingcompanion.core.model.LeagueCreate
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueUpdate
 import ca.josephroque.bowlingcompanion.core.navigation.Route
@@ -23,7 +24,6 @@ import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.lang.Integer.max
 import java.lang.Integer.min
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -150,7 +150,7 @@ class LeagueFormViewModel @Inject constructor(
 
 						val league = LeagueCreate(
 							bowlerId = bowlerId,
-							id = leagueId ?: UUID.randomUUID(),
+							id = leagueId ?: LeagueID.randomID(),
 							name = state.form.name,
 							recurrence = state.form.recurrence ?: LeagueRecurrence.REPEATING,
 							numberOfGames = when (state.form.gamesPerSeries) {

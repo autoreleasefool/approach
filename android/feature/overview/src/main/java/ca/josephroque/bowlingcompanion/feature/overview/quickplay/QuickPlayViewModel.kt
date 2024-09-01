@@ -14,6 +14,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.League
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.Series
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
@@ -103,7 +104,7 @@ class QuickPlayViewModel @Inject constructor(
 		sendEvent(QuickPlayScreenEvent.AddBowler(bowlers.value.map { it.first.id }.toSet()))
 	}
 
-	private fun updateBowlerLeague(bowlerId: BowlerID, leagueId: UUID?) {
+	private fun updateBowlerLeague(bowlerId: BowlerID, leagueId: LeagueID?) {
 		if (leagueId == null) {
 			removeBowler(bowlerId)
 			return

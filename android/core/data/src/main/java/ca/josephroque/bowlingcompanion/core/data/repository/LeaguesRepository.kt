@@ -5,18 +5,18 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueCreate
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueSortOrder
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueUpdate
-import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 
 interface LeaguesRepository {
-	fun getLeagueBowler(id: UUID): Flow<BowlerSummary>
-	fun getLeagueSummary(id: UUID): Flow<LeagueSummary>
-	fun getLeagueDetails(id: UUID): Flow<LeagueDetails>
+	fun getLeagueBowler(id: LeagueID): Flow<BowlerSummary>
+	fun getLeagueSummary(id: LeagueID): Flow<LeagueSummary>
+	fun getLeagueDetails(id: LeagueID): Flow<LeagueDetails>
 
 	fun getLeaguesList(
 		bowlerId: BowlerID,
@@ -28,6 +28,6 @@ interface LeaguesRepository {
 
 	suspend fun insertLeague(league: LeagueCreate)
 	suspend fun updateLeague(league: LeagueUpdate)
-	suspend fun archiveLeague(id: UUID)
-	suspend fun unarchiveLeague(id: UUID)
+	suspend fun archiveLeague(id: LeagueID)
+	suspend fun unarchiveLeague(id: LeagueID)
 }

@@ -1,18 +1,18 @@
 package ca.josephroque.bowlingcompanion.core.model.stub
 
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
-import java.util.UUID
 
 object LeagueSummaryStub {
 	fun list(): List<LeagueSummary> = listOf(
 		LeagueSummary(
-			id = UUID.randomUUID(),
+			id = LeagueID.randomID(),
 			name = "Majors, 2023-2024",
 		),
 		LeagueSummary(
-			id = UUID.randomUUID(),
+			id = LeagueID.randomID(),
 			name = "Minors, 2024",
 		),
 	)
@@ -24,14 +24,14 @@ object LeagueSummaryStub {
 object LeagueListItemStub {
 	fun list(): List<LeagueListItem> = listOf(
 		LeagueListItem(
-			id = UUID.randomUUID(),
+			id = LeagueID.randomID(),
 			name = "Majors, 2023-2024",
 			average = 190.1,
 			lastSeriesDate = null,
 			recurrence = LeagueRecurrence.REPEATING,
 		),
 		LeagueListItem(
-			id = UUID.randomUUID(),
+			id = LeagueID.randomID(),
 			name = "Minors, 2024",
 			average = 245.4,
 			lastSeriesDate = null,

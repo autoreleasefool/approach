@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
@@ -76,7 +77,7 @@ class OfflineFirstBowlersRepository @Inject constructor(
 		val recentLeagues = recentlyUsedRepository
 			.observeRecentlyUsed(RecentResource.LEAGUES)
 			.first()
-			.map { UUID.fromString(it) }
+			.map { LeagueID.fromString(it) }
 
 		val recentLeague = recentLeagues.firstOrNull { it in bowlerLeagueIds }
 			?.let { leaguesRepository.getLeagueSummary(it).first() } ?: return null

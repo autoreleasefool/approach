@@ -6,6 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
@@ -17,7 +18,7 @@ fun NavController.navigateToSeriesForm(seriesId: UUID, navOptions: NavOptions? =
 }
 
 fun NavController.navigateToNewSeriesForm(
-	leagueId: UUID,
+	leagueId: LeagueID,
 	result: NavResultCallback<UUID?>,
 	navOptions: NavOptions? = null,
 ) {

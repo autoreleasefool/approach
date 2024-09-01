@@ -17,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePicker
@@ -30,8 +31,8 @@ import kotlinx.coroutines.launch
 internal fun SourcePickerRoute(
 	onDismiss: () -> Unit,
 	onPickBowler: (BowlerID?, NavResultCallback<Set<BowlerID>>) -> Unit,
-	onPickLeague: (BowlerID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onPickSeries: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onPickLeague: (BowlerID, LeagueID?, NavResultCallback<Set<LeagueID>>) -> Unit,
+	onPickSeries: (LeagueID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onPickGame: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onShowStatistics: (TrackableFilter) -> Unit,
 	modifier: Modifier = Modifier,

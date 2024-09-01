@@ -15,6 +15,7 @@ import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToQui
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlay
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlayOnboarding
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToLeaguePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.resourcePickerSheet
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.midGameStatisticsDetailsScreen
@@ -43,12 +44,12 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 			)
 		},
 		onPickLeague = { bowler, league, result ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToLeaguePickerForResult(
 				selectedIds = league?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = result,
-				resourceType = ResourcePickerType.LEAGUE,
-				filter = "$bowler:${LeagueRecurrence.REPEATING}",
+				bowlerId = bowler,
+				recurrence = LeagueRecurrence.REPEATING,
 			)
 		},
 		onShowQuickPlayOnboarding = navController::navigateToQuickPlayOnboarding,
@@ -66,12 +67,11 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 			)
 		},
 		onPickLeague = { bowler, league, result ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToLeaguePickerForResult(
 				selectedIds = league?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = result,
-				resourceType = ResourcePickerType.LEAGUE,
-				filter = bowler.toString(),
+				bowlerId = bowler,
 			)
 		},
 		onPickSeries = { league, series, result ->

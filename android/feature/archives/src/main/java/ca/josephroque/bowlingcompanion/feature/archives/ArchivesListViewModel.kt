@@ -69,7 +69,7 @@ class ArchivesListViewModel @Inject constructor(
 					viewModelScope.launch {
 						when (item) {
 							is ArchiveListItem.Bowler -> bowlersRepository.unarchiveBowler(item.bowlerId)
-							is ArchiveListItem.League -> leaguesRepository.unarchiveLeague(item.id)
+							is ArchiveListItem.League -> leaguesRepository.unarchiveLeague(item.leagueId)
 							is ArchiveListItem.Series -> seriesRepository.unarchiveSeries(item.id)
 							is ArchiveListItem.Game -> gamesRepository.unarchiveGame(item.id)
 						}
@@ -92,7 +92,7 @@ fun ArchivedBowler.toArchiveListItem(): ArchiveListItem.Bowler = ArchiveListItem
 )
 
 fun ArchivedLeague.toArchiveListItem(): ArchiveListItem.League = ArchiveListItem.League(
-	id = id,
+	leagueId = id,
 	name = name,
 	bowlerName = bowlerName,
 	numberOfSeries = numberOfSeries,

@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
@@ -14,7 +15,7 @@ import kotlinx.datetime.LocalDate
 interface SeriesRepository {
 	fun getSeriesDetails(seriesId: UUID): Flow<SeriesDetails>
 	fun getSeriesList(
-		leagueId: UUID,
+		leagueId: LeagueID,
 		sortOrder: SeriesSortOrder,
 		preBowl: SeriesPreBowl?,
 	): Flow<List<SeriesListItem>>

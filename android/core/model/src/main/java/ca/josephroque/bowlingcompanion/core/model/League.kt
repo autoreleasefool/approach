@@ -1,8 +1,10 @@
 package ca.josephroque.bowlingcompanion.core.model
 
+import android.os.Parcelable
 import java.util.UUID
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlinx.parcelize.Parcelize
 
 object League {
 	val NumberOfGamesRange = 1..40
@@ -13,10 +15,20 @@ enum class LeagueSortOrder {
 	ALPHABETICAL,
 }
 
-data class LeagueSummary(val id: UUID, val name: String)
+@JvmInline
+@Parcelize
+value class LeagueID(val value: UUID) : Parcelable {
+	override fun toString(): String = value.toString()
+	companion object {
+		fun randomID(): LeagueID = LeagueID(UUID.randomUUID())
+		fun fromString(string: String): LeagueID = LeagueID(UUID.fromString(string))
+	}
+}
+
+data class LeagueSummary(val id: LeagueID, val name: String)
 
 data class LeagueDetails(
-	val id: UUID,
+	val id: LeagueID,
 	val name: String,
 	val recurrence: LeagueRecurrence,
 	val numberOfGames: Int?,
@@ -26,7 +38,7 @@ data class LeagueDetails(
 )
 
 data class LeagueListItem(
-	val id: UUID,
+	val id: LeagueID,
 	val name: String,
 	val recurrence: LeagueRecurrence,
 	val lastSeriesDate: LocalDate?,
@@ -34,7 +46,7 @@ data class LeagueListItem(
 )
 
 data class ArchivedLeague(
-	val id: UUID,
+	val id: LeagueID,
 	val name: String,
 	val bowlerName: String,
 	val numberOfSeries: Int,
@@ -44,7 +56,7 @@ data class ArchivedLeague(
 
 data class LeagueCreate(
 	val bowlerId: BowlerID,
-	val id: UUID,
+	val id: LeagueID,
 	val name: String,
 	val recurrence: LeagueRecurrence,
 	val numberOfGames: Int?,
@@ -54,7 +66,7 @@ data class LeagueCreate(
 )
 
 data class LeagueUpdate(
-	val id: UUID,
+	val id: LeagueID,
 	val name: String,
 	val additionalPinFall: Int?,
 	val additionalGames: Int?,

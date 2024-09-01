@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import java.util.UUID
 import kotlinx.datetime.LocalDate
@@ -27,7 +28,10 @@ sealed interface ResourceItem {
 			get() = bowlerId.value
 	}
 
-	data class League(override val id: UUID, override val name: String) : ResourceItem
+	data class League(val leagueId: LeagueID, override val name: String) : ResourceItem {
+		override val id: UUID
+			get() = leagueId.value
+	}
 
 	data class Series(override val id: UUID, val date: LocalDate, val total: Int) : ResourceItem {
 		override val name: String = date.simpleFormat()

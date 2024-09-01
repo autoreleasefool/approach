@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.overview.quickplay.QuickPlayRoute
@@ -25,7 +26,7 @@ fun NavGraphBuilder.quickPlay(
 	onBackPressed: () -> Unit,
 	onBeginRecording: (List<UUID>, UUID) -> Unit,
 	onPickBowler: (Set<BowlerID>, NavResultCallback<Set<BowlerID>>) -> Unit,
-	onPickLeague: (BowlerID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onPickLeague: (BowlerID, LeagueID?, NavResultCallback<Set<LeagueID>>) -> Unit,
 	onShowQuickPlayOnboarding: () -> Unit,
 ) {
 	bottomSheet(

@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
@@ -228,7 +229,7 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 		source.value = bowlerId?.let { StatisticsWidgetSource.Bowler(it) }
 	}
 
-	private fun updateSourceLeague(leagueId: UUID?) {
+	private fun updateSourceLeague(leagueId: LeagueID?) {
 		source.value = when (val existingValue = source.value) {
 			is StatisticsWidgetSource.Bowler -> if (leagueId == null) {
 				StatisticsWidgetSource.Bowler(existingValue.bowlerId)

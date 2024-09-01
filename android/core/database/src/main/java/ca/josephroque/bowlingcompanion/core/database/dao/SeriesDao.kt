@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesListEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import java.util.UUID
@@ -69,7 +70,7 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 		""",
 	)
 	abstract fun getSeriesList(
-		leagueId: UUID,
+		leagueId: LeagueID,
 		seriesSortOrder: SeriesSortOrder,
 		preBowl: SeriesPreBowl?,
 	): Flow<List<SeriesListEntity>>

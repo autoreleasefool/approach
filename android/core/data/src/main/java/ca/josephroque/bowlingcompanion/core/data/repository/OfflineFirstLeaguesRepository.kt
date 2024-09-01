@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.LeagueCreate
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueSortOrder
@@ -33,11 +34,11 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 	private val seriesRepository: SeriesRepository,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ) : LeaguesRepository {
-	override fun getLeagueBowler(id: UUID): Flow<BowlerSummary> = leagueDao.getLeagueBowler(id)
+	override fun getLeagueBowler(id: LeagueID): Flow<BowlerSummary> = leagueDao.getLeagueBowler(id)
 
-	override fun getLeagueSummary(id: UUID): Flow<LeagueSummary> = leagueDao.getLeagueSummary(id)
+	override fun getLeagueSummary(id: LeagueID): Flow<LeagueSummary> = leagueDao.getLeagueSummary(id)
 
-	override fun getLeagueDetails(id: UUID): Flow<LeagueDetails> = leagueDao.getLeagueDetails(id)
+	override fun getLeagueDetails(id: LeagueID): Flow<LeagueDetails> = leagueDao.getLeagueDetails(id)
 
 	override fun getLeaguesList(
 		bowlerId: BowlerID,
@@ -74,11 +75,11 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 		leagueDao.updateLeague(league.asEntity())
 	}
 
-	override suspend fun archiveLeague(id: UUID) = withContext(ioDispatcher) {
+	override suspend fun archiveLeague(id: LeagueID) = withContext(ioDispatcher) {
 		leagueDao.archiveLeague(id, archivedOn = Clock.System.now())
 	}
 
-	override suspend fun unarchiveLeague(id: UUID) = withContext(ioDispatcher) {
+	override suspend fun unarchiveLeague(id: LeagueID) = withContext(ioDispatcher) {
 		leagueDao.unarchiveLeague(id)
 	}
 }

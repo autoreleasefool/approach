@@ -11,11 +11,11 @@ import ca.josephroque.bowlingcompanion.core.model.ArchivedLeague
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueSortOrder
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
-import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 
@@ -31,7 +31,7 @@ abstract class LeagueDao : LegacyMigratingDao<LeagueEntity> {
 			WHERE leagues.id = :leagueId
 		""",
 	)
-	abstract fun getLeagueBowler(leagueId: UUID): Flow<BowlerSummary>
+	abstract fun getLeagueBowler(leagueId: LeagueID): Flow<BowlerSummary>
 
 	@Query(
 		"""
@@ -43,7 +43,7 @@ abstract class LeagueDao : LegacyMigratingDao<LeagueEntity> {
 
 		""",
 	)
-	abstract fun getLeagueSummary(leagueId: UUID): Flow<LeagueSummary>
+	abstract fun getLeagueSummary(leagueId: LeagueID): Flow<LeagueSummary>
 
 	@Query(
 		"""
@@ -59,7 +59,7 @@ abstract class LeagueDao : LegacyMigratingDao<LeagueEntity> {
 		WHERE id = :leagueId
 	""",
 	)
-	abstract fun getLeagueDetails(leagueId: UUID): Flow<LeagueDetails>
+	abstract fun getLeagueDetails(leagueId: LeagueID): Flow<LeagueDetails>
 
 	@Query(
 		"""
@@ -122,8 +122,8 @@ abstract class LeagueDao : LegacyMigratingDao<LeagueEntity> {
 	abstract fun updateLeague(league: LeagueUpdateEntity)
 
 	@Query("UPDATE leagues SET archived_on = :archivedOn WHERE id = :leagueId")
-	abstract fun archiveLeague(leagueId: UUID, archivedOn: Instant)
+	abstract fun archiveLeague(leagueId: LeagueID, archivedOn: Instant)
 
 	@Query("UPDATE leagues SET archived_on = NULL WHERE id = :leagueId")
-	abstract fun unarchiveLeague(leagueId: UUID)
+	abstract fun unarchiveLeague(leagueId: LeagueID)
 }

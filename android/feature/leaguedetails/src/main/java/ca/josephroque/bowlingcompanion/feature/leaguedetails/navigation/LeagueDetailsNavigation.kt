@@ -6,21 +6,22 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.LeagueDetailsRoute
 import java.util.UUID
 
-fun NavController.navigateToLeagueDetails(leagueId: UUID, navOptions: NavOptions? = null) {
+fun NavController.navigateToLeagueDetails(leagueId: LeagueID, navOptions: NavOptions? = null) {
 	this.navigate(Route.LeagueDetails.createRoute(leagueId), navOptions)
 }
 
 fun NavGraphBuilder.leagueDetailsScreen(
 	onBackPressed: () -> Unit,
 	onEditSeries: (UUID) -> Unit,
-	onAddSeries: (UUID, NavResultCallback<UUID?>) -> Unit,
+	onAddSeries: (LeagueID, NavResultCallback<UUID?>) -> Unit,
 	onShowSeriesDetails: (UUID) -> Unit,
-	onUsePreBowl: (UUID) -> Unit,
+	onUsePreBowl: (LeagueID) -> Unit,
 ) {
 	composable(
 		route = Route.LeagueDetails.route,
