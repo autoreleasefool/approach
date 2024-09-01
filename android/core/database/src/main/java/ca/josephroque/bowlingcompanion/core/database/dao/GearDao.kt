@@ -12,9 +12,9 @@ import ca.josephroque.bowlingcompanion.core.database.model.GearUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GearDetails
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
-import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -22,7 +22,7 @@ abstract class GearDao {
 	@Query(
 		"""
 			SELECT
-				gear.id AS id,
+				gear.id AS gearId,
 				gear.name AS name,
 				gear.kind AS kind,
 				gear.avatar as avatar,
@@ -41,7 +41,7 @@ abstract class GearDao {
 	@Query(
 		"""
 			SELECT
-				gear.id AS id,
+				gear.id AS gearId,
 				gear.name AS name,
 				gear.kind AS kind,
 				gear.avatar as avatar,
@@ -60,7 +60,7 @@ abstract class GearDao {
 	@Query(
 		"""
 			SELECT
-				gear.id AS id,
+				gear.id AS gearId,
 				gear.name AS name,
 				gear.kind AS kind,
 				gear.avatar as avatar,
@@ -85,7 +85,7 @@ abstract class GearDao {
 			FROM gear WHERE gear.id = :id
 		""",
 	)
-	abstract fun getGearUpdate(id: UUID): Flow<GearUpdateEntity>
+	abstract fun getGearUpdate(id: GearID): Flow<GearUpdateEntity>
 
 	@Query(
 		"""
@@ -97,7 +97,7 @@ abstract class GearDao {
 			FROM gear WHERE gear.id = :id
 		""",
 	)
-	abstract fun getGearDetails(id: UUID): Flow<GearDetails>
+	abstract fun getGearDetails(id: GearID): Flow<GearDetails>
 
 	@Query(
 		"""
@@ -128,5 +128,5 @@ abstract class GearDao {
 	abstract fun updateGear(gear: GearUpdateEntity)
 
 	@Query("DELETE FROM gear WHERE id = :gearId")
-	abstract fun deleteGear(gearId: UUID)
+	abstract fun deleteGear(gearId: GearID)
 }

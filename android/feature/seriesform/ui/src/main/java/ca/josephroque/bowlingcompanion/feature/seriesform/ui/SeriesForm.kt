@@ -34,7 +34,6 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.components.SeriesDatePicker
-import java.util.UUID
 import kotlinx.datetime.LocalDate
 
 @Composable

@@ -34,6 +34,7 @@ import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToQui
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewScreen
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToAlleyPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToGearPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToLeaguePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToSeriesPickerForResult
@@ -109,10 +110,9 @@ fun NavGraphBuilder.overviewGraph(
 		onShowEventDetails = navController::navigateToEvent,
 		onShowGearDetails = { /* FIXME: onShowGearDetails */ },
 		onShowPreferredGearPicker = { selectedGear, result ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToGearPickerForResult(
 				selectedIds = selectedGear,
 				navResultCallback = result,
-				resourceType = ResourcePickerType.GEAR,
 			)
 		},
 		onEditStatisticsWidgets = { context, bowlerId ->
@@ -174,10 +174,9 @@ fun NavGraphBuilder.overviewGraph(
 		onBackPressed = navController::popBackStack,
 		onEditMatchPlay = { args -> navController.navigateToMatchPlayEditor(args.gameId) },
 		onEditGear = { args ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToGearPickerForResult(
 				selectedIds = args.gearIds,
 				navResultCallback = args.onGearUpdated,
-				resourceType = ResourcePickerType.GEAR,
 			)
 		},
 		onEditAlley = { args ->
@@ -203,12 +202,11 @@ fun NavGraphBuilder.overviewGraph(
 			)
 		},
 		onEditRolledBall = { args ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToGearPickerForResult(
 				selectedIds = args.ballId?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = args.onBallUpdated,
-				resourceType = ResourcePickerType.GEAR,
-				filter = GearKind.BOWLING_BALL.name,
+				kind = GearKind.BOWLING_BALL,
 			)
 		},
 		onShowStatistics = { args -> navController.navigateToMidGameStatisticsDetails(args.filter) },

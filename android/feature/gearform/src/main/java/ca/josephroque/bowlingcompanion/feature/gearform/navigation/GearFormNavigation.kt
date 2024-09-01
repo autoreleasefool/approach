@@ -8,12 +8,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gearform.GearFormRoute
-import java.util.UUID
 
-fun NavController.navigateToGearForm(gearId: UUID, navOptions: NavOptions? = null) {
+fun NavController.navigateToGearForm(gearId: GearID, navOptions: NavOptions? = null) {
 	this.navigate(Route.EditGear.createRoute(gearId), navOptions)
 }
 

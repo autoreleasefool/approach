@@ -142,7 +142,11 @@ class OfflineFirstGamesRepository @Inject constructor(
 			val bowler = bowlerDao.getSeriesBowlers(listOf(games.first().seriesId)).first().first()
 			val preferredGear = gearDao.getBowlerPreferredGear(bowler.id).first()
 			games.forEach { game ->
-				gearDao.setGameGear(preferredGear.map { GameGearCrossRef(gameId = game.id, gearId = it.id) })
+				gearDao.setGameGear(
+					preferredGear.map {
+						GameGearCrossRef(gameId = game.id, gearId = it.gearId)
+					},
+				)
 			}
 		}
 	}

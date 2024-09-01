@@ -52,8 +52,8 @@ data class TrackableFilter(
 
 	data class GameFilter(
 		val lanes: LaneFilter? = null,
-		val gearUsed: Set<UUID> = emptySet(),
-		val opponent: UUID? = null,
+		val gearUsed: Set<GearID> = emptySet(),
+		val opponent: BowlerID? = null,
 	)
 
 	sealed interface LaneFilter {
@@ -61,7 +61,7 @@ data class TrackableFilter(
 		data class Positions(val positions: Set<LanePosition>) : LaneFilter
 	}
 
-	data class FrameFilter(val bowlingBallsUsed: Set<UUID> = emptySet())
+	data class FrameFilter(val bowlingBallsUsed: Set<GearID> = emptySet())
 
 	enum class AggregationFilter {
 		ACCUMULATE,

@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import ca.josephroque.bowlingcompanion.core.model.GameID
-import java.util.UUID
+import ca.josephroque.bowlingcompanion.core.model.GearID
 
 @Entity(
 	tableName = "game_gear",
@@ -32,5 +32,5 @@ import java.util.UUID
 )
 data class GameGearCrossRef(
 	@ColumnInfo(name = "game_id", index = true) val gameId: GameID,
-	@ColumnInfo(name = "gear_id", index = true) val gearId: UUID,
+	@ColumnInfo(name = "gear_id", index = true) val gearId: GearID,
 )

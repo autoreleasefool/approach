@@ -140,7 +140,7 @@ private fun LazyListScope.bowlerGearList(
 	if (state.list.isNotEmpty()) {
 		gearList(
 			list = state.list,
-			onGearClick = { onAction(BowlerDetailsUiAction.GearClicked(it.id)) },
+			onGearClick = { onAction(BowlerDetailsUiAction.GearClicked(it.gearId)) },
 		)
 	}
 

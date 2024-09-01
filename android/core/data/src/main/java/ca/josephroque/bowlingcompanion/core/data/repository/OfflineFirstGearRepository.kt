@@ -10,11 +10,11 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GearCreate
 import ca.josephroque.bowlingcompanion.core.model.GearDetails
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.GearUpdate
 import ca.josephroque.bowlingcompanion.core.model.utils.sortByUUIDs
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -42,19 +42,19 @@ class OfflineFirstGearRepository @Inject constructor(
 
 	override fun getGearList(kind: GearKind?): Flow<List<GearListItem>> = gearDao.getGearList(kind)
 
-	override fun getGearUpdate(id: UUID): Flow<GearUpdate> =
+	override fun getGearUpdate(id: GearID): Flow<GearUpdate> =
 		gearDao.getGearUpdate(id).map { it.asModel() }
 
-	override fun getGearDetails(id: UUID): Flow<GearDetails> = gearDao.getGearDetails(id)
+	override fun getGearDetails(id: GearID): Flow<GearDetails> = gearDao.getGearDetails(id)
 
-	override suspend fun setBowlerPreferredGear(bowlerId: BowlerID, gear: Set<UUID>) = withContext(
+	override suspend fun setBowlerPreferredGear(bowlerId: BowlerID, gear: Set<GearID>) = withContext(
 		ioDispatcher,
 	) {
 		gearDao.removeBowlerPreferredGear(bowlerId)
 		gearDao.setBowlerPreferredGear(gear.map { BowlerPreferredGearCrossRef(bowlerId, it) })
 	}
 
-	override suspend fun setGameGear(gameId: GameID, gear: Set<UUID>) = withContext(ioDispatcher) {
+	override suspend fun setGameGear(gameId: GameID, gear: Set<GearID>) = withContext(ioDispatcher) {
 		gearDao.removeGameGear(gameId)
 		gearDao.setGameGear(gear.map { GameGearCrossRef(gameId, it) })
 	}
@@ -67,7 +67,7 @@ class OfflineFirstGearRepository @Inject constructor(
 		gearDao.updateGear(gear.asEntity())
 	}
 
-	override suspend fun deleteGear(id: UUID) = withContext(ioDispatcher) {
+	override suspend fun deleteGear(id: GearID) = withContext(ioDispatcher) {
 		gearDao.deleteGear(id)
 	}
 }

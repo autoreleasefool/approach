@@ -46,9 +46,9 @@ fun GearList(
 		} else {
 			gearList(
 				list = state.list,
-				onGearClick = { onAction(GearListUiAction.GearClicked(it.id)) },
+				onGearClick = { onAction(GearListUiAction.GearClicked(it.gearId)) },
 				onGearDelete = { onAction(GearListUiAction.GearDeleted(it)) },
-				onGearEdit = { onAction(GearListUiAction.GearEdited(it.id)) },
+				onGearEdit = { onAction(GearListUiAction.GearEdited(it.gearId)) },
 			)
 		}
 	}

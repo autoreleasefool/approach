@@ -8,11 +8,11 @@ import androidx.room.Index
 import ca.josephroque.bowlingcompanion.core.model.FrameCreate
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameID
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.ScoreableFrame
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
-import java.util.UUID
 import kotlinx.datetime.LocalDate
 
 @Entity(
@@ -58,9 +58,9 @@ data class FrameEntity(
 	@ColumnInfo(name = "roll0") val roll0: Roll?,
 	@ColumnInfo(name = "roll1") val roll1: Roll?,
 	@ColumnInfo(name = "roll2") val roll2: Roll?,
-	@ColumnInfo(name = "ball0", index = true) val ball0: UUID?,
-	@ColumnInfo(name = "ball1", index = true) val ball1: UUID?,
-	@ColumnInfo(name = "ball2", index = true) val ball2: UUID?,
+	@ColumnInfo(name = "ball0", index = true) val ball0: GearID?,
+	@ColumnInfo(name = "ball1", index = true) val ball1: GearID?,
+	@ColumnInfo(name = "ball2", index = true) val ball2: GearID?,
 ) {
 	data class Roll(val pinsDowned: Set<Pin>, val didFoul: Boolean) {
 		fun toBitString(): String {

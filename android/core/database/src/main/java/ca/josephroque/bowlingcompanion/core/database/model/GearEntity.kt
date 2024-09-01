@@ -7,9 +7,9 @@ import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GearCreate
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearUpdate
-import java.util.UUID
 
 @Entity(
 	tableName = "gear",
@@ -24,7 +24,7 @@ import java.util.UUID
 	],
 )
 data class GearEntity(
-	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: UUID,
+	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: GearID,
 	@ColumnInfo(name = "name") val name: String,
 	@ColumnInfo(name = "kind") val kind: GearKind,
 	@ColumnInfo(name = "avatar") val avatar: Avatar,
@@ -32,7 +32,7 @@ data class GearEntity(
 )
 
 data class GearCreateEntity(
-	val id: UUID,
+	val id: GearID,
 	val name: String,
 	val kind: GearKind,
 	val avatar: Avatar,
@@ -48,7 +48,7 @@ fun GearCreate.asEntity(): GearCreateEntity = GearCreateEntity(
 )
 
 data class GearUpdateEntity(
-	val id: UUID,
+	val id: GearID,
 	val name: String,
 	@ColumnInfo(name = "owner_id") val ownerId: BowlerID?,
 	val kind: GearKind,

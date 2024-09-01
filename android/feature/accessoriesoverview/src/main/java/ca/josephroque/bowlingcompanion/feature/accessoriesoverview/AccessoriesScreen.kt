@@ -16,9 +16,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.Accessories
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.AccessoriesTopBar
-import java.util.UUID
 import kotlinx.coroutines.launch
 
 @Composable
@@ -28,7 +28,7 @@ internal fun AccessoriesRoute(
 	onViewAllAlleys: () -> Unit,
 	onViewAllGear: () -> Unit,
 	onShowAlleyDetails: (AlleyID) -> Unit,
-	onShowGearDetails: (UUID) -> Unit,
+	onShowGearDetails: (GearID) -> Unit,
 	onShowAccessoriesOnboarding: () -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: AccessoriesViewModel = hiltViewModel(),

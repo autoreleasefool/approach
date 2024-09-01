@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedReposito
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueSortOrder
@@ -260,7 +261,7 @@ class BowlerDetailsViewModel @Inject constructor(
 		}
 	}
 
-	private fun setBowlerPreferredGear(gear: Set<UUID>) {
+	private fun setBowlerPreferredGear(gear: Set<GearID>) {
 		viewModelScope.launch {
 			gearRepository.setBowlerPreferredGear(bowlerId, gear)
 		}
@@ -281,7 +282,7 @@ class BowlerDetailsViewModel @Inject constructor(
 	private fun showPreferredGearPicker() {
 		val selectedGear =
 			(uiState.value as? BowlerDetailsScreenUiState.Loaded)?.bowler?.gearList?.list?.map {
-				it.id
+				it.gearId
 			}?.toSet()
 				?: return
 		sendEvent(BowlerDetailsScreenEvent.ShowPreferredGearPicker(selectedGear))

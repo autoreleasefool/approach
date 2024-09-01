@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.core.model
 
-import java.util.UUID
 import kotlinx.datetime.LocalDate
 
 object Frame {
@@ -53,7 +52,7 @@ data class FrameEdit(val properties: Properties, val rolls: List<Roll>) {
 		val bowlingBall: Gear?,
 	)
 
-	data class Gear(val id: UUID, val name: String, val kind: GearKind, val avatar: Avatar)
+	data class Gear(val id: GearID, val name: String, val kind: GearKind, val avatar: Avatar)
 
 	val hasUntouchedRoll: Boolean =
 		firstUntouchedRoll != null

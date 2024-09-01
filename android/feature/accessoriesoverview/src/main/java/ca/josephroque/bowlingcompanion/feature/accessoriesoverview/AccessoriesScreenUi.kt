@@ -1,9 +1,9 @@
 package ca.josephroque.bowlingcompanion.feature.accessoriesoverview
 
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.AccessoriesUiAction
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.AccessoriesUiState
-import java.util.UUID
 
 sealed interface AccessoriesScreenUiState {
 	data object Loading : AccessoriesScreenUiState
@@ -24,5 +24,5 @@ sealed interface AccessoriesScreenUiEvent {
 	data object ShowAccessoriesOnboarding : AccessoriesScreenUiEvent
 
 	data class ShowAlleyDetails(val alleyId: AlleyID) : AccessoriesScreenUiEvent
-	data class ShowGearDetails(val gearId: UUID) : AccessoriesScreenUiEvent
+	data class ShowGearDetails(val gearId: GearID) : AccessoriesScreenUiEvent
 }

@@ -29,10 +29,10 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.dashedBorder
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.ui.AvatarImage
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
-import java.util.UUID
 
 @Composable
 fun RollEditor(
@@ -161,13 +161,13 @@ private fun RollEditorPreview() {
 	Surface(color = Color.Black) {
 		val balls = listOf(
 			FrameEdit.Gear(
-				id = UUID.randomUUID(),
+				id = GearID.randomID(),
 				name = "Red",
 				kind = GearKind.BOWLING_BALL,
 				avatar = Avatar.default(),
 			),
 			FrameEdit.Gear(
-				id = UUID.randomUUID(),
+				id = GearID.randomID(),
 				name = "Red",
 				kind = GearKind.BOWLING_BALL,
 				avatar = Avatar.default(),

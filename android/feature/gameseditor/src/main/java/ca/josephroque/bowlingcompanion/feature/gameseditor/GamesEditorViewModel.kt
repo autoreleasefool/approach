@@ -30,6 +30,7 @@ import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
@@ -403,7 +404,7 @@ class GamesEditorViewModel @Inject constructor(
 								.sortedBy { item -> item.name }
 								.map { item ->
 									FrameEdit.Gear(
-										id = item.id,
+										id = item.gearId,
 										name = item.name,
 										kind = item.kind,
 										avatar = item.avatar,
@@ -580,7 +581,7 @@ class GamesEditorViewModel @Inject constructor(
 		isGameDetailsSheetVisible.value = false
 		sendEvent(
 			GamesEditorScreenEvent.EditGear(
-				gameDetailsState.value.gear.selectedGear.map(GearListItem::id).toSet(),
+				gameDetailsState.value.gear.selectedGear.map(GearListItem::gearId).toSet(),
 			),
 		)
 	}
@@ -844,7 +845,7 @@ class GamesEditorViewModel @Inject constructor(
 		saveFrame(gamesEditor.selectedFrame())
 	}
 
-	private fun updateSelectedBall(id: UUID?) {
+	private fun updateSelectedBall(id: GearID?) {
 		if (id == null) {
 			updateSelectedBall(ball = null)
 		} else {
@@ -1001,7 +1002,7 @@ class GamesEditorViewModel @Inject constructor(
 		}
 	}
 
-	private fun updateGear(gearIds: Set<UUID>) {
+	private fun updateGear(gearIds: Set<GearID>) {
 		if (isGameLocked) return
 
 		val gameId = currentGameId.value

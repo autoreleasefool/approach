@@ -1,13 +1,13 @@
 package ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui
 
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.LeagueSortOrder
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
 import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiAction
 import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiState
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayoutUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayoutUiState
-import java.util.UUID
 
 data class BowlerDetailsUiState(
 	val bowler: BowlerDetails,
@@ -37,5 +37,5 @@ sealed interface BowlerDetailsUiAction {
 	data class LeaguesListAction(val action: LeaguesListUiAction) : BowlerDetailsUiAction
 	data class StatisticsWidgetLayout(val action: StatisticsWidgetLayoutUiAction) :
 		BowlerDetailsUiAction
-	data class GearClicked(val id: UUID) : BowlerDetailsUiAction
+	data class GearClicked(val id: GearID) : BowlerDetailsUiAction
 }

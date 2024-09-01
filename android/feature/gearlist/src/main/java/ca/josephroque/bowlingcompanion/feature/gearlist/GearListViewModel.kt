@@ -21,9 +21,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class GearListViewModel @Inject constructor(
-	private val gearRepository: GearRepository,
-) : ApproachViewModel<GearListScreenEvent>() {
+class GearListViewModel @Inject constructor(private val gearRepository: GearRepository) :
+	ApproachViewModel<GearListScreenEvent>() {
 	private val gearToDelete: MutableStateFlow<GearListItem?> = MutableStateFlow(null)
 
 	private val gearKind: MutableStateFlow<GearKind?> = MutableStateFlow(null)
@@ -86,7 +85,7 @@ class GearListViewModel @Inject constructor(
 	private fun deleteGear() {
 		val gearToDelete = gearToDelete.value ?: return
 		viewModelScope.launch {
-			gearRepository.deleteGear(gearToDelete.id)
+			gearRepository.deleteGear(gearToDelete.gearId)
 			setDeleteGearPrompt(gear = null)
 		}
 	}

@@ -22,6 +22,7 @@ import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
@@ -29,7 +30,6 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.NavigationButton
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.lanes.CopyLanesDialog
-import java.util.UUID
 
 @Composable
 fun GameDetails(
@@ -151,14 +151,14 @@ private fun GameDetailsPreview() {
 				gear = GameDetailsUiState.GearCardUiState(
 					selectedGear = listOf(
 						GearListItem(
-							id = UUID.randomUUID(),
+							gearId = GearID.randomID(),
 							name = "Yellow Ball",
 							kind = GearKind.BOWLING_BALL,
 							ownerName = "Joseph",
 							avatar = Avatar.default(),
 						),
 						GearListItem(
-							id = UUID.randomUUID(),
+							gearId = GearID.randomID(),
 							name = "Green Towel",
 							kind = GearKind.TOWEL,
 							ownerName = "Sarah",

@@ -7,12 +7,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.BowlerDetailsRoute
-import java.util.UUID
 
 fun NavController.navigateToBowlerDetails(bowlerId: BowlerID, navOptions: NavOptions? = null) {
 	this.navigate(Route.BowlerDetails.createRoute(bowlerId), navOptions)
@@ -24,8 +24,8 @@ fun NavGraphBuilder.bowlerDetailsScreen(
 	onAddLeague: (BowlerID) -> Unit,
 	onShowLeagueDetails: (LeagueID) -> Unit,
 	onShowEventDetails: (LeagueID) -> Unit,
-	onShowGearDetails: (UUID) -> Unit,
-	onShowPreferredGearPicker: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
+	onShowGearDetails: (GearID) -> Unit,
+	onShowPreferredGearPicker: (Set<GearID>, NavResultCallback<Set<GearID>>) -> Unit,
 	onEditStatisticsWidgets: (String, BowlerID) -> Unit,
 	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 	onShowWidgetError: () -> Unit,

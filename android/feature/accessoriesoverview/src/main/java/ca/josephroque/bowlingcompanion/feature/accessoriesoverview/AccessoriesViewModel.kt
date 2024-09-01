@@ -88,7 +88,7 @@ class AccessoriesViewModel @Inject constructor(
 				AccessoriesScreenUiEvent.ShowAlleyDetails(action.alley.alleyId),
 			)
 			is AccessoriesUiAction.GearClicked -> sendEvent(
-				AccessoriesScreenUiEvent.ShowGearDetails(action.gear.id),
+				AccessoriesScreenUiEvent.ShowGearDetails(action.gear.gearId),
 			)
 		}
 	}

@@ -1,20 +1,35 @@
 package ca.josephroque.bowlingcompanion.core.model
 
+import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.core.model.utils.SortableByUUID
 import java.util.UUID
+import kotlinx.parcelize.Parcelize
+
+@JvmInline
+@Parcelize
+value class GearID(val value: UUID) : Parcelable {
+	override fun toString(): String = value.toString()
+	companion object {
+		fun randomID(): GearID = GearID(UUID.randomUUID())
+		fun fromString(string: String): GearID = GearID(UUID.fromString(string))
+	}
+}
 
 data class GearListItem(
-	override val id: UUID,
+	val gearId: GearID,
 	val name: String,
 	val kind: GearKind,
 	val ownerName: String?,
 	val avatar: Avatar,
-) : SortableByUUID
+) : SortableByUUID {
+	override val id: UUID
+		get() = gearId.value
+}
 
-data class GearDetails(val id: UUID, val name: String, val kind: GearKind, val avatar: Avatar)
+data class GearDetails(val id: GearID, val name: String, val kind: GearKind, val avatar: Avatar)
 
 data class GearCreate(
-	val id: UUID,
+	val id: GearID,
 	val name: String,
 	val kind: GearKind,
 	val avatar: Avatar,
@@ -22,7 +37,7 @@ data class GearCreate(
 )
 
 data class GearUpdate(
-	val id: UUID,
+	val id: GearID,
 	val name: String,
 	val kind: GearKind,
 	val avatar: Avatar,

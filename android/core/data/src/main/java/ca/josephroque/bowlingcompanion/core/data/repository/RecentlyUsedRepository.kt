@@ -2,8 +2,8 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
-import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 
 enum class RecentResource {
@@ -23,7 +23,7 @@ interface RecentlyUsedRepository {
 	suspend fun didRecentlyUseLeague(id: LeagueID) =
 		didRecentlyUse(RecentResource.LEAGUES, id.toString())
 	suspend fun didRecentlyUseAlley(id: AlleyID) = didRecentlyUse(RecentResource.ALLEYS, id.toString())
-	suspend fun didRecentlyUseGear(id: UUID) = didRecentlyUse(RecentResource.GEAR, id.toString())
+	suspend fun didRecentlyUseGear(id: GearID) = didRecentlyUse(RecentResource.GEAR, id.toString())
 	suspend fun didRecentlyUseOpponent(id: BowlerID) =
 		didRecentlyUse(RecentResource.OPPONENTS, id.toString())
 }

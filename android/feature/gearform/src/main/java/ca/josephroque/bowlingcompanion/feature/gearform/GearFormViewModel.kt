@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedReposito
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GearCreate
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBarUiState
@@ -20,7 +21,6 @@ import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiAction
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiState
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.R
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -198,7 +198,7 @@ class GearFormViewModel @Inject constructor(
 				GearFormScreenUiState.Loading -> Unit
 				is GearFormScreenUiState.Create -> if (state.isSavable()) {
 					val gear = GearCreate(
-						id = gearId ?: UUID.randomUUID(),
+						id = gearId ?: GearID.randomID(),
 						name = state.form.name,
 						kind = state.form.kind,
 						avatar = state.form.avatar,

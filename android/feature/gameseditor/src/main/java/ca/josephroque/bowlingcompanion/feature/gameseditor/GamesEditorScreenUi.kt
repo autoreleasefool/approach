@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.gameseditor
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
@@ -15,9 +16,9 @@ import java.util.UUID
 object GamesEditorArguments {
 	data class EditMatchPlay(val gameId: GameID)
 
-	data class EditGear(val gearIds: Set<UUID>, val onGearUpdated: NavResultCallback<Set<UUID>>)
+	data class EditGear(val gearIds: Set<GearID>, val onGearUpdated: NavResultCallback<Set<GearID>>)
 
-	data class EditRolledBall(val ballId: UUID?, val onBallUpdated: NavResultCallback<Set<UUID>>)
+	data class EditRolledBall(val ballId: GearID?, val onBallUpdated: NavResultCallback<Set<GearID>>)
 
 	data class EditAlley(val alleyId: AlleyID?, val onAlleyUpdated: NavResultCallback<Set<AlleyID>>)
 
@@ -69,14 +70,14 @@ sealed interface GamesEditorScreenUiAction {
 	data object GameLockSnackBarDismissed : GamesEditorScreenUiAction
 	data object HighestPossibleScoreSnackBarDismissed : GamesEditorScreenUiAction
 
-	data class GearUpdated(val gearIds: Set<UUID>) : GamesEditorScreenUiAction
+	data class GearUpdated(val gearIds: Set<GearID>) : GamesEditorScreenUiAction
 	data class AlleyUpdated(val alleyId: AlleyID?) : GamesEditorScreenUiAction
 	data class LanesUpdated(val laneIds: Set<UUID>) : GamesEditorScreenUiAction
 	data class GamesEditor(val action: GamesEditorUiAction) : GamesEditorScreenUiAction
 	data class GameDetails(val action: GameDetailsUiAction) : GamesEditorScreenUiAction
 	data class SeriesUpdated(val series: List<SeriesID>) : GamesEditorScreenUiAction
 	data class CurrentGameUpdated(val gameId: GameID) : GamesEditorScreenUiAction
-	data class SelectedBallUpdated(val ballId: UUID?) : GamesEditorScreenUiAction
+	data class SelectedBallUpdated(val ballId: GearID?) : GamesEditorScreenUiAction
 	data class ScoreUpdated(val score: Int, val scoringMethod: GameScoringMethod) :
 		GamesEditorScreenUiAction
 }
@@ -85,10 +86,10 @@ sealed interface GamesEditorScreenEvent {
 	data object Dismissed : GamesEditorScreenEvent
 
 	data class EditMatchPlay(val gameId: GameID) : GamesEditorScreenEvent
-	data class EditGear(val gearIds: Set<UUID>) : GamesEditorScreenEvent
+	data class EditGear(val gearIds: Set<GearID>) : GamesEditorScreenEvent
 	data class EditAlley(val alleyId: AlleyID?) : GamesEditorScreenEvent
 	data class EditLanes(val alleyId: AlleyID, val laneIds: Set<UUID>) : GamesEditorScreenEvent
-	data class EditRolledBall(val ballId: UUID?) : GamesEditorScreenEvent
+	data class EditRolledBall(val ballId: GearID?) : GamesEditorScreenEvent
 	data class ShowGamesSettings(val series: List<SeriesID>, val currentGameId: GameID) :
 		GamesEditorScreenEvent
 	data class EditScore(val score: Int, val scoringMethod: GameScoringMethod) : GamesEditorScreenEvent

@@ -1,20 +1,17 @@
 package ca.josephroque.bowlingcompanion.feature.gearlist.ui
 
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
-import java.util.UUID
 
-data class GearListUiState(
-	val list: List<GearListItem>,
-	val gearToDelete: GearListItem?,
-)
+data class GearListUiState(val list: List<GearListItem>, val gearToDelete: GearListItem?)
 
 sealed interface GearListUiAction {
 	data object BackClicked : GearListUiAction
 	data object AddGearClicked : GearListUiAction
 
-	data class GearClicked(val id: UUID) : GearListUiAction
-	data class GearEdited(val id: UUID) : GearListUiAction
+	data class GearClicked(val id: GearID) : GearListUiAction
+	data class GearEdited(val id: GearID) : GearListUiAction
 	data class GearDeleted(val gear: GearListItem) : GearListUiAction
 
 	data object ConfirmDeleteClicked : GearListUiAction

@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
@@ -132,9 +133,9 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	data object GearList : Route("gear")
 	data object EditGear : Route("edit_gear/{gear}", isBottomBarVisible = false) {
 		const val ARG_GEAR = "gear"
-		fun createRoute(gear: UUID): String = "edit_gear/${Uri.encode(gear.toString())}"
-		fun getGear(savedStateHandle: SavedStateHandle): UUID? =
-			savedStateHandle.get<String>("gear")?.let { UUID.fromString(it) }
+		fun createRoute(gear: GearID): String = "edit_gear/${Uri.encode(gear.toString())}"
+		fun getGear(savedStateHandle: SavedStateHandle): GearID? =
+			savedStateHandle.get<String>("gear")?.let { GearID.fromString(it) }
 	}
 	data object AddGear : Route("add_gear", isBottomBarVisible = false)
 

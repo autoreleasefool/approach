@@ -22,13 +22,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.RoundIconButton
 import ca.josephroque.bowlingcompanion.core.model.Avatar
+import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.AvatarImage
 import ca.josephroque.bowlingcompanion.core.model.ui.icon
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.SectionHeader
-import java.util.UUID
 
 @Composable
 internal fun GearCard(
@@ -100,14 +100,14 @@ private fun GearCardPreview() {
 			state = GameDetailsUiState.GearCardUiState(
 				selectedGear = listOf(
 					GearListItem(
-						id = UUID.randomUUID(),
+						gearId = GearID.randomID(),
 						name = "Yellow Ball",
 						kind = GearKind.BOWLING_BALL,
 						ownerName = "Joseph",
 						avatar = Avatar.default(),
 					),
 					GearListItem(
-						id = UUID.randomUUID(),
+						gearId = GearID.randomID(),
 						name = "Green Towel",
 						kind = GearKind.TOWEL,
 						ownerName = "Sarah",
