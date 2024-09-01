@@ -20,6 +20,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameInProgress
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.isGameFinished
 import java.util.UUID
 import javax.inject.Inject
@@ -44,10 +45,10 @@ class OfflineFirstGamesRepository @Inject constructor(
 	override fun getGameDetails(gameId: UUID): Flow<GameEdit> =
 		gameDao.getGameDetails(gameId).map { it.asModel() }
 
-	override fun getGamesList(seriesId: UUID): Flow<List<GameListItem>> =
+	override fun getGamesList(seriesId: SeriesID): Flow<List<GameListItem>> =
 		gameDao.getGamesList(seriesId)
 
-	override fun getGameIds(seriesId: UUID): Flow<List<UUID>> = gameDao.getGameIds(seriesId)
+	override fun getGameIds(seriesId: SeriesID): Flow<List<UUID>> = gameDao.getGameIds(seriesId)
 
 	override fun getArchivedGames(): Flow<List<ArchivedGame>> = gameDao.getArchivedGames()
 
@@ -62,7 +63,7 @@ class OfflineFirstGamesRepository @Inject constructor(
 		if (latestGameIdStr == null || latestSeriesIdsStr.isEmpty()) return null
 
 		val latestGameId = UUID.fromString(latestGameIdStr)
-		val latestSeriesIds = latestSeriesIdsStr.map { UUID.fromString(it) }
+		val latestSeriesIds = latestSeriesIdsStr.map { SeriesID.fromString(it) }
 
 		val frames = framesRepository.getFrames(latestGameId).first()
 		if (frames.isGameFinished()) return null
@@ -109,7 +110,7 @@ class OfflineFirstGamesRepository @Inject constructor(
 		}
 	}
 
-	override suspend fun setAllGameLanes(seriesId: UUID, lanes: Set<UUID>) = withContext(
+	override suspend fun setAllGameLanes(seriesId: SeriesID, lanes: Set<UUID>) = withContext(
 		ioDispatcher,
 	) {
 		transactionRunner {

@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetailsProperties
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesListProperties
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
@@ -41,7 +42,7 @@ import kotlinx.datetime.LocalDate
 	],
 )
 data class SeriesEntity(
-	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: UUID,
+	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: SeriesID,
 	@ColumnInfo(name = "league_id", index = true) val leagueId: LeagueID,
 	@ColumnInfo(name = "date") val date: LocalDate,
 	@ColumnInfo(name = "applied_date") val appliedDate: LocalDate? = null,
@@ -52,7 +53,7 @@ data class SeriesEntity(
 )
 
 data class TrackableSeriesEntity(
-	val id: UUID,
+	val id: SeriesID,
 	val numberOfGames: Int,
 	val total: Int,
 	val date: LocalDate,
@@ -67,7 +68,7 @@ data class TrackableSeriesEntity(
 
 data class SeriesCreateEntity(
 	@ColumnInfo(name = "league_id") val leagueId: LeagueID,
-	val id: UUID,
+	val id: SeriesID,
 	val date: LocalDate,
 	@Ignore val numberOfGames: Int,
 	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
@@ -86,7 +87,7 @@ fun SeriesCreate.asEntity(): SeriesCreateEntity = SeriesCreateEntity(
 )
 
 data class SeriesUpdateEntity(
-	val id: UUID,
+	val id: SeriesID,
 	val date: LocalDate,
 	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,

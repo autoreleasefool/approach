@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings.GamesSettingsUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings.GamesSettingsUiState
@@ -36,7 +37,7 @@ class GamesSettingsViewModel @Inject constructor(
 	private val games: MutableStateFlow<List<GameListItem>> = MutableStateFlow(emptyList())
 
 	private val currentBowlerId = MutableStateFlow(BowlerID.randomID())
-	private val bowlers: MutableStateFlow<List<Pair<UUID, BowlerSummary>>> =
+	private val bowlers: MutableStateFlow<List<Pair<SeriesID, BowlerSummary>>> =
 		MutableStateFlow(emptyList())
 
 	init {

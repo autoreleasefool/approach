@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.overview.OverviewRoute
@@ -19,7 +20,7 @@ fun NavGraphBuilder.overviewScreen(
 	onEditStatisticsWidgets: (String) -> Unit,
 	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 	onShowQuickPlay: () -> Unit,
-	onResumeGame: (List<UUID>, UUID) -> Unit,
+	onResumeGame: (List<SeriesID>, UUID) -> Unit,
 	onShowWidgetError: () -> Unit,
 ) {
 	composable(

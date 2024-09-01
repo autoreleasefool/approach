@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
@@ -57,7 +58,7 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 			ORDER BY games.`index` ASC
 		""",
 	)
-	abstract fun getGamesList(seriesId: UUID): Flow<List<GameListItem>>
+	abstract fun getGamesList(seriesId: SeriesID): Flow<List<GameListItem>>
 
 	@Query(
 		"""
@@ -68,7 +69,7 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 			ORDER BY games.`index` ASC
 		""",
 	)
-	abstract fun getGameIds(seriesId: UUID): Flow<List<UUID>>
+	abstract fun getGameIds(seriesId: SeriesID): Flow<List<UUID>>
 
 	@Query(
 		"""

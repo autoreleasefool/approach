@@ -15,7 +15,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesBowlerSummary
-import java.util.UUID
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 
@@ -44,7 +44,7 @@ abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 			WHERE series.id IN (:series)
 		""",
 	)
-	abstract fun getSeriesBowlers(series: List<UUID>): Flow<List<SeriesBowlerSummary>>
+	abstract fun getSeriesBowlers(series: List<SeriesID>): Flow<List<SeriesBowlerSummary>>
 
 	@Query(
 		"""

@@ -17,6 +17,7 @@ import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlayOnbo
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToLeaguePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToSeriesPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.resourcePickerSheet
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.midGameStatisticsDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetails
@@ -75,12 +76,11 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 			)
 		},
 		onPickSeries = { league, series, result ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToSeriesPickerForResult(
 				selectedIds = series?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = result,
-				resourceType = ResourcePickerType.SERIES,
-				filter = league.toString(),
+				leagueId = league,
 			)
 		},
 		onPickGame = { series, game, result ->

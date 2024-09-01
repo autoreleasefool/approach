@@ -6,13 +6,14 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorArguments
 import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorRoute
 import java.util.UUID
 
 fun NavController.navigateToGamesEditor(
-	seriesIds: List<UUID>,
+	seriesIds: List<SeriesID>,
 	initialGameId: UUID,
 	navOptions: NavOptions? = null,
 ) {

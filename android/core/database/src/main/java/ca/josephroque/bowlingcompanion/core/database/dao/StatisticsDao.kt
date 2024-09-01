@@ -15,6 +15,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.TrackableGameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TrackableSeriesEntity
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import java.util.UUID
 
 @Dao
@@ -62,7 +63,7 @@ interface StatisticsDao {
 		""",
 	)
 	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-	fun getSeriesSourceDetails(seriesId: UUID): TrackableFilterSourceSummariesEntity
+	fun getSeriesSourceDetails(seriesId: SeriesID): TrackableFilterSourceSummariesEntity
 
 	@Query(
 		"""

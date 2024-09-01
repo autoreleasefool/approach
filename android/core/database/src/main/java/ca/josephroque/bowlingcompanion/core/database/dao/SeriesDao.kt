@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.SeriesListEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import java.util.UUID
@@ -40,7 +41,7 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 			WHERE series.id = :seriesId
 		""",
 	)
-	abstract fun getSeriesDetails(seriesId: UUID): Flow<SeriesDetailsEntity>
+	abstract fun getSeriesDetails(seriesId: SeriesID): Flow<SeriesDetailsEntity>
 
 	@Transaction
 	@Query(
@@ -96,7 +97,7 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 	abstract fun getArchivedSeries(): Flow<List<ArchivedSeries>>
 
 	@Query("UPDATE series SET alley_id = :alleyId WHERE id = :seriesId")
-	abstract fun setSeriesAlley(seriesId: UUID, alleyId: UUID?)
+	abstract fun setSeriesAlley(seriesId: SeriesID, alleyId: UUID?)
 
 	@Insert(entity = SeriesEntity::class)
 	abstract fun insertSeries(series: SeriesCreateEntity)
@@ -105,10 +106,10 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 	abstract fun updateSeries(series: SeriesUpdateEntity)
 
 	@Query("UPDATE series SET archived_on = :archivedOn WHERE id = :seriesId")
-	abstract fun archiveSeries(seriesId: UUID, archivedOn: Instant)
+	abstract fun archiveSeries(seriesId: SeriesID, archivedOn: Instant)
 
 	@Query("UPDATE series SET archived_on = NULL WHERE id = :seriesId")
-	abstract fun unarchiveSeries(seriesId: UUID)
+	abstract fun unarchiveSeries(seriesId: SeriesID)
 
 	@Query(
 		"""
@@ -119,5 +120,5 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 			WHERE id = :seriesId
 		""",
 	)
-	abstract fun usePreBowl(seriesId: UUID, appliedDate: LocalDate)
+	abstract fun usePreBowl(seriesId: SeriesID, appliedDate: LocalDate)
 }

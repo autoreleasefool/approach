@@ -5,15 +5,15 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gameseditor.scores.ScoresListRoute
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.bottomSheet
-import java.util.UUID
 
 fun NavController.navigateToScoresList(
 	gameIndex: Int,
-	series: List<UUID>,
+	series: List<SeriesID>,
 	navOptions: NavOptions? = null,
 ) {
 	this.navigate(

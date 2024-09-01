@@ -4,6 +4,7 @@ import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 
 interface SeriesRepository {
-	fun getSeriesDetails(seriesId: UUID): Flow<SeriesDetails>
+	fun getSeriesDetails(seriesId: SeriesID): Flow<SeriesDetails>
 	fun getSeriesList(
 		leagueId: LeagueID,
 		sortOrder: SeriesSortOrder,
@@ -21,12 +22,12 @@ interface SeriesRepository {
 	): Flow<List<SeriesListItem>>
 	fun getArchivedSeries(): Flow<List<ArchivedSeries>>
 
-	suspend fun setSeriesAlley(seriesId: UUID, alleyId: UUID?)
+	suspend fun setSeriesAlley(seriesId: SeriesID, alleyId: UUID?)
 
-	suspend fun addGameToSeries(seriesId: UUID)
+	suspend fun addGameToSeries(seriesId: SeriesID)
 	suspend fun insertSeries(series: SeriesCreate)
 	suspend fun updateSeries(series: SeriesUpdate)
-	suspend fun archiveSeries(id: UUID)
-	suspend fun unarchiveSeries(id: UUID)
-	suspend fun usePreBowl(id: UUID, date: LocalDate)
+	suspend fun archiveSeries(id: SeriesID)
+	suspend fun unarchiveSeries(id: SeriesID)
+	suspend fun usePreBowl(id: SeriesID, date: LocalDate)
 }

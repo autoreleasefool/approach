@@ -26,7 +26,7 @@ data class BowlerListItem(val id: BowlerID, val name: String, val average: Doubl
 
 data class BowlerSummary(val id: BowlerID, val name: String)
 
-data class SeriesBowlerSummary(val seriesId: UUID, val id: BowlerID, val name: String) {
+data class SeriesBowlerSummary(val seriesId: SeriesID, val id: BowlerID, val name: String) {
 	fun asSummary(): BowlerSummary = BowlerSummary(id, name)
 }
 

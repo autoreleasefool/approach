@@ -10,6 +10,8 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
@@ -59,6 +61,33 @@ fun NavController.navigateToLeaguePickerForResult(
 		resourceType = ResourcePickerType.LEAGUE,
 		navResultCallback = @JvmSerializableLambda { ids ->
 			navResultCallback(ids.map { LeagueID(it) }.toSet())
+		},
+		navOptions = navOptions,
+	)
+}
+
+fun NavController.navigateToSeriesPickerForResult(
+	selectedIds: Set<SeriesID>,
+	hiddenIds: Set<SeriesID> = emptySet(),
+	limit: Int = 0,
+	leagueId: LeagueID? = null,
+	preBowl: SeriesPreBowl? = null,
+	navResultCallback: NavResultCallback<Set<SeriesID>>,
+	navOptions: NavOptions? = null,
+) {
+	this.navigateToResourcePickerForResult(
+		selectedIds = selectedIds.map { it.value }.toSet(),
+		hiddenIds = hiddenIds.map { it.value }.toSet(),
+		limit = limit,
+		filter = if (leagueId != null && preBowl != null) {
+			"$leagueId:$preBowl"
+		} else {
+			leagueId?.value?.toString()
+				?: preBowl?.toString()
+		},
+		resourceType = ResourcePickerType.SERIES,
+		navResultCallback = @JvmSerializableLambda { ids ->
+			navResultCallback(ids.map { SeriesID(it) }.toSet())
 		},
 		navOptions = navOptions,
 	)

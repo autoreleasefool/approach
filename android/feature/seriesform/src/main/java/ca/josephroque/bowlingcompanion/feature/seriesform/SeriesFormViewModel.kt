@@ -17,6 +17,7 @@ import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.League
 import ca.josephroque.bowlingcompanion.core.model.Series
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.core.navigation.Route
@@ -353,7 +354,7 @@ class SeriesFormViewModel @Inject constructor(
 
 					val series = SeriesCreate(
 						leagueId = leagueId ?: return@launch,
-						id = seriesId ?: UUID.randomUUID(),
+						id = seriesId ?: SeriesID.randomID(),
 						alleyId = state.form.alley?.id,
 						date = state.form.date,
 						preBowl = state.form.preBowl,
@@ -385,7 +386,7 @@ class SeriesFormViewModel @Inject constructor(
 		}
 	}
 
-	private fun dismiss(seriesId: UUID? = null) {
+	private fun dismiss(seriesId: SeriesID? = null) {
 		sendEvent(SeriesFormScreenEvent.Dismissed(seriesId))
 	}
 }

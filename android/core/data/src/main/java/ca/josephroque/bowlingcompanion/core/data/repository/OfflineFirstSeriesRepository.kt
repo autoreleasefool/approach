@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
@@ -38,7 +39,7 @@ class OfflineFirstSeriesRepository @Inject constructor(
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ) : SeriesRepository {
-	override fun getSeriesDetails(seriesId: UUID): Flow<SeriesDetails> =
+	override fun getSeriesDetails(seriesId: SeriesID): Flow<SeriesDetails> =
 		seriesDao.getSeriesDetails(seriesId).map(SeriesDetailsEntity::asModel)
 
 	override fun getSeriesList(
@@ -78,23 +79,24 @@ class OfflineFirstSeriesRepository @Inject constructor(
 		}
 	}
 
-	override suspend fun setSeriesAlley(seriesId: UUID, alleyId: UUID?) = withContext(ioDispatcher) {
-		transactionRunner {
-			val series = seriesDao.getSeriesDetails(seriesId).firstOrNull() ?: return@transactionRunner
+	override suspend fun setSeriesAlley(seriesId: SeriesID, alleyId: UUID?) =
+		withContext(ioDispatcher) {
+			transactionRunner {
+				val series = seriesDao.getSeriesDetails(seriesId).firstOrNull() ?: return@transactionRunner
 
-			if (series.alley?.id == alleyId) {
-				return@transactionRunner
-			}
+				if (series.alley?.id == alleyId) {
+					return@transactionRunner
+				}
 
-			val games = gameDao.getGamesList(seriesId).firstOrNull() ?: return@transactionRunner
-			seriesDao.setSeriesAlley(seriesId, alleyId)
-			games.forEach {
-				gameDao.deleteGameLanes(it.id)
+				val games = gameDao.getGamesList(seriesId).firstOrNull() ?: return@transactionRunner
+				seriesDao.setSeriesAlley(seriesId, alleyId)
+				games.forEach {
+					gameDao.deleteGameLanes(it.id)
+				}
 			}
 		}
-	}
 
-	override suspend fun addGameToSeries(seriesId: UUID) = withContext(ioDispatcher) {
+	override suspend fun addGameToSeries(seriesId: SeriesID) = withContext(ioDispatcher) {
 		transactionRunner {
 			val existingGames = gamesRepository.getGamesList(seriesId).first()
 
@@ -129,15 +131,15 @@ class OfflineFirstSeriesRepository @Inject constructor(
 		}
 	}
 
-	override suspend fun archiveSeries(id: UUID) = withContext(ioDispatcher) {
+	override suspend fun archiveSeries(id: SeriesID) = withContext(ioDispatcher) {
 		seriesDao.archiveSeries(id, archivedOn = Clock.System.now())
 	}
 
-	override suspend fun unarchiveSeries(id: UUID) = withContext(ioDispatcher) {
+	override suspend fun unarchiveSeries(id: SeriesID) = withContext(ioDispatcher) {
 		seriesDao.unarchiveSeries(id)
 	}
 
-	override suspend fun usePreBowl(id: UUID, date: LocalDate) = withContext(ioDispatcher) {
+	override suspend fun usePreBowl(id: SeriesID, date: LocalDate) = withContext(ioDispatcher) {
 		val games = gameDao.getGamesList(id).first()
 		games.forEach {
 			gameDao.setGameExcludedFromStatistics(it.id, ExcludeFromStatistics.INCLUDE)

@@ -12,30 +12,19 @@ object Frame {
 	fun rollIndicesAfter(after: Int): IntRange = (after + 1)..<NUMBER_OF_ROLLS
 }
 
-data class ScoreableFrame(
-	val index: Int,
-	val rolls: List<Roll>,
-) {
-	data class Roll(
-		val index: Int,
-		val pinsDowned: Set<Pin>,
-		val didFoul: Boolean,
-	)
+data class ScoreableFrame(val index: Int, val rolls: List<Roll>) {
+	data class Roll(val index: Int, val pinsDowned: Set<Pin>, val didFoul: Boolean)
 }
 
 data class TrackableFrame(
-	val seriesId: UUID,
+	val seriesId: SeriesID,
 	val gameId: UUID,
 	val gameIndex: Int,
 	val index: Int,
 	val rolls: List<Roll>,
 	val date: LocalDate,
 ) {
-	data class Roll(
-		val index: Int,
-		val pinsDowned: Set<Pin>,
-		val didFoul: Boolean,
-	)
+	data class Roll(val index: Int, val pinsDowned: Set<Pin>, val didFoul: Boolean)
 
 	val totalRolls: Int
 		get() {
@@ -52,19 +41,10 @@ data class TrackableFrame(
 		}
 }
 
-data class FrameCreate(
-	val gameId: UUID,
-	val index: Int,
-)
+data class FrameCreate(val gameId: UUID, val index: Int)
 
-data class FrameEdit(
-	val properties: Properties,
-	val rolls: List<Roll>,
-) {
-	data class Properties(
-		val gameId: UUID,
-		val index: Int,
-	)
+data class FrameEdit(val properties: Properties, val rolls: List<Roll>) {
+	data class Properties(val gameId: UUID, val index: Int)
 
 	data class Roll(
 		val index: Int,
@@ -73,12 +53,7 @@ data class FrameEdit(
 		val bowlingBall: Gear?,
 	)
 
-	data class Gear(
-		val id: UUID,
-		val name: String,
-		val kind: GearKind,
-		val avatar: Avatar,
-	)
+	data class Gear(val id: UUID, val name: String, val kind: GearKind, val avatar: Avatar)
 
 	val hasUntouchedRoll: Boolean =
 		firstUntouchedRoll != null

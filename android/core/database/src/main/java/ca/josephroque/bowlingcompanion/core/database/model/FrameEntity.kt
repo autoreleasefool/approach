@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.model.FrameCreate
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.ScoreableFrame
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import java.util.UUID
 import kotlinx.datetime.LocalDate
@@ -60,10 +61,7 @@ data class FrameEntity(
 	@ColumnInfo(name = "ball1", index = true) val ball1: UUID?,
 	@ColumnInfo(name = "ball2", index = true) val ball2: UUID?,
 ) {
-	data class Roll(
-		val pinsDowned: Set<Pin>,
-		val didFoul: Boolean,
-	) {
+	data class Roll(val pinsDowned: Set<Pin>, val didFoul: Boolean) {
 		fun toBitString(): String {
 			val bitString = StringBuilder()
 			bitString.append(if (didFoul) '1' else '0')
@@ -111,7 +109,7 @@ fun FrameCreate.asEntity(): FrameEntity = FrameEntity(
 )
 
 data class TrackableFrameEntity(
-	val seriesId: UUID,
+	val seriesId: SeriesID,
 	val gameId: UUID,
 	val gameIndex: Int,
 	val index: Int,

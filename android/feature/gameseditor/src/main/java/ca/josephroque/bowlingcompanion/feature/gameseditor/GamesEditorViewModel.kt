@@ -32,6 +32,7 @@ import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.Pin
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.nextIndexToRecord
 import ca.josephroque.bowlingcompanion.core.navigation.Route
@@ -261,7 +262,7 @@ class GamesEditorViewModel @Inject constructor(
 		}
 	}
 
-	private fun updateSeries(series: List<UUID>) {
+	private fun updateSeries(series: List<SeriesID>) {
 		this.series.update { series }
 	}
 
@@ -1045,12 +1046,12 @@ class GamesEditorViewModel @Inject constructor(
 		isGameLockSnackBarVisible.value = true
 	}
 
-	private suspend fun currentSeriesId(): UUID = currentBowlerId
+	private suspend fun currentSeriesId(): SeriesID = currentBowlerId
 		.filterNotNull()
 		.map { getBowlerSeriesId(it) }
 		.first()
 
-	private suspend fun getBowlerSeriesId(bowlerId: BowlerID): UUID = bowlers.map { bowlers ->
+	private suspend fun getBowlerSeriesId(bowlerId: BowlerID): SeriesID = bowlers.map { bowlers ->
 		val bowlerIndex = bowlers.indexOfFirst { it.id == bowlerId }
 		if (bowlerIndex == -1) return@map null
 		series.value[bowlerIndex]

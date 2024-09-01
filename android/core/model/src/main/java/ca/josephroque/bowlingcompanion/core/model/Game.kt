@@ -16,7 +16,7 @@ object Game {
 data class GameSummary(val id: UUID, val index: Int, val score: Int)
 
 data class TrackableGame(
-	val seriesId: UUID,
+	val seriesId: SeriesID,
 	val id: UUID,
 	val index: Int,
 	val score: Int,
@@ -28,7 +28,7 @@ data class TrackableGame(
 
 data class GameCreate(
 	val id: UUID,
-	val seriesId: UUID,
+	val seriesId: SeriesID,
 	val index: Int,
 	val score: Int = 0,
 	val locked: GameLockState = GameLockState.UNLOCKED,
@@ -53,7 +53,7 @@ data class GameEdit(
 	)
 
 	data class Series(
-		val id: UUID,
+		val id: SeriesID,
 		val date: LocalDate,
 		val preBowl: SeriesPreBowl,
 		val excludeFromStatistics: ExcludeFromStatistics,
@@ -101,4 +101,4 @@ enum class GameScoringMethod {
 	BY_FRAME,
 }
 
-data class GameInProgress(val seriesIds: List<UUID>, val currentGameId: UUID)
+data class GameInProgress(val seriesIds: List<SeriesID>, val currentGameId: UUID)

@@ -7,26 +7,27 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
 import ca.josephroque.bowlingcompanion.feature.seriesform.SeriesFormRoute
 import java.util.UUID
 
-fun NavController.navigateToSeriesForm(seriesId: UUID, navOptions: NavOptions? = null) {
+fun NavController.navigateToSeriesForm(seriesId: SeriesID, navOptions: NavOptions? = null) {
 	this.navigate(Route.EditSeries.createRoute(seriesId), navOptions)
 }
 
 fun NavController.navigateToNewSeriesForm(
 	leagueId: LeagueID,
-	result: NavResultCallback<UUID?>,
+	result: NavResultCallback<SeriesID?>,
 	navOptions: NavOptions? = null,
 ) {
 	this.navigateForResult(Route.AddSeries.createRoute(leagueId), result, navOptions)
 }
 
 fun NavGraphBuilder.seriesFormScreen(
-	onDismissWithResult: (UUID?) -> Unit,
+	onDismissWithResult: (SeriesID?) -> Unit,
 	onEditAlley: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 ) {
 	composable(

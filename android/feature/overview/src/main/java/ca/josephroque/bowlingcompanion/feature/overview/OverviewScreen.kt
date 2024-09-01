@@ -28,6 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.overview.ui.Overview
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewFloatingActionButton
@@ -44,7 +45,7 @@ internal fun OverviewRoute(
 	onEditStatisticsWidgets: (String) -> Unit,
 	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 	onShowQuickPlay: () -> Unit,
-	onResumeGame: (List<UUID>, UUID) -> Unit,
+	onResumeGame: (List<SeriesID>, UUID) -> Unit,
 	onShowWidgetNotEnoughDataError: () -> Unit,
 	onShowWidgetUnavailableError: () -> Unit,
 	modifier: Modifier = Modifier,

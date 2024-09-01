@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.analytics.trackable.series.SeriesPre
 import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesSummary
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.prebowl.SeriesPreBowlFormTopBarUiAction
@@ -14,7 +15,6 @@ import ca.josephroque.bowlingcompanion.feature.seriesform.ui.prebowl.SeriesPreBo
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.prebowl.SeriesPreBowlFormUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.prebowl.SeriesPreBowlFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -80,7 +80,7 @@ class SeriesPreBowlFormViewModel @Inject constructor(
 		}
 	}
 
-	private fun updateSeries(seriesId: UUID?) {
+	private fun updateSeries(seriesId: SeriesID?) {
 		viewModelScope.launch {
 			val seriesDetails = seriesId?.let { seriesRepository.getSeriesDetails(seriesId).first() }
 			_uiState.updateForm {

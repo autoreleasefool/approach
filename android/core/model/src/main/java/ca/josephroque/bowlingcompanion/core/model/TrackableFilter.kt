@@ -22,7 +22,10 @@ data class TrackableFilter(
 			override val id: UUID
 				get() = leagueId.value
 		}
-		data class Series(override val id: UUID) : Source
+		data class Series(val seriesId: SeriesID) : Source {
+			override val id: UUID
+				get() = seriesId.value
+		}
 		data class Game(override val id: UUID) : Source
 	}
 

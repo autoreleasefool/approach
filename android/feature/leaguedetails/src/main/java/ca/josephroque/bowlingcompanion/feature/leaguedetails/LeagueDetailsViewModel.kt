@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
@@ -22,7 +23,6 @@ import ca.josephroque.bowlingcompanion.feature.serieslist.ui.SeriesListUiState
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -50,7 +50,8 @@ class LeagueDetailsViewModel @Inject constructor(
 	private val seriesSortOrder: MutableStateFlow<SeriesSortOrder> =
 		MutableStateFlow(SeriesSortOrder.NEWEST_TO_OLDEST)
 
-	private val seriesChartModelProducers: MutableMap<UUID, ChartEntryModelProducer> = mutableMapOf()
+	private val seriesChartModelProducers: MutableMap<SeriesID, ChartEntryModelProducer> =
+		mutableMapOf()
 
 	private val seriesList = seriesSortOrder.flatMapLatest { sortOrder ->
 		seriesRepository.getSeriesList(leagueId, sortOrder, null)
@@ -151,7 +152,7 @@ class LeagueDetailsViewModel @Inject constructor(
 		}
 	}
 
-	private fun showSeriesDetails(seriesId: UUID) {
+	private fun showSeriesDetails(seriesId: SeriesID) {
 		sendEvent(LeagueDetailsScreenEvent.ShowSeriesDetails(seriesId))
 		analyticsClient.trackEvent(SeriesViewed)
 	}

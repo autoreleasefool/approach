@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerUiAction
@@ -88,7 +89,7 @@ class SourcePickerViewModel @Inject constructor(
 		}
 	}
 
-	private fun setFilterSeries(seriesId: UUID?) {
+	private fun setFilterSeries(seriesId: SeriesID?) {
 		seriesId?.let {
 			source.value = TrackableFilter.Source.Series(it)
 		}

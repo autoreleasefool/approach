@@ -20,8 +20,8 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueUpdate
 import ca.josephroque.bowlingcompanion.core.model.Series
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -57,7 +57,7 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 				LeagueRecurrence.ONCE -> seriesRepository.insertSeries(
 					SeriesCreate(
 						leagueId = league.id,
-						id = UUID.randomUUID(),
+						id = SeriesID.randomID(),
 						numberOfGames = league.numberOfGames ?: Series.DEFAULT_NUMBER_OF_GAMES,
 						date = Clock.System.now().toLocalDate(),
 						appliedDate = null,

@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
@@ -22,8 +23,8 @@ fun NavGraphBuilder.statisticsSourcePickerSheet(
 	onBackPressed: () -> Unit,
 	onPickBowler: (BowlerID?, NavResultCallback<Set<BowlerID>>) -> Unit,
 	onPickLeague: (BowlerID, LeagueID?, NavResultCallback<Set<LeagueID>>) -> Unit,
-	onPickSeries: (LeagueID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onPickGame: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onPickSeries: (LeagueID, SeriesID?, NavResultCallback<Set<SeriesID>>) -> Unit,
+	onPickGame: (SeriesID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onShowStatistics: (TrackableFilter) -> Unit,
 ) {
 	bottomSheet(

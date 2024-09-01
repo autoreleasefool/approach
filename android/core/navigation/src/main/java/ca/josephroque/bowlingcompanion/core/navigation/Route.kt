@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.StatisticsDetailsSourceType
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import java.util.UUID
@@ -82,11 +83,11 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	) {
 		const val ARG_SERIES = "series"
 		const val ARG_CURRENT_GAME = "current_game"
-		fun createRoute(series: List<UUID>, currentGame: UUID): String =
+		fun createRoute(series: List<SeriesID>, currentGame: UUID): String =
 			"games_settings/${Uri.encode(series.encode())}/${Uri.encode(currentGame.toString())}"
-		fun getSeries(savedStateHandle: SavedStateHandle): List<UUID> =
-			savedStateHandle.get<String>("series")?.decodeList()?.mapNotNull {
-				UUID.fromString(it)
+		fun getSeries(savedStateHandle: SavedStateHandle): List<SeriesID> =
+			savedStateHandle.get<String>("series")?.decodeList()?.map {
+				SeriesID.fromString(it)
 			} ?: emptyList()
 		fun getCurrentGame(savedStateHandle: SavedStateHandle): UUID? =
 			savedStateHandle.get<String>("current_game")?.let { UUID.fromString(it) }
@@ -94,23 +95,23 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	data object EditGame : Route("edit_game/{series}/{game}", isBottomBarVisible = false) {
 		const val ARG_SERIES = "series"
 		const val ARG_GAME = "game"
-		fun createRoute(series: List<UUID>, game: UUID): String =
+		fun createRoute(series: List<SeriesID>, game: UUID): String =
 			"edit_game/${Uri.encode(series.encode())}/${Uri.encode(game.toString())}"
 		fun getGame(savedStateHandle: SavedStateHandle): UUID? =
 			savedStateHandle.get<String>("game")?.let { UUID.fromString(it) }
-		fun getSeries(savedStateHandle: SavedStateHandle): List<UUID> =
-			savedStateHandle.get<String>("series")?.decodeList()?.mapNotNull {
-				UUID.fromString(it)
+		fun getSeries(savedStateHandle: SavedStateHandle): List<SeriesID> =
+			savedStateHandle.get<String>("series")?.decodeList()?.map {
+				SeriesID.fromString(it)
 			} ?: emptyList()
 	}
 	data object ScoresList : Route("scores_list/{series}/{gameIndex}", isBottomBarVisible = false) {
 		const val ARG_SERIES = "series"
 		const val ARG_GAME_INDEX = "gameIndex"
-		fun createRoute(series: List<UUID>, gameIndex: Int): String =
+		fun createRoute(series: List<SeriesID>, gameIndex: Int): String =
 			"scores_list/${Uri.encode(series.encode())}/$gameIndex"
-		fun getSeries(savedStateHandle: SavedStateHandle): List<UUID> =
-			savedStateHandle.get<String>("series")?.decodeList()?.mapNotNull {
-				UUID.fromString(it)
+		fun getSeries(savedStateHandle: SavedStateHandle): List<SeriesID> =
+			savedStateHandle.get<String>("series")?.decodeList()?.map {
+				SeriesID.fromString(it)
 			} ?: emptyList()
 		fun getGameIndex(savedStateHandle: SavedStateHandle): Int? =
 			savedStateHandle.get<Int>("gameIndex")
@@ -234,15 +235,15 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	}
 	data object EditSeries : Route("edit_series/{series}", isBottomBarVisible = false) {
 		const val ARG_SERIES = "series"
-		fun createRoute(series: UUID): String = "edit_series/${Uri.encode(series.toString())}"
-		fun getSeries(savedStateHandle: SavedStateHandle): UUID? =
-			savedStateHandle.get<String>("series")?.let { UUID.fromString(it) }
+		fun createRoute(series: SeriesID): String = "edit_series/${Uri.encode(series.toString())}"
+		fun getSeries(savedStateHandle: SavedStateHandle): SeriesID? =
+			savedStateHandle.get<String>("series")?.let { SeriesID.fromString(it) }
 	}
 	data object SeriesDetails : Route("series/{series}") {
 		const val ARG_SERIES = "series"
-		fun createRoute(series: UUID): String = "series/${Uri.encode(series.toString())}"
-		fun getSeries(savedStateHandle: SavedStateHandle): UUID? =
-			savedStateHandle.get<String>("series")?.let { UUID.fromString(it) }
+		fun createRoute(series: SeriesID): String = "series/${Uri.encode(series.toString())}"
+		fun getSeries(savedStateHandle: SavedStateHandle): SeriesID? =
+			savedStateHandle.get<String>("series")?.let { SeriesID.fromString(it) }
 	}
 	data object EventDetails : Route("event/{event}") {
 		const val ARG_EVENT = "event"

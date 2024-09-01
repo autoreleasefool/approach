@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor.settings
 
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings.GamesSettingsUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings.GamesSettingsUiState
 import java.util.UUID
@@ -7,9 +8,7 @@ import java.util.UUID
 sealed interface GamesSettingsScreenUiState {
 	data object Loading : GamesSettingsScreenUiState
 
-	data class Loaded(
-		val gamesSettings: GamesSettingsUiState,
-	) : GamesSettingsScreenUiState
+	data class Loaded(val gamesSettings: GamesSettingsUiState) : GamesSettingsScreenUiState
 }
 
 sealed interface GamesSettingsScreenUiAction {
@@ -17,8 +16,6 @@ sealed interface GamesSettingsScreenUiAction {
 }
 
 sealed interface GamesSettingsScreenEvent {
-	data class DismissedWithResult(
-		val series: List<UUID>,
-		val currentGame: UUID,
-	) : GamesSettingsScreenEvent
+	data class DismissedWithResult(val series: List<SeriesID>, val currentGame: UUID) :
+		GamesSettingsScreenEvent
 }

@@ -35,6 +35,7 @@ import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewScree
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToLeaguePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToSeriesPickerForResult
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToEvent
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToSeriesDetails
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.seriesDetailsScreen
@@ -148,12 +149,12 @@ fun NavGraphBuilder.overviewGraph(
 	seriesPreBowlFormScreen(
 		onDismiss = navController::popBackStack,
 		onShowSeriesPicker = { leagueId, seriesId, result ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToSeriesPickerForResult(
 				selectedIds = seriesId?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = result,
-				resourceType = ResourcePickerType.SERIES,
-				filter = "$leagueId:${SeriesPreBowl.PRE_BOWL}",
+				leagueId = leagueId,
+				preBowl = SeriesPreBowl.PRE_BOWL,
 			)
 		},
 	)

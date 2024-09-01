@@ -39,7 +39,7 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 		when (source) {
 			is TrackableFilter.Source.Bowler -> statisticsDao.getBowlerSourceDetails(source.bowlerId)
 			is TrackableFilter.Source.League -> statisticsDao.getLeagueSourceDetails(source.leagueId)
-			is TrackableFilter.Source.Series -> statisticsDao.getSeriesSourceDetails(source.id)
+			is TrackableFilter.Source.Series -> statisticsDao.getSeriesSourceDetails(source.seriesId)
 			is TrackableFilter.Source.Game -> statisticsDao.getGameSourceDetails(source.id)
 		}.asModel()
 	}

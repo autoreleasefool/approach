@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor
 
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiAction
@@ -25,9 +26,9 @@ object GamesEditorArguments {
 	)
 
 	data class ShowGamesSettings(
-		val series: List<UUID>,
+		val series: List<SeriesID>,
 		val currentGameId: UUID,
-		val onSeriesUpdated: NavResultCallback<Pair<List<UUID>, UUID>>,
+		val onSeriesUpdated: NavResultCallback<Pair<List<SeriesID>, UUID>>,
 	)
 
 	data class EditScore(
@@ -38,7 +39,7 @@ object GamesEditorArguments {
 
 	data class ShowStatistics(val filter: TrackableFilter)
 
-	data class ShowBowlerScores(val series: List<UUID>, val gameIndex: Int)
+	data class ShowBowlerScores(val series: List<SeriesID>, val gameIndex: Int)
 }
 
 sealed interface GamesEditorScreenUiState {
@@ -71,7 +72,7 @@ sealed interface GamesEditorScreenUiAction {
 	data class LanesUpdated(val laneIds: Set<UUID>) : GamesEditorScreenUiAction
 	data class GamesEditor(val action: GamesEditorUiAction) : GamesEditorScreenUiAction
 	data class GameDetails(val action: GameDetailsUiAction) : GamesEditorScreenUiAction
-	data class SeriesUpdated(val series: List<UUID>) : GamesEditorScreenUiAction
+	data class SeriesUpdated(val series: List<SeriesID>) : GamesEditorScreenUiAction
 	data class CurrentGameUpdated(val gameId: UUID) : GamesEditorScreenUiAction
 	data class SelectedBallUpdated(val ballId: UUID?) : GamesEditorScreenUiAction
 	data class ScoreUpdated(val score: Int, val scoringMethod: GameScoringMethod) :
@@ -86,9 +87,10 @@ sealed interface GamesEditorScreenEvent {
 	data class EditAlley(val alleyId: UUID?) : GamesEditorScreenEvent
 	data class EditLanes(val alleyId: UUID, val laneIds: Set<UUID>) : GamesEditorScreenEvent
 	data class EditRolledBall(val ballId: UUID?) : GamesEditorScreenEvent
-	data class ShowGamesSettings(val series: List<UUID>, val currentGameId: UUID) :
+	data class ShowGamesSettings(val series: List<SeriesID>, val currentGameId: UUID) :
 		GamesEditorScreenEvent
 	data class EditScore(val score: Int, val scoringMethod: GameScoringMethod) : GamesEditorScreenEvent
 	data class ShowStatistics(val filter: TrackableFilter) : GamesEditorScreenEvent
-	data class ShowBowlerScores(val series: List<UUID>, val gameIndex: Int) : GamesEditorScreenEvent
+	data class ShowBowlerScores(val series: List<SeriesID>, val gameIndex: Int) :
+		GamesEditorScreenEvent
 }

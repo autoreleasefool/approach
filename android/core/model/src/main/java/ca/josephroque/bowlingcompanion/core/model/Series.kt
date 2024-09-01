@@ -1,11 +1,23 @@
 package ca.josephroque.bowlingcompanion.core.model
 
+import android.os.Parcelable
 import java.util.UUID
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlinx.parcelize.Parcelize
 
 object Series {
 	const val DEFAULT_NUMBER_OF_GAMES = 4
+}
+
+@JvmInline
+@Parcelize
+value class SeriesID(val value: UUID) : Parcelable {
+	override fun toString(): String = value.toString()
+	companion object {
+		fun randomID(): SeriesID = SeriesID(UUID.randomUUID())
+		fun fromString(string: String): SeriesID = SeriesID(UUID.fromString(string))
+	}
 }
 
 enum class SeriesSortOrder {
@@ -27,12 +39,12 @@ enum class SeriesItemSize {
 		}
 }
 
-data class SeriesSummary(val id: UUID, val date: LocalDate)
+data class SeriesSummary(val id: SeriesID, val date: LocalDate)
 
 data class SeriesListItem(val properties: SeriesListProperties, val scores: List<Int>)
 
 data class SeriesListProperties(
-	val id: UUID,
+	val id: SeriesID,
 	val date: LocalDate,
 	val total: Int,
 	val preBowl: SeriesPreBowl,
@@ -40,14 +52,14 @@ data class SeriesListProperties(
 )
 
 data class TrackableSeries(
-	val id: UUID,
+	val id: SeriesID,
 	val numberOfGames: Int,
 	val total: Int,
 	val date: LocalDate,
 )
 
 data class ArchivedSeries(
-	val id: UUID,
+	val id: SeriesID,
 	val date: LocalDate,
 	val bowlerName: String,
 	val leagueName: String,
@@ -64,7 +76,7 @@ data class SeriesDetails(
 data class SeriesDetailsProperties(
 	val leagueId: LeagueID,
 	val alleyId: UUID?,
-	val id: UUID,
+	val id: SeriesID,
 	val date: LocalDate,
 	val appliedDate: LocalDate?,
 	val total: Int,
@@ -75,7 +87,7 @@ data class SeriesDetailsProperties(
 
 data class SeriesCreate(
 	val leagueId: LeagueID,
-	val id: UUID,
+	val id: SeriesID,
 	val date: LocalDate,
 	val appliedDate: LocalDate?,
 	val numberOfGames: Int,
@@ -86,7 +98,7 @@ data class SeriesCreate(
 )
 
 data class SeriesUpdate(
-	val id: UUID,
+	val id: SeriesID,
 	val date: LocalDate,
 	val appliedDate: LocalDate?,
 	val preBowl: SeriesPreBowl,

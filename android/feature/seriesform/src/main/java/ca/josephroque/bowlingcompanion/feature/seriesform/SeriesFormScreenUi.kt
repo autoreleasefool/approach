@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.seriesform
 
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBarUiState
@@ -19,10 +20,8 @@ sealed interface SeriesFormScreenUiState {
 		override fun isSavable(): Boolean = false
 	}
 
-	data class Create(
-		val form: SeriesFormUiState,
-		val topBar: SeriesFormTopBarUiState,
-	) : SeriesFormScreenUiState {
+	data class Create(val form: SeriesFormUiState, val topBar: SeriesFormTopBarUiState) :
+		SeriesFormScreenUiState {
 		override fun isSavable(): Boolean = true
 		override fun hasAnyChanges(): Boolean = true
 	}
@@ -54,13 +53,11 @@ sealed interface SeriesFormScreenUiAction {
 	data object LoadSeries : SeriesFormScreenUiAction
 	data class AlleyUpdated(val alleyId: UUID?) : SeriesFormScreenUiAction
 
-	data class SeriesForm(
-		val action: SeriesFormUiAction,
-	) : SeriesFormScreenUiAction
+	data class SeriesForm(val action: SeriesFormUiAction) : SeriesFormScreenUiAction
 }
 
 sealed interface SeriesFormScreenEvent {
-	data class Dismissed(val id: UUID?) : SeriesFormScreenEvent
+	data class Dismissed(val seriesId: SeriesID?) : SeriesFormScreenEvent
 	data class EditAlley(val alleyId: UUID?) : SeriesFormScreenEvent
 }
 

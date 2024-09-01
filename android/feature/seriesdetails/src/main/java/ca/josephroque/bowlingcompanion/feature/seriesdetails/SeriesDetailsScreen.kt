@@ -15,15 +15,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetails
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsTopBar
 import java.util.UUID
 import kotlinx.coroutines.launch
 
-data class EditGameArgs(
-	val seriesId: UUID,
-	val gameId: UUID,
-)
+data class EditGameArgs(val seriesId: SeriesID, val gameId: UUID)
 
 @Composable
 internal fun SeriesDetailsRoute(

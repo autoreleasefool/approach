@@ -18,6 +18,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.Series
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.QuickPlayUiAction
 import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.QuickPlayUiState
@@ -134,7 +135,7 @@ class QuickPlayViewModel @Inject constructor(
 		viewModelScope.launch {
 			var firstGameId: UUID? = null
 			val seriesIds = leagueIds.map {
-				val id = UUID.randomUUID()
+				val id = SeriesID.randomID()
 				seriesRepository.insertSeries(
 					SeriesCreate(
 						leagueId = it,

@@ -17,18 +17,18 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.prebowl.SeriesPreBowlForm
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.prebowl.SeriesPreBowlFormTopBar
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.prebowl.SeriesPreBowlFormTopBarUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.prebowl.SeriesPreBowlFormTopBarUiState
-import java.util.UUID
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun SeriesPreBowlFormRoute(
 	onDismiss: () -> Unit,
-	onShowSeriesPicker: (LeagueID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onShowSeriesPicker: (LeagueID, SeriesID?, NavResultCallback<Set<SeriesID>>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: SeriesPreBowlFormViewModel = hiltViewModel(),
 ) {

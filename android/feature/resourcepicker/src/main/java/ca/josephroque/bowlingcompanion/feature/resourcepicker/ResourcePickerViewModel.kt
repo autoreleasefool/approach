@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.AlleyPickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.BowlerPickerDataProvider
@@ -80,7 +81,7 @@ class ResourcePickerViewModel @Inject constructor(
 		)
 		ResourcePickerType.GAME -> GamePickerDataProvider(
 			gamesRepository,
-			(filter as? ResourcePickerFilter.Series)?.id,
+			(filter as? ResourcePickerFilter.Series)?.id?.let { SeriesID(it) },
 		)
 		ResourcePickerType.GEAR -> GearPickerDataProvider(
 			gearRepository,
@@ -93,11 +94,9 @@ class ResourcePickerViewModel @Inject constructor(
 		)
 	}
 
-	private fun getPickerUiState(): ResourcePickerUiState? {
-		return when (val state = _uiState.value) {
-			ResourcePickerScreenUiState.Loading -> null
-			is ResourcePickerScreenUiState.Loaded -> state.picker
-		}
+	private fun getPickerUiState(): ResourcePickerUiState? = when (val state = _uiState.value) {
+		ResourcePickerScreenUiState.Loading -> null
+		is ResourcePickerScreenUiState.Loaded -> state.picker
 	}
 
 	private fun setPickerUiState(state: ResourcePickerUiState) {
