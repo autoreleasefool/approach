@@ -54,6 +54,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
+import ca.josephroque.bowlingcompanion.core.model.TeamID
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.text.SimpleDateFormat
@@ -186,10 +187,10 @@ class SQLiteMigrationService @Inject constructor(
 		val idMappings = mutableListOf<LegacyIDMappingEntity>()
 
 		for (legacyTeam in teams) {
-			val id = UUID.randomUUID()
+			val id = TeamID.randomID()
 			idMappings.add(
 				LegacyIDMappingEntity(
-					id = id,
+					id = id.value,
 					legacyId = legacyTeam.id,
 					key = LegacyIDMappingKey.TEAM,
 				),
