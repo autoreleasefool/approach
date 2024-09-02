@@ -6,15 +6,15 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.teamdetails.TeamDetailsRoute
-import java.util.UUID
 
-fun NavController.navigateToTeamDetails(teamId: UUID, navOptions: NavOptions? = null) {
+fun NavController.navigateToTeamDetails(teamId: TeamID, navOptions: NavOptions? = null) {
 	this.navigate(Route.TeamDetails.createRoute(teamId), navOptions)
 }
 
-fun NavGraphBuilder.teamDetailsScreen(onBackPressed: () -> Unit, onAddSeries: (UUID) -> Unit) {
+fun NavGraphBuilder.teamDetailsScreen(onBackPressed: () -> Unit, onAddSeries: (TeamID) -> Unit) {
 	composable(
 		route = Route.TeamDetails.route,
 		arguments = listOf(

@@ -9,7 +9,9 @@ import ca.josephroque.bowlingcompanion.core.analytics.trackable.team.TeamUpdated
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.TeamsRepository
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.TeamCreate
+import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamMemberListItem
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.R
@@ -17,7 +19,6 @@ import ca.josephroque.bowlingcompanion.feature.teamform.ui.TeamFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.TeamFormUiAction
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.TeamFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,7 +33,7 @@ class TeamFormViewModel @Inject constructor(
 	private val analyticsClient: AnalyticsClient,
 ) : ApproachViewModel<TeamFormScreenEvent>() {
 	private val isEditing = Route.EditTeam.getTeam(savedStateHandle) != null
-	private var teamId = Route.EditTeam.getTeam(savedStateHandle) ?: UUID.randomUUID().also {
+	private var teamId = Route.EditTeam.getTeam(savedStateHandle) ?: TeamID.randomID().also {
 		savedStateHandle[Route.EditTeam.ARG_TEAM] = it.toString()
 	}
 
@@ -177,7 +178,7 @@ class TeamFormViewModel @Inject constructor(
 		}
 	}
 
-	private fun updateMembers(members: Set<UUID>) {
+	private fun updateMembers(members: Set<BowlerID>) {
 		viewModelScope.launch {
 			val teamMembers = teamsRepository.getTeamMembers(members.toList()).first()
 			_uiState.updateForm {

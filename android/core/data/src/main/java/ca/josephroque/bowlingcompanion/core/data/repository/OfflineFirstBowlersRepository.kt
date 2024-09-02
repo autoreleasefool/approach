@@ -24,6 +24,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesBowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamID
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -55,9 +56,9 @@ class OfflineFirstBowlersRepository @Inject constructor(
 					.map(SeriesBowlerSummary::asSummary)
 			}
 
-	override fun getTeamBowlers(teamId: UUID): Flow<List<BowlerSummary>> =
+	override fun getTeamBowlers(teamId: TeamID): Flow<List<BowlerSummary>> =
 		teamDao.getTeamMembers(teamId)
-			.map { it.map { BowlerSummary(id = it.id, name = it.name) } }
+			.map { members -> members.map { BowlerSummary(id = it.id, name = it.name) } }
 
 	override fun getBowlersList(
 		kind: BowlerKind?,

@@ -7,11 +7,11 @@ import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.TeamCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamDetailsUpdateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamEntity
+import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamListItem
 import ca.josephroque.bowlingcompanion.core.model.TeamMemberListItem
 import ca.josephroque.bowlingcompanion.core.model.TeamSortOrder
 import ca.josephroque.bowlingcompanion.core.model.TeamSummary
-import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -66,7 +66,7 @@ abstract class TeamDao : LegacyMigratingDao<TeamEntity> {
 			WHERE teams.id = :teamId
 		""",
 	)
-	abstract fun getTeamSummary(teamId: UUID): Flow<TeamSummary>
+	abstract fun getTeamSummary(teamId: TeamID): Flow<TeamSummary>
 
 	@Query(
 		"""
@@ -79,7 +79,7 @@ abstract class TeamDao : LegacyMigratingDao<TeamEntity> {
 			ORDER BY team_bowler.position ASC
 		""",
 	)
-	abstract fun getTeamMembers(teamId: UUID): Flow<List<TeamMemberListItem>>
+	abstract fun getTeamMembers(teamId: TeamID): Flow<List<TeamMemberListItem>>
 
 	@Insert(entity = TeamEntity::class)
 	abstract suspend fun insertTeam(team: TeamCreateEntity)
@@ -88,5 +88,5 @@ abstract class TeamDao : LegacyMigratingDao<TeamEntity> {
 	abstract suspend fun updateTeam(team: TeamDetailsUpdateEntity)
 
 	@Query("DELETE FROM teams WHERE id = :id")
-	abstract suspend fun deleteTeam(id: UUID)
+	abstract suspend fun deleteTeam(id: TeamID)
 }

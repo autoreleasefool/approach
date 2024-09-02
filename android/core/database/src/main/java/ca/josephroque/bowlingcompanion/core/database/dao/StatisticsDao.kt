@@ -17,6 +17,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamID
 
 @Dao
 interface StatisticsDao {
@@ -27,10 +28,10 @@ interface StatisticsDao {
 				teams.name AS team_name
 			FROM teams
 			WHERE teams.id = :teamId
-		"""
+		""",
 	)
 	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-	fun getTeamSourceDetails(teamId: UUID): TrackableFilterSourceSummariesEntity
+	fun getTeamSourceDetails(teamId: TeamID): TrackableFilterSourceSummariesEntity
 
 	@Query(
 		"""

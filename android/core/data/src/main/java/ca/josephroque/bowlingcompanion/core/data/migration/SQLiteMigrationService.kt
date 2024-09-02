@@ -60,7 +60,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
@@ -248,10 +247,10 @@ class SQLiteMigrationService @Inject constructor(
 		val idMappings = mutableListOf<LegacyIDMappingEntity>()
 
 		for (legacyBowler in bowlers) {
-			val id = UUID.randomUUID()
+			val id = BowlerID.randomID()
 			idMappings.add(
 				LegacyIDMappingEntity(
-					id = id,
+					id = id.value,
 					legacyId = legacyBowler.id,
 					key = LegacyIDMappingKey.BOWLER,
 				),
@@ -259,7 +258,7 @@ class SQLiteMigrationService @Inject constructor(
 
 			migratedBowlers.add(
 				BowlerEntity(
-					id = BowlerID(id),
+					id = id,
 					name = legacyBowler.name,
 					kind = BowlerKind.PLAYABLE,
 				),

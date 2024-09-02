@@ -24,6 +24,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesCreate
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiAction
@@ -385,16 +386,17 @@ class SeriesFormViewModel @Inject constructor(
 			when (val state = _uiState.value) {
 				SeriesFormScreenUiState.Loading -> return@launch
 				is SeriesFormScreenUiState.TeamCreate -> {
+					// FIXME: Should be able to select manual scores
 					val teamSeries = TeamSeriesCreate(
 						teamId = teamId ?: return@launch,
-						id = UUID.randomUUID(),
+						id = TeamSeriesID.randomID(),
 						leagues = teamLeagues.takeIf { it.isNotEmpty() } ?: return@launch,
 						date = state.form.date,
 						numberOfGames = state.form.numberOfGames ?: Series.DEFAULT_NUMBER_OF_GAMES,
 						preBowl = SeriesPreBowl.REGULAR,
 						alleyId = state.form.alley?.id,
 						excludeFromStatistics = state.form.excludeFromStatistics,
-						manualScores = null, // FIXME: Should be able to select manual scores
+						manualScores = null,
 					)
 
 					seriesRepository.insertTeamSeries(teamSeries)

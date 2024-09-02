@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -82,7 +83,7 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 			ORDER BY team_series_series.position ASC
 		""",
 	)
-	abstract fun getTeamSeriesGameIds(teamSeriesId: UUID): Flow<List<UUID>>
+	abstract fun getTeamSeriesGameIds(teamSeriesId: TeamSeriesID): Flow<List<GameID>>
 
 	@Query(
 		"""

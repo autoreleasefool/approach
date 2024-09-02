@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
+import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import java.util.UUID
@@ -327,7 +328,7 @@ private fun UserPreferences.parseTrackableFilterSource(): TrackableFilter.Source
 			UUID.fromString(this.trackableFilterSourceId).let {
 				when (this.trackableFilterSource) {
 					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_TEAM ->
-						TrackableFilter.Source.Team(it)
+						TrackableFilter.Source.Team(TeamID(it))
 					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_BOWLER ->
 						TrackableFilter.Source.Bowler(BowlerID(it))
 					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_LEAGUE ->

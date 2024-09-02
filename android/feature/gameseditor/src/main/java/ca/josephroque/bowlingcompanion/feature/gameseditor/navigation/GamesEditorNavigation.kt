@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorArguments
 import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorRoute
@@ -21,8 +22,8 @@ fun NavController.navigateToGamesEditor(
 }
 
 fun NavController.navigateToGamesEditor(
-	teamSeriesId: UUID,
-	initialGameId: UUID,
+	teamSeriesId: TeamSeriesID,
+	initialGameId: GameID,
 	navOptions: NavOptions? = null,
 ) {
 	this.navigate(Route.EditTeamSeries.createRoute(teamSeriesId, initialGameId), navOptions)

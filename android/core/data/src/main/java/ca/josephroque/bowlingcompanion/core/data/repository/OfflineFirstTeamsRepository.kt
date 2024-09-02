@@ -7,9 +7,10 @@ import ca.josephroque.bowlingcompanion.core.database.dao.TeamDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.model.TeamBowlerCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.TeamCreate
-import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamDetails
+import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamListItem
 import ca.josephroque.bowlingcompanion.core.model.TeamMemberListItem
 import ca.josephroque.bowlingcompanion.core.model.TeamSortOrder
@@ -33,12 +34,7 @@ class OfflineFirstTeamsRepository @Inject constructor(
 	override fun getTeamMembers(bowlerIds: List<BowlerID>): Flow<List<TeamMemberListItem>> =
 		teamBowlerDao.getTeamMembers(bowlerIds)
 
-	override fun getTeamSummary(id: TeamID): Flow<TeamSummary> = teamDao.getTeamSummary(id)
-
-	override fun getTeamMembers(teamId: TeamID): Flow<List<TeamMemberListItem>> =
-		teamDao.getTeamMembers(teamId)
-
-	override fun getTeamDetails(id: UUID): Flow<TeamDetails> = combine(
+	override fun getTeamDetails(id: TeamID): Flow<TeamDetails> = combine(
 		teamDao.getTeamSummary(id),
 		teamDao.getTeamMembers(id),
 	) { team, members ->
@@ -49,7 +45,7 @@ class OfflineFirstTeamsRepository @Inject constructor(
 		)
 	}
 
-	override suspend fun getTeamUpdate(id: UUID): TeamUpdate {
+	override suspend fun getTeamUpdate(id: TeamID): TeamUpdate {
 		val team = teamDao.getTeamSummary(id).first()
 		val teamMembers = teamDao.getTeamMembers(id).first()
 		return TeamUpdate(
@@ -57,7 +53,7 @@ class OfflineFirstTeamsRepository @Inject constructor(
 			name = team.name,
 			members = teamMembers,
 		)
-	} (feat(android): load and display simple team details)
+	}
 
 	override suspend fun insertTeam(team: TeamCreate) = withContext(ioDispatcher) {
 		transactionRunner {

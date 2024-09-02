@@ -16,15 +16,17 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.League
-import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueCreate
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.Series
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
+import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesConnect
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayTopBarUiAction
 import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayTopBarUiState
@@ -92,7 +94,7 @@ class QuickPlayViewModel @Inject constructor(
 							bowlers.map { it.first to null }
 						} else {
 							val league = LeagueSummary(
-								id = UUID.randomUUID(),
+								id = LeagueID.randomID(),
 								name = leagueName,
 							)
 							bowlers.map { it.first to league }
@@ -242,7 +244,7 @@ class QuickPlayViewModel @Inject constructor(
 
 				val events = bowlerIds.map {
 					LeagueCreate(
-						id = UUID.randomUUID(),
+						id = LeagueID.randomID(),
 						bowlerId = it,
 						name = leagueName,
 						recurrence = LeagueRecurrence.ONCE,
@@ -255,7 +257,7 @@ class QuickPlayViewModel @Inject constructor(
 
 				leaguesRepository.insertAllLeagues(events)
 				val eventSeries = seriesRepository.getEventSeriesIdsList(events.map { it.id }).first()
-				val teamSeriesId = UUID.randomUUID()
+				val teamSeriesId = TeamSeriesID.randomID()
 				seriesRepository.insertTeamSeries(
 					TeamSeriesConnect(
 						id = teamSeriesId,

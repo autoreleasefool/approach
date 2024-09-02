@@ -18,7 +18,6 @@ data class BowlerEntity(
 	@ColumnInfo(name = "archived_on", defaultValue = "NULL") val archivedOn: Instant? = null,
 )
 
-
 data class BowlerCreateEntity(val id: BowlerID, val name: String, val kind: BowlerKind)
 
 fun BowlerCreate.asEntity() = BowlerCreateEntity(

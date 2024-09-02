@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamID
 import kotlinx.coroutines.flow.Flow
 
 interface BowlersRepository {

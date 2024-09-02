@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionHeader
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.TeamMemberListItem
 import ca.josephroque.bowlingcompanion.core.model.charts.ui.SeriesChartData
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
@@ -104,11 +105,11 @@ private fun MemberRow(name: String, modifier: Modifier = Modifier) {
 private fun TeamDetailsPreview() {
 	val teamMembers = listOf(
 		TeamMemberListItem(
-			id = UUID.randomUUID(),
+			id = BowlerID.randomID(),
 			name = "John Doe",
 		),
 		TeamMemberListItem(
-			id = UUID.randomUUID(),
+			id = BowlerID.randomID(),
 			name = "Jane Doe",
 		),
 	)
