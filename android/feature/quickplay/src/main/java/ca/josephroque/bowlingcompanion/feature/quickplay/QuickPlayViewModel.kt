@@ -182,7 +182,15 @@ class QuickPlayViewModel @Inject constructor(
 
 	private fun updateBowlerLeague(bowlerId: BowlerID, leagueId: LeagueID?) {
 		if (leagueId == null) {
-			removeBowler(bowlerId)
+			if (isTeamQuickPlay) {
+				bowlers.update {
+					it.map { bowlerPair ->
+						if (bowlerPair.first.id == bowlerId) bowlerPair.first to null else bowlerPair
+					}
+				}
+			} else {
+				removeBowler(bowlerId)
+			}
 			return
 		}
 
