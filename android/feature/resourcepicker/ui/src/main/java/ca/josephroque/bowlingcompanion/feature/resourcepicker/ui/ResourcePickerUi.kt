@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
+import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
@@ -63,8 +64,11 @@ sealed interface ResourceItem {
 			get() = alleyId.value
 	}
 
-	data class Lane(override val id: UUID, override val name: String, val position: LanePosition) :
-		ResourceItem
+	data class Lane(val laneId: LaneID, override val name: String, val position: LanePosition) :
+		ResourceItem {
+		override val id: UUID
+			get() = laneId.value
+	}
 }
 
 data class ResourcePickerUiState(

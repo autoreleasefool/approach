@@ -1,8 +1,8 @@
 package ca.josephroque.bowlingcompanion.feature.laneform.ui
 
+import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
-import java.util.UUID
 
 data class LaneFormUiState(
 	val isShowingSwipeToEditTip: Boolean = false,
@@ -31,9 +31,7 @@ sealed interface LaneFormUiAction {
 	data class LaneEdited(val lane: LaneListItem) : LaneFormUiAction
 }
 
-data class AddLanesDialogUiState(
-	val lanesToAdd: Int,
-)
+data class AddLanesDialogUiState(val lanesToAdd: Int)
 
 sealed interface AddLanesDialogUiAction {
 	data object Dismissed : AddLanesDialogUiAction
@@ -42,7 +40,7 @@ sealed interface AddLanesDialogUiAction {
 }
 
 data class LaneLabelDialogUiState(
-	val laneId: UUID,
+	val laneId: LaneID,
 	val label: String,
 	val position: LanePosition,
 	val isPositionDropDownExpanded: Boolean,

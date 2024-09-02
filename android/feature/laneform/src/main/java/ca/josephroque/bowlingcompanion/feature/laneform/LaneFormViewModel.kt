@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import ca.josephroque.bowlingcompanion.core.navigation.Route
@@ -15,7 +16,6 @@ import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormUiState
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneLabelDialogUiAction
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneLabelDialogUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -135,7 +135,7 @@ class LaneFormViewModel @Inject constructor(
 		}
 	}
 
-	private fun deleteLane(id: UUID) {
+	private fun deleteLane(id: LaneID) {
 		form.update { form ->
 			val laneToDelete = form.lanes.indexOfFirst { it.id == id }
 			if (laneToDelete >= 0) {
@@ -164,7 +164,7 @@ class LaneFormViewModel @Inject constructor(
 		}
 	}
 
-	private fun showLaneLabelDialog(id: UUID) {
+	private fun showLaneLabelDialog(id: LaneID) {
 		form.update { form ->
 			val laneToEdit = form.lanes.firstOrNull { it.id == id } ?: return@update form
 
@@ -270,7 +270,7 @@ class LaneFormViewModel @Inject constructor(
 					labels.forEach { label ->
 						add(
 							LaneListItem(
-								id = UUID.randomUUID(),
+								id = LaneID.randomID(),
 								label = label,
 								position = LanePosition.NO_WALL,
 							),

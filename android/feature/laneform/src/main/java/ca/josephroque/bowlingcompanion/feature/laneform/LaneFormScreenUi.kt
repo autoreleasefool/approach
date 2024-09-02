@@ -1,8 +1,8 @@
 package ca.josephroque.bowlingcompanion.feature.laneform
 
+import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormUiAction
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormUiState
-import java.util.UUID
 
 sealed interface LaneFormScreenUiState {
 	fun hasAnyChanges(): Boolean
@@ -13,9 +13,7 @@ sealed interface LaneFormScreenUiState {
 		override fun isSavable(): Boolean = false
 	}
 
-	data class Loaded(
-		val laneForm: LaneFormUiState,
-	) : LaneFormScreenUiState {
+	data class Loaded(val laneForm: LaneFormUiState) : LaneFormScreenUiState {
 		override fun isSavable(): Boolean = true
 
 		override fun hasAnyChanges(): Boolean = laneForm.hasAnyChanges()
@@ -28,5 +26,5 @@ sealed interface LaneFormScreenUiAction {
 }
 
 sealed interface LaneFormScreenEvent {
-	data class DismissedWithResult(val lanes: List<UUID>) : LaneFormScreenEvent
+	data class DismissedWithResult(val lanes: List<LaneID>) : LaneFormScreenEvent
 }

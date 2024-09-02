@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
+import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
@@ -153,6 +154,27 @@ fun NavController.navigateToGearPickerForResult(
 		resourceType = ResourcePickerType.GEAR,
 		navResultCallback = @JvmSerializableLambda { ids ->
 			navResultCallback(ids.map { GearID(it) }.toSet())
+		},
+		navOptions = navOptions,
+	)
+}
+
+fun NavController.navigateToLanePickerForResult(
+	alleyId: AlleyID,
+	selectedIds: Set<LaneID>,
+	hiddenIds: Set<LaneID> = emptySet(),
+	limit: Int = 0,
+	navResultCallback: NavResultCallback<Set<LaneID>>,
+	navOptions: NavOptions? = null,
+) {
+	this.navigateToResourcePickerForResult(
+		selectedIds = selectedIds.map { it.value }.toSet(),
+		hiddenIds = hiddenIds.map { it.value }.toSet(),
+		limit = limit,
+		filter = alleyId.toString(),
+		resourceType = ResourcePickerType.LANE,
+		navResultCallback = @JvmSerializableLambda { ids ->
+			navResultCallback(ids.map { LaneID(it) }.toSet())
 		},
 		navOptions = navOptions,
 	)

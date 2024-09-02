@@ -6,15 +6,15 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
 import ca.josephroque.bowlingcompanion.feature.laneform.LaneFormRoute
-import java.util.UUID
 
 fun NavController.navigateToLaneFormForResult(
-	existingLanes: List<UUID>,
-	navResultCallback: NavResultCallback<List<UUID>>,
+	existingLanes: List<LaneID>,
+	navResultCallback: NavResultCallback<List<LaneID>>,
 	navOptions: NavOptions? = null,
 ) {
 	this.navigateForResult(
@@ -24,7 +24,7 @@ fun NavController.navigateToLaneFormForResult(
 	)
 }
 
-fun NavGraphBuilder.laneFormScreen(onDismissWithResult: (List<UUID>) -> Unit) {
+fun NavGraphBuilder.laneFormScreen(onDismissWithResult: (List<LaneID>) -> Unit) {
 	composable(
 		route = Route.EditLanes.route,
 		arguments = listOf(

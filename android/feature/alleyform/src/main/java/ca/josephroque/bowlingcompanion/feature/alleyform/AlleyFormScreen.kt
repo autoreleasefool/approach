@@ -15,18 +15,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyForm
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormTopBar
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormUiAction
-import java.util.UUID
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun AlleyFormRoute(
 	onDismiss: () -> Unit,
-	onManageLanes: (List<UUID>, NavResultCallback<List<UUID>>) -> Unit,
+	onManageLanes: (List<LaneID>, NavResultCallback<List<LaneID>>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: AlleyFormViewModel = hiltViewModel(),
 ) {

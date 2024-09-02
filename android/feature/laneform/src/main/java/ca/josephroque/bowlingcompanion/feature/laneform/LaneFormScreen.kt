@@ -23,16 +23,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneForm
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormFloatingActionButton
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormTopBar
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormUiAction
-import java.util.UUID
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun LaneFormRoute(
-	onDismissWithResult: (List<UUID>) -> Unit,
+	onDismissWithResult: (List<LaneID>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: LaneFormViewModel = hiltViewModel(),
 ) {

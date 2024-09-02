@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
 import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
+import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormTopBarUiState
@@ -23,7 +24,6 @@ import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormUiAction
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormUiState
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.R
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -197,7 +197,7 @@ class AlleyFormViewModel @Inject constructor(
 		}
 	}
 
-	private fun updateLanes(lanes: List<UUID>) {
+	private fun updateLanes(lanes: List<LaneID>) {
 		viewModelScope.launch {
 			val alleyLanes = lanesRepository.getLanes(lanes).first()
 			_uiState.updateForm { it.copy(lanes = alleyLanes) }

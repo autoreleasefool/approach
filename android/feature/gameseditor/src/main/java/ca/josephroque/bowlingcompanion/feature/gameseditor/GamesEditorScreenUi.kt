@@ -4,6 +4,7 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.GearID
+import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
@@ -11,7 +12,6 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiActio
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiState
-import java.util.UUID
 
 object GamesEditorArguments {
 	data class EditMatchPlay(val gameId: GameID)
@@ -24,8 +24,8 @@ object GamesEditorArguments {
 
 	data class EditLanes(
 		val alleyId: AlleyID,
-		val laneIds: Set<UUID>,
-		val onLanesUpdated: NavResultCallback<Set<UUID>>,
+		val laneIds: Set<LaneID>,
+		val onLanesUpdated: NavResultCallback<Set<LaneID>>,
 	)
 
 	data class ShowGamesSettings(
@@ -72,7 +72,7 @@ sealed interface GamesEditorScreenUiAction {
 
 	data class GearUpdated(val gearIds: Set<GearID>) : GamesEditorScreenUiAction
 	data class AlleyUpdated(val alleyId: AlleyID?) : GamesEditorScreenUiAction
-	data class LanesUpdated(val laneIds: Set<UUID>) : GamesEditorScreenUiAction
+	data class LanesUpdated(val laneIds: Set<LaneID>) : GamesEditorScreenUiAction
 	data class GamesEditor(val action: GamesEditorUiAction) : GamesEditorScreenUiAction
 	data class GameDetails(val action: GameDetailsUiAction) : GamesEditorScreenUiAction
 	data class SeriesUpdated(val series: List<SeriesID>) : GamesEditorScreenUiAction
@@ -88,7 +88,7 @@ sealed interface GamesEditorScreenEvent {
 	data class EditMatchPlay(val gameId: GameID) : GamesEditorScreenEvent
 	data class EditGear(val gearIds: Set<GearID>) : GamesEditorScreenEvent
 	data class EditAlley(val alleyId: AlleyID?) : GamesEditorScreenEvent
-	data class EditLanes(val alleyId: AlleyID, val laneIds: Set<UUID>) : GamesEditorScreenEvent
+	data class EditLanes(val alleyId: AlleyID, val laneIds: Set<LaneID>) : GamesEditorScreenEvent
 	data class EditRolledBall(val ballId: GearID?) : GamesEditorScreenEvent
 	data class ShowGamesSettings(val series: List<SeriesID>, val currentGameId: GameID) :
 		GamesEditorScreenEvent

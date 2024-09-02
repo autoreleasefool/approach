@@ -5,7 +5,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.GearKind
-import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.navigation.popBackStackWithResult
 import ca.josephroque.bowlingcompanion.feature.avatarform.navigation.avatarFormScreen
@@ -35,8 +34,8 @@ import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewScree
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToAlleyPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToGearPickerForResult
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToLanePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToLeaguePickerForResult
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToSeriesPickerForResult
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToEvent
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToSeriesDetails
@@ -187,11 +186,10 @@ fun NavGraphBuilder.overviewGraph(
 			)
 		},
 		onEditLanes = { args ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToLanePickerForResult(
 				selectedIds = args.laneIds,
 				navResultCallback = args.onLanesUpdated,
-				resourceType = ResourcePickerType.LANE,
-				filter = args.alleyId.toString(),
+				alleyId = args.alleyId,
 			)
 		},
 		onShowGamesSettings = { args ->

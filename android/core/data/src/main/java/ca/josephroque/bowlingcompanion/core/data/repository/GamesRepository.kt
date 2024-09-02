@@ -9,8 +9,8 @@ import ca.josephroque.bowlingcompanion.core.model.GameInProgress
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
-import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 
 interface GamesRepository {
@@ -31,9 +31,9 @@ interface GamesRepository {
 		excludeFromStatistics: ExcludeFromStatistics,
 	)
 	suspend fun setGameScore(gameId: GameID, score: Int)
-	suspend fun setGameLanes(gameId: GameID, lanes: Set<UUID>)
+	suspend fun setGameLanes(gameId: GameID, lanes: Set<LaneID>)
 	suspend fun setGameDuration(gameId: GameID, durationMillis: Long)
-	suspend fun setAllGameLanes(seriesId: SeriesID, lanes: Set<UUID>)
+	suspend fun setAllGameLanes(seriesId: SeriesID, lanes: Set<LaneID>)
 
 	suspend fun insertGames(games: List<GameCreate>)
 	suspend fun archiveGame(gameId: GameID)

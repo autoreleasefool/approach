@@ -33,6 +33,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
+import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
@@ -64,7 +65,6 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateGamesEdit
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateHeader
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateSelection
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -970,7 +970,7 @@ class GamesEditorViewModel @Inject constructor(
 		}
 	}
 
-	private fun updateLanes(laneIds: Set<UUID>) {
+	private fun updateLanes(laneIds: Set<LaneID>) {
 		if (isGameLocked) return
 
 		val currentLaneIds = gameDetailsState.value.alley.selectedLanes.map(LaneListItem::id).toSet()

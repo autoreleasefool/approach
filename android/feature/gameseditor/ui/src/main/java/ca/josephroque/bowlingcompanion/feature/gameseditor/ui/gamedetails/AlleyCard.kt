@@ -18,13 +18,13 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.RoundIconButton
 import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
+import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import ca.josephroque.bowlingcompanion.core.model.ui.LaneRow
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.NavigationButton
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.SectionHeader
-import java.util.UUID
 
 @Composable
 internal fun AlleyCard(
@@ -105,12 +105,12 @@ private fun AlleyCardPreview() {
 // 				selectedLanes = emptyList(),
 				selectedLanes = listOf(
 					LaneListItem(
-						id = UUID.randomUUID(),
+						id = LaneID.randomID(),
 						label = "1",
 						position = LanePosition.LEFT_WALL,
 					),
 					LaneListItem(
-						id = UUID.randomUUID(),
+						id = LaneID.randomID(),
 						label = "2",
 						position = LanePosition.NO_WALL,
 					),

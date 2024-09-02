@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.GearID
+import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
@@ -143,9 +144,9 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	data object EditLanes : Route("edit_lanes/{lanes}", isBottomBarVisible = false) {
 		const val ARG_LANES = "lanes"
 		fun createRoute(lanes: List<String>): String = "edit_lanes/${lanes.encode()}"
-		fun getLanes(savedStateHandle: SavedStateHandle): List<UUID> =
+		fun getLanes(savedStateHandle: SavedStateHandle): List<LaneID> =
 			savedStateHandle.get<String>("lanes")?.decodeList()?.mapNotNull {
-				UUID.fromString(it)
+				LaneID.fromString(it)
 			} ?: emptyList()
 	}
 

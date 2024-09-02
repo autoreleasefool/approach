@@ -21,9 +21,9 @@ import ca.josephroque.bowlingcompanion.core.model.GameInProgress
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.isGameFinished
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -104,14 +104,14 @@ class OfflineFirstGamesRepository @Inject constructor(
 			gameDao.setGameDuration(gameId, durationMillis)
 		}
 
-	override suspend fun setGameLanes(gameId: GameID, lanes: Set<UUID>) = withContext(ioDispatcher) {
+	override suspend fun setGameLanes(gameId: GameID, lanes: Set<LaneID>) = withContext(ioDispatcher) {
 		transactionRunner {
 			gameDao.deleteGameLanes(gameId)
 			gameDao.insertGameLanes(lanes.map { GameLaneCrossRef(gameId, it) })
 		}
 	}
 
-	override suspend fun setAllGameLanes(seriesId: SeriesID, lanes: Set<UUID>) = withContext(
+	override suspend fun setAllGameLanes(seriesId: SeriesID, lanes: Set<LaneID>) = withContext(
 		ioDispatcher,
 	) {
 		transactionRunner {
