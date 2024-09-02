@@ -21,12 +21,12 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetID
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetSource
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetTimeline
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.R
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.placeholder.StatisticsWidgetPlaceholderCard
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.widget.StatisticsWidgetCard
-import java.util.UUID
 
 @Composable
 fun StatisticsWidgetLayout(
@@ -81,7 +81,7 @@ fun StatisticsWidgetLayout(
 private fun StatisticsWidgetRow(
 	maxWidgetsPerRow: Int,
 	widgets: List<StatisticsWidget>,
-	widgetCharts: Map<UUID, StatisticsWidgetLayoutUiState.ChartContent>,
+	widgetCharts: Map<StatisticsWidgetID, StatisticsWidgetLayoutUiState.ChartContent>,
 	onAction: (StatisticsWidgetLayoutUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
@@ -122,7 +122,7 @@ private fun StatisticsWidgetLayoutPreview() {
 				widgets = listOf(
 					StatisticsWidget(
 						source = StatisticsWidgetSource.Bowler(BowlerID.randomID()),
-						id = UUID.randomUUID(),
+						id = StatisticsWidgetID.randomID(),
 						timeline = StatisticsWidgetTimeline.THREE_MONTHS,
 						statistic = StatisticID.ACES,
 						context = "",

@@ -15,6 +15,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.hasModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetID
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersListUiAction
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersListUiState
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewTopBarUiState
@@ -24,7 +25,6 @@ import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.Statis
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayoutUiState
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -92,7 +92,8 @@ class OverviewViewModel @Inject constructor(
 			}
 		}
 
-	private val widgetCharts: MutableStateFlow<Map<UUID, StatisticsWidgetLayoutUiState.ChartContent>> =
+	private val widgetCharts:
+		MutableStateFlow<Map<StatisticsWidgetID, StatisticsWidgetLayoutUiState.ChartContent>> =
 		MutableStateFlow(emptyMap())
 
 	private val widgetLayoutState = combine(

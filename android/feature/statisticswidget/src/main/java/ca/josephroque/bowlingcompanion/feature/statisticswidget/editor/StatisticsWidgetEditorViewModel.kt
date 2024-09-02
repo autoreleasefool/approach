@@ -19,6 +19,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntr
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.hasModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetCreate
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetID
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetSource
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetTimeline
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.overall.GameAverageStatistic
@@ -26,7 +27,6 @@ import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.Statis
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditorUiState
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,7 +49,7 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 	private val statisticsWidgetsRepository: StatisticsWidgetsRepository,
 	private val analyticsClient: AnalyticsClient,
 ) : ApproachViewModel<StatisticsWidgetEditorScreenEvent>() {
-	private val widgetId = UUID.randomUUID()
+	private val widgetId = StatisticsWidgetID.randomID()
 	private val context = Route.StatisticsWidgetEditor.getContext(savedStateHandle)!!
 	private val initialSource: StatisticsWidgetInitialSource? =
 		Route.StatisticsWidgetEditor.getInitialSource(
@@ -194,7 +194,7 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 				is StatisticsWidgetSource.Bowler -> StatisticsWidgetCreate(
 					bowlerId = source.bowlerId,
 					leagueId = null,
-					id = UUID.randomUUID(),
+					id = StatisticsWidgetID.randomID(),
 					context = context,
 					priority = priority,
 					timeline = timeline,
@@ -203,7 +203,7 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 				is StatisticsWidgetSource.League -> StatisticsWidgetCreate(
 					bowlerId = source.bowlerId,
 					leagueId = source.leagueId,
-					id = UUID.randomUUID(),
+					id = StatisticsWidgetID.randomID(),
 					context = context,
 					priority = priority,
 					timeline = timeline,

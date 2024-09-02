@@ -21,6 +21,7 @@ import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.hasModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetID
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsUiState
@@ -31,7 +32,6 @@ import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.Statis
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayoutUiState
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -102,7 +102,8 @@ class BowlerDetailsViewModel @Inject constructor(
 			}
 		}
 
-	private val widgetCharts: MutableStateFlow<Map<UUID, StatisticsWidgetLayoutUiState.ChartContent>> =
+	private val widgetCharts:
+		MutableStateFlow<Map<StatisticsWidgetID, StatisticsWidgetLayoutUiState.ChartContent>> =
 		MutableStateFlow(emptyMap())
 
 	private val widgetLayoutState = combine(

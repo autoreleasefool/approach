@@ -33,11 +33,11 @@ import ca.josephroque.bowlingcompanion.core.designsystem.animation.Wiggle
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetID
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetSource
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetTimeline
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.R
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.widget.StatisticsWidgetCard
-import java.util.UUID
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyGridState
@@ -147,7 +147,7 @@ private fun StatisticsWidgetLayoutEditorPreview() {
 				widgets = listOf(
 					StatisticsWidget(
 						source = StatisticsWidgetSource.Bowler(BowlerID.randomID()),
-						id = UUID.randomUUID(),
+						id = StatisticsWidgetID.randomID(),
 						timeline = StatisticsWidgetTimeline.THREE_MONTHS,
 						statistic = StatisticID.ACES,
 						context = "",
@@ -155,7 +155,7 @@ private fun StatisticsWidgetLayoutEditorPreview() {
 					),
 					StatisticsWidget(
 						source = StatisticsWidgetSource.Bowler(BowlerID.randomID()),
-						id = UUID.randomUUID(),
+						id = StatisticsWidgetID.randomID(),
 						timeline = StatisticsWidgetTimeline.THREE_MONTHS,
 						statistic = StatisticID.ACES,
 						context = "",

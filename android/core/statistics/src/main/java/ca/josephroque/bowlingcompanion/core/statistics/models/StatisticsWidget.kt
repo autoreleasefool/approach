@@ -1,15 +1,27 @@
 package ca.josephroque.bowlingcompanion.core.statistics.models
 
+import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import java.util.UUID
 import kotlinx.datetime.LocalDate
+import kotlinx.parcelize.Parcelize
+
+@JvmInline
+@Parcelize
+value class StatisticsWidgetID(val value: UUID) : Parcelable {
+	override fun toString(): String = value.toString()
+	companion object {
+		fun randomID(): StatisticsWidgetID = StatisticsWidgetID(UUID.randomUUID())
+		fun fromString(string: String): StatisticsWidgetID = StatisticsWidgetID(UUID.fromString(string))
+	}
+}
 
 data class StatisticsWidget(
 	val source: StatisticsWidgetSource,
-	val id: UUID,
+	val id: StatisticsWidgetID,
 	val timeline: StatisticsWidgetTimeline,
 	val statistic: StatisticID,
 	val context: String,
@@ -33,7 +45,7 @@ data class StatisticsWidget(
 data class StatisticsWidgetCreate(
 	val bowlerId: BowlerID,
 	val leagueId: LeagueID?,
-	val id: UUID,
+	val id: StatisticsWidgetID,
 	val timeline: StatisticsWidgetTimeline,
 	val statistic: StatisticID,
 	val context: String,

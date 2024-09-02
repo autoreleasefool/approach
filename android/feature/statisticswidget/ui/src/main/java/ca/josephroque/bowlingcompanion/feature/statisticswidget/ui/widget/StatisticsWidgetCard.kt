@@ -37,12 +37,12 @@ import ca.josephroque.bowlingcompanion.core.statistics.models.ChartSize
 import ca.josephroque.bowlingcompanion.core.statistics.models.CountableChartData
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetID
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetSource
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetTimeline
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.R
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.titleResourceId
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
-import java.util.UUID
 
 @Composable
 fun StatisticsWidgetCard(
@@ -304,7 +304,7 @@ private fun formatPercentage(value: Double): String {
 private fun StatisticsWidgetCardPreview() {
 	StatisticsWidgetCard(
 		widget = StatisticsWidget(
-			id = UUID.randomUUID(),
+			id = StatisticsWidgetID.randomID(),
 			source = StatisticsWidgetSource.Bowler(BowlerID.randomID()),
 			priority = 0,
 			statistic = StatisticID.ACES,

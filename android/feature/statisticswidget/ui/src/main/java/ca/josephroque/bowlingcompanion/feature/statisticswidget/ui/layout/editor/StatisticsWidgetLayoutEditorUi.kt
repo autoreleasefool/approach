@@ -2,12 +2,12 @@ package ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.edito
 
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetID
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
-import java.util.UUID
 
 data class StatisticsWidgetLayoutEditorUiState(
 	val widgets: List<StatisticsWidget> = emptyList(),
-	val widgetCharts: Map<UUID, ChartContent> = emptyMap(),
+	val widgetCharts: Map<StatisticsWidgetID, ChartContent> = emptyMap(),
 	val isDeleteModeEnabled: Boolean = false,
 ) {
 	data class ChartContent(

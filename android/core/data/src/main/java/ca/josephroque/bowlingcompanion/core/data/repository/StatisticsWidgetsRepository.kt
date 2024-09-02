@@ -3,7 +3,7 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetCreate
-import java.util.UUID
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetID
 import kotlinx.coroutines.flow.Flow
 
 interface StatisticsWidgetsRepository {
@@ -11,6 +11,6 @@ interface StatisticsWidgetsRepository {
 	suspend fun getStatisticsWidgetChart(widget: StatisticsWidget): StatisticChartContent
 
 	suspend fun insertStatisticWidget(widget: StatisticsWidgetCreate)
-	suspend fun deleteStatisticWidget(id: UUID)
-	suspend fun updateStatisticsWidgetsOrder(widgets: List<UUID>)
+	suspend fun deleteStatisticWidget(id: StatisticsWidgetID)
+	suspend fun updateStatisticsWidgetsOrder(widgets: List<StatisticsWidgetID>)
 }

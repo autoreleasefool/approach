@@ -10,8 +10,8 @@ import ca.josephroque.bowlingcompanion.core.database.model.asModel
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetCreate
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetID
 import ca.josephroque.bowlingcompanion.core.statistics.statisticInstanceFromID
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.map
@@ -32,17 +32,17 @@ class OfflineFirstStatisticsWidgetsRepository @Inject constructor(
 		statisticsWidgetDao.insertStatisticWidget(widget.asEntity())
 	}
 
-	override suspend fun updateStatisticsWidgetsOrder(widgets: List<UUID>) = withContext(
+	override suspend fun updateStatisticsWidgetsOrder(widgets: List<StatisticsWidgetID>) = withContext(
 		ioDispatcher,
 	) {
-		widgets.forEachIndexed { index, uuid ->
+		widgets.forEachIndexed { index, id ->
 			statisticsWidgetDao.updateStatisticWidgetPriority(
-				StatisticsWidgetPriorityUpdateEntity(uuid, index),
+				StatisticsWidgetPriorityUpdateEntity(id, index),
 			)
 		}
 	}
 
-	override suspend fun deleteStatisticWidget(id: UUID) = withContext(ioDispatcher) {
+	override suspend fun deleteStatisticWidget(id: StatisticsWidgetID) = withContext(ioDispatcher) {
 		statisticsWidgetDao.deleteStatisticWidget(id)
 	}
 

@@ -1,6 +1,7 @@
 plugins {
 	id("approach.android.library")
 	id("approach.android.hilt")
+	id("org.jetbrains.kotlin.plugin.parcelize")
 }
 
 android {

@@ -57,7 +57,7 @@ data class TrackableFilter(
 	)
 
 	sealed interface LaneFilter {
-		data class Lanes(val lanes: Set<UUID>) : LaneFilter
+		data class Lanes(val lanes: Set<LaneID>) : LaneFilter
 		data class Positions(val positions: Set<LanePosition>) : LaneFilter
 	}
 

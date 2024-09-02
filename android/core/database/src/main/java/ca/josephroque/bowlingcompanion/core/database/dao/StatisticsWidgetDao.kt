@@ -7,7 +7,7 @@ import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.StatisticsWidgetCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.StatisticsWidgetEntity
 import ca.josephroque.bowlingcompanion.core.database.model.StatisticsWidgetPriorityUpdateEntity
-import java.util.UUID
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetID
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -36,5 +36,5 @@ abstract class StatisticsWidgetDao {
 	abstract fun updateStatisticWidgetPriority(widget: StatisticsWidgetPriorityUpdateEntity)
 
 	@Query("DELETE FROM statistics_widget WHERE id = :id")
-	abstract fun deleteStatisticWidget(id: UUID)
+	abstract fun deleteStatisticWidget(id: StatisticsWidgetID)
 }
