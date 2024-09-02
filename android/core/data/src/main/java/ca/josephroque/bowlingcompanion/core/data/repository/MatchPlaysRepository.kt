@@ -2,8 +2,8 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayCreate
+import ca.josephroque.bowlingcompanion.core.model.MatchPlayID
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayUpdate
-import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 
 interface MatchPlaysRepository {
@@ -11,5 +11,5 @@ interface MatchPlaysRepository {
 
 	suspend fun insertMatchPlay(matchPlay: MatchPlayCreate)
 	suspend fun updateMatchPlay(matchPlay: MatchPlayUpdate)
-	suspend fun deleteMatchPlay(matchPlayId: UUID)
+	suspend fun deleteMatchPlay(matchPlayId: MatchPlayID)
 }

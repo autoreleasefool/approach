@@ -11,7 +11,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayEntity
 import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
-import java.util.UUID
+import ca.josephroque.bowlingcompanion.core.model.MatchPlayID
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -37,7 +37,7 @@ abstract class MatchPlayDao : LegacyMigratingDao<MatchPlayEntity> {
 	abstract fun updateMatchPlay(matchPlay: MatchPlayDetailsUpdateEntity)
 
 	@Query("DELETE FROM match_plays WHERE id = :matchPlayId")
-	abstract fun deleteMatchPlay(matchPlayId: UUID)
+	abstract fun deleteMatchPlay(matchPlayId: MatchPlayID)
 
 	@Query("SELECT * FROM match_plays WHERE game_id IN (:gameIds)")
 	abstract suspend fun getMatchPlaysForGames(gameIds: Collection<GameID>): List<MatchPlayEntity>

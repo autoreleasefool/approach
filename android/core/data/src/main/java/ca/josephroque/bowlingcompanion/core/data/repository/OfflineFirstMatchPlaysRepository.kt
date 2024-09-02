@@ -6,8 +6,8 @@ import ca.josephroque.bowlingcompanion.core.database.dao.MatchPlayDao
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayCreate
+import ca.josephroque.bowlingcompanion.core.model.MatchPlayID
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayUpdate
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -29,7 +29,7 @@ class OfflineFirstMatchPlaysRepository @Inject constructor(
 		matchPlayDao.updateMatchPlay(matchPlay.asEntity())
 	}
 
-	override suspend fun deleteMatchPlay(matchPlayId: UUID) = withContext(ioDispatcher) {
+	override suspend fun deleteMatchPlay(matchPlayId: MatchPlayID) = withContext(ioDispatcher) {
 		matchPlayDao.deleteMatchPlay(matchPlayId)
 	}
 }

@@ -51,6 +51,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
+import ca.josephroque.bowlingcompanion.core.model.MatchPlayID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -661,7 +662,7 @@ class SQLiteMigrationService @Inject constructor(
 			)
 
 			if (legacyGame.matchPlayResult != LegacyMatchPlayResult.NONE) {
-				val matchPlayId = UUID.randomUUID()
+				val matchPlayId = MatchPlayID.randomID()
 
 				migratedMatchPlays.add(
 					MatchPlayEntity(
@@ -779,11 +780,11 @@ class SQLiteMigrationService @Inject constructor(
 
 			val gameId = gameIdMappings[legacyMatchPlay.gameId] ?: continue
 			val existingMatchPlay = existingMatchPlays[gameId]
-			val matchPlayId = existingMatchPlay?.id ?: UUID.randomUUID()
+			val matchPlayId = existingMatchPlay?.id ?: MatchPlayID.randomID()
 
 			matchPlayIdMappings.add(
 				LegacyIDMappingEntity(
-					id = matchPlayId,
+					id = matchPlayId.value,
 					legacyId = legacyMatchPlay.id,
 					key = LegacyIDMappingKey.MATCH_PLAY,
 				),

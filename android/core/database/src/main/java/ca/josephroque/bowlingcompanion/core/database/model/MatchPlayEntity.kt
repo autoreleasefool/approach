@@ -10,9 +10,9 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayCreate
+import ca.josephroque.bowlingcompanion.core.model.MatchPlayID
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayUpdate
-import java.util.UUID
 
 @Entity(
 	tableName = "match_plays",
@@ -34,7 +34,7 @@ import java.util.UUID
 	],
 )
 data class MatchPlayEntity(
-	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: UUID,
+	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: MatchPlayID,
 	@ColumnInfo(name = "game_id", index = true) val gameId: GameID,
 	@ColumnInfo(name = "opponent_id", index = true) val opponentId: BowlerID?,
 	@ColumnInfo(name = "opponent_score") val opponentScore: Int?,
@@ -42,7 +42,7 @@ data class MatchPlayEntity(
 )
 
 data class MatchPlayCreateEntity(
-	val id: UUID,
+	val id: MatchPlayID,
 	@ColumnInfo(name = "game_id") val gameId: GameID,
 	@ColumnInfo(name = "opponent_id") val opponentId: BowlerID?,
 	@ColumnInfo(name = "opponent_score") val opponentScore: Int?,
@@ -74,7 +74,7 @@ data class MatchPlayUpdateEntity(
 }
 
 data class MatchPlayDetailsUpdateEntity(
-	val id: UUID,
+	val id: MatchPlayID,
 	@ColumnInfo(name = "opponent_id") val opponentId: BowlerID?,
 	@ColumnInfo(name = "opponent_score") val opponentScore: Int?,
 	val result: MatchPlayResult?,

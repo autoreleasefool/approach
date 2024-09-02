@@ -13,13 +13,13 @@ import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedReposito
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayCreate
+import ca.josephroque.bowlingcompanion.core.model.MatchPlayID
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayUpdate
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.matchplayeditor.ui.MatchPlayEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.matchplayeditor.ui.MatchPlayEditorUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -121,7 +121,7 @@ class MatchPlayEditorViewModel @Inject constructor(
 				null -> {
 					matchPlaysRepository.insertMatchPlay(
 						MatchPlayCreate(
-							id = UUID.randomUUID(),
+							id = MatchPlayID.randomID(),
 							gameId = gameId,
 							opponentId = state.opponent?.id,
 							opponentScore = state.opponentScore,

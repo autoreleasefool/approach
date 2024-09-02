@@ -33,7 +33,7 @@ data class TrackableGame(
 	val date: LocalDate,
 	val matchPlay: MatchPlay?,
 ) {
-	data class MatchPlay(val id: UUID, val result: MatchPlayResult?)
+	data class MatchPlay(val id: MatchPlayID, val result: MatchPlayResult?)
 }
 
 data class GameCreate(
