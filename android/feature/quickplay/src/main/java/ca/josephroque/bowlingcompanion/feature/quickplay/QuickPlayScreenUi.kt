@@ -4,6 +4,8 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamID
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayTopBarUiAction
 import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayUiAction
@@ -34,7 +36,8 @@ sealed interface QuickPlayScreenEvent {
 
 	data class BeganRecordingSeries(val seriesIds: List<SeriesID>, val initialGameId: GameID) :
 		QuickPlayScreenEvent
-	data class TeamLeaguesSelected(val teamId: TeamID, val leagueIds: List<LeagueID>) : QuickPlayScreenEvent
+	data class TeamLeaguesSelected(val teamId: TeamID, val leagueIds: List<LeagueID>) :
+		QuickPlayScreenEvent
 	data class TeamEventsCreated(val teamSeriesId: TeamSeriesID, val initialGameId: GameID) :
 		QuickPlayScreenEvent
 	data class AddBowler(val existingBowlers: Set<BowlerID>) : QuickPlayScreenEvent

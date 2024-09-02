@@ -15,18 +15,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.TeamForm
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.TeamFormTopBar
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.TeamFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.TeamFormUiAction
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 @Composable
 internal fun TeamFormRoute(
 	onDismiss: () -> Unit,
-	onManageTeamMembers: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
+	onManageTeamMembers: (Set<BowlerID>, NavResultCallback<Set<BowlerID>>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: TeamFormViewModel = hiltViewModel(),
 ) {

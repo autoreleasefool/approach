@@ -265,10 +265,9 @@ fun NavGraphBuilder.overviewGraph(
 	teamFormScreen(
 		onBackPressed = navController::popBackStack,
 		onManageTeamMembers = { ids, result ->
-			navController.navigateToResourcePickerForResult(
-				selectedIds = ids.toSet(),
+			navController.navigateToBowlerPickerForResult(
+				selectedIds = ids,
 				navResultCallback = result,
-				resourceType = ResourcePickerType.BOWLER,
 			)
 		},
 	)
@@ -281,12 +280,11 @@ fun NavGraphBuilder.overviewGraph(
 		onTeamLeaguesSelected = navController::navigateToNewTeamSeriesForm,
 		onTeamEventsCreated = navController::navigateToGamesEditor,
 		onPickLeague = { bowler, league, result ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToLeaguePickerForResult(
 				selectedIds = league?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = result,
-				resourceType = ResourcePickerType.LEAGUE,
-				filter = bowler.toString(),
+				bowlerId = bowler,
 			)
 		},
 		onShowTeamPlayOnboarding = navController::navigateToQuickPlayOnboarding,
@@ -295,11 +293,10 @@ fun NavGraphBuilder.overviewGraph(
 		onDismiss = navController::popBackStack,
 		onStartTeamSeries = navController::navigateToGamesEditor,
 		onEditAlley = { alley, result ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToAlleyPickerForResult(
 				selectedIds = alley?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = result,
-				resourceType = ResourcePickerType.ALLEY,
 			)
 		},
 	)

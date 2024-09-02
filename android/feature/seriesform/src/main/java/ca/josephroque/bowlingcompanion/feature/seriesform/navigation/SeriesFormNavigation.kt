@@ -7,8 +7,11 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamID
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
@@ -27,8 +30,8 @@ fun NavController.navigateToNewSeriesForm(
 }
 
 fun NavController.navigateToNewTeamSeriesForm(
-	teamId: UUID,
-	leagues: List<UUID>,
+	teamId: TeamID,
+	leagues: List<LeagueID>,
 	navOptions: NavOptions? = null,
 ) {
 	this.navigate(Route.AddTeamSeries.createRoute(teamId, leagues), navOptions)
@@ -70,8 +73,8 @@ fun NavGraphBuilder.seriesFormScreen(
 
 fun NavGraphBuilder.teamSeriesFormScreen(
 	onDismiss: () -> Unit,
-	onStartTeamSeries: (UUID, UUID) -> Unit,
-	onEditAlley: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onStartTeamSeries: (TeamSeriesID, GameID) -> Unit,
+	onEditAlley: (AlleyID?, NavResultCallback<Set<AlleyID>>) -> Unit,
 ) {
 	composable(
 		route = Route.AddTeamSeries.route,

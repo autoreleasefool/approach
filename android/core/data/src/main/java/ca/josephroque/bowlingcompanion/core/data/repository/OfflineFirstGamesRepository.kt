@@ -23,6 +23,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.isGameFinished
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -51,7 +52,7 @@ class OfflineFirstGamesRepository @Inject constructor(
 
 	override fun getGameIds(seriesId: SeriesID): Flow<List<GameID>> = gameDao.getGameIds(seriesId)
 
-	override fun getTeamSeriesGameIds(teamSeriesId: UUID): Flow<List<UUID>> =
+	override fun getTeamSeriesGameIds(teamSeriesId: TeamSeriesID): Flow<List<GameID>> =
 		gameDao.getTeamSeriesGameIds(teamSeriesId)
 
 	override fun getArchivedGames(): Flow<List<ArchivedGame>> = gameDao.getArchivedGames()

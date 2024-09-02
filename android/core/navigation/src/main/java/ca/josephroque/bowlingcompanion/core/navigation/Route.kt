@@ -13,6 +13,8 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.StatisticsDetailsSourceType
+import ca.josephroque.bowlingcompanion.core.model.TeamID
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import java.util.UUID
 
@@ -117,12 +119,12 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	) {
 		const val ARG_TEAM_SERIES = "teamSeries"
 		const val ARG_GAME = "game"
-		fun createRoute(teamSeries: UUID, game: UUID): String =
+		fun createRoute(teamSeries: TeamSeriesID, game: GameID): String =
 			"edit_team_series/${Uri.encode(teamSeries.toString())}/${Uri.encode(game.toString())}"
-		fun getTeamSeries(savedStateHandle: SavedStateHandle): UUID? =
-			savedStateHandle.get<String>("teamSeries")?.let { UUID.fromString(it) }
-		fun getGame(savedStateHandle: SavedStateHandle): UUID? =
-			savedStateHandle.get<String>("game")?.let { UUID.fromString(it) }
+		fun getTeamSeries(savedStateHandle: SavedStateHandle): TeamSeriesID? =
+			savedStateHandle.get<String>("teamSeries")?.let { TeamSeriesID.fromString(it) }
+		fun getGame(savedStateHandle: SavedStateHandle): GameID? =
+			savedStateHandle.get<String>("game")?.let { GameID.fromString(it) }
 	}
 	data object ScoresList : Route("scores_list/{series}/{gameIndex}", isBottomBarVisible = false) {
 		const val ARG_SERIES = "series"
@@ -250,14 +252,14 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	data object AddTeamSeries : Route("add_team_series/{team}/{leagues}", isBottomBarVisible = false) {
 		const val ARG_TEAM = "team"
 		const val ARG_LEAGUES = "leagues"
-		fun createRoute(team: UUID, leagues: List<UUID>): String = "add_team_series/" +
+		fun createRoute(team: TeamID, leagues: List<LeagueID>): String = "add_team_series/" +
 			"${Uri.encode(team.toString())}/" +
 			leagues.encode()
-		fun getTeam(savedStateHandle: SavedStateHandle): UUID? =
-			savedStateHandle.get<String>("team")?.let { UUID.fromString(it) }
-		fun getLeagues(savedStateHandle: SavedStateHandle): List<UUID> =
+		fun getTeam(savedStateHandle: SavedStateHandle): TeamID? =
+			savedStateHandle.get<String>("team")?.let { TeamID.fromString(it) }
+		fun getLeagues(savedStateHandle: SavedStateHandle): List<LeagueID> =
 			savedStateHandle.get<String>("leagues")?.decodeList()?.mapNotNull {
-				UUID.fromString(it)
+				LeagueID.fromString(it)
 			} ?: emptyList()
 	}
 	data object AddSeries : Route("add_series/{league}", isBottomBarVisible = false) {
@@ -388,25 +390,25 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	data object AddTeam : Route("add_team", isBottomBarVisible = false)
 	data object EditTeam : Route("edit_team/{team}", isBottomBarVisible = false) {
 		const val ARG_TEAM = "team"
-		fun createRoute(team: UUID): String = "edit_team/${Uri.encode(team.toString())}"
-		fun getTeam(savedStateHandle: SavedStateHandle): UUID? =
-			savedStateHandle.get<String>("team")?.let { UUID.fromString(it) }
+		fun createRoute(team: TeamID): String = "edit_team/${Uri.encode(team.toString())}"
+		fun getTeam(savedStateHandle: SavedStateHandle): TeamID? =
+			savedStateHandle.get<String>("team")?.let { TeamID.fromString(it) }
 	}
 	data object TeamDetails : Route("team/{team}") {
 		const val ARG_TEAM = "team"
-		fun createRoute(team: UUID): String = "team/${Uri.encode(team.toString())}"
-		fun getTeam(savedStateHandle: SavedStateHandle): UUID? =
-			savedStateHandle.get<String>("team")?.let { UUID.fromString(it) }
+		fun createRoute(team: TeamID): String = "team/${Uri.encode(team.toString())}"
+		fun getTeam(savedStateHandle: SavedStateHandle): TeamID? =
+			savedStateHandle.get<String>("team")?.let { TeamID.fromString(it) }
 	}
 	data object TeamPlay : Route("team_play/{team}", isBottomBarVisible = false) {
 		const val ARG_TEAM = "team"
-		fun createRoute(team: UUID?): String = if (team == null) {
+		fun createRoute(team: TeamID?): String = if (team == null) {
 			"team_play"
 		} else {
 			"team_play/${Uri.encode(team.toString())}"
 		}
-		fun getTeam(savedStateHandle: SavedStateHandle): UUID? =
-			savedStateHandle.get<String>("team")?.let { UUID.fromString(it) }
+		fun getTeam(savedStateHandle: SavedStateHandle): TeamID? =
+			savedStateHandle.get<String>("team")?.let { TeamID.fromString(it) }
 	}
 }
 

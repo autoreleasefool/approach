@@ -19,6 +19,8 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamID
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlay
 import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayTopBar
@@ -29,7 +31,7 @@ import kotlinx.coroutines.launch
 internal fun QuickPlayRoute(
 	onDismiss: () -> Unit,
 	onBeginRecordingSeries: (List<SeriesID>, GameID) -> Unit,
-	onTeamLeaguesSelected: (TeamID, List<SeriesID>) -> Unit,
+	onTeamLeaguesSelected: (TeamID, List<LeagueID>) -> Unit,
 	onTeamEventsCreated: (TeamSeriesID, GameID) -> Unit,
 	onPickBowler: (Set<BowlerID>, NavResultCallback<Set<BowlerID>>) -> Unit,
 	onPickLeague: (BowlerID, LeagueID?, NavResultCallback<Set<LeagueID>>) -> Unit,

@@ -18,6 +18,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
+import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
@@ -25,6 +26,25 @@ import ca.josephroque.bowlingcompanion.feature.resourcepicker.ResourcePickerRout
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.bottomSheet
 import java.util.UUID
+
+fun NavController.navigateToTeamPickerForResult(
+	selectedIds: Set<TeamID>,
+	hiddenIds: Set<TeamID> = emptySet(),
+	limit: Int = 0,
+	navResultCallback: NavResultCallback<Set<TeamID>>,
+	navOptions: NavOptions? = null,
+) {
+	this.navigateToResourcePickerForResult(
+		selectedIds = selectedIds.map { it.value }.toSet(),
+		hiddenIds = hiddenIds.map { it.value }.toSet(),
+		limit = limit,
+		resourceType = ResourcePickerType.TEAM,
+		navResultCallback = @JvmSerializableLambda { ids ->
+			navResultCallback(ids.map { TeamID(it) }.toSet())
+		},
+		navOptions = navOptions,
+	)
+}
 
 fun NavController.navigateToBowlerPickerForResult(
 	selectedIds: Set<BowlerID>,

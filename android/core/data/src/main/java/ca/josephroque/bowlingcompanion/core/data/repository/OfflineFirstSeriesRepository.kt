@@ -56,7 +56,7 @@ class OfflineFirstSeriesRepository @Inject constructor(
 	): Flow<List<SeriesListItem>> =
 		seriesDao.getSeriesList(leagueId, sortOrder, preBowl).map { it.map(SeriesListEntity::asModel) }
 
-	override fun getEventSeriesIdsList(eventIds: List<UUID>): Flow<List<UUID>> =
+	override fun getEventSeriesIdsList(eventIds: List<LeagueID>): Flow<List<SeriesID>> =
 		seriesDao.getEventSeriesList(eventIds).map { series ->
 			series
 				.sortedBy { eventIds.indexOf(it.leagueId) }
@@ -92,7 +92,7 @@ class OfflineFirstSeriesRepository @Inject constructor(
 			teamSeriesDao.insertSeries(teamSeries.asEntity())
 			val series = teamSeries.leagues.map { leagueId ->
 				SeriesCreate(
-					id = UUID.randomUUID(),
+					id = SeriesID.randomID(),
 					leagueId = leagueId,
 					date = teamSeries.date,
 					preBowl = teamSeries.preBowl,

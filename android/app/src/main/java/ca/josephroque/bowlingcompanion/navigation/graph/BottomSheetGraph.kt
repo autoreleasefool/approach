@@ -18,6 +18,7 @@ import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigat
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToGamePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToLeaguePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToSeriesPickerForResult
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToTeamPickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.resourcePickerSheet
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.midGameStatisticsDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetails
@@ -62,11 +63,10 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 	statisticsSourcePickerSheet(
 		onBackPressed = navController::popBackStack,
 		onPickTeam = { team, result ->
-			navController.navigateToResourcePickerForResult(
+			navController.navigateToTeamPickerForResult(
 				selectedIds = team?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = result,
-				resourceType = ResourcePickerType.TEAM,
 			)
 		},
 		onPickBowler = { bowler, result ->

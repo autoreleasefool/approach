@@ -22,17 +22,17 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetails
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsFloatingActionButton
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsTopBar
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsTopBarUiState
-import java.util.UUID
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun TeamDetailsRoute(
 	onBackPressed: () -> Unit,
-	onAddSeries: (UUID) -> Unit,
+	onAddSeries: (TeamID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: TeamDetailsViewModel = hiltViewModel(),
 ) {

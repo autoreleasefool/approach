@@ -77,10 +77,7 @@ fun FormSectionHeader(
 }
 
 @Composable
-fun FormSectionFooter(
-	footerResourceId: Int,
-	modifier: Modifier = Modifier,
-) {
+fun FormSectionFooter(footerResourceId: Int, modifier: Modifier = Modifier) {
 	Text(
 		text = stringResource(footerResourceId),
 		style = MaterialTheme.typography.bodySmall,

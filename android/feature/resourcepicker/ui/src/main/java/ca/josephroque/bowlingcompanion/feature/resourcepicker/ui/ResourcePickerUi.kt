@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamID
 import java.util.UUID
 import kotlinx.datetime.LocalDate
 
@@ -73,11 +74,8 @@ sealed interface ResourceItem {
 			get() = laneId.value
 	}
 
-	data class Team(
-		val teamId: TeamID,
-		override val name: String,
-		val members: List<String>,
-	) : ResourceItem {
+	data class Team(val teamId: TeamID, override val name: String, val members: List<String>) :
+		ResourceItem {
 		override val id: UUID
 			get() = teamId.value
 	}

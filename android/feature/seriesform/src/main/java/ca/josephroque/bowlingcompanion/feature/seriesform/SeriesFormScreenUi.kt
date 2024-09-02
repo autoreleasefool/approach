@@ -2,10 +2,12 @@ package ca.josephroque.bowlingcompanion.feature.seriesform
 
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.TeamCreate
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiState
@@ -66,7 +68,8 @@ sealed interface SeriesFormScreenUiAction {
 sealed interface SeriesFormScreenEvent {
 	data class Dismissed(val seriesId: SeriesID?) : SeriesFormScreenEvent
 	data class EditAlley(val alleyId: AlleyID?) : SeriesFormScreenEvent
-	data class StartTeamSeries(val teamSeriesId: TeamSeriesID, val initialGameId: GameID) : SeriesFormScreenEvent
+	data class StartTeamSeries(val teamSeriesId: TeamSeriesID, val initialGameId: GameID) :
+		SeriesFormScreenEvent
 }
 
 fun MutableStateFlow<SeriesFormScreenUiState>.updateForm(
