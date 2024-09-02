@@ -4,4 +4,8 @@
 
     <string name="team_details_team_members_list">Team Members</string>
     <string name="team_details_recent_series">Recent Series</string>
+
+    <string name="team_details_series_empty_title">No series found</string>
+    <string name="team_details_series_empty_message">You haven\'t added a series yet. Create a new series every time you bowl to see your team\'s stats mapped accurately over time.</string>
+    <string name="team_details_add_series">Add Series</string>
 </resources>

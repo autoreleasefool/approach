@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsFloatingActionButtonUiAction
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsTopBarUiAction
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsTopBarUiState
+import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsUiState
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -72,7 +73,7 @@ class TeamDetailsViewModel @Inject constructor(
 			is TeamDetailsScreenUiAction.FloatingActionButton -> handleFloatingActionButtonAction(
 				action.action,
 			)
-			is TeamDetailsScreenUiAction.TeamDetails -> TODO()
+			is TeamDetailsScreenUiAction.TeamDetails -> handleTeamDetailsAction(action.action)
 		}
 	}
 
@@ -87,6 +88,12 @@ class TeamDetailsViewModel @Inject constructor(
 			TeamDetailsFloatingActionButtonUiAction.AddSeriesClicked -> sendEvent(
 				TeamDetailsScreenEvent.AddSeries(teamId),
 			)
+		}
+	}
+
+	private fun handleTeamDetailsAction(action: TeamDetailsUiAction) {
+		when (action) {
+			is TeamDetailsUiAction.AddSeriesClicked -> sendEvent(TeamDetailsScreenEvent.AddSeries(teamId))
 		}
 	}
 }

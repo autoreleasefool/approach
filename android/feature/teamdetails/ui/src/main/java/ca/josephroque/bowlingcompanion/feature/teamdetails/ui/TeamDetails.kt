@@ -19,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionHeader
+import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
+import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.TeamMemberListItem
 import ca.josephroque.bowlingcompanion.core.model.charts.ui.SeriesChartData
@@ -31,7 +33,7 @@ import kotlinx.datetime.LocalDate
 @Composable
 fun TeamDetails(
 	state: TeamDetailsUiState,
-	@Suppress("UNUSED_PARAMETER") onAction: (TeamDetailsUiAction) -> Unit,
+	onAction: (TeamDetailsUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 	contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
@@ -53,6 +55,20 @@ fun TeamDetails(
 			ListSectionHeader(
 				titleResourceId = R.string.team_details_recent_series,
 			)
+		}
+
+		if (state.series.isEmpty()) {
+			item {
+				DefaultEmptyState(
+					title = R.string.team_details_series_empty_title,
+					icon = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.series_list_empty_state,
+					message = R.string.team_details_series_empty_message,
+					action = EmptyStateAction(
+						title = R.string.team_details_add_series,
+						onClick = { onAction(TeamDetailsUiAction.AddSeriesClicked) },
+					),
+				)
+			}
 		}
 
 		itemsIndexed(

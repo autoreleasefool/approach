@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ca.josephroque.bowlingcompanion.core.designsystem.components.CheckBoxRow
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
+import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
 
 @Composable
 fun ResourcePicker(
@@ -22,8 +23,10 @@ fun ResourcePicker(
 					title = R.string.resource_picker_empty_title,
 					icon = R.drawable.resource_picker_empty_state,
 					message = R.string.resource_picker_empty_message,
-					action = R.string.resource_picker_empty_action,
-					onActionClick = { onAction(ResourcePickerUiAction.BackClicked) },
+					action = EmptyStateAction(
+						title = R.string.resource_picker_empty_action,
+						onClick = { onAction(ResourcePickerUiAction.BackClicked) },
+					),
 				)
 			}
 		} else {

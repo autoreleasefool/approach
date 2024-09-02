@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
+import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.GameRow
@@ -45,8 +46,10 @@ fun GamesList(
 					title = R.string.game_list_empty_title,
 					icon = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.not_found,
 					message = R.string.game_list_empty_message,
-					action = R.string.game_list_add,
-					onActionClick = { onAction(GamesListUiAction.AddGameClicked) },
+					action = EmptyStateAction(
+						title = R.string.game_list_add,
+						onClick = { onAction(GamesListUiAction.AddGameClicked) },
+					),
 				)
 			}
 		} else {

@@ -17,6 +17,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialo
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.HeaderAction
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
+import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.charts.ui.SeriesChartData
 import ca.josephroque.bowlingcompanion.core.model.charts.ui.SeriesChartRow
@@ -43,10 +44,12 @@ fun SeriesList(
 			item {
 				DefaultEmptyState(
 					title = R.string.series_list_empty_title,
-					icon = R.drawable.series_list_empty_state,
+					icon = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.series_list_empty_state,
 					message = R.string.series_list_empty_message,
-					action = R.string.series_list_add,
-					onActionClick = { onAction(SeriesListUiAction.AddSeriesClicked) },
+					action = EmptyStateAction(
+						title = R.string.series_list_add,
+						onClick = { onAction(SeriesListUiAction.AddSeriesClicked) },
+					),
 				)
 			}
 		} else {

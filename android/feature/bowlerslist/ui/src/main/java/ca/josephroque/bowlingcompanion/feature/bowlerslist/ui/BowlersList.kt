@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
+import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
@@ -50,8 +51,10 @@ fun BowlersList(
 					title = R.string.bowler_list_empty_title,
 					icon = R.drawable.bowler_list_empty_state,
 					message = R.string.bowler_list_empty_message,
-					action = R.string.bowler_list_add,
-					onActionClick = { onAction(BowlersListUiAction.AddBowlerClicked) },
+					action = EmptyStateAction(
+						title = R.string.bowler_list_add,
+						onClick = { onAction(BowlersListUiAction.AddBowlerClicked) },
+					),
 				)
 			}
 		} else {

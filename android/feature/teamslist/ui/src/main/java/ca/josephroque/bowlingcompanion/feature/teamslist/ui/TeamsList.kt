@@ -16,6 +16,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DeleteDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
+import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
 import ca.josephroque.bowlingcompanion.core.model.TeamListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.TeamRow
 import me.saket.swipe.SwipeAction
@@ -47,8 +48,10 @@ fun TeamsList(
 					title = R.string.team_list_empty_title,
 					icon = R.drawable.team_list_empty_state,
 					message = R.string.team_list_empty_message,
-					action = R.string.team_list_add,
-					onActionClick = { onAction(TeamsListUiAction.AddTeamClicked) },
+					action = EmptyStateAction(
+						title = R.string.team_list_add,
+						onClick = { onAction(TeamsListUiAction.AddTeamClicked) },
+					),
 				)
 			}
 		} else {
