@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.footer
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
+import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.opponentsList
 
 @Composable
@@ -29,8 +30,10 @@ fun OpponentsList(
 					title = R.string.opponent_list_empty_title,
 					icon = R.drawable.opponent_list_empty_state,
 					message = R.string.opponent_list_empty_message,
-					action = R.string.opponent_list_add,
-					onActionClick = { onAction(OpponentsListUiAction.AddOpponentClicked) },
+					action = EmptyStateAction(
+						title = R.string.opponent_list_add,
+						onClick = { onAction(OpponentsListUiAction.AddOpponentClicked) },
+					),
 				)
 			}
 		} else {

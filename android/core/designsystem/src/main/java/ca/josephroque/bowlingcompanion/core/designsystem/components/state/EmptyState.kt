@@ -63,13 +63,17 @@ fun MutedEmptyState(
 	}
 }
 
+data class EmptyStateAction(
+	@StringRes val title: Int,
+	val onClick: () -> Unit,
+)
+
 @Composable
 fun DefaultEmptyState(
 	@StringRes title: Int,
 	@DrawableRes icon: Int,
 	@StringRes message: Int,
-	@StringRes action: Int,
-	onActionClick: () -> Unit,
+	action: EmptyStateAction? = null,
 ) {
 	EmptyState(
 		icon = {
@@ -101,11 +105,15 @@ fun DefaultEmptyState(
 					.padding(bottom = 8.dp),
 			)
 		},
-		action = {
-			Button(onClick = onActionClick) {
-				Text(text = stringResource(action))
+		action = if (action != null) {
+			{
+				Button(onClick = action.onClick) {
+					Text(text = stringResource(action.title))
+				}
 			}
-		},
+		} else {
+			null
+		}
 	)
 }
 

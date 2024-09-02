@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.colorResource
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DeleteDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
+import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.AlleyRow
 import me.saket.swipe.SwipeAction
@@ -39,8 +40,10 @@ fun AlleysList(
 					title = R.string.alleys_list_empty_title,
 					icon = R.drawable.alleys_list_empty_state,
 					message = R.string.alleys_list_empty_message,
-					action = R.string.alley_list_add,
-					onActionClick = { onAction(AlleysListUiAction.AddAlleyClicked) },
+					action = EmptyStateAction(
+						title = R.string.alley_list_add,
+						onClick = { onAction(AlleysListUiAction.AddAlleyClicked) },
+					),
 				)
 			}
 		} else {

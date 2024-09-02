@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.colorResource
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DeleteDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
+import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.GearRow
 import me.saket.swipe.SwipeAction
@@ -39,8 +40,10 @@ fun GearList(
 					title = R.string.gear_list_empty_title,
 					icon = R.drawable.gear_list_empty_state,
 					message = R.string.gear_list_empty_message,
-					action = R.string.gear_list_add,
-					onActionClick = { onAction(GearListUiAction.AddGearClicked) },
+					action = EmptyStateAction(
+						title = R.string.gear_list_add,
+						onClick = { onAction(GearListUiAction.AddGearClicked) },
+					),
 				)
 			}
 		} else {

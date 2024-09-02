@@ -28,7 +28,7 @@ data class TeamDetailsUiState(
 )
 
 sealed interface TeamDetailsUiAction {
-// 	data class MemberMoved(val from: Int, val to: Int) : TeamDetailsUiAction
+	data object AddSeriesClicked : TeamDetailsUiAction
 }
 
 data class TeamDetailsTopBarUiState(val teamName: String? = null)

@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.Stepper
+import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionFooter
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
@@ -130,6 +131,10 @@ fun QuickPlay(
 		}
 
 		item {
+			ListSectionFooter(footerResourceId = R.string.quick_play_long_press_to_reorder)
+
+			HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
 			Stepper(
 				title = stringResource(R.string.quick_play_number_of_games),
 				value = state.numberOfGames,
