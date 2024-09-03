@@ -3,10 +3,12 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
+import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
 import ca.josephroque.bowlingcompanion.core.database.dao.MatchPlayDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TeamDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
+import ca.josephroque.bowlingcompanion.core.database.model.LeagueCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedBowler
 import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
@@ -17,6 +19,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
+import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
@@ -36,6 +39,7 @@ import kotlinx.datetime.Clock
 class OfflineFirstBowlersRepository @Inject constructor(
 	private val teamDao: TeamDao,
 	private val bowlerDao: BowlerDao,
+	private val leagueDao: LeagueDao,
 	private val matchPlayDao: MatchPlayDao,
 	private val leaguesRepository: LeaguesRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
@@ -96,6 +100,18 @@ class OfflineFirstBowlersRepository @Inject constructor(
 
 	override suspend fun insertBowler(bowler: BowlerCreate) = withContext(ioDispatcher) {
 		bowlerDao.insertBowler(bowler.asEntity())
+		leagueDao.insertLeague(
+			LeagueCreateEntity(
+				bowlerId = bowler.id,
+				id = LeagueID.randomID(),
+				name = "Practice",
+				recurrence = LeagueRecurrence.REPEATING,
+				excludeFromStatistics = ExcludeFromStatistics.EXCLUDE,
+				additionalGames = null,
+				additionalPinFall = null,
+				numberOfGames = null,
+			),
+		)
 	}
 
 	override suspend fun updateBowler(bowler: BowlerUpdate) = withContext(ioDispatcher) {
