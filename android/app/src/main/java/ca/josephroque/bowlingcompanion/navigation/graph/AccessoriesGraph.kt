@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.navigation.graph
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.accessoriesScreen
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.navigateToAccessoriesOnboarding
 import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.alleyFormScreen
@@ -57,6 +58,7 @@ fun NavGraphBuilder.accessoriesGraph(navController: NavController) {
 				selectedIds = owner?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = result,
+				kind = BowlerKind.PLAYABLE,
 			)
 		},
 	)

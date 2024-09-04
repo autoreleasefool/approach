@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.navigation.graph
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.navigation.popBackStackWithResult
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.accessoriesOnboardingSheet
@@ -41,6 +42,7 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 				hiddenIds = excluded,
 				limit = 1,
 				navResultCallback = result,
+				kind = BowlerKind.PLAYABLE,
 			)
 		},
 		onPickLeague = { bowler, league, result ->
@@ -64,6 +66,7 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 				selectedIds = bowler?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = result,
+				kind = BowlerKind.PLAYABLE,
 			)
 		},
 		onPickLeague = { bowler, league, result ->
@@ -111,6 +114,7 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 				selectedIds = opponent?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
 				navResultCallback = result,
+				kind = BowlerKind.OPPONENT,
 			)
 		},
 	)
