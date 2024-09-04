@@ -12,7 +12,11 @@ data class ScoreSheetUiState(
 	data class Selection(
 		val frameIndex: Int = 0,
 		val rollIndex: Int = 0,
-	)
+	) {
+		companion object {
+			fun none() = Selection(frameIndex = -1, rollIndex = -1)
+		}
+	}
 }
 
 data class ScoreSheetListUiState(

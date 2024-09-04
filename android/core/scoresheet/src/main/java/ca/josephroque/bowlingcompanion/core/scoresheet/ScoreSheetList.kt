@@ -1,6 +1,11 @@
 package ca.josephroque.bowlingcompanion.core.scoresheet
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.ScrollableDefaults
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -18,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +36,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.modifiers.endBorder
 import ca.josephroque.bowlingcompanion.core.model.stub.BowlerSummaryStub
 import ca.josephroque.bowlingcompanion.core.model.stub.LeagueSummaryStub
 import ca.josephroque.bowlingcompanion.core.model.stub.ScoringStub
+import kotlinx.coroutines.launch
 
 @Composable
 fun ScoreSheetList(
@@ -42,15 +49,32 @@ fun ScoreSheetList(
 	) {
 		val cellWidth = maxWidth / 3f
 
-		Column {
+		val scope = rememberCoroutineScope()
+		val scrollStates = state.bowlerScores.map { rememberScrollState(0) }
+		val scrollState = rememberScrollableState { delta ->
+			scope.launch {
+				scrollStates.forEach {
+					it.scrollBy(-delta)
+				}
+			}
+			delta
+		}
+
+		Column(
+			modifier = Modifier
+				.clip(RoundedCornerShape(16.dp))
+				.background(colorResource(state.bowlerScores.first().third.configuration.style.backgroundColor))
+				.scrollable(
+					scrollState,
+					Orientation.Horizontal,
+					flingBehavior = ScrollableDefaults.flingBehavior()
+				),
+		) {
 			state.bowlerScores.forEachIndexed { index, bowlerScore ->
 				val (bowler, league, scoreSheet) = bowlerScore
 
 				Row(
-					modifier = Modifier
-						.height(100.dp)
-						.padding(horizontal = 16.dp)
-						.clip(RoundedCornerShape(16.dp)),
+					modifier = Modifier.height(100.dp)
 				) {
 					Column(
 						horizontalAlignment = Alignment.End,
@@ -85,7 +109,7 @@ fun ScoreSheetList(
 						state = scoreSheet,
 						onAction = onAction,
 						cellWidth = cellWidth,
-						modifier = Modifier.horizontalScroll(rememberScrollState()),
+						modifier = Modifier.horizontalScroll(scrollStates[index], enabled = false),
 					)
 				}
 
@@ -93,7 +117,7 @@ fun ScoreSheetList(
 					Box(
 						modifier = Modifier
 							.fillMaxWidth()
-							.height(16.dp)
+							.height(4.dp)
 							.background(colorResource(scoreSheet.configuration.style.borderColor)),
 					)
 				}
@@ -114,6 +138,7 @@ private fun ScoreSheetListPreview() {
 						LeagueSummaryStub.list()[0],
 						ScoreSheetUiState(
 							game = ScoringStub.stub(),
+							selection = ScoreSheetUiState.Selection.none(),
 						),
 					),
 					Triple(
@@ -121,6 +146,7 @@ private fun ScoreSheetListPreview() {
 						LeagueSummaryStub.list()[1],
 						ScoreSheetUiState(
 							game = ScoringStub.stub(),
+							selection = ScoreSheetUiState.Selection.none(),
 						),
 					),
 				),
