@@ -8,14 +8,11 @@
 - Feat: Add hint to teach users about swiping pins
 ```
 
-## Android 4.1.0b326
+## Android 4.1.1b327
 
 ```
-- Feat: Add hint to teach users about swiping pins
-- Feat: Add sorting menu to bowlers and leagues
-- Fix: Archiving games actually archives
-- Chore: Capture better error messages
-- Chore: Bumped Kotlint to 2.0.0
+- Fix: All bowlers and opponents can be selected in the Match Play editor
+- Chore: Strongly-typed IDs replacing UUIds
 ```
 
 ---
@@ -187,6 +184,16 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.1.0b326
+
+```
+- Feat: Add hint to teach users about swiping pins
+- Feat: Add sorting menu to bowlers and leagues
+- Fix: Archiving games actually archives
+- Chore: Capture better error messages
+- Chore: Bumped Kotlint to 2.0.0
+```
 
 ## Android 4.0.2b325
 
