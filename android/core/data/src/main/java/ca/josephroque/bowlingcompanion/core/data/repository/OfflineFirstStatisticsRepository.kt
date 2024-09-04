@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.data.queries.statistics.perFrameConf
 import ca.josephroque.bowlingcompanion.core.data.queries.statistics.perGameConfiguration
 import ca.josephroque.bowlingcompanion.core.data.queries.statistics.perSeriesConfiguration
 import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
+import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.statistics.R
@@ -47,7 +48,7 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 	override suspend fun getDefaultSource(): TrackableFilter.SourceSummaries? = withContext(
 		ioDispatcher,
 	) {
-		val bowlers = bowlersRepository.getBowlersList().first()
+		val bowlers = bowlersRepository.getBowlersList(kind = BowlerKind.PLAYABLE).first()
 		if (bowlers.size != 1) return@withContext null
 
 		TrackableFilter.SourceSummaries(

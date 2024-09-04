@@ -56,7 +56,7 @@ class OverviewViewModel @Inject constructor(
 	private val bowlerSortOrder = MutableStateFlow(BowlerSortOrder.MOST_RECENTLY_USED)
 
 	private val bowlers = bowlerSortOrder.flatMapLatest { sortOrder ->
-		bowlersRepository.getBowlersList(sortOrder)
+		bowlersRepository.getBowlersList(kind = BowlerKind.PLAYABLE, sortOrder)
 	}
 
 	private val bowlersListState: Flow<BowlersListUiState> =

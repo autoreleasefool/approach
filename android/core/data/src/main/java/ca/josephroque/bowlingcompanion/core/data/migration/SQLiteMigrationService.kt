@@ -746,7 +746,7 @@ class SQLiteMigrationService @Inject constructor(
 			.getMatchPlaysForGames(gameIdMappings.values)
 			.associateBy { it.gameId }
 		val existingBowlers = bowlerDao
-			.getBowlersList(sortOrder = BowlerSortOrder.ALPHABETICAL)
+			.getBowlersList(kind = BowlerKind.PLAYABLE, sortOrder = BowlerSortOrder.ALPHABETICAL)
 			.first()
 			.associateBy { it.name.lowercase() }
 

@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
+import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
@@ -66,12 +67,16 @@ class ResourcePickerViewModel @Inject constructor(
 				ResourcePickerType.LANE -> ResourcePickerFilter.Alley(AlleyID.fromString(it))
 				ResourcePickerType.SERIES -> ResourcePickerFilter.Str(it)
 				ResourcePickerType.GAME -> ResourcePickerFilter.Series(SeriesID.fromString(it))
-				ResourcePickerType.BOWLER, ResourcePickerType.ALLEY -> null
+				ResourcePickerType.BOWLER -> ResourcePickerFilter.BowlerKind(BowlerKind.valueOf(it))
+				ResourcePickerType.ALLEY -> null
 			}
 		}
 
 	private val dataProvider: ResourcePickerDataProvider = when (resourceType) {
-		ResourcePickerType.BOWLER -> BowlerPickerDataProvider(bowlersRepository)
+		ResourcePickerType.BOWLER -> BowlerPickerDataProvider(
+			bowlersRepository,
+			(filter as? ResourcePickerFilter.BowlerKind)?.kind,
+		)
 		ResourcePickerType.LEAGUE -> LeaguePickerDataProvider(
 			leaguesRepository,
 			(filter as? ResourcePickerFilter.Str)?.value ?: "",

@@ -8,6 +8,7 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
@@ -29,6 +30,7 @@ fun NavController.navigateToBowlerPickerForResult(
 	selectedIds: Set<BowlerID>,
 	hiddenIds: Set<BowlerID> = emptySet(),
 	limit: Int = 0,
+	kind: BowlerKind? = null,
 	navResultCallback: NavResultCallback<Set<BowlerID>>,
 	navOptions: NavOptions? = null,
 ) {
@@ -36,6 +38,7 @@ fun NavController.navigateToBowlerPickerForResult(
 		selectedIds = selectedIds.map { it.value }.toSet(),
 		hiddenIds = hiddenIds.map { it.value }.toSet(),
 		limit = limit,
+		filter = kind?.name,
 		resourceType = ResourcePickerType.BOWLER,
 		navResultCallback = @JvmSerializableLambda { ids ->
 			navResultCallback(ids.map { BowlerID(it) }.toSet())

@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.LaneID
@@ -21,6 +22,8 @@ sealed interface ResourcePickerFilter {
 	data class Series(val id: SeriesID) : ResourcePickerFilter
 	data class Gear(val kind: GearKind) : ResourcePickerFilter
 	data class Alley(val id: AlleyID) : ResourcePickerFilter
+	data class BowlerKind(val kind: ca.josephroque.bowlingcompanion.core.model.BowlerKind) :
+		ResourcePickerFilter
 }
 
 sealed interface ResourceItem {

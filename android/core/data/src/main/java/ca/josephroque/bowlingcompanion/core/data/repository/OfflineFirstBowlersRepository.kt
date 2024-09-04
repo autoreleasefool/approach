@@ -53,8 +53,10 @@ class OfflineFirstBowlersRepository @Inject constructor(
 					.map(SeriesBowlerSummary::asSummary)
 			}
 
-	override fun getBowlersList(sortOrder: BowlerSortOrder): Flow<List<BowlerListItem>> =
-		bowlerDao.getBowlersList(sortOrder = sortOrder)
+	override fun getBowlersList(
+		kind: BowlerKind?,
+		sortOrder: BowlerSortOrder,
+	): Flow<List<BowlerListItem>> = bowlerDao.getBowlersList(kind = kind, sortOrder = sortOrder)
 
 	override fun getOpponentsList(): Flow<List<OpponentListItem>> = bowlerDao.getOpponentsList()
 
