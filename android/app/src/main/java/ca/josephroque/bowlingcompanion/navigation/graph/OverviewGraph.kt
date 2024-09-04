@@ -5,6 +5,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.GearKind
+import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.navigation.popBackStackWithResult
 import ca.josephroque.bowlingcompanion.feature.avatarform.navigation.avatarFormScreen
@@ -285,6 +286,7 @@ fun NavGraphBuilder.overviewGraph(
 				limit = 1,
 				navResultCallback = result,
 				bowlerId = bowler,
+				recurrence = LeagueRecurrence.REPEATING,
 			)
 		},
 		onShowTeamPlayOnboarding = navController::navigateToQuickPlayOnboarding,
