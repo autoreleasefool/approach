@@ -33,7 +33,7 @@ abstract class GearDao {
 				AND bowler_preferred_gear.bowler_id = :bowlerId
 			LEFT JOIN bowlers AS owner 
 				ON gear.owner_id = owner.id
-			ORDER BY gear.name
+			ORDER BY gear.name ASC
 		""",
 	)
 	abstract fun getBowlerPreferredGear(bowlerId: BowlerID): Flow<List<GearListItem>>
@@ -52,7 +52,7 @@ abstract class GearDao {
 				AND game_gear.game_id = :gameId
 			LEFT JOIN bowlers AS owner
 				ON gear.owner_id = owner.id
-			ORDER BY gear.name
+			ORDER BY gear.name ASC
 		""",
 	)
 	abstract fun getGameGear(gameId: GameID): Flow<List<GearListItem>>
@@ -69,7 +69,7 @@ abstract class GearDao {
 			LEFT JOIN bowlers AS owner
 				ON gear.owner_id = owner.id
 			WHERE (:kind IS NULL OR gear.kind = :kind)
-			ORDER BY gear.name
+			ORDER BY gear.name ASC
 		""",
 	)
 	abstract fun getGearList(kind: GearKind? = null): Flow<List<GearListItem>>

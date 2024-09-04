@@ -96,7 +96,7 @@ abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 				bowlers.kind AS kind
 			FROM bowlers
 			WHERE bowlers.archived_on IS NULL
-			ORDER BY bowlers.name
+			ORDER BY bowlers.name ASC
 		""",
 	)
 	abstract fun getOpponentsList(): Flow<List<OpponentListItem>>

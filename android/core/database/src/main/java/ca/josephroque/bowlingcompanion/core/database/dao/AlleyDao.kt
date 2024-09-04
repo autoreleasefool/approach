@@ -27,7 +27,7 @@ abstract class AlleyDao {
 				alleys.mechanism AS mechanism,
 				alleys.pin_base AS pinBase
 			FROM alleys
-			ORDER BY alleys.name
+			ORDER BY alleys.name ASC
 		""",
 	)
 	abstract fun getAlleysList(): Flow<List<AlleyListItem>>
