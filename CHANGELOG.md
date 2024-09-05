@@ -1,11 +1,9 @@
 # Most recent version
 
-## iOS 1.6.0b25
+## iOS 1.6.1b27
 
 ```
-- Feat: Import Data
-- Feat: Split leagues and events into two separate lists
-- Feat: Add hint to teach users about swiping pins
+- Test release. No new features
 ```
 
 ## Android 4.1.1b327
@@ -18,6 +16,20 @@
 ---
 
 # Legacy iOS Versions
+
+## iOS 1.6.1b26
+
+```
+- Test release. No new features.
+```
+
+## iOS 1.6.0b25
+
+```
+- Feat: Import Data
+- Feat: Split leagues and events into two separate lists
+- Feat: Add hint to teach users about swiping pins
+```
 
 ## iOS 1.5.2b24
 
