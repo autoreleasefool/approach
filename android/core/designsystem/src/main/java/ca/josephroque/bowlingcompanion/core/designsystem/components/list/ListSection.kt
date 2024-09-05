@@ -22,17 +22,28 @@ fun LazyListScope.header(
 ) {
 	item {
 		ListSectionHeader(
-			titleResourceId = titleResourceId,
+			title = stringResource(titleResourceId),
 			action = action,
 			modifier = modifier,
 		)
 	}
 }
 
-data class HeaderAction(
-	@StringRes val actionResourceId: Int,
-	val onClick: () -> Unit,
-)
+fun LazyListScope.header(
+	title: String,
+	modifier: Modifier = Modifier,
+	action: HeaderAction? = null,
+) {
+	item {
+		ListSectionHeader(
+			title = title,
+			action = action,
+			modifier = modifier,
+		)
+	}
+}
+
+data class HeaderAction(@StringRes val actionResourceId: Int, val onClick: () -> Unit)
 
 @Composable
 fun ListSectionHeader(
@@ -40,6 +51,15 @@ fun ListSectionHeader(
 	modifier: Modifier = Modifier,
 	action: HeaderAction? = null,
 ) {
+	ListSectionHeader(
+		title = stringResource(titleResourceId),
+		modifier = modifier,
+		action = action,
+	)
+}
+
+@Composable
+fun ListSectionHeader(title: String, modifier: Modifier = Modifier, action: HeaderAction? = null) {
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(8.dp),
 		modifier = modifier
@@ -47,7 +67,7 @@ fun ListSectionHeader(
 			.padding(horizontal = 16.dp, vertical = 8.dp),
 	) {
 		Text(
-			text = stringResource(titleResourceId),
+			text = title,
 			style = MaterialTheme.typography.titleLarge,
 			modifier = modifier
 				.weight(1f)

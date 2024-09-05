@@ -13,7 +13,9 @@ import ca.josephroque.bowlingcompanion.core.model.TeamDetails
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamListItem
 import ca.josephroque.bowlingcompanion.core.model.TeamMemberListItem
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSortOrder
+import ca.josephroque.bowlingcompanion.core.model.TeamSummary
 import ca.josephroque.bowlingcompanion.core.model.TeamUpdate
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -44,6 +46,9 @@ class OfflineFirstTeamsRepository @Inject constructor(
 			members = members,
 		)
 	}
+
+	override fun getTeamSummary(teamSeries: TeamSeriesID): Flow<TeamSummary> =
+		teamDao.getTeamSummary(teamSeries)
 
 	override suspend fun getTeamUpdate(id: TeamID): TeamUpdate {
 		val team = teamDao.getTeamSummary(id).first()

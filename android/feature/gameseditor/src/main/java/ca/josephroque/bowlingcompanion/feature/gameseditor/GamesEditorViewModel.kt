@@ -587,7 +587,7 @@ class GamesEditorViewModel @Inject constructor(
 		viewModelScope.launch {
 			userDataRepository.setLatestGameInEditor(gameId)
 			userDataRepository.setLatestSeriesInEditor(series.value)
-			// userDataRepository.setLatestTeamSeriesInEditor(teamSeriesId)
+			userDataRepository.setLatestTeamSeriesInEditor(teamSeriesId)
 		}
 	}
 

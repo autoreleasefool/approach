@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.TeamEntity
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamListItem
 import ca.josephroque.bowlingcompanion.core.model.TeamMemberListItem
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSortOrder
 import ca.josephroque.bowlingcompanion.core.model.TeamSummary
 import kotlinx.coroutines.flow.Flow
@@ -67,6 +68,18 @@ abstract class TeamDao : LegacyMigratingDao<TeamEntity> {
 		""",
 	)
 	abstract fun getTeamSummary(teamId: TeamID): Flow<TeamSummary>
+
+	@Query(
+		"""
+			SELECT
+				teams.id as id,
+				teams.name as name
+			FROM teams
+			JOIN team_series ON team_series.team_id = teams.id
+			WHERE team_series.id = :teamSeriesId
+		""",
+	)
+	abstract fun getTeamSummary(teamSeriesId: TeamSeriesID): Flow<TeamSummary>
 
 	@Query(
 		"""

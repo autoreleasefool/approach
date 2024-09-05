@@ -4,6 +4,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamID
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewUiAction
@@ -35,8 +36,11 @@ sealed interface OverviewScreenEvent {
 
 	data class EditStatisticsWidget(val context: String) : OverviewScreenEvent
 	data class EditBowler(val id: BowlerID) : OverviewScreenEvent
-	data class ResumeGame(val seriesIds: List<SeriesID>, val currentGameId: GameID) :
-		OverviewScreenEvent
+	data class ResumeGame(
+		val teamSeriesId: TeamSeriesID?,
+		val seriesIds: List<SeriesID>,
+		val currentGameId: GameID,
+	) : OverviewScreenEvent
 	data class ShowBowlerDetails(val id: BowlerID) : OverviewScreenEvent
 	data class EditTeam(val id: TeamID) : OverviewScreenEvent
 	data class ShowTeamDetails(val id: TeamID) : OverviewScreenEvent

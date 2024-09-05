@@ -40,6 +40,7 @@ data class UserData(
 	// Game in progress
 	val latestSeriesInEditor: List<String>,
 	val latestGameInEditor: String?,
+	val latestTeamSeriesInEditor: String?,
 ) {
 	data class Onboarding(
 		val isOnboardingComplete: Boolean,

@@ -49,6 +49,7 @@ message UserPreferences {
   // Game in progress
   repeated string latest_series_in_editor = 32;
   optional string latest_game_in_editor = 33;
+  optional string latest_team_series_in_editor = 38;
 
-  // Next ID: 38
+  // Next ID: 39
 }
