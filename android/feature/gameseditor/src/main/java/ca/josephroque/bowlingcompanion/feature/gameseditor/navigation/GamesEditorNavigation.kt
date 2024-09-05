@@ -6,11 +6,16 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.GameID
+import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.GearID
+import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
-import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorArguments
 import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorRoute
 
 fun NavController.navigateToGamesEditor(
@@ -31,15 +36,17 @@ fun NavController.navigateToGamesEditor(
 
 fun NavGraphBuilder.gamesEditorScreen(
 	onBackPressed: () -> Unit,
-	onEditMatchPlay: (GamesEditorArguments.EditMatchPlay) -> Unit,
-	onEditGear: (GamesEditorArguments.EditGear) -> Unit,
-	onEditRolledBall: (GamesEditorArguments.EditRolledBall) -> Unit,
-	onEditAlley: (GamesEditorArguments.EditAlley) -> Unit,
-	onEditLanes: (GamesEditorArguments.EditLanes) -> Unit,
-	onShowGamesSettings: (GamesEditorArguments.ShowGamesSettings) -> Unit,
-	onShowStatistics: (GamesEditorArguments.ShowStatistics) -> Unit,
-	onShowBowlerScores: (GamesEditorArguments.ShowBowlerScores) -> Unit,
-	onEditScore: (GamesEditorArguments.EditScore) -> Unit,
+	onEditMatchPlay: (GameID) -> Unit,
+	onEditGear: (Set<GearID>, NavResultCallback<Set<GearID>>) -> Unit,
+	onEditRolledBall: (GearID?, NavResultCallback<Set<GearID>>) -> Unit,
+	onEditAlley: (AlleyID?, NavResultCallback<Set<AlleyID>>) -> Unit,
+	onEditLanes: (AlleyID, Set<LaneID>, NavResultCallback<Set<LaneID>>) -> Unit,
+	onShowGamesSettings:
+	(TeamSeriesID?, List<SeriesID>, GameID, NavResultCallback<Pair<List<SeriesID>, GameID>>) -> Unit,
+	onShowStatistics: (TrackableFilter) -> Unit,
+	onShowBowlerScores: (List<SeriesID>, gameIndex: Int) -> Unit,
+	onEditScore:
+	(score: Int, GameScoringMethod, NavResultCallback<Pair<GameScoringMethod, Int>>) -> Unit,
 ) {
 	composable(
 		route = Route.EditGame.route,

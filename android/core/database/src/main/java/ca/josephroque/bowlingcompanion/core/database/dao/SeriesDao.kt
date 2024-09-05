@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -84,6 +85,16 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 		""",
 	)
 	abstract fun getEventSeriesList(eventIds: List<LeagueID>): Flow<List<SeriesEntity>>
+
+	@Query(
+		"""
+			SELECT series_id
+			FROM team_series_series
+			WHERE team_series_id = :teamSeriesId
+			ORDER BY position ASC
+		""",
+	)
+	abstract fun getTeamSeriesIds(teamSeriesId: TeamSeriesID): Flow<List<SeriesID>>
 
 	@Query(
 		"""

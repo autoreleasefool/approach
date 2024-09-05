@@ -28,6 +28,8 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesConnect
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesCreate
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesUpdate
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -62,6 +64,9 @@ class OfflineFirstSeriesRepository @Inject constructor(
 				.sortedBy { eventIds.indexOf(it.leagueId) }
 				.map { it.id }
 		}
+
+	override fun getTeamSeriesIds(teamSeriesId: TeamSeriesID): Flow<List<SeriesID>> =
+		seriesDao.getTeamSeriesIds(teamSeriesId)
 
 	override fun getArchivedSeries(): Flow<List<ArchivedSeries>> = seriesDao.getArchivedSeries()
 
@@ -113,6 +118,21 @@ class OfflineFirstSeriesRepository @Inject constructor(
 				)
 			}
 
+			teamSeriesDao.insertAll(teamSeriesSeries)
+		}
+	}
+
+	override suspend fun updateTeamSeries(teamSeries: TeamSeriesUpdate) = withContext(ioDispatcher) {
+		transactionRunner {
+			val teamSeriesSeries = teamSeries.seriesIds.mapIndexed { index, it ->
+				TeamSeriesSeriesCrossRef(
+					teamSeriesId = teamSeries.id,
+					seriesId = it,
+					position = index,
+				)
+			}
+
+			teamSeriesDao.deleteSeries(teamSeries.id)
 			teamSeriesDao.insertAll(teamSeriesSeries)
 		}
 	}

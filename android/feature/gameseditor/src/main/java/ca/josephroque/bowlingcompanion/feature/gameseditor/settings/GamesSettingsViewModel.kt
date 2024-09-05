@@ -5,11 +5,13 @@ import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.TeamsRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamSummary
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings.GamesSettingsUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings.GamesSettingsUiState
@@ -27,11 +29,15 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class GamesSettingsViewModel @Inject constructor(
 	bowlersRepository: BowlersRepository,
+	teamsRepository: TeamsRepository,
 	private val gamesRepository: GamesRepository,
 	savedStateHandle: SavedStateHandle,
 ) : ApproachViewModel<GamesSettingsScreenEvent>() {
+	private val teamSeriesId = Route.GameSettings.getTeamSeries(savedStateHandle)
 	private val initialSeries = Route.GameSettings.getSeries(savedStateHandle)
 	private val initialGameId = Route.GameSettings.getCurrentGame(savedStateHandle)!!
+
+	private val team: MutableStateFlow<TeamSummary?> = MutableStateFlow(null)
 
 	private val currentGameId = MutableStateFlow(initialGameId)
 	private val games: MutableStateFlow<List<GameListItem>> = MutableStateFlow(emptyList())
@@ -51,17 +57,24 @@ class GamesSettingsViewModel @Inject constructor(
 			val seriesGames = gamesRepository.getGamesList(currentSeriesId).first()
 			games.update { seriesGames }
 			currentBowlerId.update { currentGameDetails.bowler.id }
+
+			teamSeriesId?.let {
+				val teamSummary = teamsRepository.getTeamSummary(it).first()
+				team.value = teamSummary
+			}
 		}
 	}
 
 	val uiState: StateFlow<GamesSettingsScreenUiState> = combine(
+		team,
 		currentGameId,
 		games,
 		currentBowlerId,
 		bowlers,
-	) { currentGame, games, currentBowler, bowlers ->
+	) { team, currentGame, games, currentBowler, bowlers ->
 		GamesSettingsScreenUiState.Loaded(
 			GamesSettingsUiState(
+				team = team,
 				currentBowlerId = currentBowler,
 				bowlers = bowlers.map { it.second },
 				currentGameId = currentGame,

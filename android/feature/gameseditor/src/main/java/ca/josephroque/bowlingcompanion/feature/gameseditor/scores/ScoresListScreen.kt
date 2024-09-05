@@ -59,7 +59,6 @@ private fun ScoresListScreen(
 	Scaffold(
 		topBar = {
 			ScoresListTopBar(
-				gameIndex = (state as? ScoresListScreenUiState.Loaded)?.scoresList?.gameIndex ?: 0,
 				onAction = { onAction(ScoresListScreenUiAction.ScoresList(it)) },
 				scrollBehavior = scrollBehavior,
 			)

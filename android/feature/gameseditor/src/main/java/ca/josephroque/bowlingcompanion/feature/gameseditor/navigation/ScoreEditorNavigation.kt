@@ -14,8 +14,8 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.google.accompanist.navigation.material.bottomSheet
 
 fun NavController.navigateToScoreEditorForResult(
-	scoringMethod: GameScoringMethod,
 	score: Int,
+	scoringMethod: GameScoringMethod,
 	navResultCallback: NavResultCallback<Pair<GameScoringMethod, Int>>,
 	navOptions: NavOptions? = null,
 ) {

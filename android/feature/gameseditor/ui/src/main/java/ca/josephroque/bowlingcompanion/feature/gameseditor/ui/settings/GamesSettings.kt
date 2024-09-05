@@ -32,6 +32,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.stub.BowlerSummaryStub
 import ca.josephroque.bowlingcompanion.core.model.stub.GameStub
+import ca.josephroque.bowlingcompanion.core.model.stub.TeamStub
 import ca.josephroque.bowlingcompanion.core.model.ui.GameRow
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import org.burnoutcrew.reorderable.ReorderableItem
@@ -58,7 +59,11 @@ fun GamesSettings(
 			.detectReorderAfterLongPress(reorderableState),
 	) {
 		if (state.bowlers.size > 1) {
-			header(R.string.game_settings_bowlers)
+			if (state.team == null) {
+				header(R.string.game_settings_bowlers)
+			} else {
+				header(state.team.name)
+			}
 
 			// If number of items before reorderable list changes,
 			// GamesSettingsViewModel#moveBowler must be updated
@@ -106,6 +111,7 @@ fun GamesSettings(
 			Game(
 				game = it,
 				isSelected = isSelected,
+				isMultipleBowlers = state.bowlers.size > 1,
 				onAction = onAction,
 			)
 		}
@@ -154,6 +160,7 @@ private fun Bowler(
 @Composable
 private fun Game(
 	game: GameListItem,
+	isMultipleBowlers: Boolean,
 	isSelected: Boolean,
 	onAction: (GamesSettingsUiAction) -> Unit,
 ) {
@@ -185,7 +192,7 @@ private fun Game(
 
 			GameRow(
 				index = game.index,
-				score = game.score,
+				score = if (isMultipleBowlers) null else game.score,
 				modifier = Modifier.weight(1f),
 			)
 		}
@@ -198,9 +205,11 @@ private fun GamesSettingsPreview() {
 	Surface {
 		val bowlers = BowlerSummaryStub.list()
 		val games = GameStub.list()
+		val team = TeamStub.single()
 
 		GamesSettings(
 			state = GamesSettingsUiState(
+				team = team,
 				currentBowlerId = bowlers.first().id,
 				bowlers = bowlers,
 				currentGameId = games.first().id,

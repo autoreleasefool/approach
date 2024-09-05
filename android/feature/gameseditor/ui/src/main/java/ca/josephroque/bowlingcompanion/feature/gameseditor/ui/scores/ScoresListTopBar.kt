@@ -13,14 +13,13 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScoresListTopBar(
-	gameIndex: Int,
 	onAction: (ScoresListUiAction) -> Unit,
 	scrollBehavior: TopAppBarScrollBehavior,
 ) {
 	TopAppBar(
 		title = {
 			Text(
-				text = stringResource(R.string.scores_list_title, gameIndex + 1),
+				text = stringResource(R.string.scores_list_title),
 				style = MaterialTheme.typography.titleMedium,
 			)
 		},

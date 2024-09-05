@@ -12,8 +12,8 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.google.accompanist.navigation.material.bottomSheet
 
 fun NavController.navigateToScoresList(
-	gameIndex: Int,
 	series: List<SeriesID>,
+	gameIndex: Int,
 	navOptions: NavOptions? = null,
 ) {
 	this.navigate(

@@ -60,7 +60,7 @@
 	<string name="game_editor_exclude_from_statistics_series_pre_bowl">This series is a pre-bowl and all of its games are automatically excluded from statistics. You must toggle this setting for the series before this game can be counted towards any statistics</string>
 	<string name="game_editor_exclude_from_statistics_league_excluded">All of this league\'s games have been excluded from statistics. You must toggle this setting for the league before this game can be counted towards any statistics</string>
 
-	<string name="scores_list_title">Scores for Game %1$d</string>
+	<string name="scores_list_title">Scores</string>
 
 	<string name="score_editor_title">Scoring</string>
 	
