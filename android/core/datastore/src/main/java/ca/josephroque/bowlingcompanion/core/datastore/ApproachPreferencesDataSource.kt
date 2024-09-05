@@ -60,6 +60,8 @@ class ApproachPreferencesDataSource @Inject constructor(
 				seenStatisticIds = it.seenStatisticsIdsList.toSet(),
 				latestSeriesInEditor = it.latestSeriesInEditorList,
 				latestGameInEditor = if (it.latestGameInEditor.isNullOrBlank()) null else it.latestGameInEditor,
+				latestTeamSeriesInEditor =
+				if (it.latestTeamSeriesInEditor.isNullOrBlank()) null else it.latestTeamSeriesInEditor,
 			)
 		}
 
@@ -306,6 +308,12 @@ class ApproachPreferencesDataSource @Inject constructor(
 	suspend fun setLatestGameInEditor(id: String?) {
 		userPreferences.updateData {
 			it.copy { this.latestGameInEditor = id ?: "" }
+		}
+	}
+
+	suspend fun setLatestTeamSeriesInEditor(id: String?) {
+		userPreferences.updateData {
+			it.copy { this.latestTeamSeriesInEditor = id ?: "" }
 		}
 	}
 }

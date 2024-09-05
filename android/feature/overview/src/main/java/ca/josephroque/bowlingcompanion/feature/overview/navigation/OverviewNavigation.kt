@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamID
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.overview.OverviewRoute
@@ -24,7 +25,7 @@ fun NavGraphBuilder.overviewScreen(
 	onEditStatisticsWidgets: (String) -> Unit,
 	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 	onShowQuickPlay: () -> Unit,
-	onResumeGame: (List<SeriesID>, GameID) -> Unit,
+	onResumeGame: (TeamSeriesID?, List<SeriesID>, GameID) -> Unit,
 	onShowWidgetError: () -> Unit,
 ) {
 	composable(

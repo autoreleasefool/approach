@@ -31,6 +31,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamID
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.overview.ui.Overview
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewFloatingActionButton
@@ -50,7 +51,7 @@ internal fun OverviewRoute(
 	onEditStatisticsWidgets: (String) -> Unit,
 	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 	onShowQuickPlay: () -> Unit,
-	onResumeGame: (List<SeriesID>, GameID) -> Unit,
+	onResumeGame: (TeamSeriesID?, List<SeriesID>, GameID) -> Unit,
 	onShowWidgetNotEnoughDataError: () -> Unit,
 	onShowWidgetUnavailableError: () -> Unit,
 	modifier: Modifier = Modifier,
@@ -71,7 +72,11 @@ internal fun OverviewRoute(
 						is OverviewScreenEvent.EditTeam -> onEditTeam(it.id)
 						is OverviewScreenEvent.EditStatisticsWidget -> onEditStatisticsWidgets(it.context)
 						is OverviewScreenEvent.ShowWidgetStatistics -> onShowWidgetStatistics(it.filter)
-						is OverviewScreenEvent.ResumeGame -> onResumeGame(it.seriesIds, it.currentGameId)
+						is OverviewScreenEvent.ResumeGame -> onResumeGame(
+							it.teamSeriesId,
+							it.seriesIds,
+							it.currentGameId,
+						)
 						OverviewScreenEvent.ShowQuickPlay -> onShowQuickPlay()
 						OverviewScreenEvent.AddBowler -> onAddBowler()
 						OverviewScreenEvent.AddTeam -> onAddTeam()

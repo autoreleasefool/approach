@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
@@ -136,8 +137,13 @@ class OfflineFirstUserDataRepository @Inject constructor(
 		approachPreferencesDataSource.setLatestSeriesInEditor(ids.map { it.toString() })
 	}
 
+	override suspend fun setLatestTeamSeriesInEditor(id: TeamSeriesID?) {
+		approachPreferencesDataSource.setLatestTeamSeriesInEditor(id?.toString())
+	}
+
 	override suspend fun dismissLatestGameInEditor() {
 		approachPreferencesDataSource.setLatestGameInEditor(null)
 		approachPreferencesDataSource.setLatestSeriesInEditor(emptyList())
+		approachPreferencesDataSource.setLatestTeamSeriesInEditor(null)
 	}
 }

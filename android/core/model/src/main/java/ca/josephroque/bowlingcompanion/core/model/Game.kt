@@ -111,4 +111,8 @@ enum class GameScoringMethod {
 	BY_FRAME,
 }
 
-data class GameInProgress(val seriesIds: List<SeriesID>, val currentGameId: GameID)
+data class GameInProgress(
+	val teamSeriesId: TeamSeriesID?,
+	val seriesIds: List<SeriesID>,
+	val currentGameId: GameID,
+)

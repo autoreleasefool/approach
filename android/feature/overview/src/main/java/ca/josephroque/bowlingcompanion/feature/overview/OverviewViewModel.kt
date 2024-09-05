@@ -365,7 +365,7 @@ class OverviewViewModel @Inject constructor(
 	private fun resumeGameInProgress() {
 		viewModelScope.launch {
 			val game = gamesRepository.getGameInProgress() ?: return@launch
-			sendEvent(OverviewScreenEvent.ResumeGame(game.seriesIds, game.currentGameId))
+			sendEvent(OverviewScreenEvent.ResumeGame(game.teamSeriesId, game.seriesIds, game.currentGameId))
 		}
 	}
 }

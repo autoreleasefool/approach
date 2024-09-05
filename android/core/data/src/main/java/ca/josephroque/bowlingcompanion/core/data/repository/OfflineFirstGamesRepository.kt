@@ -65,14 +65,17 @@ class OfflineFirstGamesRepository @Inject constructor(
 		val userData = userDataRepository.userData.first()
 		val latestGameIdStr = userData.latestGameInEditor
 		val latestSeriesIdsStr = userData.latestSeriesInEditor
+		val latestTeamSeriesIdStr = userData.latestTeamSeriesInEditor
 		if (latestGameIdStr == null || latestSeriesIdsStr.isEmpty()) return null
 
 		val latestGameId = GameID.fromString(latestGameIdStr)
 		val latestSeriesIds = latestSeriesIdsStr.map { SeriesID.fromString(it) }
+		val latestTeamSeriesId = latestTeamSeriesIdStr?.let { TeamSeriesID.fromString(it) }
 
 		val frames = framesRepository.getFrames(latestGameId).first()
 		if (frames.isGameFinished()) return null
 		return GameInProgress(
+			teamSeriesId = latestTeamSeriesId,
 			seriesIds = latestSeriesIds,
 			currentGameId = latestGameId,
 		)

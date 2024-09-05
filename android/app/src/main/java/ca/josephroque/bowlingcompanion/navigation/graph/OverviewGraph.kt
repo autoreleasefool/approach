@@ -100,7 +100,13 @@ fun NavGraphBuilder.overviewGraph(
 		},
 		onShowWidgetStatistics = navController::navigateToStatisticsDetails,
 		onShowQuickPlay = { navController.navigateToQuickPlay(null) },
-		onResumeGame = navController::navigateToGamesEditor,
+		onResumeGame = { teamSeries, series, initialGame ->
+			if (teamSeries != null) {
+				navController.navigateToGamesEditor(teamSeries, initialGame)
+			} else {
+				navController.navigateToGamesEditor(series, initialGame)
+			}
+		},
 		onShowWidgetError = navController::navigateToStatisticsWidgetError,
 	)
 	onboardingScreen(
