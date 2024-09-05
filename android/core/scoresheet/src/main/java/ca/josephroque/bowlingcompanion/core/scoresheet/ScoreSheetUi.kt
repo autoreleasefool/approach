@@ -19,8 +19,14 @@ data class ScoreSheetUiState(
 	}
 }
 
+data class ScoreSheetListItem(
+	val bowler: BowlerSummary,
+	val league: LeagueSummary,
+	val scoreSheet: ScoreSheetUiState,
+)
+
 data class ScoreSheetListUiState(
-	val bowlerScores: List<Triple<BowlerSummary, LeagueSummary, ScoreSheetUiState>> = emptyList(),
+	val bowlerScores: List<List<ScoreSheetListItem>> = emptyList(),
 )
 
 sealed interface ScoreSheetUiAction {

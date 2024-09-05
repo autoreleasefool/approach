@@ -185,51 +185,46 @@ fun NavGraphBuilder.overviewGraph(
 	)
 	gamesEditorScreen(
 		onBackPressed = navController::popBackStack,
-		onEditMatchPlay = { args -> navController.navigateToMatchPlayEditor(args.gameId) },
-		onEditGear = { args ->
+		onEditMatchPlay = navController::navigateToMatchPlayEditor,
+		onEditGear = { gearIds, result ->
 			navController.navigateToGearPickerForResult(
-				selectedIds = args.gearIds,
-				navResultCallback = args.onGearUpdated,
+				selectedIds = gearIds,
+				navResultCallback = result,
 			)
 		},
-		onEditAlley = { args ->
+		onEditAlley = { alleyId, result ->
 			navController.navigateToAlleyPickerForResult(
-				selectedIds = args.alleyId?.let { setOf(it) } ?: emptySet(),
+				selectedIds = alleyId?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = args.onAlleyUpdated,
+				navResultCallback = result,
 			)
 		},
-		onEditLanes = { args ->
+		onEditLanes = { alleyId, laneIds, result ->
 			navController.navigateToLanePickerForResult(
-				selectedIds = args.laneIds,
-				navResultCallback = args.onLanesUpdated,
-				alleyId = args.alleyId,
+				selectedIds = laneIds,
+				navResultCallback = result,
+				alleyId = alleyId,
 			)
 		},
-		onShowGamesSettings = { args ->
+		onShowGamesSettings = { teamSeriesId, seriesIds, gameId, result ->
 			navController.navigateToGamesSettingsForResult(
-				series = args.series,
-				currentGameId = args.currentGameId,
-				navResultCallback = args.onSeriesUpdated,
+				teamSeriesId = teamSeriesId,
+				seriesIds = seriesIds,
+				currentGameId = gameId,
+				navResultCallback = result,
 			)
 		},
-		onEditRolledBall = { args ->
+		onEditRolledBall = { ballId, result ->
 			navController.navigateToGearPickerForResult(
-				selectedIds = args.ballId?.let { setOf(it) } ?: emptySet(),
+				selectedIds = ballId?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = args.onBallUpdated,
+				navResultCallback = result,
 				kind = GearKind.BOWLING_BALL,
 			)
 		},
-		onShowStatistics = { args -> navController.navigateToMidGameStatisticsDetails(args.filter) },
-		onShowBowlerScores = { args -> navController.navigateToScoresList(args.gameIndex, args.series) },
-		onEditScore = { args ->
-			navController.navigateToScoreEditorForResult(
-				args.scoringMethod,
-				args.score,
-				args.onScoreUpdated,
-			)
-		},
+		onShowStatistics = navController::navigateToMidGameStatisticsDetails,
+		onShowBowlerScores = navController::navigateToScoresList,
+		onEditScore = navController::navigateToScoreEditorForResult,
 	)
 	statisticsWidgetLayoutEditorScreen(
 		onBackPressed = navController::popBackStack,

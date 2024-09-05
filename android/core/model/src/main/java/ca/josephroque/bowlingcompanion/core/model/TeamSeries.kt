@@ -46,3 +46,5 @@ data class TeamSeriesCreate(
 	val excludeFromStatistics: ExcludeFromStatistics,
 	val alleyId: AlleyID?,
 )
+
+data class TeamSeriesUpdate(val id: TeamSeriesID, val seriesIds: List<SeriesID>)

@@ -103,9 +103,11 @@ class QuickPlayViewModel @Inject constructor(
 				},
 				numberOfGames = numberOfGames,
 				isShowingQuickPlayTip = isQuickPlayTipVisible,
-				isStartButtonEnabled = bowlers.isNotEmpty() &&
-					bowlers.all { it.second != null } &&
-					(leagueRecurrence == LeagueRecurrence.REPEATING || leagueName.isNotBlank()),
+				isStartButtonEnabled = if (isTeamQuickPlay) {
+					leagueRecurrence == LeagueRecurrence.REPEATING || leagueName.isNotBlank()
+				} else {
+					bowlers.isNotEmpty() && bowlers.all { it.second != null }
+				},
 				leagueRecurrence = leagueRecurrence,
 				leagueName = leagueName,
 				leagueNameErrorId = if (leagueName.isBlank()) {
@@ -213,7 +215,6 @@ class QuickPlayViewModel @Inject constructor(
 		val bowlers = bowlers.value
 		val bowlerIds = bowlers.map { it.first.id }
 		val leagueIds = bowlers.mapNotNull { it.second?.id }
-		if (bowlerIds.isEmpty() || bowlerIds.size != leagueIds.size) return
 
 		viewModelScope.launch {
 			if (isTeamQuickPlay) {
@@ -245,10 +246,11 @@ class QuickPlayViewModel @Inject constructor(
 	) {
 		when (recurrence) {
 			LeagueRecurrence.REPEATING -> {
+				if (bowlerIds.isEmpty() || bowlerIds.size != leagueIds.size) return
 				sendEvent(QuickPlayScreenEvent.TeamLeaguesSelected(teamId, leagueIds))
 			}
 			LeagueRecurrence.ONCE -> {
-				if (leagueName.isBlank()) return
+				if (bowlerIds.isEmpty() || leagueName.isBlank()) return
 
 				val events = bowlerIds.map {
 					LeagueCreate(

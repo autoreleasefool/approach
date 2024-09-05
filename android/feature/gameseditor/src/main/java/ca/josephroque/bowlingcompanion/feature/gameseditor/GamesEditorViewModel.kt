@@ -37,6 +37,7 @@ import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.nextIndexToRecord
 import ca.josephroque.bowlingcompanion.core.navigation.Route
@@ -101,9 +102,21 @@ class GamesEditorViewModel @Inject constructor(
 	@ApplicationScope private val scope: CoroutineScope,
 ) : ApproachViewModel<GamesEditorScreenEvent>(),
 	DefaultLifecycleObserver {
-	private val initialGameId = Route.EditGame.getGame(savedStateHandle)!!
+	private val teamSeriesId = Route.EditTeamSeries.getTeamSeries(savedStateHandle)
+	private val series = MutableStateFlow(
+		if (teamSeriesId != null) {
+			emptyList()
+		} else {
+			Route.EditGame.getSeries(savedStateHandle)
+		},
+	)
 
-	private val series = MutableStateFlow(Route.EditGame.getSeries(savedStateHandle))
+	private val initialGameId = if (teamSeriesId != null) {
+		Route.EditTeamSeries.getGame(savedStateHandle)!!
+	} else {
+		Route.EditGame.getGame(savedStateHandle)!!
+	}
+
 	private val bowlers = series.flatMapLatest { bowlersRepository.getSeriesBowlers(it) }
 	private val currentBowlerId = MutableStateFlow<BowlerID?>(null)
 
@@ -177,7 +190,7 @@ class GamesEditorViewModel @Inject constructor(
 
 	fun handleAction(action: GamesEditorScreenUiAction) {
 		when (action) {
-			GamesEditorScreenUiAction.DidAppear -> loadInitialGame()
+			GamesEditorScreenUiAction.DidAppear -> loadInitialData()
 			GamesEditorScreenUiAction.DidDisappear -> dismissLatestGameInEditor()
 			GamesEditorScreenUiAction.GameLockSnackBarDismissed -> dismissGameLockSnackBar()
 			GamesEditorScreenUiAction.HighestPossibleScoreSnackBarDismissed ->
@@ -267,11 +280,34 @@ class GamesEditorViewModel @Inject constructor(
 
 	private fun updateSeries(series: List<SeriesID>) {
 		this.series.update { series }
+		if (teamSeriesId != null) {
+			viewModelScope.launch {
+				seriesRepository.updateTeamSeries(
+					TeamSeriesUpdate(
+						id = teamSeriesId,
+						seriesIds = series,
+					),
+				)
+			}
+		}
 	}
 
 	private fun loadGameIfChanged(gameId: GameID) {
 		if (currentGameId.value == gameId) return
 		loadGame(gameId)
+	}
+
+	private fun loadInitialData() {
+		loadTeamSeries()
+		loadInitialGame()
+	}
+
+	private fun loadTeamSeries() {
+		if (teamSeriesId == null || series.value.isNotEmpty()) return
+		viewModelScope.launch {
+			val teamSeries = seriesRepository.getTeamSeriesIds(teamSeriesId).first()
+			series.update { teamSeries }
+		}
 	}
 
 	private fun loadInitialGame() {
@@ -551,6 +587,7 @@ class GamesEditorViewModel @Inject constructor(
 		viewModelScope.launch {
 			userDataRepository.setLatestGameInEditor(gameId)
 			userDataRepository.setLatestSeriesInEditor(series.value)
+			// userDataRepository.setLatestTeamSeriesInEditor(teamSeriesId)
 		}
 	}
 
@@ -569,7 +606,9 @@ class GamesEditorViewModel @Inject constructor(
 
 	private fun openGameSettings() {
 		isGameDetailsSheetVisible.value = false
-		sendEvent(GamesEditorScreenEvent.ShowGamesSettings(series.value, currentGameId.value))
+		sendEvent(
+			GamesEditorScreenEvent.ShowGamesSettings(teamSeriesId, series.value, currentGameId.value),
+		)
 	}
 
 	private fun openGearPicker() {

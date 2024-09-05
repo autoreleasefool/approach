@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScorePosition
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetConfiguration
+import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetListItem
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiAction
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scores.ScoresListUiAction
@@ -32,7 +33,9 @@ class ScoresListViewModel @Inject constructor(
 ) : ApproachViewModel<ScoresListScreenEvent>() {
 	private val series = Route.ScoresList.getSeries(savedStateHandle)
 	private val gameIndex = Route.ScoresList.getGameIndex(savedStateHandle) ?: 0
-	private val gameIdOrder: MutableStateFlow<Map<GameID, Int>> = MutableStateFlow(emptyMap())
+	private val gameIdOrder: MutableStateFlow<Map<GameID, GameOrder>> = MutableStateFlow(emptyMap())
+
+	data class GameOrder(val seriesIndex: Int, val gameIndex: Int)
 
 	private val _uiState = MutableStateFlow(ScoresListUiState(gameIndex = gameIndex))
 	val uiState: StateFlow<ScoresListScreenUiState> = _uiState
@@ -47,38 +50,54 @@ class ScoresListViewModel @Inject constructor(
 		series.forEachIndexed { seriesIndex, seriesId ->
 			viewModelScope.launch {
 				val games = gamesRepository.getGamesList(seriesId).first()
-				val currentGameId = games[gameIndex].id
-				val currentGame = gamesRepository.getGameDetails(currentGameId).first()
+				val gameDetails = games.map {
+					gamesRepository.getGameDetails(it.id).first()
+				}
+				val scores = games.map {
+					scoresRepository.getScore(it.id).first()
+				}
 
 				gameIdOrder.update {
 					it.toMutableMap().apply {
-						put(currentGameId, seriesIndex)
+						games.forEach { game ->
+							put(game.id, GameOrder(seriesIndex, game.index))
+						}
 					}
 				}
 
-				val score = scoresRepository.getScore(currentGameId).first()
-				val scoreSheetState = ScoreSheetUiState(
-					game = score,
-					selection = ScoreSheetUiState.Selection(frameIndex = -1, rollIndex = -1),
-					configuration = ScoreSheetConfiguration(
-						scorePosition = setOf(ScorePosition.START, ScorePosition.END),
-					),
-				)
+				val scoreSheetStates = scores.map {
+					ScoreSheetUiState(
+						game = it,
+						selection = ScoreSheetUiState.Selection.none(),
+						configuration = ScoreSheetConfiguration(
+							scorePosition = setOf(ScorePosition.START, ScorePosition.END),
+						),
+					)
+				}
 
 				_uiState.update {
 					it.copy(
 						scoreSheetList = it.scoreSheetList.copy(
-							it.scoreSheetList.bowlerScores.toMutableList().apply {
-								add(
-									Triple(
-										currentGame.bowler.toSummary(),
-										currentGame.league.toSummary(),
-										scoreSheetState,
-									),
-								)
-
-								sortBy { bowlerScore -> gameIdOrder.value[bowlerScore.third.game?.id] }
-							},
+							it.scoreSheetList.bowlerScores
+								.flatten()
+								.toMutableList()
+								.apply {
+									gameDetails.forEach { game ->
+										add(
+											ScoreSheetListItem(
+												game.bowler.toSummary(),
+												game.league.toSummary(),
+												scoreSheetStates[game.properties.index],
+											),
+										)
+									}
+								}
+								.groupBy { scoreSheet -> gameIdOrder.value[scoreSheet.scoreSheet.game?.id]?.gameIndex }
+								.toList()
+								.map { series ->
+									series.second
+										.sortedBy { scoreSheet -> gameIdOrder.value[scoreSheet.scoreSheet.game?.id]?.seriesIndex }
+								},
 						),
 					)
 				}

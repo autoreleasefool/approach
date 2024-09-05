@@ -87,13 +87,21 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 
 	// Game
 	data object GameSettings : Route(
-		"games_settings/{series}/{current_game}",
+		"games_settings/{teamSeries}/{series}/{current_game}",
 		isBottomBarVisible = false,
 	) {
+		const val ARG_TEAM_SERIES = "teamSeries"
 		const val ARG_SERIES = "series"
 		const val ARG_CURRENT_GAME = "current_game"
-		fun createRoute(series: List<SeriesID>, currentGame: GameID): String =
-			"games_settings/${Uri.encode(series.encode())}/${Uri.encode(currentGame.toString())}"
+		fun createRoute(
+			teamSeriesId: TeamSeriesID?,
+			series: List<SeriesID>,
+			currentGame: GameID,
+		): String = "games_settings/${Uri.encode(
+			teamSeriesId?.toString(),
+		)}/${Uri.encode(series.encode())}/${Uri.encode(currentGame.toString())}"
+		fun getTeamSeries(savedStateHandle: SavedStateHandle): TeamSeriesID? =
+			savedStateHandle.get<String>("teamSeries")?.let { TeamSeriesID.fromString(it) }
 		fun getSeries(savedStateHandle: SavedStateHandle): List<SeriesID> =
 			savedStateHandle.get<String>("series")?.decodeList()?.map {
 				SeriesID.fromString(it)
@@ -258,7 +266,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		fun getTeam(savedStateHandle: SavedStateHandle): TeamID? =
 			savedStateHandle.get<String>("team")?.let { TeamID.fromString(it) }
 		fun getLeagues(savedStateHandle: SavedStateHandle): List<LeagueID> =
-			savedStateHandle.get<String>("leagues")?.decodeList()?.mapNotNull {
+			savedStateHandle.get<String>("leagues")?.decodeList()?.map {
 				LeagueID.fromString(it)
 			} ?: emptyList()
 	}

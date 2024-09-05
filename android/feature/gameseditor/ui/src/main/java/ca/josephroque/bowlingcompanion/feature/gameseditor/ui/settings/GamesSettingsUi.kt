@@ -4,8 +4,10 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
+import ca.josephroque.bowlingcompanion.core.model.TeamSummary
 
 data class GamesSettingsUiState(
+	val team: TeamSummary?,
 	val currentBowlerId: BowlerID,
 	val bowlers: List<BowlerSummary> = emptyList(),
 	val currentGameId: GameID,
