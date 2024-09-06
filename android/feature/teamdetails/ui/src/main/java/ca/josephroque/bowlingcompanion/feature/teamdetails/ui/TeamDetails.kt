@@ -23,6 +23,8 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.state.Defaul
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.TeamMemberListItem
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSummary
 import ca.josephroque.bowlingcompanion.core.model.charts.ui.SeriesChartData
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
@@ -78,21 +80,28 @@ fun TeamDetails(
 			TeamSeriesRow(
 				date = series.date,
 				total = series.total,
-				teamChart = SeriesChartData(
-					numberOfGames = series.numberOfGames,
-					scoreRange = series.scoreRange,
-					model = series.chart,
-				),
-				memberCharts = series.members.map {
-					TeamMemberSeriesChartData(
-						name = it.name,
-						chart = SeriesChartData(
-							numberOfGames = series.numberOfGames,
-							scoreRange = it.scoreRange,
-							model = it.chart,
-						),
+				teamChart = when (series) {
+					is TeamSeriesListItem.Summary -> null
+					is TeamSeriesListItem.Chart -> SeriesChartData(
+						numberOfGames = series.item.numberOfGames,
+						scoreRange = series.item.scoreRange,
+						model = series.item.chart,
 					)
 				},
+				memberCharts = when (series) {
+					is TeamSeriesListItem.Summary -> null
+					is TeamSeriesListItem.Chart ->
+						series.item.members.map {
+							TeamMemberSeriesChartData(
+								name = it.name,
+								chart = SeriesChartData(
+									numberOfGames = series.item.numberOfGames,
+									scoreRange = it.scoreRange,
+									model = it.chart,
+								),
+							)
+						}
+				}
 			)
 
 			if (index < state.series.size - 1) {
@@ -135,87 +144,98 @@ private fun TeamDetailsPreview() {
 			state = TeamDetailsUiState(
 				members = teamMembers,
 				series = listOf(
-					TeamSeriesListChartItem(
-						id = UUID.randomUUID(),
-						date = LocalDate.parse("2023-01-01"),
-						total = 1760,
-						numberOfGames = 4,
-						scoreRange = 430..460,
-						chart = ChartEntryModelProducer(
-							listOf(
-								entryOf(0, 440),
-								entryOf(1, 460),
-								entryOf(2, 430),
-								entryOf(3, 450),
-							),
-						),
-						members = listOf(
-							TeamMemberSeriesListChartItem(
-								id = UUID.randomUUID(),
-								name = "John",
-								scoreRange = 430..460,
-								chart = ChartEntryModelProducer(
-									listOf(
-										entryOf(0, 440),
-										entryOf(1, 460),
-										entryOf(2, 430),
-										entryOf(3, 450),
-									),
+					TeamSeriesListItem.Summary(
+						TeamSeriesSummary(
+							id = TeamSeriesID.randomID(),
+							date = LocalDate.parse("2023-01-01"),
+							total = 1760,
+						)
+					),
+					TeamSeriesListItem.Chart(
+						TeamSeriesListChartItem(
+							id = TeamSeriesID.randomID(),
+							date = LocalDate.parse("2023-01-01"),
+							total = 1760,
+							numberOfGames = 4,
+							scoreRange = 430..460,
+							chart = ChartEntryModelProducer(
+								listOf(
+									entryOf(0, 440),
+									entryOf(1, 460),
+									entryOf(2, 430),
+									entryOf(3, 450),
 								),
 							),
-							TeamMemberSeriesListChartItem(
-								id = UUID.randomUUID(),
-								name = "Jane Doe",
-								scoreRange = 430..460,
-								chart = ChartEntryModelProducer(
-									listOf(
-										entryOf(0, 440),
-										entryOf(1, 460),
-										entryOf(2, 430),
-										entryOf(3, 450),
+							members = listOf(
+								TeamMemberSeriesListChartItem(
+									id = BowlerID.randomID(),
+									name = "John",
+									scoreRange = 430..460,
+									chart = ChartEntryModelProducer(
+										listOf(
+											entryOf(0, 440),
+											entryOf(1, 460),
+											entryOf(2, 430),
+											entryOf(3, 450),
+										),
+									),
+								),
+								TeamMemberSeriesListChartItem(
+									id = BowlerID.randomID(),
+									name = "Jane Doe",
+									scoreRange = 430..460,
+									chart = ChartEntryModelProducer(
+										listOf(
+											entryOf(0, 440),
+											entryOf(1, 460),
+											entryOf(2, 430),
+											entryOf(3, 450),
+										),
 									),
 								),
 							),
 						),
 					),
-					TeamSeriesListChartItem(
-						id = UUID.randomUUID(),
-						date = LocalDate.parse("2023-01-01"),
-						total = 1760,
-						numberOfGames = 4,
-						scoreRange = 430..460,
-						chart = ChartEntryModelProducer(
-							listOf(
-								entryOf(0, 440),
-								entryOf(1, 460),
-								entryOf(2, 430),
-								entryOf(3, 450),
-							),
-						),
-						members = listOf(
-							TeamMemberSeriesListChartItem(
-								id = UUID.randomUUID(),
-								name = "John Doe 1234",
-								scoreRange = 100..460,
-								chart = ChartEntryModelProducer(
-									listOf(
-										entryOf(0, 440),
-										entryOf(1, 460),
-										entryOf(2, 430),
-										entryOf(3, 100),
-									),
+					TeamSeriesListItem.Chart(
+						TeamSeriesListChartItem(
+							id = TeamSeriesID.randomID(),
+							date = LocalDate.parse("2023-01-01"),
+							total = 1760,
+							numberOfGames = 4,
+							scoreRange = 430..460,
+							chart = ChartEntryModelProducer(
+								listOf(
+									entryOf(0, 440),
+									entryOf(1, 460),
+									entryOf(2, 430),
+									entryOf(3, 450),
 								),
 							),
-							TeamMemberSeriesListChartItem(
-								id = UUID.randomUUID(),
-								name = "Jane Doe",
-								scoreRange = 430..460,
-								chart = ChartEntryModelProducer(
-									listOf(
-										entryOf(0, 440),
-										entryOf(1, 460),
-										entryOf(2, 430),
-										entryOf(3, 450),
+							members = listOf(
+								TeamMemberSeriesListChartItem(
+									id = BowlerID.randomID(),
+									name = "John Doe 1234",
+									scoreRange = 100..460,
+									chart = ChartEntryModelProducer(
+										listOf(
+											entryOf(0, 440),
+											entryOf(1, 460),
+											entryOf(2, 430),
+											entryOf(3, 100),
+										),
+									),
+								),
+								TeamMemberSeriesListChartItem(
+									id = BowlerID.randomID(),
+									name = "Jane Doe",
+									scoreRange = 430..460,
+									chart = ChartEntryModelProducer(
+										listOf(
+											entryOf(0, 440),
+											entryOf(1, 460),
+											entryOf(2, 430),
+											entryOf(3, 450),
+										),
 									),
 								),
 							),

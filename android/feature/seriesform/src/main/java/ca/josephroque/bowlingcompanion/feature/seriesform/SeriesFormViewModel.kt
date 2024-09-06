@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.TeamSeriesRepository
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
@@ -47,6 +48,7 @@ class SeriesFormViewModel @Inject constructor(
 	private val seriesRepository: SeriesRepository,
 	private val leaguesRepository: LeaguesRepository,
 	private val gamesRepository: GamesRepository,
+	private val teamSeriesRepository: TeamSeriesRepository,
 	private val analyticsClient: AnalyticsClient,
 	private val featureFlags: FeatureFlagsClient,
 ) : ApproachViewModel<SeriesFormScreenEvent>() {
@@ -399,7 +401,7 @@ class SeriesFormViewModel @Inject constructor(
 						manualScores = null,
 					)
 
-					seriesRepository.insertTeamSeries(teamSeries)
+					teamSeriesRepository.insertTeamSeries(teamSeries)
 					val initialGameId = gamesRepository.getTeamSeriesGameIds(teamSeries.id).first().first()
 					sendEvent(
 						SeriesFormScreenEvent.StartTeamSeries(

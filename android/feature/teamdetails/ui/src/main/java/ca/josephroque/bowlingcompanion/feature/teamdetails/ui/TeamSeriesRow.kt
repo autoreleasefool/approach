@@ -42,8 +42,8 @@ data class TeamMemberSeriesChartData(val name: String, val chart: SeriesChartDat
 fun TeamSeriesRow(
 	date: LocalDate,
 	total: Int,
-	teamChart: SeriesChartData,
-	memberCharts: List<TeamMemberSeriesChartData>,
+	teamChart: SeriesChartData?,
+	memberCharts: List<TeamMemberSeriesChartData>?,
 	modifier: Modifier = Modifier,
 ) {
 	Box(
@@ -59,73 +59,77 @@ fun TeamSeriesRow(
 				modifier = Modifier.padding(16.dp),
 			)
 
-			SeriesScoreChart(
-				numberOfGames = teamChart.numberOfGames,
-				scoreRange = teamChart.scoreRange,
-				model = teamChart.model,
-				modifier = Modifier.height(48.dp),
-			)
+			teamChart?.let {
+				SeriesScoreChart(
+					numberOfGames = it.numberOfGames,
+					scoreRange = it.scoreRange,
+					model = it.model,
+					modifier = Modifier.height(48.dp),
+				)
+			}
 
-			Row(
-				horizontalArrangement = Arrangement.spacedBy(8.dp),
-				modifier = Modifier
-					.horizontalScroll(rememberScrollState())
-					.padding(vertical = 8.dp, horizontal = 16.dp),
-			) {
-				memberCharts.forEach { memberChart ->
-					MeasureUnconstrainedViewWidth(
-						viewToMeasure = {
-							Text(text = memberChart.name)
-						},
-					) { measuredWidth ->
-						Box(
-							modifier = Modifier
-								.border(
-									width = 1.dp,
-									color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
-									shape = RoundedCornerShape(16.dp),
-								)
-								.clip(RoundedCornerShape(16.dp))
-								.padding(start = 8.dp)
-								.padding(vertical = 4.dp)
-								.widthIn(min = measuredWidth + 48.dp),
-						) {
-							SeriesScoreChart(
-								chartStyle = rememberChartStyle(
-									lineChartColors = listOf(
-										Pair(
-											colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.yellow_700),
-											colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.yellow_700),
-										),
-									),
-								),
-								numberOfGames = memberChart.chart.numberOfGames,
-								scoreRange = memberChart.chart.scoreRange,
-								model = memberChart.chart.model,
-								modifier = Modifier
-									.width(44.dp)
-									.height(24.dp)
-									.offset(x = measuredWidth + 4.dp),
-							)
-
+			memberCharts?.let {
+				Row(
+					horizontalArrangement = Arrangement.spacedBy(8.dp),
+					modifier = Modifier
+						.horizontalScroll(rememberScrollState())
+						.padding(vertical = 8.dp, horizontal = 16.dp),
+				) {
+					memberCharts.forEach { memberChart ->
+						MeasureUnconstrainedViewWidth(
+							viewToMeasure = {
+								Text(text = memberChart.name)
+							},
+						) { measuredWidth ->
 							Box(
 								modifier = Modifier
-									.offset(x = measuredWidth + 4.dp)
-									.background(
-										Brush.horizontalGradient(
-											0f to MaterialTheme.colorScheme.surface,
-											1f to Color.Transparent,
-										),
+									.border(
+										width = 1.dp,
+										color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+										shape = RoundedCornerShape(16.dp),
 									)
-									.width(8.dp)
-									.height(24.dp),
-							)
+									.clip(RoundedCornerShape(16.dp))
+									.padding(start = 8.dp)
+									.padding(vertical = 4.dp)
+									.widthIn(min = measuredWidth + 48.dp),
+							) {
+								SeriesScoreChart(
+									chartStyle = rememberChartStyle(
+										lineChartColors = listOf(
+											Pair(
+												colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.yellow_700),
+												colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.yellow_700),
+											),
+										),
+									),
+									numberOfGames = memberChart.chart.numberOfGames,
+									scoreRange = memberChart.chart.scoreRange,
+									model = memberChart.chart.model,
+									modifier = Modifier
+										.width(44.dp)
+										.height(24.dp)
+										.offset(x = measuredWidth + 4.dp),
+								)
 
-							Text(
-								text = memberChart.name,
-								modifier = Modifier
-									.align(Alignment.CenterStart),
-							)
+								Box(
+									modifier = Modifier
+										.offset(x = measuredWidth + 4.dp)
+										.background(
+											Brush.horizontalGradient(
+												0f to MaterialTheme.colorScheme.surface,
+												1f to Color.Transparent,
+											),
+										)
+										.width(8.dp)
+										.height(24.dp),
+								)
+
+								Text(
+									text = memberChart.name,
+									modifier = Modifier
+										.align(Alignment.CenterStart),
+								)
+							}
 						}
 					}
 				}
