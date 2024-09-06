@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.TeamSeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
@@ -48,6 +49,7 @@ import kotlinx.datetime.Clock
 
 @HiltViewModel
 class QuickPlayViewModel @Inject constructor(
+	private val teamSeriesRepository: TeamSeriesRepository,
 	private val bowlersRepository: BowlersRepository,
 	private val leaguesRepository: LeaguesRepository,
 	private val seriesRepository: SeriesRepository,
@@ -268,7 +270,7 @@ class QuickPlayViewModel @Inject constructor(
 				leaguesRepository.insertAllLeagues(events)
 				val eventSeries = seriesRepository.getEventSeriesIdsList(events.map { it.id }).first()
 				val teamSeriesId = TeamSeriesID.randomID()
-				seriesRepository.insertTeamSeries(
+				teamSeriesRepository.insertTeamSeries(
 					TeamSeriesConnect(
 						id = teamSeriesId,
 						teamId = teamId,

@@ -45,10 +45,9 @@ class LeagueDetailsViewModel @Inject constructor(
 	private val leagueId = Route.LeagueDetails.getLeague(savedStateHandle)!!
 
 	private val seriesItemSize = userDataRepository.userData.map { it.seriesItemSize }
-	private val seriesToArchive: MutableStateFlow<SeriesListChartItem?> = MutableStateFlow(null)
-	private val isSeriesSortOrderShowing: MutableStateFlow<Boolean> = MutableStateFlow(false)
-	private val seriesSortOrder: MutableStateFlow<SeriesSortOrder> =
-		MutableStateFlow(SeriesSortOrder.NEWEST_TO_OLDEST)
+	private val seriesToArchive = MutableStateFlow<SeriesListChartItem?>(null)
+	private val isSeriesSortOrderShowing = MutableStateFlow(false)
+	private val seriesSortOrder = MutableStateFlow(SeriesSortOrder.NEWEST_TO_OLDEST)
 
 	private val seriesChartModelProducers: MutableMap<SeriesID, ChartEntryModelProducer> =
 		mutableMapOf()

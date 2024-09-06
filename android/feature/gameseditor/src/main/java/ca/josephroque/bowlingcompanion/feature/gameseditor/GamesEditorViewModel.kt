@@ -20,6 +20,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.MatchPlaysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.ScoresRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.TeamSeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
@@ -96,6 +97,7 @@ class GamesEditorViewModel @Inject constructor(
 	private val alleysRepository: AlleysRepository,
 	private val lanesRepository: LanesRepository,
 	private val seriesRepository: SeriesRepository,
+	private val teamSeriesRepository: TeamSeriesRepository,
 	private val analyticsClient: AnalyticsClient,
 	private val userDataRepository: UserDataRepository,
 	private val featureFlagsClient: FeatureFlagsClient,
@@ -282,7 +284,7 @@ class GamesEditorViewModel @Inject constructor(
 		this.series.update { series }
 		if (teamSeriesId != null) {
 			viewModelScope.launch {
-				seriesRepository.updateTeamSeries(
+				teamSeriesRepository.updateTeamSeries(
 					TeamSeriesUpdate(
 						id = teamSeriesId,
 						seriesIds = series,
