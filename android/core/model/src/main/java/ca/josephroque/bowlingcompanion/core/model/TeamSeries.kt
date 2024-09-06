@@ -15,18 +15,7 @@ value class TeamSeriesID(val value: UUID) : Parcelable {
 	}
 }
 
-data class TeamSeriesSummary(val id: TeamSeriesID, val date: LocalDate)
-
-data class TeamSeriesDetails(val summary: TeamSeriesSummary, val scores: List<Int>)
-
-data class TeamMemberSeriesSummary(val id: TeamSeriesID, val teamMemberName: String)
-
-data class TeamMemberSeriesDetails(val summary: TeamMemberSeriesSummary, val scores: List<Int>)
-
-data class TeamSeriesListItem(
-	val teamSeries: TeamSeriesDetails,
-	val memberSeries: List<TeamMemberSeriesDetails>,
-)
+data class TeamSeriesSummary(val id: TeamSeriesID, val date: LocalDate, val total: Int)
 
 data class TeamSeriesConnect(
 	val id: TeamSeriesID,
