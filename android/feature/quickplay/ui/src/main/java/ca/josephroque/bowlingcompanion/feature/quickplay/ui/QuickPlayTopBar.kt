@@ -10,6 +10,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 import ca.josephroque.bowlingcompanion.core.designsystem.components.CloseButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -24,10 +25,20 @@ fun QuickPlayTopBar(
 		title = {
 			Text(
 				text = stringResource(state.title),
-				style = MaterialTheme.typography.titleMedium,
+				style = when (state.formStyle) {
+					QuickPlayTopBarUiState.FormStyle.Sheet -> MaterialTheme.typography.titleMedium
+					QuickPlayTopBarUiState.FormStyle.Normal -> MaterialTheme.typography.titleLarge
+				},
 			)
 		},
-		navigationIcon = { CloseButton(onClick = { onAction(QuickPlayTopBarUiAction.BackClicked) }) },
+		navigationIcon = {
+			when (state.formStyle) {
+				QuickPlayTopBarUiState.FormStyle.Sheet ->
+					CloseButton(onClick = { onAction(QuickPlayTopBarUiAction.BackClicked) })
+				QuickPlayTopBarUiState.FormStyle.Normal ->
+					BackButton(onClick = { onAction(QuickPlayTopBarUiAction.BackClicked) })
+			}
+		},
 		actions = {
 			if (state.isAddBowlerEnabled) {
 				IconButton(onClick = { onAction(QuickPlayTopBarUiAction.AddBowlerClicked) }) {

@@ -78,6 +78,11 @@ class QuickPlayViewModel @Inject constructor(
 			ca.josephroque.bowlingcompanion.feature.quickplay.ui.R.string.quick_play
 		},
 		isAddBowlerEnabled = !isTeamQuickPlay,
+		formStyle = if (isTeamQuickPlay) {
+			QuickPlayTopBarUiState.FormStyle.Normal
+		} else {
+			QuickPlayTopBarUiState.FormStyle.Sheet
+		},
 	)
 
 	val uiState: StateFlow<QuickPlayScreenUiState> =

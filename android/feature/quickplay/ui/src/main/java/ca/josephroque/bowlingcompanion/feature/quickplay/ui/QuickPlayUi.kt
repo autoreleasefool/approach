@@ -8,8 +8,14 @@ import ca.josephroque.bowlingcompanion.core.model.Series
 
 data class QuickPlayTopBarUiState(
 	@StringRes val title: Int = R.string.quick_play,
+	val formStyle: FormStyle = FormStyle.Normal,
 	val isAddBowlerEnabled: Boolean = false,
-)
+) {
+	enum class FormStyle {
+		Sheet,
+		Normal,
+	}
+}
 
 sealed interface QuickPlayTopBarUiAction {
 	data object BackClicked : QuickPlayTopBarUiAction
