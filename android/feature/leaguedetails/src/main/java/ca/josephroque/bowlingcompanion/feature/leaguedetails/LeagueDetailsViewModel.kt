@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -46,11 +47,12 @@ class LeagueDetailsViewModel @Inject constructor(
 
 	private val seriesItemSize = userDataRepository.userData.map { it.seriesItemSize }
 	private val seriesToArchive = MutableStateFlow<SeriesListChartItem?>(null)
-	private val isSeriesSortOrderShowing = MutableStateFlow(false)
+	private val isSeriesSortOrderExpanded = MutableStateFlow(false)
 	private val seriesSortOrder = MutableStateFlow(SeriesSortOrder.NEWEST_TO_OLDEST)
 
-	private val seriesChartModelProducers: MutableMap<SeriesID, ChartEntryModelProducer> =
-		mutableMapOf()
+	private val seriesChartModelProducers = MutableStateFlow<Map<SeriesID, ChartEntryModelProducer>>(
+		emptyMap(),
+	)
 
 	private val seriesList = seriesSortOrder.flatMapLatest { sortOrder ->
 		seriesRepository.getSeriesList(leagueId, sortOrder, null)
@@ -61,14 +63,14 @@ class LeagueDetailsViewModel @Inject constructor(
 	private val topBarUiState = combine(
 		leagueDetails,
 		seriesList,
-		isSeriesSortOrderShowing,
+		isSeriesSortOrderExpanded,
 		seriesSortOrder,
 		seriesItemSize,
-	) { league, series, isSeriesSortOrderShowing, seriesSortOrder, seriesItemSize ->
+	) { league, series, isSeriesSortOrderExpanded, seriesSortOrder, seriesItemSize ->
 		LeagueDetailsTopBarUiState(
 			leagueName = league.name,
 			isSortOrderMenuVisible = series.isNotEmpty(),
-			isSortOrderMenuExpanded = isSeriesSortOrderShowing,
+			isSortOrderMenuExpanded = isSeriesSortOrderExpanded,
 			sortOrder = seriesSortOrder,
 			isSeriesItemSizeVisible = series.isNotEmpty(),
 			seriesItemSize = seriesItemSize,
@@ -125,11 +127,11 @@ class LeagueDetailsViewModel @Inject constructor(
 			LeagueDetailsUiAction.BackClicked -> sendEvent(LeagueDetailsScreenEvent.Dismissed)
 			LeagueDetailsUiAction.AddSeriesClicked -> sendEvent(LeagueDetailsScreenEvent.AddSeries(leagueId))
 			is LeagueDetailsUiAction.SeriesList -> handleSeriesListAction(action.action)
-			LeagueDetailsUiAction.SortClicked -> isSeriesSortOrderShowing.value = true
-			LeagueDetailsUiAction.SortDismissed -> isSeriesSortOrderShowing.value = false
+			LeagueDetailsUiAction.SortClicked -> isSeriesSortOrderExpanded.value = true
+			LeagueDetailsUiAction.SortDismissed -> isSeriesSortOrderExpanded.value = false
 			is LeagueDetailsUiAction.SortOrderClicked -> {
 				seriesSortOrder.value = action.sortOrder
-				isSeriesSortOrderShowing.value = false
+				isSeriesSortOrderExpanded.value = false
 			}
 			is LeagueDetailsUiAction.SeriesItemSizeToggled -> viewModelScope.launch {
 				userDataRepository.setSeriesItemSize(action.itemSize)
@@ -189,16 +191,20 @@ class LeagueDetailsViewModel @Inject constructor(
 	}
 
 	private fun buildSeriesListChartItem(item: SeriesListItem): SeriesListChartItem {
-		val chartModelProducer = seriesChartModelProducers.getOrPut(item.properties.id) {
-			ChartEntryModelProducer(
-				item.scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) },
-			)
+		val seriesCharts = seriesChartModelProducers.updateAndGet {
+			it.toMutableMap().apply {
+				getOrPut(item.properties.id) {
+					ChartEntryModelProducer(
+						item.scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) },
+					)
+				}
+			}
 		}
 
 		return if (item.scores.all { it == 0 } || item.scores.size == 1) {
 			item.withoutChart()
 		} else {
-			item.withChart(chartModelProducer)
+			item.withChart(seriesCharts[item.properties.id]!!)
 		}
 	}
 }

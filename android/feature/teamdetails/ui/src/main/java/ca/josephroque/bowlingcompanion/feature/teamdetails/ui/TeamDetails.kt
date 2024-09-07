@@ -14,6 +14,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,6 +23,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSec
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.TeamMemberListItem
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSummary
@@ -29,7 +31,6 @@ import ca.josephroque.bowlingcompanion.core.model.charts.ui.SeriesChartData
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
-import java.util.UUID
 import kotlinx.datetime.LocalDate
 
 @Composable
@@ -77,9 +78,14 @@ fun TeamDetails(
 			items = state.series,
 			key = { _, series -> series.id },
 		) { index, series ->
+			LaunchedEffect(Unit) {
+				onAction(TeamDetailsUiAction.SeriesAppeared(series.id))
+			}
+			
 			TeamSeriesRow(
 				date = series.date,
 				total = series.total,
+				itemSize = state.seriesItemSize,
 				teamChart = when (series) {
 					is TeamSeriesListItem.Summary -> null
 					is TeamSeriesListItem.Chart -> SeriesChartData(
@@ -101,7 +107,7 @@ fun TeamDetails(
 								),
 							)
 						}
-				}
+				},
 			)
 
 			if (index < state.series.size - 1) {
@@ -142,6 +148,7 @@ private fun TeamDetailsPreview() {
 	Surface {
 		TeamDetails(
 			state = TeamDetailsUiState(
+				seriesItemSize = SeriesItemSize.DEFAULT,
 				members = teamMembers,
 				series = listOf(
 					TeamSeriesListItem.Summary(
@@ -149,7 +156,7 @@ private fun TeamDetailsPreview() {
 							id = TeamSeriesID.randomID(),
 							date = LocalDate.parse("2023-01-01"),
 							total = 1760,
-						)
+						),
 					),
 					TeamSeriesListItem.Chart(
 						TeamSeriesListChartItem(

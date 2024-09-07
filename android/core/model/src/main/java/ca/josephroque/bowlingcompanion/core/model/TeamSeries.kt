@@ -15,7 +15,24 @@ value class TeamSeriesID(val value: UUID) : Parcelable {
 	}
 }
 
+enum class TeamSeriesSortOrder {
+	NEWEST_TO_OLDEST,
+	OLDEST_TO_NEWEST,
+	HIGHEST_TO_LOWEST,
+	LOWEST_TO_HIGHEST,
+}
+
 data class TeamSeriesSummary(val id: TeamSeriesID, val date: LocalDate, val total: Int)
+
+data class TeamSeriesDetails(
+	val id: TeamSeriesID,
+	val date: LocalDate,
+	val total: Int,
+	val scores: List<Int>,
+	val members: List<TeamSeriesMemberDetails>,
+)
+
+data class TeamSeriesMemberDetails(val id: BowlerID, val name: String, val scores: List<Int>)
 
 data class TeamSeriesConnect(
 	val id: TeamSeriesID,

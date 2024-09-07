@@ -52,7 +52,9 @@ fun ScoreSheetList(
 	) {
 		val cellWidth = maxWidth / 3f
 		
-		val defaultConfiguration = state.bowlerScores.firstOrNull()?.firstOrNull()?.scoreSheet?.configuration ?: return@BoxWithConstraints
+		val defaultConfiguration = state.bowlerScores
+			.firstOrNull()?.firstOrNull()?.scoreSheet?.configuration
+			?: return@BoxWithConstraints
 
 		Column(
 			modifier = Modifier.verticalScroll(rememberScrollState()),
