@@ -3,10 +3,12 @@ package ca.josephroque.bowlingcompanion.navigation.graph
 import androidx.compose.runtime.MutableState
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.navOptions
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.navigation.popBackStackWithResult
 import ca.josephroque.bowlingcompanion.feature.avatarform.navigation.avatarFormScreen
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.bowlerDetailsScreen
@@ -280,7 +282,15 @@ fun NavGraphBuilder.overviewGraph(
 	teamPlay(
 		onDismiss = navController::popBackStack,
 		onTeamLeaguesSelected = navController::navigateToNewTeamSeriesForm,
-		onTeamEventsCreated = navController::navigateToGamesEditor,
+		onTeamEventsCreated = { teamSeriesId, initialGameId ->
+			navController.navigateToGamesEditor(
+				teamSeriesId,
+				initialGameId,
+				navOptions {
+					popUpTo(Route.TeamDetails.route)
+				},
+			)
+		},
 		onPickLeague = { bowler, league, result ->
 			navController.navigateToLeaguePickerForResult(
 				selectedIds = league?.let { setOf(it) } ?: emptySet(),
@@ -294,7 +304,15 @@ fun NavGraphBuilder.overviewGraph(
 	)
 	teamSeriesFormScreen(
 		onDismiss = navController::popBackStack,
-		onStartTeamSeries = navController::navigateToGamesEditor,
+		onStartTeamSeries = { teamSeriesId, initialGameId ->
+			navController.navigateToGamesEditor(
+				teamSeriesId,
+				initialGameId,
+				navOptions {
+					popUpTo(Route.TeamDetails.route)
+				},
+			)
+		},
 		onEditAlley = { alley, result ->
 			navController.navigateToAlleyPickerForResult(
 				selectedIds = alley?.let { setOf(it) } ?: emptySet(),
