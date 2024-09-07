@@ -41,12 +41,19 @@ fun NavGraphBuilder.gamesEditorScreen(
 	onEditRolledBall: (GearID?, NavResultCallback<Set<GearID>>) -> Unit,
 	onEditAlley: (AlleyID?, NavResultCallback<Set<AlleyID>>) -> Unit,
 	onEditLanes: (AlleyID, Set<LaneID>, NavResultCallback<Set<LaneID>>) -> Unit,
-	onShowGamesSettings:
-	(TeamSeriesID?, List<SeriesID>, GameID, NavResultCallback<Pair<List<SeriesID>, GameID>>) -> Unit,
+	onShowGamesSettings: (
+		TeamSeriesID?,
+		List<SeriesID>,
+		GameID,
+		NavResultCallback<Pair<List<SeriesID>, GameID>>,
+	) -> Unit,
 	onShowStatistics: (TrackableFilter) -> Unit,
 	onShowBowlerScores: (List<SeriesID>, gameIndex: Int) -> Unit,
-	onEditScore:
-	(score: Int, GameScoringMethod, NavResultCallback<Pair<GameScoringMethod, Int>>) -> Unit,
+	onEditScore: (
+		score: Int,
+		GameScoringMethod,
+		NavResultCallback<Pair<GameScoringMethod, Int>>,
+	) -> Unit,
 ) {
 	composable(
 		route = Route.EditGame.route,

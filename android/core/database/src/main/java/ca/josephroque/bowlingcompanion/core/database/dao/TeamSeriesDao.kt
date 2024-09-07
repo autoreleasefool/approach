@@ -4,11 +4,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import ca.josephroque.bowlingcompanion.core.database.model.TeamSeriesCreateEntity
+import ca.josephroque.bowlingcompanion.core.database.model.TeamSeriesDetailItemEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamSeriesEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamSeriesSeriesCrossRef
-import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSummary
 import kotlinx.coroutines.flow.Flow
 
@@ -38,8 +39,33 @@ abstract class TeamSeriesDao {
 	)
 	abstract fun getTeamSeriesList(
 		teamId: TeamID,
-		sortOrder: SeriesSortOrder,
+		sortOrder: TeamSeriesSortOrder,
 	): Flow<List<TeamSeriesSummary>>
+
+	@Query(
+		"""
+			SELECT
+				team_series.`date` AS `date`,
+				games.score AS score,
+				games.`index` AS game_index,
+				bowlers.id AS bowler_id,
+				bowlers.name AS bowler_name
+			FROM team_series
+			INNER JOIN team_series_series
+				ON team_series_series.team_series_id = team_series.id
+			INNER JOIN series
+				ON series.id = team_series_series.series_id AND series.archived_on IS NULL
+			INNER JOIN games
+				ON games.series_id = series.id AND games.archived_on IS NULL
+			INNER JOIN leagues
+				ON leagues.id = series.league_id
+			INNER JOIN bowlers
+				ON bowlers.id = leagues.bowler_id
+			WHERE team_series.id = :teamSeriesId
+			ORDER BY team_series_series.position ASC, games.`index` ASC
+		""",
+	)
+	abstract fun getTeamSeriesDetails(teamSeriesId: TeamSeriesID): List<TeamSeriesDetailItemEntity>
 
 	@Query(
 		"""

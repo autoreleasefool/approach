@@ -9,15 +9,19 @@ import ca.josephroque.bowlingcompanion.core.database.model.TeamSeriesSeriesCross
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
-import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesConnect
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesCreate
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesDetails
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesMemberDetails
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSummary
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesUpdate
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class OfflineFirstTeamSeriesRepository @Inject constructor(
@@ -28,8 +32,29 @@ class OfflineFirstTeamSeriesRepository @Inject constructor(
 ) : TeamSeriesRepository {
 	override fun getTeamSeriesList(
 		teamId: TeamID,
-		sortOrder: SeriesSortOrder,
+		sortOrder: TeamSeriesSortOrder,
 	): Flow<List<TeamSeriesSummary>> = teamSeriesDao.getTeamSeriesList(teamId, sortOrder)
+
+	override suspend fun getTeamSeriesDetails(teamSeriesId: TeamSeriesID): TeamSeriesDetails? =
+		withContext(ioDispatcher) {
+			val items = teamSeriesDao.getTeamSeriesDetails(teamSeriesId)
+
+			val date = items.firstOrNull()?.date ?: return@withContext null
+
+			val members = items.groupBy { it.bowlerId }.map { (bowlerId, scores) ->
+				val name = scores.first().bowlerName
+				val bowlerScores = scores.map { it.score }
+				TeamSeriesMemberDetails(bowlerId, name, bowlerScores)
+			}
+
+			TeamSeriesDetails(
+				id = teamSeriesId,
+				date = date,
+				total = members.sumOf { it.scores.sum() },
+				scores = items.groupBy { it.gameIndex }.map { (_, scores) -> scores.sumOf { it.score } },
+				members = members,
+			)
+		}
 
 	override suspend fun insertTeamSeries(teamSeries: TeamSeriesConnect) = withContext(ioDispatcher) {
 		transactionRunner {

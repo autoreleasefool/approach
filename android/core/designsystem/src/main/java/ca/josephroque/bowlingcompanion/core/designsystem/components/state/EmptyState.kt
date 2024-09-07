@@ -113,7 +113,7 @@ fun DefaultEmptyState(
 			}
 		} else {
 			null
-		}
+		},
 	)
 }
 
