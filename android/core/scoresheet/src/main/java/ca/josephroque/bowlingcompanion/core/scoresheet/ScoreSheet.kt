@@ -13,6 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -64,6 +68,87 @@ fun ScoreSheet(
 			cellWidth = cellWidth,
 			modifier = Modifier.horizontalScroll(scrollState),
 		)
+	}
+}
+
+@Composable
+fun LazyScoreSheet(
+	state: ScoreSheetUiState,
+	cellWidth: Dp,
+	onAction: (ScoreSheetUiAction) -> Unit,
+	modifier: Modifier = Modifier,
+	listState: LazyListState = rememberLazyListState(),
+	userScrollEnabled: Boolean = true,
+) {
+	LazyRow(
+		state = listState,
+		userScrollEnabled = userScrollEnabled,
+		modifier = modifier,
+	) {
+		if (state.configuration.scorePosition.contains(ScorePosition.START)) {
+			item {
+				ScoreCell(
+					score = state.game?.score ?: 0,
+					position = ScorePosition.START,
+					style = state.configuration.style,
+					modifier = Modifier.width(cellWidth),
+				)
+			}
+		}
+
+		if (state.game?.frames != null) {
+			items(
+				items = state.game.frames,
+				key = { it.index },
+			) { frame ->
+				val isFrameSelected = state.selection.frameIndex == frame.index
+
+				Column(
+					modifier = Modifier.width(cellWidth),
+				) {
+					if (state.configuration.framePosition.contains(FramePosition.TOP)) {
+						RailCell(
+							frameIndex = frame.index,
+							style = state.configuration.style,
+							isSelected = isFrameSelected,
+							includingBottomBorder = true,
+							modifier = Modifier.fillMaxWidth(),
+						)
+					}
+
+					RollCells(
+						modifier = Modifier.fillMaxWidth(),
+						frame = frame,
+						style = state.configuration.style,
+						isFrameSelected = isFrameSelected,
+						selectedRollIndex = state.selection.rollIndex,
+					) {
+						onAction(ScoreSheetUiAction.RollClicked(frame.index, it))
+					}
+
+					FrameCell(
+						frame = frame,
+						config = state.configuration,
+						isSelected = isFrameSelected,
+						previousFrame = state.game.frames.getOrNull(frame.index - 1),
+						modifier = Modifier.fillMaxWidth(),
+					) {
+						onAction(ScoreSheetUiAction.FrameClicked(frame.index))
+					}
+				}
+			}
+		}
+
+		if (state.configuration.scorePosition.contains(ScorePosition.END)) {
+			item {
+				ScoreCell(
+					score = state.game?.score ?: 0,
+					position = ScorePosition.END,
+					style = state.configuration.style,
+					modifier = Modifier.width(cellWidth),
+				)
+			}
+		}
 	}
 }
 

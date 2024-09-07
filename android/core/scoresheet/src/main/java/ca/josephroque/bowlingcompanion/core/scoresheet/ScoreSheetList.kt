@@ -6,7 +6,6 @@ import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -17,8 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -55,13 +55,14 @@ fun ScoreSheetList(
 		val defaultConfiguration = state.bowlerScores
 			.firstOrNull()?.firstOrNull()?.scoreSheet?.configuration
 			?: return@BoxWithConstraints
-
-		Column(
-			modifier = Modifier.verticalScroll(rememberScrollState()),
-		) {
-			state.bowlerScores.forEachIndexed { gameIndex, seriesScores ->
+		
+		LazyColumn {
+			itemsIndexed(
+				items = state.bowlerScores,
+				key = { index, _ -> index },
+			) { gameIndex, seriesScores ->
 				val scope = rememberCoroutineScope()
-				val scrollStates = seriesScores.map { rememberScrollState(0) }
+				val scrollStates = seriesScores.map { rememberLazyListState() }
 				val scrollState = rememberScrollableState { delta ->
 					scope.launch {
 						scrollStates.forEach {
@@ -131,11 +132,12 @@ fun ScoreSheetList(
 								Spacer(modifier = Modifier.weight(1f))
 							}
 
-							ScoreSheetRow(
+							LazyScoreSheet(
 								state = scoreSheet,
-								onAction = onAction,
+								listState = scrollStates[index],
 								cellWidth = cellWidth,
-								modifier = Modifier.horizontalScroll(scrollStates[index], enabled = false),
+								onAction = onAction,
+								userScrollEnabled = false,
 							)
 						}
 
