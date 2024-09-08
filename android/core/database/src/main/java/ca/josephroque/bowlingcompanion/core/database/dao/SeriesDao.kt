@@ -128,6 +128,30 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 	@Query("UPDATE series SET archived_on = :archivedOn WHERE id = :seriesId")
 	abstract fun archiveSeries(seriesId: SeriesID, archivedOn: Instant)
 
+	@Query(
+		"""
+			UPDATE series SET archived_on = :archivedOn WHERE id IN (
+				SELECT series.id
+				FROM series
+				JOIN team_series_series ON team_series_series.series_id = series.id
+				WHERE team_series_series.team_series_id = :teamSeriesId
+			)
+		""",
+	)
+	abstract fun archiveSeries(teamSeriesId: TeamSeriesID, archivedOn: Instant)
+
+	@Query(
+		"""
+			UPDATE series SET archived_on = NULL WHERE id IN (
+				SELECT series.id
+				FROM series
+				JOIN team_series_series ON team_series_series.series_id = series.id
+				WHERE team_series_series.team_series_id = :teamSeriesId
+			)
+		""",
+	)
+	abstract fun unarchiveSeries(teamSeriesId: TeamSeriesID)
+
 	@Query("UPDATE series SET archived_on = NULL WHERE id = :seriesId")
 	abstract fun unarchiveSeries(seriesId: SeriesID)
 

@@ -2,11 +2,13 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
+import ca.josephroque.bowlingcompanion.core.database.dao.SeriesDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TeamSeriesDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.model.TeamSeriesCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamSeriesSeriesCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
+import ca.josephroque.bowlingcompanion.core.model.ArchivedTeamSeries
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamID
@@ -21,10 +23,11 @@ import ca.josephroque.bowlingcompanion.core.model.TeamSeriesUpdate
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Clock
 
 class OfflineFirstTeamSeriesRepository @Inject constructor(
+	private val seriesDao: SeriesDao,
 	private val teamSeriesDao: TeamSeriesDao,
 	private val seriesRepository: SeriesRepository,
 	private val transactionRunner: TransactionRunner,
@@ -34,6 +37,9 @@ class OfflineFirstTeamSeriesRepository @Inject constructor(
 		teamId: TeamID,
 		sortOrder: TeamSeriesSortOrder,
 	): Flow<List<TeamSeriesSummary>> = teamSeriesDao.getTeamSeriesList(teamId, sortOrder)
+
+	override fun getArchivedTeamSeries(): Flow<List<ArchivedTeamSeries>> =
+		teamSeriesDao.getArchivedTeamSeries()
 
 	override suspend fun getTeamSeriesDetails(teamSeriesId: TeamSeriesID): TeamSeriesDetails? =
 		withContext(ioDispatcher) {
@@ -120,6 +126,23 @@ class OfflineFirstTeamSeriesRepository @Inject constructor(
 
 			teamSeriesDao.deleteSeries(teamSeries.id)
 			teamSeriesDao.insertAll(teamSeriesSeries)
+		}
+	}
+
+	override suspend fun archiveTeamSeries(teamSeriesId: TeamSeriesID, archiveMemberSeries: Boolean) =
+		withContext(ioDispatcher) {
+			transactionRunner {
+				if (archiveMemberSeries) {
+					seriesDao.archiveSeries(teamSeriesId, archivedOn = Clock.System.now())
+				}
+				teamSeriesDao.archiveSeries(teamSeriesId, archivedOn = Clock.System.now())
+			}
+		}
+
+	override suspend fun unarchiveTeamSeries(teamSeriesId: TeamSeriesID) = withContext(ioDispatcher) {
+		transactionRunner {
+			teamSeriesDao.unarchiveSeries(teamSeriesId)
+			seriesDao.unarchiveSeries(teamSeriesId)
 		}
 	}
 }

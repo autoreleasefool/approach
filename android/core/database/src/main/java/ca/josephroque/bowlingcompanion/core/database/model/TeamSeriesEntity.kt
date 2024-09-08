@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 
 @Entity(
@@ -26,6 +27,7 @@ data class TeamSeriesEntity(
 	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: TeamSeriesID,
 	@ColumnInfo(name = "team_id", index = true) val teamId: TeamID,
 	val date: LocalDate,
+	@ColumnInfo(name = "archived_on", defaultValue = "NULL") val archivedOn: Instant? = null,
 )
 
 data class TeamSeriesDetailItemEntity(

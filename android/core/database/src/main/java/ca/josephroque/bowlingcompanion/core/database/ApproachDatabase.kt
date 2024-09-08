@@ -53,11 +53,12 @@ const val DATABASE_SHM_NAME = "$DATABASE_NAME-shm"
 const val DATABASE_WAL_NAME = "$DATABASE_NAME-wal"
 
 @Database(
-	version = 4,
+	version = 5,
 	autoMigrations = [
 		AutoMigration(from = 1, to = 2),
 		AutoMigration(from = 2, to = 3),
 		AutoMigration(from = 3, to = 4),
+		AutoMigration(from = 4, to = 5),
 	],
 	entities = [
 		BowlerEntity::class,
