@@ -6,10 +6,12 @@ import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.TeamSeriesRepository
 import ca.josephroque.bowlingcompanion.core.model.ArchivedBowler
 import ca.josephroque.bowlingcompanion.core.model.ArchivedGame
 import ca.josephroque.bowlingcompanion.core.model.ArchivedLeague
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
+import ca.josephroque.bowlingcompanion.core.model.ArchivedTeamSeries
 import ca.josephroque.bowlingcompanion.feature.archives.ui.ArchiveListItem
 import ca.josephroque.bowlingcompanion.feature.archives.ui.ArchivesListUiAction
 import ca.josephroque.bowlingcompanion.feature.archives.ui.ArchivesListUiState
@@ -27,24 +29,32 @@ class ArchivesListViewModel @Inject constructor(
 	private val leaguesRepository: LeaguesRepository,
 	private val seriesRepository: SeriesRepository,
 	private val gamesRepository: GamesRepository,
+	private val teamSeriesRepository: TeamSeriesRepository,
 ) : ApproachViewModel<ArchivesListScreenEvent>() {
 	private val itemToUnarchive: MutableStateFlow<ArchiveListItem?> = MutableStateFlow(null)
 
-	val uiState = combine(
-		itemToUnarchive,
+	private val archivesList = combine(
 		bowlersRepository.getArchivedBowlers(),
 		leaguesRepository.getArchivedLeagues(),
 		seriesRepository.getArchivedSeries(),
 		gamesRepository.getArchivedGames(),
-	) { itemToUnarchive, bowlers, leagues, series, games ->
+		teamSeriesRepository.getArchivedTeamSeries(),
+	) { bowlers, leagues, series, games, teamSeries ->
+		bowlers.map(ArchivedBowler::toArchiveListItem) +
+			leagues.map(ArchivedLeague::toArchiveListItem) +
+			series.map(ArchivedSeries::toArchiveListItem) +
+			games.map(ArchivedGame::toArchiveListItem) +
+			teamSeries.map(ArchivedTeamSeries::toArchiveListItem)
+				.sortedBy { it.archivedOn }
+	}
+
+	val uiState = combine(
+		itemToUnarchive,
+		archivesList,
+	) { itemToUnarchive, archivesList ->
 		ArchivesListScreenUiState.Loaded(
 			archivesList = ArchivesListUiState(
-				list = (
-					bowlers.map(ArchivedBowler::toArchiveListItem) +
-						leagues.map(ArchivedLeague::toArchiveListItem) +
-						series.map(ArchivedSeries::toArchiveListItem) +
-						games.map(ArchivedGame::toArchiveListItem)
-					).sortedBy { it.archivedOn },
+				list = archivesList,
 				itemToUnarchive = itemToUnarchive,
 			),
 		)
@@ -72,6 +82,7 @@ class ArchivesListViewModel @Inject constructor(
 							is ArchiveListItem.League -> leaguesRepository.unarchiveLeague(item.leagueId)
 							is ArchiveListItem.Series -> seriesRepository.unarchiveSeries(item.seriesId)
 							is ArchiveListItem.Game -> gamesRepository.unarchiveGame(item.gameId)
+							is ArchiveListItem.TeamSeries -> teamSeriesRepository.unarchiveTeamSeries(item.teamSeriesId)
 						}
 
 						itemToUnarchive.value = null
@@ -116,5 +127,12 @@ fun ArchivedGame.toArchiveListItem(): ArchiveListItem.Game = ArchiveListItem.Gam
 	bowlerName = bowlerName,
 	leagueName = leagueName,
 	seriesDate = seriesDate,
+	archivedOn = archivedOn,
+)
+
+fun ArchivedTeamSeries.toArchiveListItem(): ArchiveListItem.TeamSeries = ArchiveListItem.TeamSeries(
+	teamSeriesId = id,
+	date = date,
+	teamName = teamName,
 	archivedOn = archivedOn,
 )

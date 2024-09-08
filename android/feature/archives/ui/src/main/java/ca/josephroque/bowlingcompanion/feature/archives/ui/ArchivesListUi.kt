@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import java.util.UUID
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -60,6 +61,16 @@ sealed interface ArchiveListItem {
 	) : ArchiveListItem {
 		override val id: UUID
 			get() = gameId.value
+	}
+
+	data class TeamSeries(
+		val teamSeriesId: TeamSeriesID,
+		val date: LocalDate,
+		val teamName: String,
+		override val archivedOn: Instant,
+	) : ArchiveListItem {
+		override val id: UUID
+			get() = teamSeriesId.value
 	}
 }
 
