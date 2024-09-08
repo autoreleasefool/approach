@@ -54,12 +54,15 @@ data class TeamDetailsUiState(
 	val series: List<TeamSeriesListItem>,
 	val seriesItemSize: SeriesItemSize,
 	val seriesToArchive: ArchiveSeriesUiState,
+	val seriesToEdit: EditSeriesUiState,
 )
 
 data class ArchiveSeriesUiState(
 	val seriesToArchive: TeamSeriesListItem?,
 	val isArchiveMemberSeriesVisible: Boolean,
 )
+
+data class EditSeriesUiState(val seriesToEdit: TeamSeriesListItem?, val date: LocalDate)
 
 sealed interface TeamDetailsUiAction {
 	data object AddSeriesClicked : TeamDetailsUiAction
@@ -71,6 +74,9 @@ sealed interface TeamDetailsUiAction {
 
 	data object ConfirmArchiveClicked : TeamDetailsUiAction
 	data object DismissArchiveClicked : TeamDetailsUiAction
+
+	data class SeriesDateChanged(val date: LocalDate) : TeamDetailsUiAction
+	data object DismissEditSeriesClicked : TeamDetailsUiAction
 
 	data object ArchiveMemberSeriesClicked : TeamDetailsUiAction
 	data object KeepMemberSeriesClicked : TeamDetailsUiAction

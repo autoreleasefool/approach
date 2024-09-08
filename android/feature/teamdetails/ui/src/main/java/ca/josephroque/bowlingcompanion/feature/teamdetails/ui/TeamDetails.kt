@@ -17,14 +17,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -47,7 +51,11 @@ import ca.josephroque.bowlingcompanion.core.model.charts.ui.SeriesChartData
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.toLocalDateTime
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -72,6 +80,14 @@ fun TeamDetails(
 				onDismiss = { onAction(TeamDetailsUiAction.DismissArchiveClicked) },
 			)
 		}
+	}
+
+	state.seriesToEdit.seriesToEdit?.let {
+		EditSeriesDialog(
+			date = state.seriesToEdit.date,
+			onDateChanged = { onAction(TeamDetailsUiAction.SeriesDateChanged(it)) },
+			onDismiss = { onAction(TeamDetailsUiAction.DismissEditSeriesClicked) },
+		)
 	}
 
 	LazyColumn(
@@ -191,6 +207,47 @@ private fun MemberRow(name: String, modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+private fun EditSeriesDialog(
+	date: LocalDate,
+	onDateChanged: (LocalDate) -> Unit,
+	onDismiss: () -> Unit,
+) {
+	val initialSelection = remember(date) {
+		date
+			.atStartOfDayIn(TimeZone.currentSystemDefault())
+			.toEpochMilliseconds()
+	}
+
+	val datePickerState = rememberDatePickerState(initialSelectedDateMillis = initialSelection)
+
+	DatePickerDialog(
+		onDismissRequest = onDismiss,
+		confirmButton = {
+			TextButton(
+				onClick = {
+					val currentSelectedDate = datePickerState.selectedDateMillis ?: return@TextButton
+					onDateChanged(
+						Instant.fromEpochMilliseconds(currentSelectedDate)
+							.toLocalDateTime(TimeZone.UTC)
+							.date,
+					)
+				},
+			) {
+				Text(stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_confirm))
+			}
+		},
+		dismissButton = {
+			TextButton(onClick = onDismiss) {
+				Text(stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_cancel))
+			}
+		},
+	) {
+		DatePicker(state = datePickerState)
+	}
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 private fun ArchiveMemberSeriesDialog(
 	onArchive: () -> Unit,
 	onKeep: () -> Unit,
@@ -277,6 +334,10 @@ private fun TeamDetailsPreview() {
 				seriesToArchive = ArchiveSeriesUiState(
 					seriesToArchive = null,
 					isArchiveMemberSeriesVisible = false,
+				),
+				seriesToEdit = EditSeriesUiState(
+					seriesToEdit = null,
+					date = LocalDate.parse("2023-01-01"),
 				),
 				members = teamMembers,
 				series = listOf(
