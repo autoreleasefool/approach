@@ -53,11 +53,28 @@ data class TeamDetailsUiState(
 	val members: List<TeamMemberListItem>,
 	val series: List<TeamSeriesListItem>,
 	val seriesItemSize: SeriesItemSize,
+	val seriesToArchive: ArchiveSeriesUiState,
+)
+
+data class ArchiveSeriesUiState(
+	val seriesToArchive: TeamSeriesListItem?,
+	val isArchiveMemberSeriesVisible: Boolean,
 )
 
 sealed interface TeamDetailsUiAction {
 	data object AddSeriesClicked : TeamDetailsUiAction
+
 	data class SeriesAppeared(val id: TeamSeriesID) : TeamDetailsUiAction
+	data class SeriesClicked(val series: TeamSeriesListItem) : TeamDetailsUiAction
+	data class EditSeriesClicked(val series: TeamSeriesListItem) : TeamDetailsUiAction
+	data class ArchiveSeriesClicked(val series: TeamSeriesListItem) : TeamDetailsUiAction
+
+	data object ConfirmArchiveClicked : TeamDetailsUiAction
+	data object DismissArchiveClicked : TeamDetailsUiAction
+
+	data object ArchiveMemberSeriesClicked : TeamDetailsUiAction
+	data object KeepMemberSeriesClicked : TeamDetailsUiAction
+	data object DismissArchiveMemberSeriesClicked : TeamDetailsUiAction
 }
 
 data class TeamDetailsTopBarUiState(

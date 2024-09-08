@@ -13,5 +13,6 @@ dependencies {
 	implementation(projects.core.model.charts.ui)
 
 	implementation(libs.kotlinx.datetime)
+	implementation(libs.swipe)
 	implementation(libs.vico.compose)
 }
