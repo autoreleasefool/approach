@@ -128,6 +128,9 @@ private fun ArchiveListItem.icon(): Painter = when (this) {
 	is ArchiveListItem.Game -> painterResource(
 		ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_bowling_ball,
 	)
+	is ArchiveListItem.TeamSeries -> painterResource(
+		ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_group,
+	)
 }
 
 @Composable
@@ -136,6 +139,7 @@ private fun ArchiveListItem.title(): String = when (this) {
 	is ArchiveListItem.League -> name
 	is ArchiveListItem.Series -> date.toString()
 	is ArchiveListItem.Game -> stringResource(R.string.archive_list_game_title, scoringMethod, score)
+	is ArchiveListItem.TeamSeries -> date.toString()
 }
 
 @Composable
@@ -163,5 +167,9 @@ private fun ArchiveListItem.subtitle(): String = when (this) {
 		bowlerName,
 		leagueName,
 		seriesDate,
+	)
+	is ArchiveListItem.TeamSeries -> stringResource(
+		R.string.archive_list_team_series_description,
+		teamName,
 	)
 }

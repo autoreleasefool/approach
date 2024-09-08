@@ -17,6 +17,8 @@
 	<string name="archive_list_game_title">%1$s Game with score of %2$d</string>
 	<string name="archive_list_game_description">Belongs to %1$s, in %2$s, bowled on %3$s</string>
 
+	<string name="archive_list_team_series_description">Bowled by team %1$s</string>
+
 	<string name="unarchive_dialog_title">Your data has been restored</string>
 	<string name="okay">Okay</string>
 </resources>
