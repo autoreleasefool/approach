@@ -7,11 +7,13 @@ import ca.josephroque.bowlingcompanion.core.database.model.TeamSeriesCreateEntit
 import ca.josephroque.bowlingcompanion.core.database.model.TeamSeriesDetailItemEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamSeriesEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamSeriesSeriesCrossRef
+import ca.josephroque.bowlingcompanion.core.model.ArchivedTeamSeries
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSummary
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.Instant
 
 @Dao
 abstract class TeamSeriesDao {
@@ -69,6 +71,24 @@ abstract class TeamSeriesDao {
 
 	@Query(
 		"""
+			SELECT
+			  team_series.id AS id,
+				team_series.`date` AS `date`,
+				team_series.archived_on AS archivedOn,
+				teams.name AS teamName
+			FROM team_series
+			JOIN team_series_series ON team_series_series.team_series_id = team_series.id
+			JOIN series ON series.id = team_series_series.series_id
+			JOIN teams ON teams.id = team_series.team_id
+			WHERE team_series.archived_on IS NOT NULL
+			GROUP BY team_series.id
+			ORDER BY team_series.archived_on DESC
+		""",
+	)
+	abstract fun getArchivedTeamSeries(): Flow<List<ArchivedTeamSeries>>
+
+	@Query(
+		"""
 			DELETE FROM team_series_series
 			WHERE team_series_id = :teamSeriesId
 		""",
@@ -80,4 +100,10 @@ abstract class TeamSeriesDao {
 
 	@Insert
 	abstract fun insertAll(series: List<TeamSeriesSeriesCrossRef>)
+
+	@Query("UPDATE team_series SET archived_on = :archivedOn WHERE id = :teamSeriesId")
+	abstract fun archiveSeries(teamSeriesId: TeamSeriesID, archivedOn: Instant)
+
+	@Query("UPDATE team_series SET archived_on = NULL WHERE id = :teamSeriesId")
+	abstract fun unarchiveSeries(teamSeriesId: TeamSeriesID)
 }

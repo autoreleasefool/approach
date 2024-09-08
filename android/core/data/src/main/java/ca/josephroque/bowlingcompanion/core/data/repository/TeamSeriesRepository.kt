@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
+import ca.josephroque.bowlingcompanion.core.model.ArchivedTeamSeries
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesConnect
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesCreate
@@ -15,9 +16,14 @@ interface TeamSeriesRepository {
 		teamId: TeamID,
 		sortOrder: TeamSeriesSortOrder,
 	): Flow<List<TeamSeriesSummary>>
+	fun getArchivedTeamSeries(): Flow<List<ArchivedTeamSeries>>
+
 	suspend fun getTeamSeriesDetails(teamSeriesId: TeamSeriesID): TeamSeriesDetails?
 
 	suspend fun insertTeamSeries(teamSeries: TeamSeriesCreate)
 	suspend fun insertTeamSeries(teamSeries: TeamSeriesConnect)
 	suspend fun updateTeamSeries(teamSeries: TeamSeriesUpdate)
+
+	suspend fun archiveTeamSeries(teamSeriesId: TeamSeriesID, archiveMemberSeries: Boolean)
+	suspend fun unarchiveTeamSeries(teamSeriesId: TeamSeriesID)
 }
