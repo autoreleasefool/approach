@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSummary
 import ca.josephroque.bowlingcompanion.core.navigation.Route
+import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.ArchiveSeriesUiState
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsFloatingActionButtonUiAction
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsTopBarUiAction
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsTopBarUiState
@@ -46,9 +47,10 @@ class TeamDetailsViewModel @Inject constructor(
 	private val teamId = Route.TeamDetails.getTeam(savedStateHandle)!!
 
 	private val seriesItemSize = userDataRepository.userData.map { it.seriesItemSize }
-	private val seriesToArchive = MutableStateFlow<TeamSeriesListChartItem?>(null)
+	private val seriesToArchive = MutableStateFlow<TeamSeriesListItem?>(null)
 	private val isSeriesSortOrderMenuExpanded = MutableStateFlow(false)
 	private val seriesSortOrder = MutableStateFlow(TeamSeriesSortOrder.NEWEST_TO_OLDEST)
+	private val isArchiveMemberSeriesVisible = MutableStateFlow(false)
 
 	private val teamDetails = teamsRepository.getTeamDetails(teamId)
 	private val teamSeries = seriesSortOrder.flatMapLatest { sortOrder ->
@@ -56,6 +58,36 @@ class TeamDetailsViewModel @Inject constructor(
 	}
 	private val teamSeriesDetails =
 		MutableStateFlow<Map<TeamSeriesID, TeamSeriesListChartItem>>(emptyMap())
+
+	private val teamSeriesDetailsList = combine(
+		teamSeries,
+		teamSeriesDetails,
+	) { seriesList, seriesDetails ->
+		seriesList.map {
+			val details = seriesDetails[it.id]
+			if (details != null && details.total > 0) {
+				TeamSeriesListItem.Chart(details)
+			} else {
+				TeamSeriesListItem.Summary(
+					TeamSeriesSummary(
+						id = it.id,
+						date = it.date,
+						total = it.total,
+					),
+				)
+			}
+		}
+	}
+
+	private val archiveSeriesUiState = combine(
+		seriesToArchive,
+		isArchiveMemberSeriesVisible,
+	) { seriesToArchive, isArchiveMemberSeriesVisible ->
+		ArchiveSeriesUiState(
+			seriesToArchive = seriesToArchive,
+			isArchiveMemberSeriesVisible = seriesToArchive != null && isArchiveMemberSeriesVisible,
+		)
+	}
 
 	private val topBarUiState = combine(
 		teamDetails,
@@ -76,27 +108,15 @@ class TeamDetailsViewModel @Inject constructor(
 
 	private val teamDetailsUiState = combine(
 		teamDetails,
-		teamSeries,
-		teamSeriesDetails,
+		teamSeriesDetailsList,
 		seriesItemSize,
-	) { teamDetails, seriesList, seriesDetails, seriesItemSize ->
+		archiveSeriesUiState,
+	) { teamDetails, teamSeriesDetailsList, seriesItemSize, archiveSeriesUiState ->
 		TeamDetailsUiState(
+			seriesToArchive = archiveSeriesUiState,
 			seriesItemSize = seriesItemSize,
 			members = teamDetails.members,
-			series = seriesList.map {
-				val details = seriesDetails[it.id]
-				if (details != null && details.total > 0) {
-					TeamSeriesListItem.Chart(details)
-				} else {
-					TeamSeriesListItem.Summary(
-						TeamSeriesSummary(
-							id = it.id,
-							date = it.date,
-							total = it.total,
-						),
-					)
-				}
-			},
+			series = teamSeriesDetailsList,
 		)
 	}
 
@@ -158,6 +178,30 @@ class TeamDetailsViewModel @Inject constructor(
 		when (action) {
 			is TeamDetailsUiAction.SeriesAppeared -> loadDetails(action.id)
 			is TeamDetailsUiAction.AddSeriesClicked -> sendEvent(TeamDetailsScreenEvent.AddSeries(teamId))
+			is TeamDetailsUiAction.SeriesClicked -> sendEvent(
+				TeamDetailsScreenEvent.ViewSeries(action.series.id),
+			)
+			is TeamDetailsUiAction.EditSeriesClicked -> sendEvent(
+				TeamDetailsScreenEvent.EditSeries(action.series.id),
+			)
+			is TeamDetailsUiAction.ArchiveSeriesClicked -> seriesToArchive.value = action.series
+			TeamDetailsUiAction.ConfirmArchiveClicked -> isArchiveMemberSeriesVisible.value = true
+			TeamDetailsUiAction.DismissArchiveClicked -> seriesToArchive.value = null
+			TeamDetailsUiAction.ArchiveMemberSeriesClicked -> archiveSeries(archiveMemberSeries = true)
+			TeamDetailsUiAction.KeepMemberSeriesClicked -> archiveSeries(archiveMemberSeries = false)
+			TeamDetailsUiAction.DismissArchiveMemberSeriesClicked -> {
+				seriesToArchive.value = null
+				isArchiveMemberSeriesVisible.value = false
+			}
+		}
+	}
+
+	private fun archiveSeries(archiveMemberSeries: Boolean) {
+		val seriesToArchive = seriesToArchive.value ?: return
+		viewModelScope.launch {
+			teamSeriesRepository.archiveTeamSeries(seriesToArchive.id, archiveMemberSeries)
+			this@TeamDetailsViewModel.seriesToArchive.value = null
+			isArchiveMemberSeriesVisible.value = false
 		}
 	}
 
