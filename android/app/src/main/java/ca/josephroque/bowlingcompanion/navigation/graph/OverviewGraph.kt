@@ -277,7 +277,7 @@ fun NavGraphBuilder.overviewGraph(
 	)
 	teamDetailsScreen(
 		onBackPressed = navController::popBackStack,
-		onAddSeries = { teamId -> navController.navigateToTeamPlay(teamId) },
+		onAddSeries = navController::navigateToTeamPlay,
 	)
 	teamPlay(
 		onDismiss = navController::popBackStack,

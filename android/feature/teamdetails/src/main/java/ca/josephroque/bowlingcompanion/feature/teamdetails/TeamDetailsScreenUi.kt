@@ -26,6 +26,5 @@ sealed interface TeamDetailsScreenEvent {
 	data object Dismissed : TeamDetailsScreenEvent
 
 	data class AddSeries(val teamId: TeamID) : TeamDetailsScreenEvent
-	data class EditSeries(val teamSeriesId: TeamSeriesID) : TeamDetailsScreenEvent
 	data class ViewSeries(val teamSeriesId: TeamSeriesID) : TeamDetailsScreenEvent
 }

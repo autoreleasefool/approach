@@ -25,6 +25,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
 
 class OfflineFirstTeamSeriesRepository @Inject constructor(
 	private val seriesDao: SeriesDao,
@@ -128,6 +129,11 @@ class OfflineFirstTeamSeriesRepository @Inject constructor(
 			teamSeriesDao.insertAll(teamSeriesSeries)
 		}
 	}
+
+	override suspend fun updateTeamSeriesDate(teamSeriesId: TeamSeriesID, date: LocalDate) =
+		withContext(ioDispatcher) {
+			teamSeriesDao.setTeamSeriesDate(teamSeriesId, date)
+		}
 
 	override suspend fun archiveTeamSeries(teamSeriesId: TeamSeriesID, archiveMemberSeries: Boolean) =
 		withContext(ioDispatcher) {

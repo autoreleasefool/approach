@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSummary
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesUpdate
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.LocalDate
 
 interface TeamSeriesRepository {
 	fun getTeamSeriesList(
@@ -23,6 +24,7 @@ interface TeamSeriesRepository {
 	suspend fun insertTeamSeries(teamSeries: TeamSeriesCreate)
 	suspend fun insertTeamSeries(teamSeries: TeamSeriesConnect)
 	suspend fun updateTeamSeries(teamSeries: TeamSeriesUpdate)
+	suspend fun updateTeamSeriesDate(teamSeriesId: TeamSeriesID, date: LocalDate)
 
 	suspend fun archiveTeamSeries(teamSeriesId: TeamSeriesID, archiveMemberSeries: Boolean)
 	suspend fun unarchiveTeamSeries(teamSeriesId: TeamSeriesID)

@@ -47,7 +47,6 @@ internal fun TeamDetailsRoute(
 					when (it) {
 						is TeamDetailsScreenEvent.AddSeries -> onAddSeries(it.teamId)
 						is TeamDetailsScreenEvent.Dismissed -> onBackPressed()
-						is TeamDetailsScreenEvent.EditSeries -> TODO("Edit Series")
 						is TeamDetailsScreenEvent.ViewSeries -> TODO("View Series")
 					}
 				}

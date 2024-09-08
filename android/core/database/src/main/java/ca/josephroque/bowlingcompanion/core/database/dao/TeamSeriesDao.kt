@@ -14,6 +14,7 @@ import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSummary
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 
 @Dao
 abstract class TeamSeriesDao {
@@ -94,6 +95,9 @@ abstract class TeamSeriesDao {
 		""",
 	)
 	abstract fun deleteSeries(teamSeriesId: TeamSeriesID)
+
+	@Query("UPDATE team_series SET `date` = :date WHERE id = :teamSeriesId")
+	abstract fun setTeamSeriesDate(teamSeriesId: TeamSeriesID, date: LocalDate)
 
 	@Insert(entity = TeamSeriesEntity::class)
 	abstract fun insertSeries(series: TeamSeriesCreateEntity)

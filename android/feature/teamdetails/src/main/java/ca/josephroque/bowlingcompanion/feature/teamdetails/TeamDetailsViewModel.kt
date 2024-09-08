@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.teamdetails
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.utils.range
+import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.TeamSeriesRepository
@@ -13,6 +14,7 @@ import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSummary
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.ArchiveSeriesUiState
+import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.EditSeriesUiState
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsFloatingActionButtonUiAction
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsTopBarUiAction
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsTopBarUiState
@@ -35,6 +37,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
 
 @HiltViewModel
 class TeamDetailsViewModel @Inject constructor(
@@ -46,8 +50,12 @@ class TeamDetailsViewModel @Inject constructor(
 ) : ApproachViewModel<TeamDetailsScreenEvent>() {
 	private val teamId = Route.TeamDetails.getTeam(savedStateHandle)!!
 
-	private val seriesItemSize = userDataRepository.userData.map { it.seriesItemSize }
 	private val seriesToArchive = MutableStateFlow<TeamSeriesListItem?>(null)
+
+	private val seriesToEdit = MutableStateFlow<TeamSeriesListItem?>(null)
+	private val seriesToEditDate = MutableStateFlow(Clock.System.now().toLocalDate())
+
+	private val seriesItemSize = userDataRepository.userData.map { it.seriesItemSize }
 	private val isSeriesSortOrderMenuExpanded = MutableStateFlow(false)
 	private val seriesSortOrder = MutableStateFlow(TeamSeriesSortOrder.NEWEST_TO_OLDEST)
 	private val isArchiveMemberSeriesVisible = MutableStateFlow(false)
@@ -77,6 +85,16 @@ class TeamDetailsViewModel @Inject constructor(
 				)
 			}
 		}
+	}
+
+	private val editSeriesUiState = combine(
+		seriesToEdit,
+		seriesToEditDate,
+	) { seriesToEdit, date ->
+		EditSeriesUiState(
+			seriesToEdit = seriesToEdit,
+			date = date,
+		)
 	}
 
 	private val archiveSeriesUiState = combine(
@@ -111,12 +129,14 @@ class TeamDetailsViewModel @Inject constructor(
 		teamSeriesDetailsList,
 		seriesItemSize,
 		archiveSeriesUiState,
-	) { teamDetails, teamSeriesDetailsList, seriesItemSize, archiveSeriesUiState ->
+		editSeriesUiState,
+	) { teamDetails, teamSeriesDetailsList, seriesItemSize, archiveSeriesUiState, editSeriesUiState ->
 		TeamDetailsUiState(
 			seriesToArchive = archiveSeriesUiState,
 			seriesItemSize = seriesItemSize,
 			members = teamDetails.members,
 			series = teamSeriesDetailsList,
+			seriesToEdit = editSeriesUiState,
 		)
 	}
 
@@ -181,10 +201,10 @@ class TeamDetailsViewModel @Inject constructor(
 			is TeamDetailsUiAction.SeriesClicked -> sendEvent(
 				TeamDetailsScreenEvent.ViewSeries(action.series.id),
 			)
-			is TeamDetailsUiAction.EditSeriesClicked -> sendEvent(
-				TeamDetailsScreenEvent.EditSeries(action.series.id),
-			)
+			is TeamDetailsUiAction.EditSeriesClicked -> setSeriesToEdit(action.series)
 			is TeamDetailsUiAction.ArchiveSeriesClicked -> seriesToArchive.value = action.series
+			is TeamDetailsUiAction.SeriesDateChanged -> updateSeriesDate(action.date)
+			TeamDetailsUiAction.DismissEditSeriesClicked -> setSeriesToEdit(null)
 			TeamDetailsUiAction.ConfirmArchiveClicked -> isArchiveMemberSeriesVisible.value = true
 			TeamDetailsUiAction.DismissArchiveClicked -> seriesToArchive.value = null
 			TeamDetailsUiAction.ArchiveMemberSeriesClicked -> archiveSeries(archiveMemberSeries = true)
@@ -194,6 +214,20 @@ class TeamDetailsViewModel @Inject constructor(
 				isArchiveMemberSeriesVisible.value = false
 			}
 		}
+	}
+
+	private fun setSeriesToEdit(series: TeamSeriesListItem?) {
+		seriesToEdit.value = series
+		seriesToEditDate.value = series?.date ?: Clock.System.now().toLocalDate()
+	}
+
+	private fun updateSeriesDate(date: LocalDate) {
+		val seriesToEdit = seriesToEdit.value ?: return
+		viewModelScope.launch {
+			teamSeriesRepository.updateTeamSeriesDate(seriesToEdit.id, date)
+		}
+
+		setSeriesToEdit(null)
 	}
 
 	private fun archiveSeries(archiveMemberSeries: Boolean) {
