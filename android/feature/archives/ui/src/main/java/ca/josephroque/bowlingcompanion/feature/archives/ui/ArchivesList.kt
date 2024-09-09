@@ -35,7 +35,9 @@ fun ArchivesList(
 			title = { Text(text = stringResource(R.string.unarchive_dialog_title)) },
 			confirmButton = {
 				TextButton(onClick = { onAction(ArchivesListUiAction.ConfirmUnarchiveClicked) }) {
-					Text(text = stringResource(R.string.okay))
+					Text(
+						text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_ok),
+					)
 				}
 			},
 		)
@@ -64,7 +66,9 @@ fun LazyListScope.archivesList(
 		key = { it.id },
 	) { item ->
 		val unarchiveAction = SwipeAction(
-			icon = painterResource(R.drawable.ic_unarchive),
+			icon = painterResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_unarchive,
+			),
 			background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.blue_600),
 			onSwipe = { onItemUnarchived(item) },
 		)
