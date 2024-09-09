@@ -51,10 +51,8 @@ public struct GamesListView: View {
 				EditButton { send(.didTapEditButton) }
 			}
 
-			if store.isSeriesSharingEnabled {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					ShareButton { send(.didTapShareButton) }
-				}
+			ToolbarItem(placement: .navigationBarTrailing) {
+				ShareButton { send(.didTapShareButton) }
 			}
 
 			ToolbarItem(placement: .navigationBarTrailing) {

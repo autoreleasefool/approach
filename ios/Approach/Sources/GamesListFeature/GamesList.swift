@@ -34,7 +34,6 @@ public struct GamesList: Reducer, Sendable {
 
 		@Presents public var destination: Destination.State?
 
-		public let isSeriesSharingEnabled: Bool
 		public var isShowingArchiveTip: Bool
 
 		public init(series: Series.GameHost, host: League.SeriesHost) {
