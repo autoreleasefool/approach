@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.seriesdetails.ui
+package ca.josephroque.bowlingcompanion.core.model.charts.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,37 +34,37 @@ import com.patrykandpatrick.vico.core.entry.entryOf
 import kotlinx.datetime.LocalDate
 
 @Composable
-fun SeriesDetailsHeader(
-	preBowl: SeriesPreBowl,
+fun SeriesHeader(
+	preBowl: SeriesPreBowl?,
 	preBowledDate: LocalDate?,
 	numberOfGames: Int,
 	seriesTotal: Int,
 	seriesLow: Int?,
 	seriesHigh: Int?,
 	isShowingPlaceholder: Boolean,
-	scores: ChartEntryModelProducer?,
+	scores: ChartEntryModelProducer,
 	modifier: Modifier = Modifier,
 ) {
 	Column(modifier = modifier) {
 		when (preBowl) {
-			SeriesPreBowl.REGULAR -> Unit
+			SeriesPreBowl.REGULAR, null -> Unit
 			SeriesPreBowl.PRE_BOWL -> {
 				Column(modifier = Modifier.padding(horizontal = 16.dp)) {
 					Text(
-						text = stringResource(R.string.series_details_header_pre_bowl),
+						text = stringResource(R.string.series_header_pre_bowl),
 						style = MaterialTheme.typography.bodyMedium,
 						fontWeight = FontWeight.Bold,
 					)
 
 					if (preBowledDate == null) {
 						Text(
-							text = stringResource(R.string.series_details_header_unused_pre_bowl),
+							text = stringResource(R.string.series_header_unused_pre_bowl),
 							style = MaterialTheme.typography.bodyMedium,
 						)
 					} else {
 						Text(
 							text = stringResource(
-								R.string.series_details_header_pre_bowled_on,
+								R.string.series_header_pre_bowled_on,
 								preBowledDate.simpleFormat(),
 							),
 							style = MaterialTheme.typography.bodyMedium,
@@ -96,7 +96,7 @@ fun SeriesDetailsHeader(
 
 				if (isShowingPlaceholder) {
 					Text(
-						text = stringResource(R.string.series_details_placeholder),
+						text = stringResource(R.string.series_header_placeholder),
 						style = MaterialTheme.typography.bodyMedium,
 						fontStyle = FontStyle.Italic,
 					)
@@ -104,13 +104,13 @@ fun SeriesDetailsHeader(
 					if (numberOfGames > 1 && seriesLow != null && seriesHigh != null) {
 						Column {
 							Text(
-								text = stringResource(R.string.series_details_high_game, seriesHigh),
+								text = stringResource(R.string.series_header_high_game, seriesHigh),
 								style = MaterialTheme.typography.bodyLarge,
 								fontStyle = FontStyle.Italic,
 							)
 
 							Text(
-								text = stringResource(R.string.series_details_low_game, seriesLow),
+								text = stringResource(R.string.series_header_low_game, seriesLow),
 								style = MaterialTheme.typography.bodyLarge,
 								fontStyle = FontStyle.Italic,
 							)
@@ -125,7 +125,7 @@ fun SeriesDetailsHeader(
 				modifier = Modifier.alignBy(FirstBaseline),
 			) {
 				Text(
-					text = stringResource(R.string.series_details_total),
+					text = stringResource(R.string.series_header_total),
 					style = MaterialTheme.typography.bodyMedium,
 				)
 
@@ -137,14 +137,12 @@ fun SeriesDetailsHeader(
 			}
 		}
 
-		if (scores != null) {
-			ScoreChart(scores)
+		ScoreChart(scores)
 
-			HorizontalDivider(
-				modifier = Modifier.padding(vertical = 8.dp),
-				thickness = 8.dp,
-			)
-		}
+		HorizontalDivider(
+			modifier = Modifier.padding(top = 8.dp),
+			thickness = 8.dp,
+		)
 	}
 }
 
@@ -183,9 +181,9 @@ private fun ScoreChart(scores: ChartEntryModelProducer) {
 
 @Preview
 @Composable
-private fun SeriesDetailsHeaderPreview() {
+private fun SeriesHeaderPreview() {
 	Surface {
-		SeriesDetailsHeader(
+		SeriesHeader(
 			preBowl = SeriesPreBowl.PRE_BOWL,
 			preBowledDate = null,
 			numberOfGames = 4,
