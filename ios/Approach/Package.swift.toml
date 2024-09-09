@@ -508,11 +508,11 @@ from = "8.36.0"
 [dependencies.SnapshotTesting]
 suitable_for_dependents_matching = "\\w+Tests$"
 url = "https://github.com/pointfreeco/swift-snapshot-testing.git"
-from = "1.17.1"
+from = "1.17.4"
 
 [dependencies.XCTestDynamicOverlay]
 url = "https://github.com/pointfreeco/xctest-dynamic-overlay.git"
-from = "1.1.2"
+from = "1.2.5"
 
 [dependencies.ZIPFoundation]
 url = "https://github.com/weichsel/ZIPFoundation.git"
