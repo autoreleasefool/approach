@@ -50,10 +50,8 @@ public struct StatisticsDetailsView: View {
 		.navigationTitle(store.sources?.bowler.name ?? "")
 		.navigationBarTitleDisplayMode(.inline)
 		.toolbar {
-			if store.isSharingStatisticsEnabled {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					ShareButton { send(.didTapShareButton) }
-				}
+			ToolbarItem(placement: .navigationBarTrailing) {
+				ShareButton { send(.didTapShareButton) }
 			}
 
 			ToolbarItem(placement: .navigationBarTrailing) {

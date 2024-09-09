@@ -2,7 +2,6 @@ import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
-import FeatureFlagsLibrary
 import ModelsLibrary
 import PreferenceServiceInterface
 import StringsLibrary
@@ -14,15 +13,11 @@ public struct GamesHeader: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var currentGameIndex: Int = 0
-		public let isSharingGameEnabled: Bool
 		public var shimmerColor: Color?
 
 		public var isFlashEditorChangesEnabled: Bool
 
 		init() {
-			@Dependency(\.featureFlags) var featureFlags
-			self.isSharingGameEnabled = featureFlags.isFlagEnabled(.sharingGame)
-
 			@Dependency(\.preferences) var preferences
 			self.isFlashEditorChangesEnabled = preferences.bool(forKey: .gameShouldNotifyEditorChanges) ?? true
 		}
@@ -145,9 +140,7 @@ public struct GamesHeaderView: View {
 
 				Spacer()
 
-				if store.isSharingGameEnabled {
-					headerButton(systemSymbol: .squareAndArrowUp) { send(.didTapShareButton) }
-				}
+				headerButton(systemSymbol: .squareAndArrowUp) { send(.didTapShareButton) }
 
 				headerButton(systemSymbol: .gear) { send(.didTapSettingsButton) }
 			}

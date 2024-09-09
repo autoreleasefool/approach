@@ -2,8 +2,6 @@ import AnalyticsServiceInterface
 import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
-import FeatureFlagsLibrary
-import FeatureFlagsPackageServiceInterface
 import NotificationsServiceInterface
 import PreferenceServiceInterface
 import RecentlyUsedServiceInterface
@@ -40,8 +38,6 @@ public struct StatisticsDetails: Reducer, Sendable {
 
 		public var charts: StatisticsDetailsCharts.State
 
-		public let isSharingStatisticsEnabled: Bool
-
 		@Presents public var destination: Destination.State?
 
 		var filterViewSize: StatisticsFilterView.Size {
@@ -65,9 +61,6 @@ public struct StatisticsDetails: Reducer, Sendable {
 
 			@Dependency(\.date) var date
 			self.willAdjustLaneLayoutAt = date()
-
-			@Dependency(\.featureFlags) var featureFlags
-			self.isSharingStatisticsEnabled = featureFlags.isFlagEnabled(.sharingStatistic)
 		}
 
 		mutating func syncChartsSharedState() {
