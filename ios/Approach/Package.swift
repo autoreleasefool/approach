@@ -419,6 +419,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "StoreReviewPackageServiceInterface", package: "swift-utilities"),
 				"AvatarServiceInterface",
+				"FeatureFlagsLibrary",
 				"FramesRepositoryInterface",
 				"GearRepositoryInterface",
 				"LanesRepositoryInterface",
@@ -617,7 +618,6 @@ let package = Package(
 			dependencies: [
 				"AlleysRepositoryInterface",
 				"DateTimeLibrary",
-				"FeatureFlagsLibrary",
 				"FormFeature",
 				"ModelsViewsLibrary",
 				"PickableModelsLibrary",
@@ -686,7 +686,6 @@ let package = Package(
 		.target(
 			name: "StatisticsDetailsFeature",
 			dependencies: [
-				"FeatureFlagsLibrary",
 				"NotificationsServiceInterface",
 				"PreferenceServiceInterface",
 				"RecentlyUsedServiceInterface",
