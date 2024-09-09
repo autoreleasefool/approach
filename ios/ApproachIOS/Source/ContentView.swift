@@ -11,7 +11,7 @@ import TestDatabaseUtilitiesLibrary
 #endif
 
 public struct ContentView: View {
-	let store: Store = {
+	@MainActor static let store: Store = {
 		#if DEBUG
 		return .init(
 			initialState: App.State(),
@@ -34,7 +34,7 @@ public struct ContentView: View {
 	}()
 
 	public var body: some View {
-		AppView(store: store)
+		AppView(store: Self.store)
 	}
 }
 

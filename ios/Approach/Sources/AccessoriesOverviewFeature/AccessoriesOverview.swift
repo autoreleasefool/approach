@@ -305,16 +305,16 @@ public struct AccessoriesOverview: Reducer, Sendable {
 
 extension AccessoriesOverview {
 	static func alert(toDeleteItem: Item) -> AlertState<AlertAction> {
-		AlertState(
-			title: TextState(Strings.Form.Prompt.delete(toDeleteItem.name)),
-			primaryButton: .destructive(
-				TextState(Strings.Action.delete),
-				action: .send(.didTapDeleteItemButton(toDeleteItem))
-			),
-			secondaryButton: .cancel(
-				TextState(Strings.Action.cancel),
-				action: .send(.didTapDismissButton)
-			)
-		)
+		AlertState {
+			TextState(Strings.Form.Prompt.delete(toDeleteItem.name))
+		} actions: {
+			ButtonState(role: .destructive, action: .send(.didTapDeleteItemButton(toDeleteItem))) {
+				TextState(Strings.Action.delete)
+			}
+
+			ButtonState(role: .cancel, action: .send(.didTapDismissButton)) {
+				TextState(Strings.Action.cancel)
+			}
+		}
 	}
 }

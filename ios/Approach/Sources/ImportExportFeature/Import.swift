@@ -220,18 +220,19 @@ public struct Import: Reducer, Sendable {
 
 extension Import {
 	static func restore(toDate: Date) -> AlertState<AlertAction> {
-		AlertState(
-			title: TextState(Strings.Import.Restore.title),
-			message: TextState(Strings.Import.Restore.message(toDate.mediumFormat)),
-			primaryButton: .destructive(
-				TextState(Strings.Import.Action.restore),
-				action: .send(.didTapRestoreButton)
-			),
-			secondaryButton: .cancel(
-				TextState(Strings.Action.cancel),
-				action: .send(.didTapDismissButton)
-			)
-		)
+		AlertState {
+			TextState(Strings.Import.Restore.title)
+		} actions: {
+			ButtonState(role: .destructive, action: .send(.didTapRestoreButton)) {
+				TextState(Strings.Import.Action.restore)
+			}
+
+			ButtonState(role: .cancel, action: .send(.didTapDismissButton)) {
+				TextState(Strings.Action.cancel)
+			}
+		} message: {
+			TextState(Strings.Import.Restore.message(toDate.mediumFormat))
+		}
 	}
 }
 

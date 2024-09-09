@@ -117,7 +117,7 @@ extension View {
 		let toastState = store?.withState { $0 }
 
 		self.toast(
-			isPresented: item.isPresent(),
+			isPresented: Binding(item),
 			dismissAfter: toastState?.duration ?? 3.0,
 			onDismiss: { store?.send(.didFinishDismissing) },
 			content: {
