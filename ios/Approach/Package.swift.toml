@@ -491,7 +491,7 @@ dep_ref = "Dependencies"
 
 [dependencies.GRDB]
 url = "https://github.com/groue/GRDB.swift.git"
-from = "6.28.0"
+from = "6.29.3"
 
 [dependencies.IdentifiedCollections]
 url = "https://github.com/pointfreeco/swift-identified-collections.git"

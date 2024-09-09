@@ -155,7 +155,7 @@ let package = Package(
 		.package(url: "https://github.com/autoreleasefool/swift-utilities.git", from: "2.4.1"),
 		.package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.5"),
 		.package(url: "https://github.com/getsentry/sentry-cocoa.git", from: "8.36.0"),
-		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.28.0"),
+		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.29.3"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.11.2"),
 		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.3.1"),
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "1.1.0"),
