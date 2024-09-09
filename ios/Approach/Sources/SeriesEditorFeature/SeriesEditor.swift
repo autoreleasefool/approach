@@ -4,7 +4,6 @@ import ComposableArchitecture
 import DateTimeLibrary
 import EquatablePackageLibrary
 import FeatureActionLibrary
-import FeatureFlagsLibrary
 import FormFeature
 import Foundation
 import LanesRepositoryInterface
@@ -38,8 +37,6 @@ public struct SeriesEditor: Reducer, Sendable {
 
 		public let initialValue: SeriesForm.Value
 		public var form: SeriesForm.State
-
-		public var isManualSeriesEnabled: Bool
 
 		var isExcludeFromStatisticsToggleEnabled: Bool {
 			(preBowl == .preBowl && !isUsingPreBowl) || league.excludeFromStatistics == .exclude
@@ -82,9 +79,6 @@ public struct SeriesEditor: Reducer, Sendable {
 				self.initialValue = .edit(existing)
 			}
 			self.form = .init(initialValue: self.initialValue)
-
-			@Dependency(\.featureFlags) var featureFlags
-			self.isManualSeriesEnabled = featureFlags.isFlagEnabled(.manualSeries)
 		}
 
 		mutating func syncFormSharedState() {

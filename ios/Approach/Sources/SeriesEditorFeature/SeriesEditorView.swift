@@ -22,7 +22,7 @@ public struct SeriesEditorView: View {
 		FormView(store: store.scope(state: \.form, action: \.internal.form)) {
 			detailsSection
 
-			if store.isManualSeriesEnabled && !store.isEditing {
+			if !store.isEditing {
 				manualSection
 			}
 
