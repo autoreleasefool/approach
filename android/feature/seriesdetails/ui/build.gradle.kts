@@ -10,6 +10,7 @@ android {
 dependencies {
 	implementation(projects.core.charts)
 	implementation(projects.core.common)
+	implementation(projects.core.model.charts.ui)
 	implementation(projects.feature.gameslist.ui)
 
 	implementation(libs.kotlinx.datetime)

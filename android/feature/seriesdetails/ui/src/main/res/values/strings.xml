@@ -1,18 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<plurals name="games_count">
-		<item quantity="one">%d game</item>
-		<item quantity="other">%d games</item>
-	</plurals>
-
-	<string name="series_details_high_game">High of %d</string>
-	<string name="series_details_low_game">Low of %d</string>
-	<string name="series_details_total">Series total</string>
-	<string name="series_details_placeholder">Start bowling to see your scores charted here</string>
-
-	<string name="series_details_header_pre_bowl">Pre-bowl</string>
-	<string name="series_details_header_pre_bowled_on">This series was originally bowled on %1$s</string>
-	<string name="series_details_header_unused_pre_bowl">This pre-bowl has not been used yet</string>
 
 	<string name="cd_add_game">Add Game</string>
 </resources>

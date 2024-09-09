@@ -6,4 +6,13 @@
 		<item quantity="one">%1$d game</item>
 		<item quantity="other">%1$d games</item>
 	</plurals>
+
+	<string name="series_header_high_game">High of %d</string>
+	<string name="series_header_low_game">Low of %d</string>
+	<string name="series_header_total">Series total</string>
+	<string name="series_header_placeholder">Start bowling to see your scores charted here</string>
+
+	<string name="series_header_pre_bowl">Pre-bowl</string>
+	<string name="series_header_pre_bowled_on">This series was originally bowled on %1$s</string>
+	<string name="series_header_unused_pre_bowl">This pre-bowl has not been used yet</string>
 </resources>

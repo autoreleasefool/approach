@@ -8,7 +8,7 @@ import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 data class SeriesDetailsUiState(
 	val details: SeriesDetailsProperties,
 	val gamesList: GamesListUiState,
-	val scores: ChartEntryModelProducer?,
+	val scores: ChartEntryModelProducer,
 	val seriesLow: Int?,
 	val seriesHigh: Int?,
 	val isShowingPlaceholder: Boolean,

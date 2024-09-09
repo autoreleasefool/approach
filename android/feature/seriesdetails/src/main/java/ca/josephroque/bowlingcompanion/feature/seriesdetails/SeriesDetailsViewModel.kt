@@ -74,7 +74,7 @@ class SeriesDetailsViewModel @Inject constructor(
 			},
 		).await()
 
-		return@combine SeriesDetailsScreenUiState.Loaded(
+		SeriesDetailsScreenUiState.Loaded(
 			seriesDetails = SeriesDetailsUiState(
 				details = seriesDetails.properties,
 				scores = chartModelProducer,
