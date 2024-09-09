@@ -23,7 +23,5 @@
 	<array>
 		<string>instagram-stories</string>
 	</array>
-	<key>REVENUE_CAT_API_KEY</key>
-	<string>$(REVENUE_CAT_API_KEY)</string>
 </dict>
 </plist>

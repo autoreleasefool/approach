@@ -289,7 +289,7 @@ dependencies = [ "DependenciesMacros"]
 
 [services.Products]
 libraries = [ "Constants" ]
-dependencies = [ "BundlePackageServiceInterface", "RevenueCat" ]
+dependencies = [ "BundlePackageServiceInterface" ]
 [services.Products.interface]
 libraries = [ "Products" ]
 
@@ -496,10 +496,6 @@ from = "6.29.3"
 [dependencies.IdentifiedCollections]
 url = "https://github.com/pointfreeco/swift-identified-collections.git"
 from = "1.1.0"
-
-[dependencies.RevenueCat]
-url = "https://github.com/RevenueCat/purchases-ios.git"
-from = "4.37.0"
 
 [dependencies.SFSafeSymbols]
 url = "https://github.com/SFSafeSymbols/SFSafeSymbols.git"
