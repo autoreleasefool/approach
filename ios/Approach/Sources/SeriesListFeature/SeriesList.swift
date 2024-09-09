@@ -4,7 +4,6 @@ import ComposableArchitecture
 import EquatablePackageLibrary
 import ErrorsFeature
 import FeatureActionLibrary
-import FeatureFlagsLibrary
 import Foundation
 import GamesListFeature
 import LeagueEditorFeature
@@ -42,7 +41,6 @@ public struct SeriesList: Reducer, Sendable {
 	public struct State: Equatable {
 		public var league: League.SeriesHost
 		public var ordering: Series.Ordering = .default
-		public let isPreBowlFormEnabled: Bool
 
 		public var list: SectionResourceList<Series.List, Series.List.FetchRequest>.State
 
@@ -73,9 +71,6 @@ public struct SeriesList: Reducer, Sendable {
 					action: Strings.Series.List.add
 				)
 			)
-
-			@Dependency(\.featureFlags) var featureFlags
-			self.isPreBowlFormEnabled = featureFlags.isFlagEnabled(.preBowlForm)
 		}
 	}
 

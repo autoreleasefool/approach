@@ -39,7 +39,6 @@ public struct SeriesEditor: Reducer, Sendable {
 		public let initialValue: SeriesForm.Value
 		public var form: SeriesForm.State
 
-		public var isPreBowlFormEnabled: Bool
 		public var isManualSeriesEnabled: Bool
 
 		var isExcludeFromStatisticsToggleEnabled: Bool {
@@ -85,7 +84,6 @@ public struct SeriesEditor: Reducer, Sendable {
 			self.form = .init(initialValue: self.initialValue)
 
 			@Dependency(\.featureFlags) var featureFlags
-			self.isPreBowlFormEnabled = featureFlags.isFlagEnabled(.preBowlForm)
 			self.isManualSeriesEnabled = featureFlags.isFlagEnabled(.manualSeries)
 		}
 
