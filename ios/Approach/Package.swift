@@ -151,7 +151,7 @@ let package = Package(
 	dependencies: [
 		.package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.0"),
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.0"),
-		.package(url: "https://github.com/apple/swift-collections.git", from: "1.1.0"),
+		.package(url: "https://github.com/apple/swift-collections.git", from: "1.1.3"),
 		.package(url: "https://github.com/autoreleasefool/swift-utilities.git", from: "2.4.1"),
 		.package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.5"),
 		.package(url: "https://github.com/getsentry/sentry-cocoa.git", from: "8.30.1"),
