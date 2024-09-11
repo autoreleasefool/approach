@@ -69,6 +69,8 @@ import ca.josephroque.bowlingcompanion.feature.teamdetails.navigation.teamDetail
 import ca.josephroque.bowlingcompanion.feature.teamform.navigation.navigateToNewTeamForm
 import ca.josephroque.bowlingcompanion.feature.teamform.navigation.navigateToTeamForm
 import ca.josephroque.bowlingcompanion.feature.teamform.navigation.teamFormScreen
+import ca.josephroque.bowlingcompanion.feature.teamseriesdetails.navigation.navigateToTeamSeriesDetails
+import ca.josephroque.bowlingcompanion.feature.teamseriesdetails.navigation.teamSeriesDetailsScreen
 
 fun NavGraphBuilder.overviewGraph(
 	navController: NavController,
@@ -278,6 +280,7 @@ fun NavGraphBuilder.overviewGraph(
 	teamDetailsScreen(
 		onBackPressed = navController::popBackStack,
 		onAddSeries = navController::navigateToTeamPlay,
+		onViewSeries = navController::navigateToTeamSeriesDetails,
 	)
 	teamPlay(
 		onDismiss = navController::popBackStack,
@@ -320,5 +323,9 @@ fun NavGraphBuilder.overviewGraph(
 				navResultCallback = result,
 			)
 		},
+	)
+	teamSeriesDetailsScreen(
+		onBackPressed = navController::popBackStack,
+		onEditGame = navController::navigateToGamesEditor,
 	)
 }

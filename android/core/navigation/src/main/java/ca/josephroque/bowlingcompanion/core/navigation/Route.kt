@@ -171,7 +171,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		const val ARG_LANES = "lanes"
 		fun createRoute(lanes: List<String>): String = "edit_lanes/${lanes.encode()}"
 		fun getLanes(savedStateHandle: SavedStateHandle): List<LaneID> =
-			savedStateHandle.get<String>("lanes")?.decodeList()?.mapNotNull {
+			savedStateHandle.get<String>("lanes")?.decodeList()?.map {
 				LaneID.fromString(it)
 			} ?: emptyList()
 	}
@@ -417,6 +417,13 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		}
 		fun getTeam(savedStateHandle: SavedStateHandle): TeamID? =
 			savedStateHandle.get<String>("team")?.let { TeamID.fromString(it) }
+	}
+	data object TeamSeriesDetails : Route("team_series/{team_series}") {
+		const val ARG_TEAM_SERIES = "team_series"
+		fun createRoute(teamSeries: TeamSeriesID): String =
+			"team_series/${Uri.encode(teamSeries.toString())}"
+		fun getTeamSeries(savedStateHandle: SavedStateHandle): TeamSeriesID? =
+			savedStateHandle.get<String>("team_series")?.let { TeamSeriesID.fromString(it) }
 	}
 }
 

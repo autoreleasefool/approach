@@ -92,6 +92,7 @@ dependencies {
 	implementation(projects.feature.statisticswidget)
 	implementation(projects.feature.teamdetails)
 	implementation(projects.feature.teamform)
+	implementation(projects.feature.teamseriesdetails)
 
 	implementation(platform(libs.androidx.compose.bom))
 	implementation(libs.androidx.compose.material3)

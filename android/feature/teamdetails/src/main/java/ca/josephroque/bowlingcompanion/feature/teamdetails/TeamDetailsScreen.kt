@@ -23,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.TeamID
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetails
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsFloatingActionButton
 import ca.josephroque.bowlingcompanion.feature.teamdetails.ui.TeamDetailsTopBar
@@ -33,6 +34,7 @@ import kotlinx.coroutines.launch
 internal fun TeamDetailsRoute(
 	onBackPressed: () -> Unit,
 	onAddSeries: (TeamID) -> Unit,
+	onViewSeries: (TeamSeriesID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: TeamDetailsViewModel = hiltViewModel(),
 ) {
@@ -47,7 +49,7 @@ internal fun TeamDetailsRoute(
 					when (it) {
 						is TeamDetailsScreenEvent.AddSeries -> onAddSeries(it.teamId)
 						is TeamDetailsScreenEvent.Dismissed -> onBackPressed()
-						is TeamDetailsScreenEvent.ViewSeries -> TODO("View Series")
+						is TeamDetailsScreenEvent.ViewSeries -> onViewSeries(it.teamSeriesId)
 					}
 				}
 		}
