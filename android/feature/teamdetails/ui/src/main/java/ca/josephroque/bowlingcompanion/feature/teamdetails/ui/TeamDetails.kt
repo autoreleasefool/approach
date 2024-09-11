@@ -103,7 +103,10 @@ fun TeamDetails(
 		}
 		
 		item {
-			HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+			HorizontalDivider(
+				thickness = 8.dp,
+				modifier = Modifier.padding(vertical = 8.dp),
+			)
 
 			ListSectionHeader(
 				titleResourceId = R.string.team_details_recent_series,
@@ -132,26 +135,13 @@ fun TeamDetails(
 				onAction(TeamDetailsUiAction.SeriesAppeared(series.id))
 			}
 
-			val archiveAction = SwipeAction(
-				icon = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_archive),
-				background = colorResource(
-					ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
-				),
-				onSwipe = { onAction(TeamDetailsUiAction.ArchiveSeriesClicked(series)) },
+			TeamSeriesRow(
+				series = series,
+				itemSize = state.seriesItemSize,
+				onArchive = { onAction(TeamDetailsUiAction.ArchiveSeriesClicked(series)) },
+				onEdit = { onAction(TeamDetailsUiAction.EditSeriesClicked(series)) },
+				onClick = { onAction(TeamDetailsUiAction.SeriesClicked(series)) },
 			)
-
-			val editAction = SwipeAction(
-				icon = rememberVectorPainter(Icons.Default.Edit),
-				background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.blue_300),
-				onSwipe = { onAction(TeamDetailsUiAction.EditSeriesClicked(series)) },
-			)
-
-			SwipeableActionsBox(
-				startActions = listOf(archiveAction),
-				endActions = listOf(editAction),
-			) {
-				TeamSeriesRow(series, state.seriesItemSize)
-			}
 
 			if (index < state.series.size - 1) {
 				HorizontalDivider()
@@ -161,34 +151,60 @@ fun TeamDetails(
 }
 
 @Composable
-private fun TeamSeriesRow(series: TeamSeriesListItem, itemSize: SeriesItemSize) {
-	TeamSeriesRow(
-		date = series.date,
-		total = series.total,
-		itemSize = itemSize,
-		teamChart = when (series) {
-			is TeamSeriesListItem.Summary -> null
-			is TeamSeriesListItem.Chart -> SeriesChartData(
-				numberOfGames = series.item.numberOfGames,
-				scoreRange = series.item.scoreRange,
-				model = series.item.chart,
-			)
-		},
-		memberCharts = when (series) {
-			is TeamSeriesListItem.Summary -> null
-			is TeamSeriesListItem.Chart ->
-				series.item.members.map {
-					TeamMemberSeriesChartData(
-						name = it.name,
-						chart = SeriesChartData(
-							numberOfGames = series.item.numberOfGames,
-							scoreRange = it.scoreRange,
-							model = it.chart,
-						),
-					)
-				}
-		},
+private fun TeamSeriesRow(
+	series: TeamSeriesListItem,
+	itemSize: SeriesItemSize,
+	onClick: () -> Unit,
+	onArchive: () -> Unit,
+	onEdit: () -> Unit,
+) {
+	val archiveAction = SwipeAction(
+		icon = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_archive),
+		background = colorResource(
+			ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+		),
+		onSwipe = onArchive,
 	)
+
+	val editAction = SwipeAction(
+		icon = rememberVectorPainter(Icons.Default.Edit),
+		background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.blue_300),
+		onSwipe = onEdit,
+	)
+
+	SwipeableActionsBox(
+		startActions = listOf(archiveAction),
+		endActions = listOf(editAction),
+	) {
+		TeamSeriesRow(
+			date = series.date,
+			total = series.total,
+			itemSize = itemSize,
+			teamChart = when (series) {
+				is TeamSeriesListItem.Summary -> null
+				is TeamSeriesListItem.Chart -> SeriesChartData(
+					numberOfGames = series.item.numberOfGames,
+					scoreRange = series.item.scoreRange,
+					model = series.item.chart,
+				)
+			},
+			memberCharts = when (series) {
+				is TeamSeriesListItem.Summary -> null
+				is TeamSeriesListItem.Chart ->
+					series.item.members.map {
+						TeamMemberSeriesChartData(
+							name = it.name,
+							chart = SeriesChartData(
+								numberOfGames = series.item.numberOfGames,
+								scoreRange = it.scoreRange,
+								model = it.chart,
+							),
+						)
+					}
+			},
+			onClick = onClick,
+		)
+	}
 }
 
 @Composable

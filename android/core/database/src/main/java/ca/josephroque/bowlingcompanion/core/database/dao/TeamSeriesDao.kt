@@ -49,8 +49,10 @@ abstract class TeamSeriesDao {
 		"""
 			SELECT
 				team_series.`date` AS `date`,
+				games.id AS game_id,
 				games.score AS score,
 				games.`index` AS game_index,
+				games.archived_on IS NOT NULL AS game_is_archived,
 				bowlers.id AS bowler_id,
 				bowlers.name AS bowler_name
 			FROM team_series
@@ -59,7 +61,7 @@ abstract class TeamSeriesDao {
 			INNER JOIN series
 				ON series.id = team_series_series.series_id AND series.archived_on IS NULL
 			INNER JOIN games
-				ON games.series_id = series.id AND games.archived_on IS NULL
+				ON games.series_id = series.id
 			INNER JOIN leagues
 				ON leagues.id = series.league_id
 			INNER JOIN bowlers
@@ -68,7 +70,9 @@ abstract class TeamSeriesDao {
 			ORDER BY team_series_series.position ASC, games.`index` ASC
 		""",
 	)
-	abstract fun getTeamSeriesDetails(teamSeriesId: TeamSeriesID): List<TeamSeriesDetailItemEntity>
+	abstract fun getTeamSeriesDetails(
+		teamSeriesId: TeamSeriesID,
+	): Flow<List<TeamSeriesDetailItemEntity>>
 
 	@Query(
 		"""

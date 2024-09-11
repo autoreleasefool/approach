@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedReposito
 import ca.josephroque.bowlingcompanion.core.data.repository.TeamSeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.TeamsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesGameDetails
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSummary
@@ -242,7 +243,7 @@ class TeamDetailsViewModel @Inject constructor(
 	private fun loadDetails(teamSeriesId: TeamSeriesID) {
 		viewModelScope.launch {
 			val series = teamSeries.first().firstOrNull { it.id == teamSeriesId } ?: return@launch
-			val details = teamSeriesRepository.getTeamSeriesDetails(teamSeriesId) ?: return@launch
+			val details = teamSeriesRepository.getTeamSeriesDetails(teamSeriesId).first()
 			teamSeriesDetails.update {
 				it.toMutableMap().apply {
 					put(
@@ -262,10 +263,15 @@ class TeamDetailsViewModel @Inject constructor(
 								TeamMemberSeriesListChartItem(
 									id = member.id,
 									name = member.name,
-									scoreRange = member.scores.range(),
+									scoreRange = member.games.map(TeamSeriesGameDetails::score).range(),
 									chart = ChartEntryModelProducer(
-										member.scores.mapIndexed { index, score ->
-											entryOf(index.toFloat(), score.toFloat())
+										details.scores.indices.map { gameIndex ->
+											val game = member.games.firstOrNull { game -> game.index == gameIndex }
+											if (game == null) {
+												entryOf(gameIndex.toFloat(), 0f)
+											} else {
+												entryOf(gameIndex.toFloat(), game.score.toFloat())
+											}
 										},
 									),
 								)

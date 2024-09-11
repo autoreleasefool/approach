@@ -33,7 +33,18 @@ data class TeamSeriesDetails(
 	val members: List<TeamSeriesMemberDetails>,
 )
 
-data class TeamSeriesMemberDetails(val id: BowlerID, val name: String, val scores: List<Int>)
+data class TeamSeriesMemberDetails(
+	val id: BowlerID,
+	val name: String,
+	val games: List<TeamSeriesGameDetails>,
+)
+
+data class TeamSeriesGameDetails(
+	val id: GameID,
+	val index: Int,
+	val score: Int,
+	val isArchived: Boolean,
+)
 
 data class TeamSeriesConnect(
 	val id: TeamSeriesID,

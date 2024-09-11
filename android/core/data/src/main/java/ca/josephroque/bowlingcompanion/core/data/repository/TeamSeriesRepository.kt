@@ -18,9 +18,9 @@ interface TeamSeriesRepository {
 		sortOrder: TeamSeriesSortOrder,
 	): Flow<List<TeamSeriesSummary>>
 	fun getArchivedTeamSeries(): Flow<List<ArchivedTeamSeries>>
+	fun getTeamSeriesDetails(teamSeriesId: TeamSeriesID): Flow<TeamSeriesDetails>
 
-	suspend fun getTeamSeriesDetails(teamSeriesId: TeamSeriesID): TeamSeriesDetails?
-
+	suspend fun addGameToTeamSeries(teamSeriesId: TeamSeriesID)
 	suspend fun insertTeamSeries(teamSeries: TeamSeriesCreate)
 	suspend fun insertTeamSeries(teamSeries: TeamSeriesConnect)
 	suspend fun updateTeamSeries(teamSeries: TeamSeriesUpdate)
