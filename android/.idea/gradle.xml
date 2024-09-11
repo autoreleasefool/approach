@@ -113,6 +113,8 @@
             <option value="$PROJECT_DIR$/feature/teamdetails/ui" />
             <option value="$PROJECT_DIR$/feature/teamform" />
             <option value="$PROJECT_DIR$/feature/teamform/ui" />
+            <option value="$PROJECT_DIR$/feature/teamseriesdetails" />
+            <option value="$PROJECT_DIR$/feature/teamseriesdetails/ui" />
             <option value="$PROJECT_DIR$/feature/teamslist" />
             <option value="$PROJECT_DIR$/feature/teamslist/ui" />
           </set>
