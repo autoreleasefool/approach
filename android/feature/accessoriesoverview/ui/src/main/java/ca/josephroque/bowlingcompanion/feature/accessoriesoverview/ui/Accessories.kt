@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.core.designsystem.components.list.HeaderAction
+import ca.josephroque.bowlingcompanion.core.designsystem.components.HeaderAction
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionFooter
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.MutedEmptyState

@@ -26,10 +26,10 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DeleteDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChangesDialog
+import ca.josephroque.bowlingcompanion.core.designsystem.components.HeaderAction
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSectionFooter
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSectionHeader
-import ca.josephroque.bowlingcompanion.core.designsystem.components.form.HeaderAction
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
@@ -90,14 +90,6 @@ fun TeamForm(
 				),
 				modifier = Modifier.padding(top = 16.dp),
 			)
-
-			if (state.members.isEmpty()) {
-				Text(
-					text = stringResource(R.string.team_form_property_team_members_none),
-					style = MaterialTheme.typography.bodyMedium,
-					modifier = Modifier.padding(16.dp),
-				)
-			}
 
 			state.membersErrorId?.let {
 				Text(

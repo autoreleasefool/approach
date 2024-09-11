@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
-import ca.josephroque.bowlingcompanion.core.designsystem.components.list.HeaderAction
+import ca.josephroque.bowlingcompanion.core.designsystem.components.HeaderAction
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.footer
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.MutedEmptyState
