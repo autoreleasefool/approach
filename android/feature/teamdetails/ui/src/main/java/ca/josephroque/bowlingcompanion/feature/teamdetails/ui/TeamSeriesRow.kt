@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.teamdetails.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,6 +46,7 @@ fun TeamSeriesRow(
 	total: Int,
 	teamChart: SeriesChartData?,
 	memberCharts: List<TeamMemberSeriesChartData>?,
+	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 	itemSize: SeriesItemSize = SeriesItemSize.COMPACT,
 ) {
@@ -52,7 +54,8 @@ fun TeamSeriesRow(
 		contentAlignment = Alignment.BottomCenter,
 		modifier = modifier
 			.fillMaxWidth()
-			.widthIn(max = 600.dp),
+			.widthIn(max = 600.dp)
+			.clickable(onClick = onClick),
 	) {
 		Column {
 			SeriesRow(
@@ -160,6 +163,7 @@ private fun TeamSeriesRowPreview() {
 	Surface {
 		Column {
 			TeamSeriesRow(
+				onClick = {},
 				date = LocalDate.parse("2023-09-24"),
 				total = 1760,
 				teamChart = SeriesChartData(

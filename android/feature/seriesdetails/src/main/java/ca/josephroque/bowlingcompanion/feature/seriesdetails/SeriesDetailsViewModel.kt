@@ -66,10 +66,7 @@ class SeriesDetailsViewModel @Inject constructor(
 				)
 			} else {
 				seriesDetails.scores.mapIndexed { index, value ->
-					entryOf(
-						index.toFloat(),
-						value.toFloat(),
-					)
+					entryOf(index.toFloat(), value.toFloat())
 				}
 			},
 		).await()

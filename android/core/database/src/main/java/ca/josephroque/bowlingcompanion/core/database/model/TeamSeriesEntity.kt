@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
@@ -33,7 +34,9 @@ data class TeamSeriesEntity(
 data class TeamSeriesDetailItemEntity(
 	val date: LocalDate,
 	val score: Int,
+	@ColumnInfo(name = "game_id") val gameId: GameID,
 	@ColumnInfo(name = "game_index") val gameIndex: Int,
+	@ColumnInfo(name = "game_is_archived") val gameIsArchived: Boolean,
 	@ColumnInfo(name = "bowler_id") val bowlerId: BowlerID,
 	@ColumnInfo(name = "bowler_name") val bowlerName: String,
 )

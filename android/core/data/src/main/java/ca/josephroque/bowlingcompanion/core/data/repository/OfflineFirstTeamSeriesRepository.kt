@@ -15,6 +15,7 @@ import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesConnect
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesDetails
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesGameDetails
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesMemberDetails
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSortOrder
@@ -23,6 +24,8 @@ import ca.josephroque.bowlingcompanion.core.model.TeamSeriesUpdate
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
@@ -42,26 +45,47 @@ class OfflineFirstTeamSeriesRepository @Inject constructor(
 	override fun getArchivedTeamSeries(): Flow<List<ArchivedTeamSeries>> =
 		teamSeriesDao.getArchivedTeamSeries()
 
-	override suspend fun getTeamSeriesDetails(teamSeriesId: TeamSeriesID): TeamSeriesDetails? =
-		withContext(ioDispatcher) {
-			val items = teamSeriesDao.getTeamSeriesDetails(teamSeriesId)
+	override fun getTeamSeriesDetails(teamSeriesId: TeamSeriesID): Flow<TeamSeriesDetails> =
+		teamSeriesDao.getTeamSeriesDetails(teamSeriesId)
+			.mapNotNull { details ->
+				val date = details.firstOrNull()?.date ?: return@mapNotNull null
 
-			val date = items.firstOrNull()?.date ?: return@withContext null
+				val members = details.groupBy { it.bowlerId }.map { (bowlerId, memberDetails) ->
+					val name = memberDetails.first().bowlerName
+					val games = memberDetails.map {
+						TeamSeriesGameDetails(
+							id = it.gameId,
+							index = it.gameIndex,
+							score = it.score,
+							isArchived = it.gameIsArchived,
+						)
+					}
+					TeamSeriesMemberDetails(bowlerId, name, games)
+				}
 
-			val members = items.groupBy { it.bowlerId }.map { (bowlerId, scores) ->
-				val name = scores.first().bowlerName
-				val bowlerScores = scores.map { it.score }
-				TeamSeriesMemberDetails(bowlerId, name, bowlerScores)
+				TeamSeriesDetails(
+					id = teamSeriesId,
+					date = date,
+					total = members.sumOf { member -> member.games.sumOf { game -> game.score } },
+					scores = details
+						.groupBy { it.gameIndex }
+						.map { (_, scores) ->
+							scores
+								.filter { !it.gameIsArchived }
+								.sumOf { it.score }
+						},
+					members = members,
+				)
 			}
 
-			TeamSeriesDetails(
-				id = teamSeriesId,
-				date = date,
-				total = members.sumOf { it.scores.sum() },
-				scores = items.groupBy { it.gameIndex }.map { (_, scores) -> scores.sumOf { it.score } },
-				members = members,
-			)
+	override suspend fun addGameToTeamSeries(teamSeriesId: TeamSeriesID) = withContext(ioDispatcher) {
+		transactionRunner {
+			val series = seriesDao.getTeamSeriesIds(teamSeriesId).first()
+			for (seriesId in series) {
+				seriesRepository.addGameToSeries(seriesId)
+			}
 		}
+	}
 
 	override suspend fun insertTeamSeries(teamSeries: TeamSeriesConnect) = withContext(ioDispatcher) {
 		transactionRunner {
