@@ -5,7 +5,7 @@
 	<string name="quick_play_get_started">Start Bowling</string>
 	<string name="quick_play_number_of_games">Number of Games</string>
 	<string name="cd_add_bowler">Add Bowler</string>
-	<string name="quick_play_no_league_selected">No league selected</string>
+	<string name="quick_play_no_league_selected">Tap to select a league</string>
 
 	<string name="quick_play_learn_how_to_use">Learn how to use Quick Play</string>
 	<string name="quick_play_how_to_use">How to use Quick Play</string>
