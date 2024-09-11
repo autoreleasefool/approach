@@ -28,7 +28,7 @@ enum class FeatureFlag(
 	MANUAL_SERIES_FORM("ManualSeriesForm", "2024-03-28", RolloutStage.RELEASE),
 	MANUAL_TEAM_SERIES_FORM("ManualTeamSeriesForm", "2024-08-30", RolloutStage.RELEASE),
 	PRE_BOWL_FORM("PreBowlForm", "2024-03-24", RolloutStage.RELEASE),
-	TEAMS("Teams", "2024-08-16", RolloutStage.DEVELOPMENT),
+	TEAMS("Teams", "2024-08-16", RolloutStage.RELEASE),
 }
 
 internal fun FeatureFlag.isEnabled(): Boolean = if (BuildConfig.DEBUG) {
