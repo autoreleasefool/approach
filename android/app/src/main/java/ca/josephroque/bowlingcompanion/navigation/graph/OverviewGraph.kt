@@ -274,6 +274,7 @@ fun NavGraphBuilder.overviewGraph(
 			navController.navigateToBowlerPickerForResult(
 				selectedIds = ids,
 				navResultCallback = result,
+				kind = BowlerKind.PLAYABLE,
 			)
 		},
 	)
