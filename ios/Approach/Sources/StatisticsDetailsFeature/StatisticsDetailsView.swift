@@ -58,59 +58,31 @@ public struct StatisticsDetailsView: View {
 				FilterButton(isActive: false) { send(.didTapSourcePicker) }
 			}
 		}
-		.sheet(
-			item: $store.scope(state: \.destination?.list, action: \.internal.destination.list)
-		) { store in
-			NavigationStack {
-				StatisticsDetailsListView(store: store)
-					.toolbar(.hidden, for: .navigationBar)
-			}
-			.presentationBackgroundInteraction(.enabled(upThrough: .medium))
-			.presentationDetents(
-				[
-					StatisticsDetails.defaultSheetDetent,
-					.medium,
-					.large,
-				],
-				selection: $store.sheetDetent
-			)
-			.interactiveDismissDisabled()
-			.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
-		}
-		.onChange(of: store.willAdjustLaneLayoutAt) {
-			send(
-				.didAdjustChartSize(
-					backdropSize: measuredBackdropSize,
-					filtersSize: store.filterViewSize
-				),
-				animation: .easeInOut
-			)
-		}
-		.onChange(of: sheetContentSize) {
-			send(
-				.didAdjustChartSize(
-					backdropSize: measuredBackdropSize,
-					filtersSize: store.filterViewSize
-				),
-				animation: .easeInOut
-			)
-		}
 		.task { await send(.didFirstAppear).finish() }
 		.onAppear { send(.onAppear) }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.sheet(
-			item: $store.scope(state: \.destination?.sourcePicker, action: \.internal.destination.sourcePicker)
-		) { store in
-			NavigationStack {
-				StatisticsSourcePickerView(store: store)
-			}
-			.presentationDetents([.medium, .large])
-		}
 		.sourcePicker($store.scope(state: \.destination?.sourcePicker, action: \.internal.destination.sourcePicker))
 		.sharing($store.scope(state: \.destination?.sharing, action: \.internal.destination.sharing))
+		.list(
+			$store.scope(state: \.destination?.list, action: \.internal.destination.list),
+			sheetDetent: $store.sheetDetent,
+			sheetContentSize: $sheetContentSize
+		)
+		.trackShouldAdjustChartSize(
+			willAdjustLaneLayoutAt: store.willAdjustLaneLayoutAt,
+			sheetContentSize: sheetContentSize
+		) {
+			send(
+				.didAdjustChartSize(
+					backdropSize: measuredBackdropSize,
+					filtersSize: store.filterViewSize
+				),
+				animation: .easeInOut
+			)
+		}
 	}
 
-	private var measuredBackdropSize: CGSize {
+	@MainActor private var measuredBackdropSize: CGSize {
 		let sheetContentSize = store.ignoreSheetSizeForBackdrop ? .zero : self.sheetContentSize
 		return .init(
 			width: windowContentSize.width,
@@ -123,6 +95,16 @@ private struct SheetContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct WindowContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 
 @MainActor extension View {
+	fileprivate func trackShouldAdjustChartSize(
+		willAdjustLaneLayoutAt: Date,
+		sheetContentSize: CGSize,
+		onChange: @escaping () -> Void
+	) -> some View {
+		self
+			.onChange(of: willAdjustLaneLayoutAt, onChange)
+			.onChange(of: sheetContentSize, onChange)
+	}
+
 	fileprivate func sharing(_ store: Binding<StoreOf<Sharing>?>) -> some View {
 		sheet(item: store) { store in
 			NavigationStack {
@@ -137,6 +119,30 @@ private struct WindowContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 				StatisticsSourcePickerView(store: store)
 			}
 			.presentationDetents([.medium, .large])
+		}
+	}
+
+	fileprivate func list(
+		_ store: Binding<StoreOf<StatisticsDetailsList>?>,
+		sheetDetent: Binding<PresentationDetent>,
+		sheetContentSize: Binding<CGSize>
+	) -> some View {
+		sheet(item: store) { store in
+			NavigationStack {
+				StatisticsDetailsListView(store: store)
+					.toolbar(.hidden, for: .navigationBar)
+			}
+			.presentationBackgroundInteraction(.enabled(upThrough: .medium))
+			.presentationDetents(
+				[
+					StatisticsDetails.defaultSheetDetent,
+					.medium,
+					.large,
+				],
+				selection: sheetDetent
+			)
+			.interactiveDismissDisabled()
+			.measure(key: SheetContentSizeKey.self, to: sheetContentSize)
 		}
 	}
 }

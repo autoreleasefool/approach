@@ -23,144 +23,75 @@ public struct SettingsView: View {
 	public var body: some View {
 		List {
 			if store.isShowingDeveloperOptions {
-				Section {
-					Button { send(.didTapFeatureFlags) } label: {
-						Text(Strings.Settings.FeatureFlags.title)
-					}
-					.buttonStyle(.navigation)
-
-					Button { send(.didTapPopulateDatabase) } label: {
-						Text(Strings.Settings.DeveloperOptions.populateDatabase)
-					}
-				}
+				DeveloperOptionsSection(
+					onTapFeatureFlagsButton: { send(.didTapFeatureFlags) },
+					onTapPopulateDatabaseButton: { send(.didTapPopulateDatabase) }
+				)
 			}
 
-			Section {
-				Button { send(.didTapOpponents) } label: {
-					Text(Strings.Opponent.List.title)
-				}
-				.buttonStyle(.navigation)
-			} footer: {
-				Text(Strings.Settings.Opponents.footer)
-			}
+			OpponentsSection(onTapOpponentsButton: { send(.didTapOpponents) })
 
-			Section {
-				Button { send(.didTapStatistics) } label: {
-					Text(Strings.Settings.Statistics.title)
-				}
-				.buttonStyle(.navigation)
-			} footer: {
-				Text(Strings.Settings.Statistics.footer)
-			}
+			StatisticsSection(onTapStatisticsButton: { send(.didTapStatistics) })
 
 			if !store.isLoadingAppIcon {
-				Section {
-					Button { send(.didTapAppIcon) } label: {
-						AppIconView(
-							Strings.Settings.AppIcon.title,
-							icon: .image(store.appIconImage),
-							isCompact: true
-						)
-					}
-					.buttonStyle(.navigation)
-				}
-			}
-
-			Section {
-				Button { send(.didTapArchive) } label: {
-					Text(Strings.Settings.Archive.title)
-				}
-				.buttonStyle(.navigation)
-			} footer: {
-				Text(Strings.Settings.Archive.footer)
-			}
-
-			Section(Strings.Settings.Help.title) {
-				Button(Strings.Settings.Help.reportBug) { send(.didTapReportBugButton) }
-				Button(Strings.Settings.Help.sendFeedback) { send(.didTapSendFeedbackButton) }
-				if store.isDeveloperOptionsEnabled {
-					Button(Strings.Settings.Help.forceCrash) { send(.didTapForceCrashButton) }
-				}
-				NavigationLink(
-					Strings.Settings.Help.acknowledgements,
-					destination: AcknowledgementsView()
-						.onFirstAppear { send(.didShowAcknowledgements) }
-				)
-				Button(Strings.Settings.Analytics.title) { send(.didTapAnalyticsButton) }
-					.buttonStyle(.navigation)
-			}
-
-			Section(Strings.Settings.Data.title) {
-				if store.isImportEnabled {
-					Button(Strings.Settings.Data.import) { send(.didTapImportButton) }
-						.buttonStyle(.navigation)
-				}
-
-				Button(Strings.Settings.Data.export) { send(.didTapExportButton) }
-					.buttonStyle(.navigation)
-			}
-
-			Section {
-				NavigationLink(
-					Strings.Settings.Help.developer,
-					destination: DeveloperDetailsView()
-						.onFirstAppear { send(.didShowDeveloperDetails) }
-				)
-				Button(Strings.Settings.Help.viewSource) { send(.didTapViewSource) }
-				// FIXME: enable tip jar
-				//				NavigationLink("Tip Jar", destination: TipJarView())
-			} header: {
-				Text(Strings.Settings.Help.Development.title)
-			} footer: {
-				Text(Strings.Settings.Help.Development.help(store.appName))
-			}
-			.sheet(isPresented: $store.isShowingBugReportEmail) {
-				EmailView(
-					content: .init(
-						recipients: [Strings.Settings.Help.ReportBug.email],
-						subject: Strings.Settings.Help.ReportBug.subject(store.appVersion)
-					)
-				)
-			}
-			.sheet(isPresented: $store.isShowingSendFeedbackEmail) {
-				EmailView(
-					content: .init(
-						recipients: [Strings.Settings.Help.SendFeedback.email]
-					)
+				AppIconSection(
+					appIconImage: store.appIconImage,
+					onTapAppIconButton: { send(.didTapAppIcon) }
 				)
 			}
 
-			Section {
-				Button {
-					send(.didTapVersionNumber)
-				} label: {
-					LabeledContent(Strings.Settings.AppInfo.version, value: store.appVersion)
-						.contentShape(Rectangle())
-				}
-				.buttonStyle(.plain)
-			} header: {
-				Text(Strings.Settings.AppInfo.title)
-			} footer: {
-				Text(Strings.Settings.AppInfo.copyright)
-					.font(.caption)
-			}
+			ArchiveSection(onTapArchiveButton: { send(.didTapArchive) })
+
+			HelpSection(
+				isForceCrashButtonVisible: store.isDeveloperOptionsEnabled,
+				onTapReportBugButton: { send(.didTapReportBugButton) },
+				onTapSendFeedbackButton: { send(.didTapSendFeedbackButton) },
+				onTapForceCrashButton: { send(.didTapForceCrashButton) },
+				onTapAnalyticsButton: { send(.didTapAnalyticsButton) },
+				onAcknowledgementsFirstAppear: { send(.didShowAcknowledgements) }
+			)
+
+			DataSection(
+				isImportButtonVisible: store.isImportEnabled,
+				onTapImportButton: { send(.didTapImportButton) },
+				onTapExportButton: { send(.didTapExportButton) }
+			)
+
+			DevelopmentSection(
+				appName: store.appName,
+				appVersion: store.appVersion,
+				onTapViewSourceButton: { send(.didTapViewSource) },
+				onDeveloperDetailsFirstAppear: { send(.didShowDeveloperDetails) },
+				isShowingBugReportEmail: $store.isShowingBugReportEmail,
+				isShowingSendFeedbackEmail: $store.isShowingSendFeedbackEmail
+			)
+
+			AppInfoSection(
+				appVersion: store.appVersion,
+				onTapVersionNumber: { send(.didTapVersionNumber) }
+			)
 		}
 		.navigationTitle(Strings.Settings.title)
 		.onFirstAppear { send(.didFirstAppear) }
 		.onAppear { send(.onAppear) }
-		.archive($store.scope(state: \.destination?.archive, action: \.internal.destination.archive))
-		.appIconList($store.scope(state: \.destination?.appIcon, action: \.internal.destination.appIcon))
-		.opponentsList($store.scope(state: \.destination?.opponentsList, action: \.internal.destination.opponentsList))
-		.featureFlagsList($store.scope(state: \.destination?.featureFlags, action: \.internal.destination.featureFlags))
-		.statisticsSettings($store.scope(state: \.destination?.statistics, action: \.internal.destination.statistics))
-		.analytics($store.scope(state: \.destination?.analytics, action: \.internal.destination.analytics))
-		.export($store.scope(state: \.destination?.export, action: \.internal.destination.export))
-		.import($store.scope(state: \.destination?.import, action: \.internal.destination.import))
-		.alert($store.scope(state: \.destination?.alert, action: \.internal.destination.alert))
+		.destinations($store)
 	}
 }
 
 @MainActor extension View {
+	fileprivate func destinations(_ store: Bindable<StoreOf<Settings>>) -> some View {
+		self
+			.archive(store.scope(state: \.destination?.archive, action: \.internal.destination.archive))
+			.appIconList(store.scope(state: \.destination?.appIcon, action: \.internal.destination.appIcon))
+			.opponentsList(store.scope(state: \.destination?.opponentsList, action: \.internal.destination.opponentsList))
+			.featureFlagsList(store.scope(state: \.destination?.featureFlags, action: \.internal.destination.featureFlags))
+			.statisticsSettings(store.scope(state: \.destination?.statistics, action: \.internal.destination.statistics))
+			.analytics(store.scope(state: \.destination?.analytics, action: \.internal.destination.analytics))
+			.export(store.scope(state: \.destination?.export, action: \.internal.destination.export))
+			.import(store.scope(state: \.destination?.import, action: \.internal.destination.import))
+			.alert(store.scope(state: \.destination?.alert, action: \.internal.destination.alert))
+	}
+
 	fileprivate func analytics(_ store: Binding<StoreOf<AnalyticsSettings>?>) -> some View {
 		navigationDestination(item: store) {
 			AnalyticsSettingsView(store: $0)

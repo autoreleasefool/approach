@@ -50,13 +50,7 @@ public struct BowlersListView: View {
 		.onAppear { send(.onAppear) }
 		.onFirstAppear { send(.didFirstAppear) }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.details($store.scope(state: \.destination?.details, action: \.internal.destination.details))
-		.bowlerEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
-		.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
-		.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
-		.leaguesList($store.scope(state: \.destination?.leagues, action: \.internal.destination.leagues))
-		.gamesList($store.scope(state: \.destination?.games, action: \.internal.destination.games))
-		.announcement($store.scope(state: \.destination?.announcement, action: \.internal.destination.announcement))
+		.destinations($store)
 	}
 
 	@MainActor @ViewBuilder private var quickLaunch: some View {
@@ -114,6 +108,17 @@ public struct BowlersListView: View {
 }
 
 @MainActor extension View {
+	fileprivate func destinations(_ store: Bindable<StoreOf<BowlersList>>) -> some View {
+		self
+			.details(store.scope(state: \.destination?.details, action: \.internal.destination.details))
+			.bowlerEditor(store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
+			.sortOrder(store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
+			.seriesEditor(store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
+			.leaguesList(store.scope(state: \.destination?.leagues, action: \.internal.destination.leagues))
+			.gamesList(store.scope(state: \.destination?.games, action: \.internal.destination.games))
+			.announcement(store.scope(state: \.destination?.announcement, action: \.internal.destination.announcement))
+	}
+
 	fileprivate func bowlerEditor(_ store: Binding<StoreOf<BowlerEditor>?>) -> some View {
 		sheet(item: store) { (store: StoreOf<BowlerEditor>) in
 			NavigationStack {
