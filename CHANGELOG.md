@@ -1,9 +1,10 @@
 # Most recent version
 
-## iOS 1.6.1b27
+## iOS 1.7.0b28
 
 ```
-- Test release. No new features
+- Feat: App Icons that support iOS 18 Dark and Tinted modes
+- Fix: Xcode 16 compilation
 ```
 
 ## Android 4.1.1b327
@@ -16,6 +17,12 @@
 ---
 
 # Legacy iOS Versions
+
+## iOS 1.6.1b27
+
+```
+- Test release. No new features
+```
 
 ## iOS 1.6.1b26
 
