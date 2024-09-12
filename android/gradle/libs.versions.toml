@@ -64,6 +64,7 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
 sentry = { group = "io.sentry", name = "sentry-android", version.ref = "sentry" }
+sentry-compose = { group = "io.sentry", name = "sentry-compose-android", version.ref = "sentry" }
 swipe = { group = "me.saket.swipe", name = "swipe", version.ref = "swipe" }
 telemetrydeck-kotlinsdk = { group = "com.github.TelemetryDeck", name = "KotlinSDK", version.ref = "telemetryDeck" }
 vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }

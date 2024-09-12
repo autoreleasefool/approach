@@ -22,6 +22,7 @@ import ca.josephroque.bowlingcompanion.ui.rememberApproachAppState
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import dagger.hilt.android.AndroidEntryPoint
+import io.sentry.compose.withSentryObservableEffect
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -57,6 +58,7 @@ class MainActivity : ComponentActivity() {
 
 					val bottomSheetNavigator = rememberBottomSheetNavigator()
 					val navController = rememberNavController(bottomSheetNavigator)
+						.withSentryObservableEffect()
 
 					val appState = rememberApproachAppState(
 						bottomSheetNavigator = bottomSheetNavigator,
