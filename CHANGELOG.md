@@ -1,10 +1,9 @@
 # Most recent version
 
-## iOS 1.7.0b28
+## iOS 1.7.0b29
 
 ```
-- Feat: App Icons that support iOS 18 Dark and Tinted modes
-- Fix: Xcode 16 compilation
+- Fix: App Icon previews are correctly shown in app
 ```
 
 ## Android 4.1.1b327
@@ -17,6 +16,13 @@
 ---
 
 # Legacy iOS Versions
+
+## iOS 1.7.0b28
+
+```
+- Feat: App Icons that support iOS 18 Dark and Tinted modes
+- Fix: Xcode 16 compilation
+```
 
 ## iOS 1.6.1b27
 
