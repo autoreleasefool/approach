@@ -150,16 +150,6 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AppInfoServiceTests"
-               BuildableName = "AppInfoServiceTests"
-               BlueprintName = "AppInfoServiceTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "ArchiveListFeatureTests"
                BuildableName = "ArchiveListFeatureTests"
                BlueprintName = "ArchiveListFeatureTests"
@@ -220,16 +210,6 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DatabaseLibraryTests"
-               BuildableName = "DatabaseLibraryTests"
-               BlueprintName = "DatabaseLibraryTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "DatabaseServiceTests"
                BuildableName = "DatabaseServiceTests"
                BlueprintName = "DatabaseServiceTests"
@@ -260,16 +240,6 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EquatableLibraryTests"
-               BuildableName = "EquatableLibraryTests"
-               BlueprintName = "EquatableLibraryTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "ErrorsFeatureTests"
                BuildableName = "ErrorsFeatureTests"
                BlueprintName = "ErrorsFeatureTests"
@@ -280,49 +250,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ExtensionsLibraryTests"
-               BuildableName = "ExtensionsLibraryTests"
-               BlueprintName = "ExtensionsLibraryTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FeatureFlagsLibraryTests"
-               BuildableName = "FeatureFlagsLibraryTests"
-               BlueprintName = "FeatureFlagsLibraryTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "FeatureFlagsListFeatureTests"
                BuildableName = "FeatureFlagsListFeatureTests"
                BlueprintName = "FeatureFlagsListFeatureTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FeatureFlagsServiceTests"
-               BuildableName = "FeatureFlagsServiceTests"
-               BlueprintName = "FeatureFlagsServiceTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FileManagerServiceTests"
-               BuildableName = "FileManagerServiceTests"
-               BlueprintName = "FileManagerServiceTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
@@ -583,16 +513,6 @@
                BlueprintIdentifier = "OpponentsListFeatureTests"
                BuildableName = "OpponentsListFeatureTests"
                BlueprintName = "OpponentsListFeatureTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "PasteboardServiceTests"
-               BuildableName = "PasteboardServiceTests"
-               BlueprintName = "PasteboardServiceTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
@@ -900,29 +820,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "StoreReviewServiceTests"
-               BuildableName = "StoreReviewServiceTests"
-               BlueprintName = "StoreReviewServiceTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "StringsLibraryTests"
                BuildableName = "StringsLibraryTests"
                BlueprintName = "StringsLibraryTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "SwiftUIExtensionsLibraryTests"
-               BuildableName = "SwiftUIExtensionsLibraryTests"
-               BlueprintName = "SwiftUIExtensionsLibraryTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
