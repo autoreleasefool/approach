@@ -183,8 +183,12 @@ internal fun GamesEditorScreen(
 		when (bottomSheetState.currentValue) {
 			SheetValue.Expanded ->
 				backgroundCoverOpacity.animateTo(0.6F)
-			SheetValue.PartiallyExpanded, SheetValue.Hidden ->
+			SheetValue.PartiallyExpanded ->
 				backgroundCoverOpacity.animateTo(0F)
+			SheetValue.Hidden -> {
+				backgroundCoverOpacity.animateTo(0F)
+				bottomSheetState.partialExpand()
+			}
 		}
 	}
 
@@ -244,7 +248,6 @@ internal fun GamesEditorScreen(
 				onAction = { onAction(GamesEditorScreenUiAction.GamesEditor(it)) },
 			)
 		},
-		sheetSwipeEnabled = false,
 		sheetDragHandle = {
 			val dragHandleDescription =
 				stringResource(
