@@ -94,6 +94,16 @@ private fun DevelopmentModeSection(onAction: (SettingsUiAction) -> Unit) {
 		descriptionResourceId = R.string.settings_item_feature_flags_description,
 		onClick = { onAction(SettingsUiAction.FeatureFlagsClicked) },
 	)
+
+	Text(
+		text = stringResource(R.string.settings_item_force_crash),
+		style = MaterialTheme.typography.bodyMedium,
+		color = MaterialTheme.colorScheme.error,
+		modifier = Modifier
+			.fillMaxWidth()
+			.clickable(onClick = { onAction(SettingsUiAction.ForceCrashClicked) })
+			.padding(16.dp),
+	)
 }
 
 @Composable

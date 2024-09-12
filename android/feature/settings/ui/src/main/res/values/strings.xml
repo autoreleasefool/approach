@@ -5,6 +5,7 @@
 	<string name="settings_item_development_mode">Development Mode</string>
 	<string name="settings_item_feature_flags">Feature Flags</string>
 	<string name="settings_item_feature_flags_description">Only available during development</string>
+	<string name="settings_item_force_crash">Force crash</string>
 
 	<string name="settings_item_opponents_title">Opponents</string>
 	<string name="settings_item_opponents_description">Logs of all your past opponents and a record of your match play</string>

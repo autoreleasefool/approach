@@ -24,4 +24,5 @@ sealed interface SettingsUiAction {
 	data object SendFeedbackClicked : SettingsUiAction
 	data object ReportBugClicked : SettingsUiAction
 	data object FeatureFlagsClicked : SettingsUiAction
+	data object ForceCrashClicked : SettingsUiAction
 }

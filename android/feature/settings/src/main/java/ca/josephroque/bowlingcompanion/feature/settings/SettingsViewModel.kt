@@ -71,8 +71,11 @@ class SettingsViewModel @Inject constructor(
 			SettingsUiAction.SendFeedbackClicked -> showFeedback()
 			SettingsUiAction.ReportBugClicked -> showBugReport()
 			SettingsUiAction.FeatureFlagsClicked -> showFeatureFlags()
+			SettingsUiAction.ForceCrashClicked -> forceCrash()
 		}
 	}
+
+	private fun forceCrash(): Unit = throw RuntimeException("Forced crash")
 
 	private fun showFeedback() {
 		analyticsClient.trackEvent(SentFeedback)
