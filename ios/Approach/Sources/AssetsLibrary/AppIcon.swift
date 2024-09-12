@@ -1,3 +1,5 @@
+import UIKit
+
 public enum AppIcon: String, CaseIterable, Identifiable {
 	case primary = "AppIcon"
 	case dark = "AppIcon-Dark"
@@ -16,6 +18,14 @@ public enum AppIcon: String, CaseIterable, Identifiable {
 		case .christmas: return .seasonal
 		case .bisexual, .pride, .trans: return .pride
 		}
+	}
+
+	public var previewName: String {
+		"\(id)-Preview"
+	}
+
+	public var image: UIImage? {
+		UIImage(named: previewName)
 	}
 }
 

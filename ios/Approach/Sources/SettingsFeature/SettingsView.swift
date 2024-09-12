@@ -144,9 +144,9 @@ public struct SettingsView: View {
 extension Settings.State {
 	var appIconImage: UIImage {
 		if let currentAppIcon {
-			return UIImage(named: currentAppIcon.rawValue) ?? UIImage()
+			return currentAppIcon.image ?? UIImage()
 		} else {
-			return UIImage(named: "AppIcon") ?? UIImage()
+			return AppIcon.primary.image ?? UIImage()
 		}
 	}
 }

@@ -14,11 +14,11 @@ extension AppIconList {
 extension AppIconList.State {
 	var appIconImage: UIImage {
 		if let currentAppIcon {
-			return UIImage(named: currentAppIcon.rawValue) ?? UIImage()
+			return currentAppIcon.image ?? UIImage()
 		} else if isLoadingAppIcon {
 			return UIImage()
 		} else {
-			return UIImage(named: "AppIcon") ?? UIImage()
+			return AppIcon.primary.image ?? UIImage()
 		}
 	}
 }

@@ -35,7 +35,7 @@ extension AppIconView {
 		var image: UIImage {
 			switch self {
 			case let .appIcon(appIcon):
-				return UIImage(named: appIcon.rawValue) ?? UIImage()
+				return appIcon.image ?? UIImage()
 			case let .image(image):
 				return image
 			}

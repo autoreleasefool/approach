@@ -24,7 +24,7 @@ public struct Christmas2023AnnouncementView: View {
 				.font(.headline)
 				.multilineTextAlignment(.center)
 
-			Image(uiImage: UIImage(named: AppIcon.christmas.rawValue) ?? UIImage())
+			Image(uiImage: AppIcon.christmas.image ?? UIImage())
 				.resizable()
 				.scaledToFit()
 				.frame(width: .extraLargeIcon)
