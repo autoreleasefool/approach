@@ -35,8 +35,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Returns all the leagues
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), name: "Majors", average: nil),
-			.init(id: UUID(1), name: "Minors", average: nil),
+			.init(id: UUID(0), name: "Majors", recurrence: .repeating, average: nil),
+			.init(id: UUID(1), name: "Minors", recurrence: .repeating, average: nil),
 		])
 	}
 
@@ -57,7 +57,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let fetched = try await iterator.next()
 
 		// Returns one league
-		XCTAssertEqual(fetched, [.init(id: UUID(0), name: "Majors", average: nil)])
+		XCTAssertEqual(fetched, [.init(id: UUID(0), name: "Majors", recurrence: .once, average: nil)])
 	}
 
 	func testList_FilterByBowler_ReturnsBowlerLeagues() async throws {
@@ -77,7 +77,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let fetched = try await iterator.next()
 
 		// Returns one league
-		XCTAssertEqual(fetched, [.init(id: UUID(0), name: "Majors", average: nil)])
+		XCTAssertEqual(fetched, [.init(id: UUID(0), name: "Majors", recurrence: .repeating, average: nil)])
 	}
 
 	func testList_SortsByName() async throws {
@@ -99,9 +99,9 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Returns all the leagues sorted by name
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(1), name: "A League", average: nil),
-			.init(id: UUID(0), name: "B League", average: nil),
-			.init(id: UUID(2), name: "C League", average: nil),
+			.init(id: UUID(1), name: "A League", recurrence: .repeating, average: nil),
+			.init(id: UUID(0), name: "B League", recurrence: .repeating, average: nil),
+			.init(id: UUID(2), name: "C League", recurrence: .repeating, average: nil),
 		])
 	}
 
@@ -128,8 +128,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Returns all the leagues sorted by recently used ids
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), name: "B League", average: nil),
-			.init(id: UUID(1), name: "A League", average: nil),
+			.init(id: UUID(0), name: "B League", recurrence: .repeating, average: nil),
+			.init(id: UUID(1), name: "A League", recurrence: .repeating, average: nil),
 		])
 	}
 
@@ -159,8 +159,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Returns the leagues with averages
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), name: "Majors", average: 150),
-			.init(id: UUID(1), name: "Minors", average: 275),
+			.init(id: UUID(0), name: "Majors", recurrence: .repeating, average: 150),
+			.init(id: UUID(1), name: "Minors", recurrence: .repeating, average: 275),
 		])
 	}
 
@@ -193,7 +193,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Returns the leagues with only one score accounted for in the average
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), name: "Majors", average: 100),
+			.init(id: UUID(0), name: "Majors", recurrence: .repeating, average: 100),
 		])
 	}
 
@@ -224,7 +224,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Returns the league with only one score accounted for in the average
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), name: "Majors", average: 100),
+			.init(id: UUID(0), name: "Majors", recurrence: .repeating, average: 100),
 		])
 	}
 

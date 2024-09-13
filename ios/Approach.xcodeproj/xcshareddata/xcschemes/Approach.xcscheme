@@ -48,6 +48,48 @@
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "StatisticsWidgetEditorFeatureTests"
+               BuildableName = "StatisticsWidgetEditorFeatureTests"
+               BlueprintName = "StatisticsWidgetEditorFeatureTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BowlerDetailsFeatureTests"
+               BuildableName = "BowlerDetailsFeatureTests"
+               BlueprintName = "BowlerDetailsFeatureTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ZIPServiceTests"
+               BuildableName = "ZIPServiceTests"
+               BlueprintName = "ZIPServiceTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
