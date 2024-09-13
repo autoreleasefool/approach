@@ -14,6 +14,7 @@
 			tools:targetApi="31">
 
 		<meta-data android:name="io.sentry.dsn" android:value="${sentryAppDsn}" />
+		<meta-data android:name="com.telemetrydeck.sdk.appID" android:value="${telemetryDeckAppId}" />
 
 		<activity
 				android:name=".MainActivity"

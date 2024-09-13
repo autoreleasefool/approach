@@ -35,7 +35,7 @@ data class StatisticsWidget(
 		aggregation = TrackableFilter.AggregationFilter.ACCUMULATE,
 	)
 
-	val filterSource: TrackableFilter.Source
+	private val filterSource: TrackableFilter.Source
 		get() = when (source) {
 			is StatisticsWidgetSource.Bowler -> TrackableFilter.Source.Bowler(source.bowlerId)
 			is StatisticsWidgetSource.League -> TrackableFilter.Source.League(source.leagueId)

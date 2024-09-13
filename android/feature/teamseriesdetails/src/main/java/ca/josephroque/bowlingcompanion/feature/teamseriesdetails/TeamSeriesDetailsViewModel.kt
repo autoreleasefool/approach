@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class TeamSeriesDetailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
-	private val teamsRepository: TeamsRepository,
+	teamsRepository: TeamsRepository,
 	private val teamSeriesRepository: TeamSeriesRepository,
 	private val gamesRepository: GamesRepository,
 	private val analyticsClient: AnalyticsClient,

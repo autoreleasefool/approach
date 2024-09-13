@@ -88,7 +88,7 @@ fun LazyListScope.gamesList(
 
 		SwipeableActionsBox(
 			startActions = listOf(archiveAction),
-			modifier = Modifier.animateItemPlacement(),
+			modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
 		) {
 			GameRow(
 				index = it.index,

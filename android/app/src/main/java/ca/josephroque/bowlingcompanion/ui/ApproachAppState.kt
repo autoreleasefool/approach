@@ -22,10 +22,8 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 fun rememberApproachAppState(
 	bottomSheetNavigator: BottomSheetNavigator,
 	navController: NavHostController,
-): ApproachAppState {
-	return remember(bottomSheetNavigator, navController) {
-		ApproachAppState(bottomSheetNavigator, navController)
-	}
+): ApproachAppState = remember(bottomSheetNavigator, navController) {
+	ApproachAppState(bottomSheetNavigator, navController)
 }
 
 @OptIn(ExperimentalMaterialNavigationApi::class)

@@ -89,7 +89,7 @@ fun LazyListScope.gearList(
 		SwipeableActionsBox(
 			startActions = listOfNotNull(deleteAction),
 			endActions = listOfNotNull(editAction),
-			modifier = Modifier.animateItemPlacement(),
+			modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
 		) {
 			GearRow(
 				name = gear.name,

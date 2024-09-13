@@ -2,7 +2,6 @@
 <resources>
     <string name="team_series_list_add">Add Series</string>
 
-    <string name="team_details_team_members_list">Team Members</string>
     <string name="team_details_recent_series">Series</string>
 
     <string name="team_details_series_empty_title">No series found</string>
@@ -19,5 +18,5 @@
     <string name="team_series_archive_member_series_message">You\'re archiving a team series. Do you also want to archive the corresponding individual series for each bowler? You can choose to archive each of the series for the team\'s bowlers, or leave the bowler\'s series alone and only archive them from the team view.</string>
     <string name="team_series_archive_member_series_archive">Archive series for all Members</string>
     <string name="team_series_archive_member_series_keep">Archive, but keep the members\' series</string>
-    <string name="team_series_archive_member_series_dismiss">Nevermind, don\'t archive anything</string>
+    <string name="team_series_archive_member_series_dismiss">Never mind, don\'t archive anything</string>
 </resources>

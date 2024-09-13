@@ -89,7 +89,7 @@ fun LazyListScope.alleysList(
 		SwipeableActionsBox(
 			startActions = listOfNotNull(deleteAction),
 			endActions = listOfNotNull(editAction),
-			modifier = Modifier.animateItemPlacement(),
+			modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
 		) {
 			AlleyRow(
 				name = alley.name,

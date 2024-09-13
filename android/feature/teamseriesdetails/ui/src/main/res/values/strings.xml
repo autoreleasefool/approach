@@ -2,7 +2,6 @@
 <resources>
     <string name="team_series_team_title">%1$s — Team Series</string>
 
-    <string name="team_series_team_total">Total</string>
     <string name="team_series_game_archived">This game was archived. Swipe right to restore.</string>
 
     <string name="team_series_bowlers_game">Game %1$d, bowled by %2$s</string>

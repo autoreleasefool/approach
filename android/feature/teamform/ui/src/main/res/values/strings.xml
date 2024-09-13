@@ -9,7 +9,6 @@
 
     <string name="team_form_team_members">Team Members</string>
     <string name="team_form_manage_team_members">Manage</string>
-    <string name="team_form_property_team_members_add">Add team members</string>
     <string name="team_form_property_team_members_too_few">Must have at least 2 members</string>
     <string name="team_form_team_members_footer">Select the members of your team to bowl with. Once you\'ve created your team, you can\'t change the members later. You\'ll be able to adjust the team\'s order any time you start bowling.</string>
 </resources>

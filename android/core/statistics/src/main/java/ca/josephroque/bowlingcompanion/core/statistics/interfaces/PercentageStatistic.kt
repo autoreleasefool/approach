@@ -2,7 +2,9 @@ package ca.josephroque.bowlingcompanion.core.statistics.interfaces
 
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 import ca.josephroque.bowlingcompanion.core.statistics.utils.formatAsPercentage
+import java.util.Locale
 
+@Suppress("SameReturnValue")
 interface PercentageStatistic : Statistic {
 	val numeratorTitleResourceId: Int
 	val denominatorTitleResourceId: Int
@@ -25,7 +27,7 @@ interface PercentageStatistic : Statistic {
 
 	override val formattedValueDescription: String?
 		get() = if (includeNumeratorInFormattedValue && numerator > 0) {
-			String.format("%d/%d", numerator, denominator)
+			String.format(Locale.CANADA, "%d/%d", numerator, denominator)
 		} else {
 			null
 		}

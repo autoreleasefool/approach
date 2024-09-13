@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.map
 
 class SeriesPickerDataProvider @Inject constructor(
 	private val seriesRepository: SeriesRepository,
-	private val filter: String,
+	filter: String,
 ) : ResourcePickerDataProvider {
 	private val leagueId: LeagueID?
 	private val preBowl: SeriesPreBowl?

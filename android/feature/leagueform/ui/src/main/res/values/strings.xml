@@ -29,5 +29,4 @@
 	<string name="league_form_property_pinfall_footer">If you\'re starting recording partway through the season, you can add missing pinfall here to ensure your average in the app matches the average determined by your league.</string>
 	<string name="league_form_property_pinfall_additional_pinfall">Additional pinfall</string>
 	<string name="league_form_property_pinfall_additional_games">Games played</string>
-	<string name="league_form_property_pinfall_calculated_average">Calculated average</string>
 </resources>

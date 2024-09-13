@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.model.TrackableSeries
 import ca.josephroque.bowlingcompanion.core.statistics.utils.firstRolls
 import ca.josephroque.bowlingcompanion.core.statistics.utils.rollPairs
 
+@Suppress("SameReturnValue")
 interface Statistic {
 	val id: StatisticID
 	val category: StatisticCategory

@@ -10,7 +10,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 
 @Composable
 fun CopyLanesDialog(
-	@Suppress("UNUSED_PARAMETER") state: CopyLanesDialogUiState,
+	state: CopyLanesDialogUiState,
 	onAction: (CopyLanesDialogUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {

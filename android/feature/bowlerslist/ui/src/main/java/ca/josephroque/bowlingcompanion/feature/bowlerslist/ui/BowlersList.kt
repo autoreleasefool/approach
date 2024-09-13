@@ -102,7 +102,7 @@ fun LazyListScope.bowlersList(
 		SwipeableActionsBox(
 			startActions = listOf(archiveAction),
 			endActions = listOf(editAction),
-			modifier = Modifier.animateItemPlacement(),
+			modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
 		) {
 			BowlerRow(
 				name = it.name,

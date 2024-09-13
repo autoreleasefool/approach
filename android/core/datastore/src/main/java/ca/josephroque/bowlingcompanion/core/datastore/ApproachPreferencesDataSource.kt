@@ -235,7 +235,7 @@ class ApproachPreferencesDataSource @Inject constructor(
 		userPreferences.updateData {
 			val recentBowlers = it.recentlyUsedBowlerIdsList
 				.toMutableList()
-				.insertAndTrim(id, RECENTLY_USED_LIMIT)
+				.insertAndTrim(id)
 
 			it.toBuilder()
 				.clearRecentlyUsedBowlerIds()
@@ -248,7 +248,7 @@ class ApproachPreferencesDataSource @Inject constructor(
 		userPreferences.updateData {
 			val recentAlleys = it.recentlyUsedAlleyIdsList
 				.toMutableList()
-				.insertAndTrim(id, RECENTLY_USED_LIMIT)
+				.insertAndTrim(id)
 
 			it.toBuilder()
 				.clearRecentlyUsedAlleyIds()
@@ -261,7 +261,7 @@ class ApproachPreferencesDataSource @Inject constructor(
 		userPreferences.updateData {
 			val recentGear = it.recentlyUsedGearIdsList
 				.toMutableList()
-				.insertAndTrim(id, RECENTLY_USED_LIMIT)
+				.insertAndTrim(id)
 
 			it.toBuilder()
 				.clearRecentlyUsedGearIds()
@@ -274,7 +274,7 @@ class ApproachPreferencesDataSource @Inject constructor(
 		userPreferences.updateData {
 			val recentLeagues = it.recentlyUsedLeagueIdsList
 				.toMutableList()
-				.insertAndTrim(id, RECENTLY_USED_LIMIT)
+				.insertAndTrim(id)
 
 			it.toBuilder()
 				.clearRecentlyUsedLeagueIds()
@@ -287,7 +287,7 @@ class ApproachPreferencesDataSource @Inject constructor(
 		userPreferences.updateData {
 			val recentTeams = it.recentlyUsedTeamIdsList
 				.toMutableList()
-				.insertAndTrim(id, RECENTLY_USED_LIMIT)
+				.insertAndTrim(id)
 
 			it.toBuilder()
 				.clearRecentlyUsedTeamIds()
@@ -318,10 +318,10 @@ class ApproachPreferencesDataSource @Inject constructor(
 	}
 }
 
-private fun <T> MutableList<T>.insertAndTrim(id: T, limit: Int): List<T> {
+private fun <T> MutableList<T>.insertAndTrim(id: T): List<T> {
 	this.remove(id)
 	this.add(0, id)
-	return this.take(limit)
+	return this.take(RECENTLY_USED_LIMIT)
 }
 
 private fun <T> MutableList<T>.replaceOrInsert(id: T): List<T> {

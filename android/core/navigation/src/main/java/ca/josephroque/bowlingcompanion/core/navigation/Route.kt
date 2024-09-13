@@ -363,14 +363,14 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 			savedStateHandle.get<StatisticID>("statistic")
 	}
 	data object StatisticsWidgetEditor : Route(
-		"statisticswidgeteditor/{context}/{initial_source}/{priority}",
+		"statistics_widget_editor/{context}/{initial_source}/{priority}",
 		isBottomBarVisible = false,
 	) {
 		const val CONTEXT = "context"
 		const val INITIAL_SOURCE = "initial_source"
 		const val PRIORITY = "priority"
 		fun createRoute(context: String, initialSource: String?, priority: Int): String =
-			"statisticswidgeteditor/${Uri.encode(context)}/${Uri.encode(initialSource)}/$priority"
+			"statistics_widget_editor/${Uri.encode(context)}/${Uri.encode(initialSource)}/$priority"
 		fun getContext(savedStateHandle: SavedStateHandle): String? =
 			savedStateHandle.get<String>("context")
 		fun getInitialSource(savedStateHandle: SavedStateHandle): String? =
@@ -378,20 +378,21 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		fun getPriority(savedStateHandle: SavedStateHandle): Int? = savedStateHandle.get<Int>("priority")
 	}
 	data object StatisticsWidgetLayoutEditor : Route(
-		"statisticswidgetlayouteditor/{context}/{initial_source}",
+		"statistics_widget_layout_editor/{context}/{initial_source}",
 		isBottomBarVisible = false,
 	) {
 		const val CONTEXT = "context"
 		const val INITIAL_SOURCE = "initial_source"
 		fun createRoute(context: String, initialSource: String?): String =
-			"statisticswidgetlayouteditor/${Uri.encode(context)}/${Uri.encode(initialSource)}"
+			"statistics_widget_layout_editor/${Uri.encode(context)}/${Uri.encode(initialSource)}"
 		fun getContext(savedStateHandle: SavedStateHandle): String? =
 			savedStateHandle.get<String>("context")
 		fun getInitialSource(savedStateHandle: SavedStateHandle): String? =
 			savedStateHandle.get<String>("initial_source")
 	}
-	data object StatisticsWidgetError : Route("statisticswidgeterror", isBottomBarVisible = false) {
-		fun createRoute(): String = "statisticswidgeterror"
+	data object StatisticsWidgetError : Route("statistics_widget_error", isBottomBarVisible = false) {
+		@Suppress("SameReturnValue")
+		fun createRoute(): String = "statistics_widget_error"
 	}
 
 	// Teams

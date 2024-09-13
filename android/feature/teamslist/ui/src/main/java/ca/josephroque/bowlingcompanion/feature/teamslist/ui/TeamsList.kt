@@ -95,11 +95,11 @@ fun LazyListScope.teamsList(
 			background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.blue_300),
 			onSwipe = { onEditTeam(it) },
 		)
-		
+
 		SwipeableActionsBox(
 			startActions = listOf(deleteAction),
 			endActions = listOf(editAction),
-			modifier = Modifier.animateItemPlacement(),
+			modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
 		) {
 			TeamRow(
 				name = it.name,

@@ -98,7 +98,7 @@ fun LazyListScope.leaguesList(
 		SwipeableActionsBox(
 			startActions = listOf(archiveAction),
 			endActions = listOf(editAction),
-			modifier = Modifier.animateItemPlacement(),
+			modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
 		) {
 			LeagueRow(
 				name = it.name,
