@@ -82,8 +82,14 @@ class AccessoriesViewModel @Inject constructor(
 			AccessoriesUiAction.AccessoryMenuDismissed -> setAccessoryMenu(isExpanded = false)
 			AccessoriesUiAction.ViewAllAlleysClicked -> sendEvent(AccessoriesScreenUiEvent.ViewAllAlleys)
 			AccessoriesUiAction.ViewAllGearClicked -> sendEvent(AccessoriesScreenUiEvent.ViewAllGear)
-			AccessoriesUiAction.AddAlleyClicked -> sendEvent(AccessoriesScreenUiEvent.AddAlley)
-			AccessoriesUiAction.AddGearClicked -> sendEvent(AccessoriesScreenUiEvent.AddGear)
+			AccessoriesUiAction.AddAlleyClicked -> {
+				setAccessoryMenu(isExpanded = false)
+				sendEvent(AccessoriesScreenUiEvent.AddAlley)
+			}
+			AccessoriesUiAction.AddGearClicked -> {
+				setAccessoryMenu(isExpanded = false)
+				sendEvent(AccessoriesScreenUiEvent.AddGear)
+			}
 			is AccessoriesUiAction.AlleyClicked -> sendEvent(
 				AccessoriesScreenUiEvent.ShowAlleyDetails(action.alley.alleyId),
 			)
