@@ -2,10 +2,11 @@ import AssetsLibrary
 @testable import ListContentLibrary
 import SnapshotTesting
 import SwiftUI
-import XCTest
+import Testing
 
-final class ListContentTests: XCTestCase {
-	func testEmptyContentSnapshot() {
+struct ListContentTests {
+	@Test("List empty content snapshot", .tags(.snapshot))
+	@MainActor func snapshotEmptyContent() {
 		let emptyContent = ListEmptyContent(
 			Asset.Media.EmptyState.bowlers,
 			title: "A Relevant Title",
@@ -14,15 +15,14 @@ final class ListContentTests: XCTestCase {
 		) {
 			EmptyContentAction(title: "Action") { }
 		}
+		.frame(width: 428, height: 926)
 
-		let vc = UIHostingController(rootView: emptyContent)
-		vc.view.frame = UIScreen.main.bounds
-
-		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
+		assertSnapshot(of: emptyContent, as: .image)
 	}
 
-	func testEmptyErrorContentSnapshot() {
-		let emptyContent = ListEmptyContent(
+	@Test("List error content snapshot", .tags(.snapshot))
+	@MainActor func snapshotErrorContent() {
+		let errorContent = ListEmptyContent(
 			Asset.Media.Error.notFound,
 			title: "A Relevant Title",
 			message: "An Irrelevant Message",
@@ -30,10 +30,8 @@ final class ListContentTests: XCTestCase {
 		) {
 			EmptyContentAction(title: "Action") { }
 		}
+		.frame(width: 428, height: 926)
 
-		let vc = UIHostingController(rootView: emptyContent)
-		vc.view.frame = UIScreen.main.bounds
-
-		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
+		assertSnapshot(of: errorContent, as: .image)
 	}
 }

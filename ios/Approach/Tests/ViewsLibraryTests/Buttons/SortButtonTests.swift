@@ -1,24 +1,18 @@
 import SnapshotTesting
 import SwiftUI
+import Testing
 @testable import ViewsLibrary
-import XCTest
 
-final class SortButtonTests: XCTestCase {
-	func testActiveSortButtonSnapshot() {
+struct SortButtonTests {
+	@Test("Active sort button snapshot", .tags(.snapshot))
+	@MainActor func snapshotActiveSortButton() {
 		let sortButton = SortButton(isActive: true) { }
-
-		let vc = UIHostingController(rootView: sortButton)
-		vc.view.frame = UIScreen.main.bounds
-
-		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
+		assertSnapshot(of: sortButton, as: .image)
 	}
 
-	func testInactiveSortButtonSnapshot() {
+	@Test("Inactive sort button snapshot", .tags(.snapshot))
+	@MainActor func snapshotInactiveSortButton() {
 		let sortButton = SortButton(isActive: false) { }
-
-		let vc = UIHostingController(rootView: sortButton)
-		vc.view.frame = UIScreen.main.bounds
-
-		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
+		assertSnapshot(of: sortButton, as: .image)
 	}
 }

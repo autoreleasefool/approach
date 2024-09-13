@@ -2,11 +2,12 @@
 @testable import ModelsViewsLibrary
 import SnapshotTesting
 import SwiftUI
-import XCTest
+import Testing
 
-final class AlleyRowTests: XCTestCase {
-	func testAlleyRowUnknownPropertiesSnapshot() {
-		let rows = List {
+struct AlleyRowTests {
+	@Test("Alley row snapshots", .tags(.snapshot))
+	@MainActor func snapshotAlleyRows() {
+		let rows = VStack {
 			Section {
 				Alley.View(.init(
 					id: UUID(),
@@ -33,10 +34,8 @@ final class AlleyRowTests: XCTestCase {
 				))
 			}
 		}
+		.frame(width: 428)
 
-		let vc = UIHostingController(rootView: rows)
-		vc.view.frame = UIScreen.main.bounds
-
-		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
+		assertSnapshot(of: rows, as: .image)
 	}
 }

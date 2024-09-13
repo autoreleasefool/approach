@@ -1,10 +1,11 @@
 import SnapshotTesting
 import SwiftUI
+import Testing
 @testable import ViewsLibrary
-import XCTest
 
-final class BadgeViewTests: XCTestCase {
-	func testBadgeViewSnapshot() {
+struct BadgeViewTests {
+	@Test("Badge snapshots", .tags(.snapshot))
+	@MainActor func snapshotBadges() {
 		let badges = VStack {
 			BadgeView("Badge", style: .plain)
 			BadgeView("Badge", style: .success)
@@ -13,10 +14,8 @@ final class BadgeViewTests: XCTestCase {
 			BadgeView("Badge", style: .primary)
 			BadgeView("Badge", style: .init(foreground: .red, background: .blue))
 		}
+		.frame(width: 428)
 
-		let vc = UIHostingController(rootView: badges)
-		vc.view.frame = UIScreen.main.bounds
-
-		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
+		assertSnapshot(of: badges, as: .image)
 	}
 }

@@ -1,24 +1,18 @@
 import SnapshotTesting
 import SwiftUI
+import Testing
 @testable import ViewsLibrary
-import XCTest
 
-final class FilterButtonTests: XCTestCase {
-	func testActiveFilterButtonSnapshot() {
+struct FilterButtonTests {
+	@Test("Active filter button snapshot", .tags(.snapshot))
+	@MainActor func snapshotActiveFilterButton() {
 		let filterButton = FilterButton(isActive: true) { }
-
-		let vc = UIHostingController(rootView: filterButton)
-		vc.view.frame = UIScreen.main.bounds
-
-		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
+		assertSnapshot(of: filterButton, as: .image)
 	}
 
-	func testInactiveFilterButtonSnapshot() {
+	@Test("Inactive filter button snapshot", .tags(.snapshot))
+	@MainActor func snapshotInactiveFilterButton() {
 		let filterButton = FilterButton(isActive: false) { }
-
-		let vc = UIHostingController(rootView: filterButton)
-		vc.view.frame = UIScreen.main.bounds
-
-		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
+		assertSnapshot(of: filterButton, as: .image)
 	}
 }

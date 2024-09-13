@@ -1,14 +1,12 @@
 import SnapshotTesting
 import SwiftUI
+import Testing
 @testable import ViewsLibrary
-import XCTest
 
-final class EditButtonTests: XCTestCase {
-	func testEditButtonSnapshot() {
+struct EditButtonTests {
+	@Test("Edit button snapshots", .tags(.snapshot))
+	@MainActor func snapshotEditButton() {
 		let editButton = EditButton { }
-		let vc = UIHostingController(rootView: editButton)
-		vc.view.frame = UIScreen.main.bounds
-
-		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
+		assertSnapshot(of: editButton, as: .image)
 	}
 }

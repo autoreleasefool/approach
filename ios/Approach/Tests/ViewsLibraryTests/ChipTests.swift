@@ -1,23 +1,22 @@
 import SnapshotTesting
 import SwiftUI
+import Testing
 @testable import ViewsLibrary
-import XCTest
 
-final class ChipTests: XCTestCase {
-	func testChipSnapshot() {
+struct ChipTests {
+	@Test("Chip snapshots", .tags(.snapshot))
+	@MainActor func snapshotChips() {
 		let chips = VStack {
-			Chip(title: "Chip")
-			Chip(title: "Chip", icon: .person)
-			Chip(title: "Radio Box", icon: .star, accessory: .radioBox)
-			Chip(title: "Radio Box Selected", icon: .star, accessory: .radioBoxSelected)
+			Chip(title: "Chip", style: .primary)
+			Chip(title: "Chip", icon: .person, style: .primary)
+			Chip(title: "Radio Box", icon: .star, accessory: .radioBox, style: .primary)
+			Chip(title: "Radio Box Selected", icon: .star, accessory: .radioBoxSelected, style: .primary)
 			Chip(title: "Info", icon: .star, style: .info)
 			Chip(title: "Plain", icon: .star, style: .plain)
 			Chip(title: "Primary", icon: .star, style: .primary)
 		}
+		.frame(width: 428)
 
-		let vc = UIHostingController(rootView: chips)
-		vc.view.frame = UIScreen.main.bounds
-
-		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
+		assertSnapshot(of: chips, as: .image)
 	}
 }

@@ -1,15 +1,12 @@
 import SnapshotTesting
 import SwiftUI
+import Testing
 @testable import ViewsLibrary
-import XCTest
 
-final class DeleteButtonTests: XCTestCase {
-	func testDeleteButtonSnapshot() {
+struct DeleteButtonTests {
+	@Test("Delete button snapshots", .tags(.snapshot))
+	@MainActor func snapshotDeleteButton() {
 		let deleteButton = DeleteButton { }
-
-		let vc = UIHostingController(rootView: deleteButton)
-		vc.view.frame = UIScreen.main.bounds
-
-		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
+		assertSnapshot(of: deleteButton, as: .image)
 	}
 }
