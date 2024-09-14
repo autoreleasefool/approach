@@ -15,6 +15,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorRoute
 
@@ -37,10 +38,10 @@ fun NavController.navigateToGamesEditor(
 fun NavGraphBuilder.gamesEditorScreen(
 	onBackPressed: () -> Unit,
 	onEditMatchPlay: (GameID) -> Unit,
-	onEditGear: (Set<GearID>, String) -> Unit,
-	onEditRolledBall: (GearID?, NavResultCallback<Set<GearID>>) -> Unit,
-	onEditAlley: (AlleyID?, NavResultCallback<Set<AlleyID>>) -> Unit,
-	onEditLanes: (AlleyID, Set<LaneID>, NavResultCallback<Set<LaneID>>) -> Unit,
+	onEditGear: (Set<GearID>, ResourcePickerResultKey) -> Unit,
+	onEditRolledBall: (GearID?, ResourcePickerResultKey) -> Unit,
+	onEditAlley: (AlleyID?, ResourcePickerResultKey) -> Unit,
+	onEditLanes: (AlleyID, Set<LaneID>, ResourcePickerResultKey) -> Unit,
 	onShowGamesSettings: (
 		TeamSeriesID?,
 		List<SeriesID>,

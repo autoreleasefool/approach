@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.editor.StatisticsWidgetEditorRoute
@@ -35,8 +36,8 @@ fun NavController.navigateToStatisticsWidgetEditor(
 
 fun NavGraphBuilder.statisticsWidgetEditorScreen(
 	onBackPressed: () -> Unit,
-	onPickBowler: (BowlerID?, NavResultCallback<Set<BowlerID>>) -> Unit,
-	onPickLeague: (BowlerID, LeagueID?, NavResultCallback<Set<LeagueID>>) -> Unit,
+	onPickBowler: (BowlerID?, ResourcePickerResultKey) -> Unit,
+	onPickLeague: (BowlerID, LeagueID?, ResourcePickerResultKey) -> Unit,
 	onPickStatistic: (StatisticID, NavResultCallback<StatisticID>) -> Unit,
 ) {
 	composable(

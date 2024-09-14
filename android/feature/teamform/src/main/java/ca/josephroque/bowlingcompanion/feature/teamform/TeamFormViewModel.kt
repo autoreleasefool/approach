@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.TeamCreate
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamMemberListItem
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.R
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.TeamFormTopBarUiState
@@ -24,6 +25,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+
+val TEAM_FORM_MEMBER_PICKER_RESULT_KEY = ResourcePickerResultKey("TeamFormMemberPickerResultKey")
 
 @HiltViewModel
 class TeamFormViewModel @Inject constructor(

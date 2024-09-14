@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.TeamID
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.teamform.TeamFormRoute
 
@@ -22,7 +22,7 @@ fun NavController.navigateToTeamForm(teamId: TeamID, navOptions: NavOptions? = n
 
 fun NavGraphBuilder.teamFormScreen(
 	onBackPressed: () -> Unit,
-	onManageTeamMembers: (Set<BowlerID>, NavResultCallback<Set<BowlerID>>) -> Unit,
+	onManageTeamMembers: (Set<BowlerID>, ResourcePickerResultKey) -> Unit,
 ) {
 	composable(
 		route = Route.EditTeam.route,

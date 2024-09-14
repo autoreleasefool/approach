@@ -132,10 +132,10 @@ fun NavGraphBuilder.overviewGraph(
 		onShowLeagueDetails = navController::navigateToLeagueDetails,
 		onShowEventDetails = navController::navigateToEvent,
 		onShowGearDetails = { /* FIXME: onShowGearDetails */ },
-		onShowPreferredGearPicker = { selectedGear, result ->
+		onShowPreferredGearPicker = { selectedGear, resultKey ->
 			navController.navigateToGearPickerForResult(
 				selectedIds = selectedGear,
-				navResultCallback = result,
+				resultKey = resultKey,
 			)
 		},
 		onEditStatisticsWidgets = { context, bowlerId ->
@@ -161,21 +161,21 @@ fun NavGraphBuilder.overviewGraph(
 	)
 	seriesFormScreen(
 		onDismissWithResult = navController::popBackStackWithResult,
-		onEditAlley = { alley, result ->
+		onEditAlley = { alley, resultKey ->
 			navController.navigateToAlleyPickerForResult(
 				selectedIds = alley?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
+				resultKey = resultKey,
 			)
 		},
 	)
 	seriesPreBowlFormScreen(
 		onDismiss = navController::popBackStack,
-		onShowSeriesPicker = { leagueId, seriesId, result ->
+		onShowSeriesPicker = { leagueId, seriesId, resultKey ->
 			navController.navigateToSeriesPickerForResult(
 				selectedIds = seriesId?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
+				resultKey = resultKey,
 				leagueId = leagueId,
 				preBowl = SeriesPreBowl.PRE_BOWL,
 			)
@@ -202,17 +202,17 @@ fun NavGraphBuilder.overviewGraph(
 				selectedIds = gearIds,
 			)
 		},
-		onEditAlley = { alleyId, result ->
+		onEditAlley = { alleyId, resultKey ->
 			navController.navigateToAlleyPickerForResult(
 				selectedIds = alleyId?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
+				resultKey = resultKey,
 			)
 		},
-		onEditLanes = { alleyId, laneIds, result ->
+		onEditLanes = { alleyId, laneIds, resultKey ->
 			navController.navigateToLanePickerForResult(
 				selectedIds = laneIds,
-				navResultCallback = result,
+				resultKey = resultKey,
 				alleyId = alleyId,
 			)
 		},
@@ -224,11 +224,11 @@ fun NavGraphBuilder.overviewGraph(
 				navResultCallback = result,
 			)
 		},
-		onEditRolledBall = { ballId, result ->
+		onEditRolledBall = { ballId, resultKey ->
 			navController.navigateToGearPickerForResult(
 				selectedIds = ballId?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
+				resultKey = resultKey,
 				kind = GearKind.BOWLING_BALL,
 			)
 		},
@@ -242,18 +242,18 @@ fun NavGraphBuilder.overviewGraph(
 	)
 	statisticsWidgetEditorScreen(
 		onBackPressed = navController::popBackStack,
-		onPickBowler = { bowler, result ->
+		onPickBowler = { bowler, resultKey ->
 			navController.navigateToBowlerPickerForResult(
 				selectedIds = bowler?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
+				resultKey = resultKey,
 			)
 		},
-		onPickLeague = { bowler, league, result ->
+		onPickLeague = { bowler, league, resultKey ->
 			navController.navigateToLeaguePickerForResult(
 				selectedIds = league?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
+				resultKey = resultKey,
 				bowlerId = bowler,
 			)
 		},
@@ -270,10 +270,10 @@ fun NavGraphBuilder.overviewGraph(
 	)
 	teamFormScreen(
 		onBackPressed = navController::popBackStack,
-		onManageTeamMembers = { ids, result ->
+		onManageTeamMembers = { ids, resultKey ->
 			navController.navigateToBowlerPickerForResult(
 				selectedIds = ids,
-				navResultCallback = result,
+				resultKey = resultKey,
 				kind = BowlerKind.PLAYABLE,
 			)
 		},
@@ -295,11 +295,11 @@ fun NavGraphBuilder.overviewGraph(
 				},
 			)
 		},
-		onPickLeague = { bowler, league, result ->
+		onPickLeague = { bowler, league, resultKey ->
 			navController.navigateToLeaguePickerForResult(
 				selectedIds = league?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
+				resultKey = resultKey,
 				bowlerId = bowler,
 				recurrence = LeagueRecurrence.REPEATING,
 			)
@@ -317,11 +317,11 @@ fun NavGraphBuilder.overviewGraph(
 				},
 			)
 		},
-		onEditAlley = { alley, result ->
+		onEditAlley = { alley, resultKey ->
 			navController.navigateToAlleyPickerForResult(
 				selectedIds = alley?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
+				resultKey = resultKey,
 			)
 		},
 	)

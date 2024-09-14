@@ -21,10 +21,13 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultViewModel
 import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlay
 import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayTopBar
 import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayTopBarUiState
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @Composable
@@ -33,13 +36,24 @@ internal fun QuickPlayRoute(
 	onBeginRecordingSeries: (List<SeriesID>, GameID) -> Unit,
 	onTeamLeaguesSelected: (TeamID, List<LeagueID>) -> Unit,
 	onTeamEventsCreated: (TeamSeriesID, GameID) -> Unit,
-	onPickBowler: (Set<BowlerID>, NavResultCallback<Set<BowlerID>>) -> Unit,
-	onPickLeague: (BowlerID, LeagueID?, NavResultCallback<Set<LeagueID>>) -> Unit,
+	onPickBowler: (Set<BowlerID>, ResourcePickerResultKey) -> Unit,
+	onPickLeague: (BowlerID, LeagueID?, ResourcePickerResultKey) -> Unit,
 	onShowQuickPlayOnboarding: () -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: QuickPlayViewModel = hiltViewModel(),
+	resultViewModel: ResourcePickerResultViewModel = hiltViewModel(),
 ) {
 	val quickPlayScreenState by viewModel.uiState.collectAsStateWithLifecycle()
+
+	LaunchedEffect(Unit) {
+		resultViewModel.getSelectedIds(QUICK_PLAY_BOWLER_RESULT_KEY) { BowlerID(it) }
+			.onEach { viewModel.handleAction(QuickPlayScreenUiAction.AddedBowler(it.firstOrNull())) }
+			.launchIn(this)
+
+		resultViewModel.getSelectedIds(QUICK_PLAY_LEAGUE_RESULT_KEY) { LeagueID(it) }
+			.onEach { viewModel.handleAction(QuickPlayScreenUiAction.EditedLeague(it.firstOrNull())) }
+			.launchIn(this)
+	}
 
 	val lifecycleOwner = LocalLifecycleOwner.current
 	LaunchedEffect(Unit) {
@@ -61,17 +75,13 @@ internal fun QuickPlayRoute(
 						)
 						is QuickPlayScreenEvent.AddBowler -> onPickBowler(
 							it.existingBowlers,
-						) @JvmSerializableLambda { bowler ->
-							viewModel.handleAction(QuickPlayScreenUiAction.AddedBowler(bowler.firstOrNull()))
-						}
+							QUICK_PLAY_BOWLER_RESULT_KEY,
+						)
 						is QuickPlayScreenEvent.EditLeague -> onPickLeague(
 							it.bowlerId,
 							it.leagueId,
-						) @JvmSerializableLambda { leagues ->
-							viewModel.handleAction(
-								QuickPlayScreenUiAction.EditedLeague(it.bowlerId, leagues.firstOrNull()),
-							)
-						}
+							QUICK_PLAY_LEAGUE_RESULT_KEY,
+						)
 					}
 				}
 		}

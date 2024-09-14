@@ -28,6 +28,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesConnect
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayTopBarUiAction
 import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayTopBarUiState
@@ -46,6 +47,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+
+val QUICK_PLAY_BOWLER_RESULT_KEY = ResourcePickerResultKey("QuickPlayBowlerResultKey")
+val QUICK_PLAY_LEAGUE_RESULT_KEY = ResourcePickerResultKey("QuickPlayLeagueResultKey")
 
 @HiltViewModel
 class QuickPlayViewModel @Inject constructor(
@@ -70,6 +74,7 @@ class QuickPlayViewModel @Inject constructor(
 	private val numberOfGames = MutableStateFlow(Series.DEFAULT_NUMBER_OF_GAMES)
 	private val leagueRecurrence = MutableStateFlow(LeagueRecurrence.REPEATING)
 	private val leagueName = MutableStateFlow("")
+	private var selectingLeagueForBowler: BowlerID? = null
 
 	private val topBar = QuickPlayTopBarUiState(
 		title = if (isTeamQuickPlay) {
@@ -145,7 +150,7 @@ class QuickPlayViewModel @Inject constructor(
 			is QuickPlayScreenUiAction.AddedBowler -> selectBowlerLeague(action.bowlerId)
 			is QuickPlayScreenUiAction.QuickPlay -> handleQuickPlayAction(action.action)
 			is QuickPlayScreenUiAction.TopBar -> handleTopBarAction(action.action)
-			is QuickPlayScreenUiAction.EditedLeague -> updateBowlerLeague(action.bowlerId, action.leagueId)
+			is QuickPlayScreenUiAction.EditedLeague -> updateBowlerLeague(action.leagueId)
 		}
 	}
 
@@ -189,7 +194,9 @@ class QuickPlayViewModel @Inject constructor(
 		sendEvent(QuickPlayScreenEvent.AddBowler(bowlers.value.map { it.first.id }.toSet()))
 	}
 
-	private fun updateBowlerLeague(bowlerId: BowlerID, leagueId: LeagueID?) {
+	private fun updateBowlerLeague(leagueId: LeagueID?) {
+		val bowlerId = selectingLeagueForBowler ?: return
+
 		if (leagueId == null) {
 			if (isTeamQuickPlay) {
 				bowlers.update {
@@ -335,6 +342,7 @@ class QuickPlayViewModel @Inject constructor(
 	private fun selectBowlerLeague(bowlerId: BowlerID?) {
 		bowlerId ?: return
 		val leagueId = bowlers.value.find { it.first.id == bowlerId }?.second?.id
+		selectingLeagueForBowler = bowlerId
 		sendEvent(QuickPlayScreenEvent.EditLeague(bowlerId = bowlerId, leagueId = leagueId))
 	}
 

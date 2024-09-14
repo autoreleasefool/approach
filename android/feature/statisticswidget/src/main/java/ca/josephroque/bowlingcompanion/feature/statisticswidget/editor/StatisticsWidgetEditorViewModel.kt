@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 import ca.josephroque.bowlingcompanion.core.statistics.allStatistics
@@ -40,6 +41,11 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+
+val STATISTICS_WIDGET_BOWLER_PICKER_RESULT_KEY =
+	ResourcePickerResultKey("StatisticsWidgetBowlerPickerResultKey")
+val STATISTICS_WIDGET_LEAGUE_PICKER_RESULT_KEY =
+	ResourcePickerResultKey("StatisticsWidgetLeaguePickerResultKey")
 
 @HiltViewModel
 class StatisticsWidgetEditorViewModel @Inject constructor(

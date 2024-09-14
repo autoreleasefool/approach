@@ -11,7 +11,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.quickplay.QuickPlayRoute
 
@@ -21,7 +21,7 @@ fun NavController.navigateToTeamPlay(team: TeamID?, navOptions: NavOptions? = nu
 
 fun NavGraphBuilder.teamPlay(
 	onDismiss: () -> Unit,
-	onPickLeague: (BowlerID, LeagueID?, NavResultCallback<Set<LeagueID>>) -> Unit,
+	onPickLeague: (BowlerID, LeagueID?, ResourcePickerResultKey) -> Unit,
 	onTeamLeaguesSelected: (TeamID, List<LeagueID>) -> Unit,
 	onTeamEventsCreated: (TeamSeriesID, GameID) -> Unit,
 	onShowTeamPlayOnboarding: () -> Unit,

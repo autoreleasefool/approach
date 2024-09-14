@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerUiState
@@ -25,6 +26,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+
+val SOURCE_PICKER_TEAM_RESULT_KEY = ResourcePickerResultKey("SourcePickerTeamResultKey")
+val SOURCE_PICKER_BOWLER_RESULT_KEY = ResourcePickerResultKey("SourcePickerBowlerResultKey")
+val SOURCE_PICKER_LEAGUE_RESULT_KEY = ResourcePickerResultKey("SourcePickerLeagueResultKey")
+val SOURCE_PICKER_SERIES_RESULT_KEY = ResourcePickerResultKey("SourcePickerSeriesResultKey")
+val SOURCE_PICKER_GAME_RESULT_KEY = ResourcePickerResultKey("SourcePickerGameResultKey")
 
 @HiltViewModel
 class SourcePickerViewModel @Inject constructor(

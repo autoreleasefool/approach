@@ -39,20 +39,20 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 	quickPlay(
 		onBackPressed = navController::popBackStack,
 		onBeginRecording = navController::navigateToGamesEditor,
-		onPickBowler = { excluded, result ->
+		onPickBowler = { excluded, resultKey ->
 			navController.navigateToBowlerPickerForResult(
+				resultKey = resultKey,
 				selectedIds = emptySet(),
 				hiddenIds = excluded,
 				limit = 1,
-				navResultCallback = result,
 				kind = BowlerKind.PLAYABLE,
 			)
 		},
-		onPickLeague = { bowler, league, result ->
+		onPickLeague = { bowler, league, resultKey ->
 			navController.navigateToLeaguePickerForResult(
 				selectedIds = league?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
+				resultKey = resultKey,
 				bowlerId = bowler,
 				recurrence = LeagueRecurrence.REPEATING,
 			)
@@ -64,42 +64,42 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 	)
 	statisticsSourcePickerSheet(
 		onBackPressed = navController::popBackStack,
-		onPickTeam = { team, result ->
+		onPickTeam = { team, resultKey ->
 			navController.navigateToTeamPickerForResult(
 				selectedIds = team?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
+				resultKey = resultKey,
 			)
 		},
-		onPickBowler = { bowler, result ->
+		onPickBowler = { bowler, resultKey ->
 			navController.navigateToBowlerPickerForResult(
 				selectedIds = bowler?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
+				resultKey = resultKey,
 				kind = BowlerKind.PLAYABLE,
 			)
 		},
-		onPickLeague = { bowler, league, result ->
+		onPickLeague = { bowler, league, resultKey ->
 			navController.navigateToLeaguePickerForResult(
 				selectedIds = league?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
+				resultKey = resultKey,
 				bowlerId = bowler,
 			)
 		},
-		onPickSeries = { league, series, result ->
+		onPickSeries = { league, series, resultKey ->
 			navController.navigateToSeriesPickerForResult(
 				selectedIds = series?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
+				resultKey = resultKey,
 				leagueId = league,
 			)
 		},
-		onPickGame = { series, game, result ->
+		onPickGame = { series, game, resultKey ->
 			navController.navigateToGamePickerForResult(
 				selectedIds = game?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
+				resultKey = resultKey,
 				seriesId = series,
 			)
 		},
@@ -119,11 +119,11 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 	)
 	matchPlayEditorScreen(
 		onBackPressed = navController::popBackStack,
-		onEditOpponent = { opponent, result ->
+		onEditOpponent = { opponent, resultKey ->
 			navController.navigateToBowlerPickerForResult(
 				selectedIds = opponent?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
+				resultKey = resultKey,
 				kind = BowlerKind.OPPONENT,
 			)
 		},

@@ -24,7 +24,7 @@ sealed interface QuickPlayScreenUiAction {
 	data object DidAppear : QuickPlayScreenUiAction
 
 	data class AddedBowler(val bowlerId: BowlerID?) : QuickPlayScreenUiAction
-	data class EditedLeague(val bowlerId: BowlerID, val leagueId: LeagueID?) : QuickPlayScreenUiAction
+	data class EditedLeague(val leagueId: LeagueID?) : QuickPlayScreenUiAction
 
 	data class QuickPlay(val action: QuickPlayUiAction) : QuickPlayScreenUiAction
 	data class TopBar(val action: QuickPlayTopBarUiAction) : QuickPlayScreenUiAction

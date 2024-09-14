@@ -10,7 +10,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.BowlerDetailsRoute
 
@@ -25,7 +25,7 @@ fun NavGraphBuilder.bowlerDetailsScreen(
 	onShowLeagueDetails: (LeagueID) -> Unit,
 	onShowEventDetails: (LeagueID) -> Unit,
 	onShowGearDetails: (GearID) -> Unit,
-	onShowPreferredGearPicker: (Set<GearID>, NavResultCallback<Set<GearID>>) -> Unit,
+	onShowPreferredGearPicker: (Set<GearID>, ResourcePickerResultKey) -> Unit,
 	onEditStatisticsWidgets: (String, BowlerID) -> Unit,
 	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 	onShowWidgetError: () -> Unit,

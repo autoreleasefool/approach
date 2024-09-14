@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.resourcepicker
 
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerUiAction
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerUiState
@@ -19,5 +20,6 @@ sealed interface ResourcePickerScreenUiAction {
 }
 
 sealed interface ResourcePickerScreenEvent {
-	data class Dismissed(val key: String?, val result: Set<UUID>) : ResourcePickerScreenEvent
+	data class Dismissed(val key: ResourcePickerResultKey?, val result: Set<UUID>) :
+		ResourcePickerScreenEvent
 }

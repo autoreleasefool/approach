@@ -53,11 +53,11 @@ fun NavGraphBuilder.accessoriesGraph(navController: NavController) {
 	gearFormScreen(
 		onBackPressed = navController::popBackStack,
 		onEditAvatar = navController::navigateToAvatarFormForResult,
-		onEditOwner = { owner, result ->
+		onEditOwner = { owner, resultKey ->
 			navController.navigateToBowlerPickerForResult(
+				resultKey = resultKey,
 				selectedIds = owner?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
 				kind = BowlerKind.PLAYABLE,
 			)
 		},

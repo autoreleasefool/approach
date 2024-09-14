@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -47,6 +48,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultViewModel
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorTopBar
@@ -60,10 +62,10 @@ import kotlinx.coroutines.launch
 internal fun GamesEditorRoute(
 	onBackPressed: () -> Unit,
 	onEditMatchPlay: (GameID) -> Unit,
-	onEditGear: (Set<GearID>, String) -> Unit,
-	onEditRolledBall: (GearID?, NavResultCallback<Set<GearID>>) -> Unit,
-	onEditAlley: (AlleyID?, NavResultCallback<Set<AlleyID>>) -> Unit,
-	onEditLanes: (AlleyID, Set<LaneID>, NavResultCallback<Set<LaneID>>) -> Unit,
+	onEditGear: (Set<GearID>, ResourcePickerResultKey) -> Unit,
+	onEditRolledBall: (GearID?, ResourcePickerResultKey) -> Unit,
+	onEditAlley: (AlleyID?, ResourcePickerResultKey) -> Unit,
+	onEditLanes: (AlleyID, Set<LaneID>, ResourcePickerResultKey) -> Unit,
 	onShowGamesSettings: (
 		TeamSeriesID?,
 		List<SeriesID>,
@@ -94,9 +96,28 @@ internal fun GamesEditorRoute(
 	}
 
 	LaunchedEffect(Unit) {
-		resultViewModel.getSelectedIds(GAMES_EDITOR_GAME_GEAR) { GearID(it) }
+		Log.d("GamesEditorRoute", "LaunchedEffect")
+	}
+
+	LaunchedEffect(Unit) {
+		Log.d("GamesEditorRoute", "LaunchedEffect2")
+		resultViewModel.getSelectedIds(GAMES_EDITOR_GAME_GEAR_RESULT_KEY) { GearID(it) }
 			.onEach { viewModel.handleAction(GamesEditorScreenUiAction.GearUpdated(it)) }
 			.launchIn(this)
+
+// 		resultViewModel.getSelectedIds(GAMES_EDITOR_GAME_ALLEY_RESULT_KEY) { AlleyID(it) }
+// 			.onEach { viewModel.handleAction(GamesEditorScreenUiAction.AlleyUpdated(it.firstOrNull())) }
+// 			.launchIn(this)
+//
+// 		resultViewModel.getSelectedIds(GAMES_EDITOR_GAME_LANES_RESULT_KEY) { LaneID(it) }
+// 			.onEach { viewModel.handleAction(GamesEditorScreenUiAction.LanesUpdated(it)) }
+// 			.launchIn(this)
+//
+// 		resultViewModel.getSelectedIds(GAMES_EDITOR_GAME_ROLLED_BALL_RESULT_KEY) { GearID(it) }
+// 			.onEach {
+// 				viewModel.handleAction(GamesEditorScreenUiAction.SelectedBallUpdated(it.firstOrNull()))
+// 			}
+// 			.launchIn(this)
 	}
 
 	LaunchedEffect(Unit) {
@@ -109,17 +130,17 @@ internal fun GamesEditorRoute(
 						is GamesEditorScreenEvent.EditMatchPlay -> onEditMatchPlay(it.gameId)
 						is GamesEditorScreenEvent.EditGear -> onEditGear(
 							it.gearIds,
-							GAMES_EDITOR_GAME_GEAR,
+							GAMES_EDITOR_GAME_GEAR_RESULT_KEY,
 						)
-						is GamesEditorScreenEvent.EditAlley -> onEditAlley(it.alleyId) @JvmSerializableLambda { ids ->
-							viewModel.handleAction(GamesEditorScreenUiAction.AlleyUpdated(ids.firstOrNull()))
-						}
+						is GamesEditorScreenEvent.EditAlley -> onEditAlley(
+							it.alleyId,
+							GAMES_EDITOR_GAME_ALLEY_RESULT_KEY,
+						)
 						is GamesEditorScreenEvent.EditLanes -> onEditLanes(
 							it.alleyId,
 							it.laneIds,
-						) @JvmSerializableLambda { ids ->
-							viewModel.handleAction(GamesEditorScreenUiAction.LanesUpdated(ids))
-						}
+							GAMES_EDITOR_GAME_LANES_RESULT_KEY,
+						)
 						is GamesEditorScreenEvent.ShowGamesSettings -> onShowGamesSettings(
 							it.teamSeriesId,
 							it.series,
@@ -130,9 +151,8 @@ internal fun GamesEditorRoute(
 						}
 						is GamesEditorScreenEvent.EditRolledBall -> onEditRolledBall(
 							it.ballId,
-						) @JvmSerializableLambda { ids ->
-							viewModel.handleAction(GamesEditorScreenUiAction.SelectedBallUpdated(ids.firstOrNull()))
-						}
+							GAMES_EDITOR_GAME_ROLLED_BALL_RESULT_KEY,
+						)
 						is GamesEditorScreenEvent.ShowStatistics -> onShowStatistics(it.filter)
 						is GamesEditorScreenEvent.ShowBowlerScores -> onShowBowlerScores(
 							it.series,

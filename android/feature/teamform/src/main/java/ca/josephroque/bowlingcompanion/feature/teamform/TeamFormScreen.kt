@@ -16,21 +16,31 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultViewModel
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.TeamForm
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.TeamFormTopBar
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.TeamFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.teamform.ui.TeamFormUiAction
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun TeamFormRoute(
 	onDismiss: () -> Unit,
-	onManageTeamMembers: (Set<BowlerID>, NavResultCallback<Set<BowlerID>>) -> Unit,
+	onManageTeamMembers: (Set<BowlerID>, ResourcePickerResultKey) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: TeamFormViewModel = hiltViewModel(),
+	resultViewModel: ResourcePickerResultViewModel = hiltViewModel(),
 ) {
 	val teamFormScreenState = viewModel.uiState.collectAsState().value
+
+	LaunchedEffect(Unit) {
+		resultViewModel.getSelectedIds(TEAM_FORM_MEMBER_PICKER_RESULT_KEY) { BowlerID(it) }
+			.onEach { viewModel.handleAction(TeamFormScreenUiAction.MembersUpdated(it)) }
+			.launchIn(this)
+	}
 
 	val lifecycleOwner = LocalLifecycleOwner.current
 	LaunchedEffect(Unit) {
@@ -41,9 +51,7 @@ internal fun TeamFormRoute(
 					when (it) {
 						TeamFormScreenEvent.Dismissed -> onDismiss()
 						is TeamFormScreenEvent.ManageTeamMembers ->
-							onManageTeamMembers(it.existingMembers) @JvmSerializableLambda { ids ->
-								viewModel.handleAction(TeamFormScreenUiAction.MembersUpdated(ids))
-							}
+							onManageTeamMembers(it.existingMembers, TEAM_FORM_MEMBER_PICKER_RESULT_KEY)
 					}
 				}
 		}

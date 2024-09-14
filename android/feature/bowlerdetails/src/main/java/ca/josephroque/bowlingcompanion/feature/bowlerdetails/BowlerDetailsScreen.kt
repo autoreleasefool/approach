@@ -19,10 +19,13 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GearID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultViewModel
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetails
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsTopBar
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsTopBarUiState
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @Composable
@@ -33,15 +36,22 @@ internal fun BowlerDetailsRoute(
 	onShowLeagueDetails: (LeagueID) -> Unit,
 	onShowEventDetails: (LeagueID) -> Unit,
 	onShowGearDetails: (GearID) -> Unit,
-	onShowPreferredGearPicker: (Set<GearID>, NavResultCallback<Set<GearID>>) -> Unit,
+	onShowPreferredGearPicker: (Set<GearID>, ResourcePickerResultKey) -> Unit,
 	onEditStatisticsWidgets: (String, BowlerID) -> Unit,
 	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 	onShowWidgetNotEnoughDataError: () -> Unit,
 	onShowWidgetUnavailableError: () -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: BowlerDetailsViewModel = hiltViewModel(),
+	resultViewModel: ResourcePickerResultViewModel = hiltViewModel(),
 ) {
 	val bowlerDetailsState by viewModel.uiState.collectAsStateWithLifecycle()
+
+	LaunchedEffect(Unit) {
+		resultViewModel.getSelectedIds(BOWLER_DETAILS_PREFERRED_GEAR_PICKER_RESULT_KEY) { GearID(it) }
+			.onEach { viewModel.handleAction(BowlerDetailsScreenUiAction.PreferredGearSelected(it)) }
+			.launchIn(this)
+	}
 
 	val lifecycleOwner = LocalLifecycleOwner.current
 	LaunchedEffect(Unit) {
@@ -63,9 +73,8 @@ internal fun BowlerDetailsRoute(
 						is BowlerDetailsScreenEvent.ShowWidgetStatistics -> onShowWidgetStatistics(it.filter)
 						is BowlerDetailsScreenEvent.ShowPreferredGearPicker -> onShowPreferredGearPicker(
 							it.selectedGear,
-						) @JvmSerializableLambda { selectedGear ->
-							viewModel.handleAction(BowlerDetailsScreenUiAction.PreferredGearSelected(selectedGear))
-						}
+							BOWLER_DETAILS_PREFERRED_GEAR_PICKER_RESULT_KEY,
+						)
 						BowlerDetailsScreenEvent.ShowWidgetNotEnoughDataError -> onShowWidgetNotEnoughDataError()
 						BowlerDetailsScreenEvent.ShowWidgetUnavailableError -> onShowWidgetUnavailableError()
 					}
