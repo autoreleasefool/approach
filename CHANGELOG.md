@@ -6,12 +6,11 @@
 - Fix: App Icon previews are correctly shown in app
 ```
 
-## Android 4.2.0b328
+## Android 4.3.0b329
 
 ```
-- Feat: Teams -- creating, deleting, bowling with teams has all been reintroduced and improved
-- Feat: Sentry now registers breadcrumbs on compose navigation
-- Fix: Resolves crashes that would cause the app to frequently restart when left running in the background, due to navigation not being serializable
+- Feat: Team scores for the current game now show in the game details
+- Fix: The Game Editor is much more responsive after offloading heavy tasks to background threads from the UI
 ```
 
 ---
@@ -210,6 +209,14 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.2.0b328
+
+```
+- Feat: Teams -- creating, deleting, bowling with teams has all been reintroduced and improved
+- Feat: Sentry now registers breadcrumbs on compose navigation
+- Fix: Resolves crashes that would cause the app to frequently restart when left running in the background, due to navigation not being serializable
+```
 
 ## Android 4.1.1b327
 
