@@ -19,7 +19,7 @@ class SeriesFormResultViewModel @Inject constructor(
 	fun getSeriesID() = savedStateHandle
 		.getStateFlow<String?>(SERIES_FORM_RESULT_KEY, null)
 		.filterNotNull()
-		.onEach { savedStateHandle.remove<String?>(SERIES_FORM_RESULT_KEY) }
+		.onEach { savedStateHandle.set<String?>(SERIES_FORM_RESULT_KEY, null) }
 		.map { SeriesID.fromString(it) }
 
 	fun setResult(result: SeriesID) {

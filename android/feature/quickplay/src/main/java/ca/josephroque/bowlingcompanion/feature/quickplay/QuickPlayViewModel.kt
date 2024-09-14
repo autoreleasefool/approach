@@ -196,6 +196,7 @@ class QuickPlayViewModel @Inject constructor(
 
 	private fun updateBowlerLeague(leagueId: LeagueID?) {
 		val bowlerId = selectingLeagueForBowler ?: return
+		selectingLeagueForBowler = null
 
 		if (leagueId == null) {
 			if (isTeamQuickPlay) {

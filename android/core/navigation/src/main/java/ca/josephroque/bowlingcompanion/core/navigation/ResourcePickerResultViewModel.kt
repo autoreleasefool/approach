@@ -25,7 +25,7 @@ class ResourcePickerResultViewModel @Inject constructor(
 		.getStateFlow<Set<UUID>?>(key.value, null)
 		.filterNotNull()
 		.map {
-			savedStateHandle.remove<Set<UUID>>(key.value)
+			savedStateHandle.set<Set<UUID>>(key.value, null)
 			it.map { id -> parse(id) }.toSet()
 		}
 
