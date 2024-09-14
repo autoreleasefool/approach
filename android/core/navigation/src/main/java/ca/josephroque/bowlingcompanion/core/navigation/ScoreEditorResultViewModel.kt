@@ -19,7 +19,7 @@ class ScoreEditorResultViewModel @Inject constructor(
 	fun getScore() = savedStateHandle
 		.getStateFlow<String?>(SCORE_EDITOR_RESULT_KEY, null)
 		.filterNotNull()
-		.onEach { savedStateHandle.remove<String?>(SCORE_EDITOR_RESULT_KEY) }
+		.onEach { savedStateHandle.set<String?>(SCORE_EDITOR_RESULT_KEY, null) }
 		.map {
 			val (method, score) = it.split(":")
 			GameScoringMethod.valueOf(method) to score.toInt()

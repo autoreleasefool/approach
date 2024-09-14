@@ -19,7 +19,7 @@ class AvatarFormResultViewModel @Inject constructor(
 	fun getAvatar() = savedStateHandle
 		.getStateFlow<String?>(AVATAR_FORM_RESULT_KEY, null)
 		.filterNotNull()
-		.onEach { savedStateHandle.remove<String?>(AVATAR_FORM_RESULT_KEY) }
+		.onEach { savedStateHandle.set<String?>(AVATAR_FORM_RESULT_KEY, null) }
 		.map { Avatar.fromString(it) }
 
 	fun setResult(result: Avatar) {

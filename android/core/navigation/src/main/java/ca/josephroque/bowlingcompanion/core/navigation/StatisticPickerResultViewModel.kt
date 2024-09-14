@@ -19,7 +19,7 @@ class StatisticPickerResultViewModel @Inject constructor(
 	fun getStatisticID() = savedStateHandle
 		.getStateFlow<String?>(STATISTIC_PICKER_RESULT_KEY, null)
 		.filterNotNull()
-		.onEach { savedStateHandle.remove<String?>(STATISTIC_PICKER_RESULT_KEY) }
+		.onEach { savedStateHandle.set<String?>(STATISTIC_PICKER_RESULT_KEY, null) }
 		.map { StatisticID.valueOf(it) }
 
 	fun setResult(result: StatisticID) {

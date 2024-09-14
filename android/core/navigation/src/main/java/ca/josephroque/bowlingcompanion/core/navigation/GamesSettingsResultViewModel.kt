@@ -20,7 +20,7 @@ class GamesSettingsResultViewModel @Inject constructor(
 	fun getResult() = savedStateHandle
 		.getStateFlow<String?>(GAMES_SETTINGS_RESULT_KEY, null)
 		.filterNotNull()
-		.onEach { savedStateHandle.remove<String?>(GAMES_SETTINGS_RESULT_KEY) }
+		.onEach { savedStateHandle.set<String?>(GAMES_SETTINGS_RESULT_KEY, null) }
 		.map {
 			val (seriesIds, gameId) = it.split(":")
 			Pair(seriesIds.split(",").map { id -> SeriesID.fromString(id) }, GameID.fromString(gameId))

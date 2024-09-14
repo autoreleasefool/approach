@@ -18,7 +18,7 @@ class LaneFormResultViewModel @Inject constructor(private val savedStateHandle: 
 	fun getLanes() = savedStateHandle
 		.getStateFlow<String?>(LANE_FORM_RESULT_KEY, null)
 		.filterNotNull()
-		.onEach { savedStateHandle.remove<String?>(LANE_FORM_RESULT_KEY) }
+		.onEach { savedStateHandle.set<String?>(LANE_FORM_RESULT_KEY, null) }
 		.map { it.split(",").map { id -> LaneID.fromString(id) } }
 
 	fun setResult(result: List<LaneID>) {
