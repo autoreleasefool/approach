@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.seriesform.navigation
 
+import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -12,22 +14,17 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
-import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
+import ca.josephroque.bowlingcompanion.core.navigation.SeriesFormResultViewModel
 import ca.josephroque.bowlingcompanion.feature.seriesform.SeriesFormRoute
 
 fun NavController.navigateToSeriesForm(seriesId: SeriesID, navOptions: NavOptions? = null) {
 	this.navigate(Route.EditSeries.createRoute(seriesId), navOptions)
 }
 
-fun NavController.navigateToNewSeriesForm(
-	leagueId: LeagueID,
-	result: NavResultCallback<SeriesID?>,
-	navOptions: NavOptions? = null,
-) {
-	this.navigateForResult(Route.AddSeries.createRoute(leagueId), result, navOptions)
+fun NavController.navigateToNewSeriesForm(leagueId: LeagueID, navOptions: NavOptions? = null) {
+	this.navigate(Route.AddSeries.createRoute(leagueId), navOptions)
 }
 
 fun NavController.navigateToNewTeamSeriesForm(
@@ -39,7 +36,8 @@ fun NavController.navigateToNewTeamSeriesForm(
 }
 
 fun NavGraphBuilder.seriesFormScreen(
-	onDismissWithResult: (SeriesID?) -> Unit,
+	navController: NavController,
+	onDismiss: () -> Unit,
 	onEditAlley: (AlleyID?, ResourcePickerResultKey) -> Unit,
 ) {
 	composable(
@@ -48,8 +46,21 @@ fun NavGraphBuilder.seriesFormScreen(
 			navArgument(Route.EditSeries.ARG_SERIES) { type = NavType.StringType },
 		),
 	) {
+		val parentEntry = remember(it) {
+			navController.previousBackStackEntry
+		}
+
+		val resultViewModel = if (parentEntry == null) {
+			hiltViewModel<SeriesFormResultViewModel>()
+		} else {
+			hiltViewModel<SeriesFormResultViewModel>(parentEntry)
+		}
+
 		SeriesFormRoute(
-			onDismissWithResult = onDismissWithResult,
+			onDismissWithResult = { result ->
+				result?.let { series -> resultViewModel.setResult(series) }
+				onDismiss()
+			},
 			onEditAlley = onEditAlley,
 			onStartTeamSeries = { _, _ ->
 				throw NotImplementedError("SeriesFormRoute should not start Team Series")
@@ -62,8 +73,21 @@ fun NavGraphBuilder.seriesFormScreen(
 			navArgument(Route.AddSeries.ARG_LEAGUE) { type = NavType.StringType },
 		),
 	) {
+		val parentEntry = remember(it) {
+			navController.previousBackStackEntry
+		}
+
+		val resultViewModel = if (parentEntry == null) {
+			hiltViewModel<SeriesFormResultViewModel>()
+		} else {
+			hiltViewModel<SeriesFormResultViewModel>(parentEntry)
+		}
+
 		SeriesFormRoute(
-			onDismissWithResult = onDismissWithResult,
+			onDismissWithResult = { result ->
+				result?.let { series -> resultViewModel.setResult(series) }
+				onDismiss()
+			},
 			onEditAlley = onEditAlley,
 			onStartTeamSeries = { _, _ ->
 				throw NotImplementedError("SeriesFormRoute should not start Team Series")

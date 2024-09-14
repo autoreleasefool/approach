@@ -20,6 +20,6 @@ sealed interface ResourcePickerScreenUiAction {
 }
 
 sealed interface ResourcePickerScreenEvent {
-	data class Dismissed(val key: ResourcePickerResultKey?, val result: Set<UUID>) :
+	data class Dismissed(val key: ResourcePickerResultKey, val result: Set<UUID>) :
 		ResourcePickerScreenEvent
 }

@@ -17,23 +17,32 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.SeriesFormResultViewModel
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetails
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsTopBar
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsTopBarUiState
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun LeagueDetailsRoute(
 	onBackPressed: () -> Unit,
 	onEditSeries: (SeriesID) -> Unit,
-	onAddSeries: (LeagueID, NavResultCallback<SeriesID?>) -> Unit,
+	onAddSeries: (LeagueID) -> Unit,
 	onShowSeriesDetails: (SeriesID) -> Unit,
 	onUsePreBowl: (LeagueID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: LeagueDetailsViewModel = hiltViewModel(),
+	resultViewModel: SeriesFormResultViewModel = hiltViewModel(),
 ) {
 	val leagueDetailsScreenState by viewModel.uiState.collectAsStateWithLifecycle()
+
+	LaunchedEffect(Unit) {
+		resultViewModel.getSeriesID()
+			.onEach { viewModel.handleAction(LeagueDetailsScreenUiAction.SeriesAdded(it)) }
+			.launchIn(this)
+	}
 
 	val lifecycleOwner = LocalLifecycleOwner.current
 	LaunchedEffect(Unit) {
@@ -42,13 +51,7 @@ internal fun LeagueDetailsRoute(
 				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
 				.collect {
 					when (it) {
-						is LeagueDetailsScreenEvent.AddSeries -> onAddSeries(
-							it.leagueId,
-						) @JvmSerializableLambda { seriesId ->
-							if (seriesId != null) {
-								viewModel.handleAction(LeagueDetailsScreenUiAction.SeriesAdded(seriesId))
-							}
-						}
+						is LeagueDetailsScreenEvent.AddSeries -> onAddSeries(it.leagueId)
 						is LeagueDetailsScreenEvent.UsePreBowl -> onUsePreBowl(it.leagueId)
 						is LeagueDetailsScreenEvent.EditSeries -> onEditSeries(it.seriesId)
 						is LeagueDetailsScreenEvent.Dismissed -> onBackPressed()

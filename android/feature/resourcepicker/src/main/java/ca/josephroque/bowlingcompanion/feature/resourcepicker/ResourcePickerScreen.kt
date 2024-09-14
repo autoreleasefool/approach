@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 internal fun ResourcePickerRoute(
-	onDismissWithResult: (ResourcePickerResultKey?, Set<UUID>) -> Unit,
+	onDismissWithResult: (ResourcePickerResultKey, Set<UUID>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: ResourcePickerViewModel = hiltViewModel(),
 ) {

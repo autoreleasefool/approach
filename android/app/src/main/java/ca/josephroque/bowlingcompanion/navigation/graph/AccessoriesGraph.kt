@@ -37,12 +37,7 @@ fun NavGraphBuilder.accessoriesGraph(navController: NavController) {
 	)
 	alleyFormScreen(
 		onBackPressed = navController::popBackStack,
-		onManageLanes = { lanes, result ->
-			navController.navigateToLaneFormForResult(
-				existingLanes = lanes,
-				navResultCallback = result,
-			)
-		},
+		onManageLanes = navController::navigateToLaneFormForResult,
 	)
 	gearListScreen(
 		onBackPressed = navController::popBackStack,

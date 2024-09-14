@@ -227,7 +227,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		const val SELECTION_LIMIT = "limit"
 		const val TITLE_OVERRIDE = "title"
 		fun createRoute(
-			resultKey: String?, // TODO: should not be optional
+			resultKey: String,
 			resourceType: String,
 			resourceFilter: String?,
 			selectedIds: Set<UUID>,
@@ -243,7 +243,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 			"${Uri.encode(limit.toString())}/" +
 			Uri.encode(titleOverride)
 		fun getResultKey(savedStateHandle: SavedStateHandle): String? =
-			savedStateHandle.get<String>("result_key") // TODO: should not be optional
+			savedStateHandle.get<String>("result_key")
 		fun getResourceType(savedStateHandle: SavedStateHandle): ResourcePickerType? =
 			savedStateHandle.get<ResourcePickerType>("type")
 		fun getResourceFilter(savedStateHandle: SavedStateHandle): String? =

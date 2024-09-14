@@ -17,7 +17,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.AvatarFormResultViewModel
 import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultViewModel
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearForm
@@ -31,17 +31,22 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun GearFormRoute(
 	onDismiss: () -> Unit,
-	onEditAvatar: (Avatar, NavResultCallback<Avatar>) -> Unit,
+	onEditAvatar: (Avatar) -> Unit,
 	onEditOwner: (BowlerID?, ResourcePickerResultKey) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: GearFormViewModel = hiltViewModel(),
 	resultViewModel: ResourcePickerResultViewModel = hiltViewModel(),
+	avatarFormResultViewModel: AvatarFormResultViewModel = hiltViewModel(),
 ) {
 	val gearFormScreenState = viewModel.uiState.collectAsState().value
 
 	LaunchedEffect(Unit) {
 		resultViewModel.getSelectedIds(GEAR_FORM_OWNER_PICKER_RESULT_KEY) { BowlerID(it) }
 			.onEach { viewModel.handleAction(GearFormScreenUiAction.UpdatedOwner(it.firstOrNull())) }
+			.launchIn(this)
+
+		avatarFormResultViewModel.getAvatar()
+			.onEach { viewModel.handleAction(GearFormScreenUiAction.UpdatedAvatar(it)) }
 			.launchIn(this)
 	}
 
@@ -54,9 +59,7 @@ internal fun GearFormRoute(
 					when (it) {
 						GearFormScreenEvent.Dismissed -> onDismiss()
 						is GearFormScreenEvent.EditAvatar ->
-							onEditAvatar(it.avatar) @JvmSerializableLambda { avatar ->
-								viewModel.handleAction(GearFormScreenUiAction.UpdatedAvatar(avatar))
-							}
+							onEditAvatar(it.avatar)
 						is GearFormScreenEvent.EditOwner ->
 							onEditOwner(it.owner, GEAR_FORM_OWNER_PICKER_RESULT_KEY)
 					}

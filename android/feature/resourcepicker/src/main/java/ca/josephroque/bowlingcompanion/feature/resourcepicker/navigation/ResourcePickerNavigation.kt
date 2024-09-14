@@ -214,11 +214,7 @@ fun NavController.navigateToResourcePickerForResult(
 }
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
-fun NavGraphBuilder.resourcePickerSheet(
-	navController: NavController,
-	onDismiss: () -> Unit,
-	onDismissWithResult: (Set<UUID>) -> Unit,
-) {
+fun NavGraphBuilder.resourcePickerSheet(navController: NavController, onDismiss: () -> Unit) {
 	bottomSheet(
 		route = Route.ResourcePicker.route,
 		arguments = listOf(
@@ -254,12 +250,8 @@ fun NavGraphBuilder.resourcePickerSheet(
 
 		ResourcePickerRoute(
 			onDismissWithResult = { resultKey, ids ->
-				if (resultKey == null) {
-					onDismissWithResult(ids)
-				} else {
-					resultViewModel.setSelectedIds(resultKey, ids)
-					onDismiss()
-				}
+				resultViewModel.setSelectedIds(resultKey, ids)
+				onDismiss()
 			},
 		)
 	}

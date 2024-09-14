@@ -1,13 +1,14 @@
 package ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation
 
+import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
-import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
+import ca.josephroque.bowlingcompanion.core.navigation.StatisticPickerResultViewModel
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.statisticpicker.StatisticPickerRoute
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -15,18 +16,16 @@ import com.google.accompanist.navigation.material.bottomSheet
 
 fun NavController.navigateToStatisticPickerForResult(
 	selectedStatistic: StatisticID,
-	navResultCallback: NavResultCallback<StatisticID>,
 	navOptions: NavOptions? = null,
 ) {
-	this.navigateForResult(
+	this.navigate(
 		route = Route.StatisticsPicker.createRoute(selectedStatistic.name),
-		navResultCallback = navResultCallback,
 		navOptions = navOptions,
 	)
 }
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
-fun NavGraphBuilder.statisticPickerSheet(onDismissWithResult: (StatisticID) -> Unit) {
+fun NavGraphBuilder.statisticPickerSheet(navController: NavController, onDismiss: () -> Unit) {
 	bottomSheet(
 		route = Route.StatisticsPicker.route,
 		arguments = listOf(
@@ -35,8 +34,21 @@ fun NavGraphBuilder.statisticPickerSheet(onDismissWithResult: (StatisticID) -> U
 			},
 		),
 	) {
+		val parentEntry = remember(it) {
+			navController.previousBackStackEntry
+		}
+
+		val resultViewModel = if (parentEntry == null) {
+			hiltViewModel<StatisticPickerResultViewModel>()
+		} else {
+			hiltViewModel<StatisticPickerResultViewModel>(parentEntry)
+		}
+
 		StatisticPickerRoute(
-			onDismissWithResult = onDismissWithResult,
+			onDismissWithResult = { statisticID ->
+				resultViewModel.setResult(statisticID)
+				onDismiss()
+			},
 		)
 	}
 }

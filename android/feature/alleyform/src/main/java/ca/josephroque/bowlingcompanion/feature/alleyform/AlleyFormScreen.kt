@@ -16,21 +16,30 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.LaneID
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.LaneFormResultViewModel
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyForm
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormTopBar
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormUiAction
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun AlleyFormRoute(
 	onDismiss: () -> Unit,
-	onManageLanes: (List<LaneID>, NavResultCallback<List<LaneID>>) -> Unit,
+	onManageLanes: (List<LaneID>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: AlleyFormViewModel = hiltViewModel(),
+	lanesResultViewModel: LaneFormResultViewModel = hiltViewModel(),
 ) {
 	val alleyFormScreenState = viewModel.uiState.collectAsState().value
+
+	LaunchedEffect(Unit) {
+		lanesResultViewModel.getLanes()
+			.onEach { viewModel.handleAction(AlleyFormScreenUiAction.LanesUpdated(it)) }
+			.launchIn(this)
+	}
 
 	val lifecycleOwner = LocalLifecycleOwner.current
 	LaunchedEffect(Unit) {
@@ -40,10 +49,7 @@ internal fun AlleyFormRoute(
 				.collect {
 					when (it) {
 						AlleyFormScreenEvent.Dismissed -> onDismiss()
-						is AlleyFormScreenEvent.ManageLanes ->
-							onManageLanes(it.existingLanes) @JvmSerializableLambda { ids ->
-								viewModel.handleAction(AlleyFormScreenUiAction.LanesUpdated(ids))
-							}
+						is AlleyFormScreenEvent.ManageLanes -> onManageLanes(it.existingLanes)
 					}
 				}
 		}

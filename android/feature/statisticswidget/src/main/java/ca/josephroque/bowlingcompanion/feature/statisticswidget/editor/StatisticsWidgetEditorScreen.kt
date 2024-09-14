@@ -17,9 +17,9 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultViewModel
+import ca.josephroque.bowlingcompanion.core.navigation.StatisticPickerResultViewModel
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditor
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditorTopBar
@@ -32,15 +32,16 @@ fun StatisticsWidgetEditorRoute(
 	onBackPressed: () -> Unit,
 	onPickBowler: (BowlerID?, ResourcePickerResultKey) -> Unit,
 	onPickLeague: (BowlerID, LeagueID?, ResourcePickerResultKey) -> Unit,
-	onPickStatistic: (StatisticID, NavResultCallback<StatisticID>) -> Unit,
+	onPickStatistic: (StatisticID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: StatisticsWidgetEditorViewModel = hiltViewModel(),
-	resultViewModel: ResourcePickerResultViewModel = hiltViewModel(),
+	pickerResultViewModel: ResourcePickerResultViewModel = hiltViewModel(),
+	statisticPickerResultViewModel: StatisticPickerResultViewModel = hiltViewModel(),
 ) {
 	val statisticsWidgetEditorScreenState by viewModel.uiState.collectAsStateWithLifecycle()
 
 	LaunchedEffect(Unit) {
-		resultViewModel.getSelectedIds(STATISTICS_WIDGET_BOWLER_PICKER_RESULT_KEY) { BowlerID(it) }
+		pickerResultViewModel.getSelectedIds(STATISTICS_WIDGET_BOWLER_PICKER_RESULT_KEY) { BowlerID(it) }
 			.onEach {
 				viewModel.handleAction(
 					StatisticsWidgetEditorScreenUiAction.UpdatedBowler(it.firstOrNull()),
@@ -48,10 +49,18 @@ fun StatisticsWidgetEditorRoute(
 			}
 			.launchIn(this)
 
-		resultViewModel.getSelectedIds(STATISTICS_WIDGET_LEAGUE_PICKER_RESULT_KEY) { LeagueID(it) }
+		pickerResultViewModel.getSelectedIds(STATISTICS_WIDGET_LEAGUE_PICKER_RESULT_KEY) { LeagueID(it) }
 			.onEach {
 				viewModel.handleAction(
 					StatisticsWidgetEditorScreenUiAction.UpdatedLeague(it.firstOrNull()),
+				)
+			}
+			.launchIn(this)
+
+		statisticPickerResultViewModel.getStatisticID()
+			.onEach {
+				viewModel.handleAction(
+					StatisticsWidgetEditorScreenUiAction.UpdatedStatistic(it),
 				)
 			}
 			.launchIn(this)
@@ -70,9 +79,7 @@ fun StatisticsWidgetEditorRoute(
 						is StatisticsWidgetEditorScreenEvent.EditLeague ->
 							onPickLeague(it.bowlerId, it.leagueId, STATISTICS_WIDGET_LEAGUE_PICKER_RESULT_KEY)
 						is StatisticsWidgetEditorScreenEvent.EditStatistic ->
-							onPickStatistic(it.statistic.id) @JvmSerializableLambda { id ->
-								viewModel.handleAction(StatisticsWidgetEditorScreenUiAction.UpdatedStatistic(id))
-							}
+							onPickStatistic(it.statistic.id)
 					}
 				}
 		}

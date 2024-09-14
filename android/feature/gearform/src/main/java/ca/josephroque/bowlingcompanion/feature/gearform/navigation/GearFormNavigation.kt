@@ -9,7 +9,6 @@ import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GearID
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gearform.GearFormRoute
@@ -24,7 +23,7 @@ fun NavController.navigateToNewGearForm(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.gearFormScreen(
 	onBackPressed: () -> Unit,
-	onEditAvatar: (Avatar, NavResultCallback<Avatar>) -> Unit,
+	onEditAvatar: (Avatar) -> Unit,
 	onEditOwner: (BowlerID?, ResourcePickerResultKey) -> Unit,
 ) {
 	composable(
