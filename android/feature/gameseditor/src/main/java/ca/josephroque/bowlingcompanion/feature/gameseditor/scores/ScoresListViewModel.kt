@@ -2,6 +2,8 @@ package ca.josephroque.bowlingcompanion.feature.gameseditor.scores
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.ScoresRepository
@@ -16,6 +18,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scores.ScoresListU
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scores.ScoresListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -30,6 +33,7 @@ class ScoresListViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val scoresRepository: ScoresRepository,
 	private val gamesRepository: GamesRepository,
+	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ) : ApproachViewModel<ScoresListScreenEvent>() {
 	private val series = Route.ScoresList.getSeries(savedStateHandle)
 	private val gameIndex = Route.ScoresList.getGameIndex(savedStateHandle) ?: 0
@@ -48,7 +52,7 @@ class ScoresListViewModel @Inject constructor(
 
 	init {
 		series.forEachIndexed { seriesIndex, seriesId ->
-			viewModelScope.launch {
+			viewModelScope.launch(ioDispatcher) {
 				val games = gamesRepository.getGamesList(seriesId).first()
 				val gameDetails = games.map {
 					gamesRepository.getGameDetails(it.id).first()
