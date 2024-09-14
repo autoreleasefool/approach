@@ -39,6 +39,9 @@ message UserPreferences {
   // Series
   SeriesItemSizeProto series_item_size = 24;
 
+  // Teams
+  bool is_hiding_team_scores_in_game_details = 39;
+
   // Tips
   bool is_lane_form_swipe_to_edit_tip_dismissed = 25;
   bool is_quick_play_tip_dismissed = 31;
@@ -51,5 +54,5 @@ message UserPreferences {
   optional string latest_game_in_editor = 33;
   optional string latest_team_series_in_editor = 38;
 
-  // Next ID: 39
+  // Next ID: 40
 }

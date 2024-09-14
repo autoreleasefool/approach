@@ -79,6 +79,14 @@ class OfflineFirstUserDataRepository @Inject constructor(
 		approachPreferencesDataSource.setLastTrackableFilterSource(source = source)
 	}
 
+	override suspend fun setIsHidingTeamScoresInGameDetails(
+		isHidingTeamScoresInGameDetails: Boolean,
+	) {
+		approachPreferencesDataSource.setIsHidingTeamScoresInGameDetails(
+			isHiding = isHidingTeamScoresInGameDetails,
+		)
+	}
+
 	override suspend fun didRecentlyUseAlley(id: String) {
 		approachPreferencesDataSource.insertRecentlyUsedAlley(id)
 	}

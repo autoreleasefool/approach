@@ -27,6 +27,15 @@ import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
+import ca.josephroque.bowlingcompanion.core.model.stub.BowlerSummaryStub
+import ca.josephroque.bowlingcompanion.core.model.stub.LeagueSummaryStub
+import ca.josephroque.bowlingcompanion.core.model.stub.ScoringStub
+import ca.josephroque.bowlingcompanion.core.scoresheet.ScorePosition
+import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetConfiguration
+import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetList
+import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetListItem
+import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetListUiState
+import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.NavigationButton
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.lanes.CopyLanesDialog
@@ -64,13 +73,26 @@ fun GameDetails(
 		)
 
 		if (state.header.hasMultipleBowlers) {
-			ViewAllBowlersButton(
-				onClick = { onAction(GameDetailsUiAction.ViewAllBowlersClicked) },
-				modifier = Modifier.padding(horizontal = 16.dp),
-			)
-		}
+			if (state.scoresList == null) {
+				ViewAllBowlersButton(
+					onClick = { onAction(GameDetailsUiAction.ViewAllBowlersClicked) },
+					modifier = Modifier.padding(horizontal = 16.dp),
+				)
 
-		HorizontalDivider(thickness = 8.dp)
+				HorizontalDivider(thickness = 8.dp)
+			} else {
+				Column {
+					HorizontalDivider(thickness = 8.dp)
+
+					ScoreSheetList(
+						state = state.scoresList,
+						onAction = { onAction(GameDetailsUiAction.ScoreSheetList(it)) },
+					)
+
+					HorizontalDivider(thickness = 8.dp)
+				}
+			}
+		}
 
 		StatisticsButtons(
 			gameIndex = state.currentGameIndex,
@@ -138,6 +160,9 @@ private fun ViewAllBowlersButton(onClick: () -> Unit, modifier: Modifier = Modif
 @Composable
 private fun GameDetailsPreview() {
 	Surface {
+		val bowlerList = BowlerSummaryStub.list()
+		val leagueList = LeagueSummaryStub.list()
+
 		GameDetails(
 			state = GameDetailsUiState(
 				gameId = GameID.randomID(),
@@ -147,6 +172,38 @@ private fun GameDetailsPreview() {
 					leagueName = "1 Sunday Nights 2019",
 					nextElement = NextGameEditableElement.Roll(rollIndex = 1),
 					hasMultipleBowlers = true,
+				),
+				scoresList = ScoreSheetListUiState(
+					highlightedGame = ScoreSheetListUiState.HighlightedGame(
+						bowlerId = bowlerList[0].id,
+						gameIndex = 0,
+					),
+					bowlerScores = listOf(
+						listOf(
+							ScoreSheetListItem(
+								bowlerList[0],
+								leagueList[0],
+								ScoreSheetUiState(
+									game = ScoringStub.stub(),
+									selection = ScoreSheetUiState.Selection.none(),
+									configuration = ScoreSheetConfiguration(
+										scorePosition = setOf(ScorePosition.START, ScorePosition.END),
+									),
+								),
+							),
+							ScoreSheetListItem(
+								bowlerList[1],
+								leagueList[1],
+								ScoreSheetUiState(
+									game = ScoringStub.stub(),
+									selection = ScoreSheetUiState.Selection.none(),
+									configuration = ScoreSheetConfiguration(
+										scorePosition = setOf(ScorePosition.START, ScorePosition.END),
+									),
+								),
+							),
+						),
+					),
 				),
 				gear = GameDetailsUiState.GearCardUiState(
 					selectedGear = listOf(

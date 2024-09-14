@@ -11,6 +11,8 @@ import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
+import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetListUiState
+import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.lanes.CopyLanesDialogUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.lanes.CopyLanesDialogUiState
 
@@ -29,6 +31,7 @@ data class GameDetailsUiState(
 	val currentBowlerIndex: Int = 0,
 	val seriesGameIds: List<GameID> = emptyList(),
 	val header: HeaderUiState = HeaderUiState(),
+	val scoresList: ScoreSheetListUiState? = null,
 	val gear: GearCardUiState = GearCardUiState(),
 	val alley: AlleyCardUiState = AlleyCardUiState(),
 	val matchPlay: MatchPlayCardUiState = MatchPlayCardUiState(),
@@ -88,4 +91,5 @@ sealed interface GameDetailsUiAction {
 		GameDetailsUiAction
 	data class HeaderHeightMeasured(val height: Float) : GameDetailsUiAction
 	data class CopyLanesDialog(val action: CopyLanesDialogUiAction) : GameDetailsUiAction
+	data class ScoreSheetList(val action: ScoreSheetUiAction) : GameDetailsUiAction
 }

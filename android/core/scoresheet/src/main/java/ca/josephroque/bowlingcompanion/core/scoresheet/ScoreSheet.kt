@@ -59,7 +59,9 @@ fun ScoreSheet(
 		val targetPositionDp = (state.selection.frameIndex - 1) * (maxWidth.value / 3f)
 		val targetPositionPx = with(LocalDensity.current) { targetPositionDp.dp.toPx() }
 		LaunchedEffect(state.selection) {
-			scrollState.animateScrollTo(targetPositionPx.toInt())
+			if (state.selection.frameIndex >= 0) {
+				scrollState.animateScrollTo(targetPositionPx.toInt())
+			}
 		}
 
 		ScoreSheetRow(

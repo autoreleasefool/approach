@@ -30,6 +30,7 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
+import ca.josephroque.bowlingcompanion.core.model.GameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
@@ -39,12 +40,14 @@ import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.Pin
+import ca.josephroque.bowlingcompanion.core.model.ScoringGame
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.nextIndexToRecord
 import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
+import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetListUiState
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiState
@@ -65,6 +68,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.setPinsDowned
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateFrameEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateGameDetails
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateGameDetailsAndGet
+import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateGameScore
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateGamesEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateGamesEditorAndGet
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateHeader
@@ -79,10 +83,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
@@ -160,6 +168,13 @@ class GamesEditorViewModel @Inject constructor(
 	private var bowlerDetailsJob: Job? = null
 	private var gameDetailsJob: Job? = null
 	private val gameDetailsState = MutableStateFlow(GameDetailsUiState(gameId = initialGameId))
+	private val currentGameIndex = gameDetailsState.map { it.currentGameIndex }
+
+	private suspend fun isShowingTeamScores(): Boolean =
+		!userDataRepository.userData.first().isHidingTeamScoresInGameDetails
+	private val isShowingTeamScores = userDataRepository.userData.map {
+		!it.isHidingTeamScoresInGameDetails
+	}
 
 	private val bottomSheetUiState: Flow<GamesEditorScreenBottomSheetUiState> = combine(
 		headerPeekHeight,
@@ -241,6 +256,7 @@ class GamesEditorViewModel @Inject constructor(
 			is GameDetailsUiAction.NextGameElementClicked -> goToNext(action.nextGameElement)
 			is GameDetailsUiAction.HeaderHeightMeasured -> setHeaderPeekHeight(action.height)
 			is GameDetailsUiAction.CopyLanesDialog -> handleCopyLanesAction(action.action)
+			is GameDetailsUiAction.ScoreSheetList -> handleScoreSheetListAction(action.action)
 		}
 	}
 
@@ -286,6 +302,14 @@ class GamesEditorViewModel @Inject constructor(
 		}
 	}
 
+	private fun handleScoreSheetListAction(action: ScoreSheetUiAction) {
+		// Intentionally do nothing when items in the score sheet list are clicked
+		when (action) {
+			is ScoreSheetUiAction.RollClicked -> Unit
+			is ScoreSheetUiAction.FrameClicked -> Unit
+		}
+	}
+
 	private fun calculateHighestPossibleScore() {
 		viewModelScope.launch(ioDispatcher) {
 			val gameId = currentGameId.value
@@ -316,6 +340,7 @@ class GamesEditorViewModel @Inject constructor(
 	private fun loadInitialData() {
 		loadTeamSeries()
 		loadInitialGame()
+		loadSeriesScores()
 	}
 
 	private fun loadTeamSeries() {
@@ -330,6 +355,157 @@ class GamesEditorViewModel @Inject constructor(
 		if (initialGameLoaded) return
 		initialGameLoaded = true
 		loadGame(initialGameId)
+	}
+
+	private fun loadSeriesScores() {
+		scoresJob?.cancel()
+		scoresJob = viewModelScope.launch(ioDispatcher) {
+			isShowingTeamScores
+				.onEach {
+					if (!it) {
+						gameDetailsState.update {
+							it.copy(
+								scoresList = null,
+							)
+						}
+					}
+				}
+				.launchIn(this)
+
+			combine(
+				isShowingTeamScores,
+				currentBowlerId,
+			) { isShowingTeamScores, currentBowlerId ->
+				if (!isShowingTeamScores) null else currentBowlerId
+			}
+				.filterNotNull()
+				.onEach { currentBowlerId ->
+					val gameDetails = gameDetailsState.updateAndGet {
+						it.copy(
+							scoresList = it.scoresList?.copy(
+								highlightedGame = ScoreSheetListUiState.HighlightedGame(
+									bowlerId = currentBowlerId,
+									// Set to zero because `ScoreSheetList` concept of gameIndex is
+									// relative to the number of series, and we only pass 1 series in this view
+									gameIndex = 0,
+								),
+							),
+						)
+					}
+
+					gamesEditorState.updateGamesEditor(currentGameId.value) {
+						it.copy(
+							scoreSheet = it.scoreSheet.copy(
+								game = gameDetails.scoresList
+									?.bowlerScores
+									?.firstOrNull()
+									?.firstOrNull { score -> score.bowler.id == currentBowlerId }
+									?.scoreSheet?.game
+									?: it.scoreSheet.game,
+							),
+						)
+					}
+				}
+				.launchIn(this)
+
+			var scoreJobs = mutableListOf<Job>()
+			combine(
+				series.filter { it.isNotEmpty() },
+				currentGameIndex.distinctUntilChanged(),
+			) { series, currentGameIndex ->
+				val games = gamesRepository.getGamesFromSeries(series, currentGameIndex).first()
+				games.map { game -> gamesRepository.getGameDetails(game.id).first() }
+			}
+				.onEach {
+					scoreJobs.forEach { it.cancel() }
+					scoreJobs = mutableListOf()
+				}
+				.onEach { gamesDetails ->
+					val gameOrder = gamesDetails.mapIndexed { index, gameDetails ->
+						gameDetails.properties.id to index
+					}.toMap()
+
+					gamesDetails.forEach { gameDetails ->
+						scoreJobs.add(
+							this.launch { loadScoreForGame(gameDetails, gameOrder) },
+						)
+					}
+				}
+				.launchIn(this)
+		}
+	}
+
+	private suspend fun loadScoreForGame(gameDetails: GameEdit, gameOrder: Map<GameID, Int>) {
+		scoresRepository.getScore(gameDetails.properties.id).collect { score ->
+			if (score.id == currentGameId.value) {
+				updateScoreForCurrentGame(score)
+			}
+
+			if (!isShowingTeamScores()) return@collect
+
+			// We don't use `updateGameDetails` here because we want to update the state
+			// regardless of the current game ID
+			gameDetailsState.update {
+				it.updateGameScore(
+					currentBowlerId = currentBowlerId.first(),
+					score = score,
+					gameDetails = gameDetails,
+					gameOrder = gameOrder,
+				)
+			}
+		}
+	}
+
+	private suspend fun updateScoreForCurrentGame(score: ScoringGame) {
+		val gameId = score.id
+
+		gamesEditorState.updateGamesEditor(gameId) {
+			it.copy(
+				scoreSheet = it.scoreSheet.copy(
+					game = score,
+				),
+			)
+		}
+
+		val originalGameDetails = gameDetailsState.value
+		val gameDetails = gameDetailsState.updateGameDetailsAndGet(gameId) {
+			when (it.scoringMethod.scoringMethod) {
+				GameScoringMethod.MANUAL -> it
+				GameScoringMethod.BY_FRAME -> it.copy(
+					scoringMethod = it.scoringMethod.copy(score = score.score ?: 0),
+				)
+			}
+		}
+
+		// Only save details back to the game if they've changed, to avoid an infinite update loop
+		if (
+			originalGameDetails.gameId == gameDetails.gameId &&
+			originalGameDetails.scoringMethod != gameDetails.scoringMethod
+		) {
+			when (gameDetails.scoringMethod.scoringMethod) {
+				GameScoringMethod.MANUAL -> Unit
+				GameScoringMethod.BY_FRAME -> viewModelScope.launch(ioDispatcher) {
+					gamesRepository.setGameScore(
+						gameDetails.gameId,
+						gameDetails.scoringMethod.score,
+					)
+				}
+			}
+		}
+
+		// Only update the game duration if there is a greater than 2 second diff, to avoid an infinite loop
+		val lastLoadedGameAt = this@GamesEditorViewModel.lastLoadedGameAt.value
+		val nextValidUpdateAt = lastUpdatedDurationAtMillis + 2_000
+		if (lastLoadedGameAt?.gameId == gameDetails.gameId &&
+			nextValidUpdateAt < System.currentTimeMillis()
+		) {
+			lastUpdatedDurationAtMillis = System.currentTimeMillis()
+			val durationMillis = System.currentTimeMillis() - lastLoadedGameAt.loadedAt
+			gamesRepository.setGameDuration(
+				gameDetails.gameId,
+				lastLoadedGameAt.durationMillisWhenLoaded + durationMillis,
+			)
+		}
 	}
 
 	private fun loadBowlerGame(bowlerId: BowlerID, gameIndex: Int? = null) {
@@ -517,56 +693,6 @@ class GamesEditorViewModel @Inject constructor(
 						alley = it.alley.copy(
 							selectedLanes = lanes,
 						),
-					)
-				}
-			}
-		}
-
-		scoresJob?.cancel()
-		scoresJob = viewModelScope.launch {
-			scoresRepository.getScore(gameToLoad).collect { score ->
-				gamesEditorState.updateGamesEditor(gameToLoad) {
-					it.copy(
-						scoreSheet = it.scoreSheet.copy(
-							game = score,
-						),
-					)
-				}
-
-				val originalGameDetails = gameDetailsState.value
-				val gameDetails = gameDetailsState.updateGameDetailsAndGet(gameToLoad) {
-					when (it.scoringMethod.scoringMethod) {
-						GameScoringMethod.MANUAL -> it
-						GameScoringMethod.BY_FRAME -> it.copy(
-							scoringMethod = it.scoringMethod.copy(score = score.score ?: 0),
-						)
-					}
-				}
-
-				// Only save details back to the game if they've changed, to avoid an infinite update loop
-				if (originalGameDetails.scoringMethod != gameDetails.scoringMethod) {
-					when (gameDetails.scoringMethod.scoringMethod) {
-						GameScoringMethod.MANUAL -> Unit
-						GameScoringMethod.BY_FRAME -> viewModelScope.launch {
-							gamesRepository.setGameScore(
-								gameDetails.gameId,
-								gameDetails.scoringMethod.score,
-							)
-						}
-					}
-				}
-
-				// Only update the game duration if there is a greater than 2 second diff, to avoid an infinite loop
-				val lastLoadedGameAt = this@GamesEditorViewModel.lastLoadedGameAt.value
-				val nextValidUpdateAt = lastUpdatedDurationAtMillis + 2_000
-				if (lastLoadedGameAt?.gameId == gameDetails.gameId &&
-					nextValidUpdateAt < System.currentTimeMillis()
-				) {
-					lastUpdatedDurationAtMillis = System.currentTimeMillis()
-					val durationMillis = System.currentTimeMillis() - lastLoadedGameAt.loadedAt
-					gamesRepository.setGameDuration(
-						gameDetails.gameId,
-						lastLoadedGameAt.durationMillisWhenLoaded + durationMillis,
 					)
 				}
 			}
@@ -846,10 +972,14 @@ class GamesEditorViewModel @Inject constructor(
 		}
 
 		gameDetailsState.updateGameDetails(gameId) {
-			it.updateHeader(
-				frames = gamesEditor.frames,
-				selection = gamesEditor.scoreSheet.selection,
-			)
+			it
+				// FIXME: Consider if we want to scroll to / highlight the frame in the team score sheet
+				// as it's a bit distracting, and hides the bowler's scores
+// 				.updateSelection(gamesEditor.scoreSheet.selection)
+				.updateHeader(
+					frames = gamesEditor.frames,
+					selection = gamesEditor.scoreSheet.selection,
+				)
 		}
 	}
 

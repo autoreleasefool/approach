@@ -30,6 +30,9 @@ data class UserData(
 	// Series
 	val seriesItemSize: SeriesItemSize,
 
+	// Teams
+	val isHidingTeamScoresInGameDetails: Boolean,
+
 	// Tips
 	val isLaneFormSwipeToEditTipDismissed: Boolean,
 	val isQuickPlayTipDismissed: Boolean,

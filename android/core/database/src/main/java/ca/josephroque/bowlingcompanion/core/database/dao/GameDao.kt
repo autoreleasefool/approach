@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.model.ArchivedGame
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
+import ca.josephroque.bowlingcompanion.core.model.GameListItemBySeries
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
@@ -60,6 +61,21 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 		""",
 	)
 	abstract fun getGamesList(seriesId: SeriesID): Flow<List<GameListItem>>
+
+	@Query(
+		"""
+			SELECT
+			  games.series_id as seriesId,
+				games.id,
+				games.`index`
+			FROM games
+			WHERE games.series_id IN (:series) AND games.`index` = :gameIndex AND games.archived_on IS NULL
+		""",
+	)
+	abstract fun getGamesFromSeries(
+		series: List<SeriesID>,
+		gameIndex: Int,
+	): Flow<List<GameListItemBySeries>>
 
 	@Query(
 		"""

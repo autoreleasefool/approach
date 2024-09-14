@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.TeamsRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.GameID
@@ -22,6 +23,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -31,6 +33,7 @@ class GamesSettingsViewModel @Inject constructor(
 	bowlersRepository: BowlersRepository,
 	teamsRepository: TeamsRepository,
 	private val gamesRepository: GamesRepository,
+	private val userDataRepository: UserDataRepository,
 	savedStateHandle: SavedStateHandle,
 ) : ApproachViewModel<GamesSettingsScreenEvent>() {
 	private val teamSeriesId = Route.GameSettings.getTeamSeries(savedStateHandle)
@@ -45,6 +48,10 @@ class GamesSettingsViewModel @Inject constructor(
 	private val currentBowlerId = MutableStateFlow(BowlerID.randomID())
 	private val bowlers: MutableStateFlow<List<Pair<SeriesID, BowlerSummary>>> =
 		MutableStateFlow(emptyList())
+
+	private val isShowingTeamScoresInGameDetails = userDataRepository.userData.map {
+		!it.isHidingTeamScoresInGameDetails
+	}
 
 	init {
 		viewModelScope.launch {
@@ -65,20 +72,46 @@ class GamesSettingsViewModel @Inject constructor(
 		}
 	}
 
-	val uiState: StateFlow<GamesSettingsScreenUiState> = combine(
+	private val teamSettings = combine(
 		team,
-		currentGameId,
-		games,
+		isShowingTeamScoresInGameDetails,
+	) { team, isShowingTeamScoresInGameDetails ->
+		GamesSettingsUiState.TeamSettings(
+			team = team,
+			isShowingTeamScoresInGameDetails = isShowingTeamScoresInGameDetails,
+		)
+	}
+
+	private val bowlerSettings = combine(
 		currentBowlerId,
 		bowlers,
-	) { team, currentGame, games, currentBowler, bowlers ->
+	) { currentBowlerId, bowlers ->
+		GamesSettingsUiState.BowlerSettings(
+			currentBowlerId = currentBowlerId,
+			bowlers = bowlers.map { it.second },
+		)
+	}
+
+	private val gameSettings = combine(
+		currentGameId,
+		games,
+	) { currentGameId, games ->
+		GamesSettingsUiState.GameSettings(
+			currentGameId = currentGameId,
+			games = games,
+		)
+	}
+
+	val uiState: StateFlow<GamesSettingsScreenUiState> = combine(
+		teamSettings,
+		bowlerSettings,
+		gameSettings,
+	) { team, bowlers, games ->
 		GamesSettingsScreenUiState.Loaded(
 			GamesSettingsUiState(
-				team = team,
-				currentBowlerId = currentBowler,
-				bowlers = bowlers.map { it.second },
-				currentGameId = currentGame,
-				games = games,
+				teamSettings = team,
+				bowlerSettings = bowlers,
+				gameSettings = games,
 			),
 		)
 	}.stateIn(
@@ -99,6 +132,8 @@ class GamesSettingsViewModel @Inject constructor(
 			is GamesSettingsUiAction.BowlerClicked -> setCurrentBowler(action.bowler.id)
 			is GamesSettingsUiAction.BowlerMoved -> moveBowler(action.from, action.to)
 			is GamesSettingsUiAction.GameClicked -> setCurrentGame(action.game.id)
+			is GamesSettingsUiAction.ShowTeamScoresInGameDetailsChanged ->
+				setIsShowingTeamScores(action.isChecked)
 		}
 	}
 
@@ -130,11 +165,17 @@ class GamesSettingsViewModel @Inject constructor(
 
 	private fun moveBowler(fromListIndex: Int, toListIndex: Int) {
 		// Depends on number of `item` before bowlers in `GamesSettings#LazyColumn`
-		val from = fromListIndex - 1
-		val to = toListIndex - 1
+		val from = fromListIndex - 2
+		val to = toListIndex - 2
 		bowlers.update {
 			if (from == to || !it.indices.contains(from) || !it.indices.contains(to)) return@update it
 			it.toMutableList().apply { add(to, removeAt(from)) }
+		}
+	}
+
+	private fun setIsShowingTeamScores(isChecked: Boolean) {
+		viewModelScope.launch {
+			userDataRepository.setIsHidingTeamScoresInGameDetails(!isChecked)
 		}
 	}
 }

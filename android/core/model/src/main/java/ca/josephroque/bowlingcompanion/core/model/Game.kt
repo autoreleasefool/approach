@@ -84,6 +84,8 @@ data class GameEdit(
 
 data class GameListItem(val id: GameID, val index: Int, val score: Int)
 
+data class GameListItemBySeries(val seriesId: SeriesID, val id: GameID, val index: Int)
+
 data class ArchivedGame(
 	val id: GameID,
 	val scoringMethod: GameScoringMethod,

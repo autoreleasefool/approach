@@ -1,13 +1,19 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor.utils
 
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.Frame
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
+import ca.josephroque.bowlingcompanion.core.model.GameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.Roll
+import ca.josephroque.bowlingcompanion.core.model.ScoringGame
 import ca.josephroque.bowlingcompanion.core.model.arePinsCleared
 import ca.josephroque.bowlingcompanion.core.model.isGameFinished
+import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetConfiguration
+import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetListItem
+import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetListUiState
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiState
@@ -125,6 +131,22 @@ fun GamesEditorUiState.updateSelection(frameIndex: Int?, rollIndex: Int?): Games
 	)
 }
 
+fun GameDetailsUiState.updateSelection(
+	selection: ScoreSheetUiState.Selection,
+): GameDetailsUiState = copy(
+	scoresList = scoresList?.copy(
+		bowlerScores = scoresList?.bowlerScores?.map { seriesScores ->
+			seriesScores.map {
+				it.copy(
+					scoreSheet = it.scoreSheet.copy(
+						selection = selection,
+					),
+				)
+			}
+		} ?: emptyList(),
+	),
+)
+
 fun GameDetailsUiState.updateHeader(
 	selection: ScoreSheetUiState.Selection,
 	frames: List<FrameEdit>,
@@ -220,6 +242,63 @@ fun GameDetailsUiState.updateHeader(
 	return copy(
 		header = header.copy(
 			nextElement = nextElement,
+		),
+	)
+}
+
+fun GameDetailsUiState.updateGameScore(
+	currentBowlerId: BowlerID?,
+	score: ScoringGame,
+	gameDetails: GameEdit,
+	gameOrder: Map<GameID, Int>,
+): GameDetailsUiState {
+	val updatedScoresList = if (scoresList == null) {
+		ScoreSheetListUiState(
+			highlightedGame = currentBowlerId?.let {
+				ScoreSheetListUiState.HighlightedGame(
+					bowlerId = currentBowlerId,
+					// Set to zero because `ScoreSheetList` concept of gameIndex is relative to the
+					// number of series, and we only pass 1 series in this view
+					gameIndex = 0,
+				)
+			},
+		)
+	} else {
+		scoresList!!
+	}
+
+	val bowlerScores = updatedScoresList.bowlerScores.firstOrNull() ?: emptyList()
+	val existingItem = bowlerScores
+		.firstOrNull { it.bowler.id == gameDetails.bowler.id }
+
+	return copy(
+		scoresList = updatedScoresList.copy(
+			bowlerScores = listOf(
+				bowlerScores
+					.toMutableList()
+					.apply {
+						if (existingItem != null) {
+							remove(existingItem)
+						}
+
+						add(
+							existingItem?.copy(
+								scoreSheet = existingItem.scoreSheet.copy(
+									game = score,
+								),
+							) ?: ScoreSheetListItem(
+								gameDetails.bowler.toSummary(),
+								gameDetails.league.toSummary(),
+								ScoreSheetUiState(
+									game = score,
+									selection = ScoreSheetUiState.Selection.none(),
+									configuration = ScoreSheetConfiguration.LIST_DEFAULT,
+								),
+							),
+						)
+					}
+					.sortedBy { gameOrder[it.scoreSheet.game?.id] },
+			),
 		),
 	)
 }

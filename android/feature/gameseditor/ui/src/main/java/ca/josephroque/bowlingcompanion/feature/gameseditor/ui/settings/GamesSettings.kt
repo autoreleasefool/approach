@@ -27,6 +27,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.designsystem.components.SectionFooter
+import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSwitch
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
@@ -58,17 +60,37 @@ fun GamesSettings(
 			.reorderable(reorderableState)
 			.detectReorderAfterLongPress(reorderableState),
 	) {
-		if (state.bowlers.size > 1) {
-			if (state.team == null) {
+		if (state.bowlerSettings.bowlers.size > 1) {
+			item {
+				FormSwitch(
+					titleResourceId = R.string.game_settings_show_team_scores_in_game_details,
+					isChecked = state.teamSettings.isShowingTeamScoresInGameDetails,
+					onCheckChanged = { isChecked ->
+						onAction(GamesSettingsUiAction.ShowTeamScoresInGameDetailsChanged(isChecked))
+					},
+					modifier = Modifier.padding(horizontal = 16.dp),
+				)
+
+				SectionFooter(
+					footer = stringResource(R.string.game_settings_team_scores_impacts_performance),
+					modifier = Modifier
+						.padding(horizontal = 16.dp)
+						.padding(bottom = 8.dp),
+				)
+
+				HorizontalDivider()
+			}
+
+			if (state.teamSettings.team == null) {
 				header(R.string.game_settings_bowlers)
 			} else {
-				header(state.team.name)
+				header(state.teamSettings.team.name)
 			}
 
 			// If number of items before reorderable list changes,
 			// GamesSettingsViewModel#moveBowler must be updated
 			items(
-				state.bowlers,
+				state.bowlerSettings.bowlers,
 				key = { it.id },
 			) { bowler ->
 				ReorderableItem(
@@ -77,7 +99,7 @@ fun GamesSettings(
 				) { _ ->
 					Bowler(
 						bowler = bowler,
-						isSelected = state.currentBowlerId == bowler.id,
+						isSelected = state.bowlerSettings.currentBowlerId == bowler.id,
 						onAction = onAction,
 					)
 				}
@@ -104,14 +126,14 @@ fun GamesSettings(
 		header(R.string.game_settings_games)
 
 		items(
-			state.games,
+			state.gameSettings.games,
 			key = { it.id },
 		) {
-			val isSelected = state.currentGameId == it.id
+			val isSelected = state.gameSettings.currentGameId == it.id
 			Game(
 				game = it,
 				isSelected = isSelected,
-				isMultipleBowlers = state.bowlers.size > 1,
+				isMultipleBowlers = state.bowlerSettings.bowlers.size > 1,
 				onAction = onAction,
 			)
 		}
@@ -209,11 +231,18 @@ private fun GamesSettingsPreview() {
 
 		GamesSettings(
 			state = GamesSettingsUiState(
-				team = team,
-				currentBowlerId = bowlers.first().id,
-				bowlers = bowlers,
-				currentGameId = games.first().id,
-				games = games,
+				teamSettings = GamesSettingsUiState.TeamSettings(
+					team = team,
+					isShowingTeamScoresInGameDetails = false,
+				),
+				bowlerSettings = GamesSettingsUiState.BowlerSettings(
+					currentBowlerId = bowlers.first().id,
+					bowlers = bowlers,
+				),
+				gameSettings = GamesSettingsUiState.GameSettings(
+					currentGameId = games.first().id,
+					games = games,
+				),
 			),
 			onAction = {},
 		)

@@ -74,6 +74,9 @@
 	<string name="game_settings_bowlers">Bowlers</string>
 	<string name="cd_game_settings_selected">Selected</string>
 
+	<string name="game_settings_show_team_scores_in_game_details">Always show team scores?</string>
+	<string name="game_settings_team_scores_impacts_performance">"Team scores will be shown just below the current bowler's name in the game details. You can swipe up to see them at any time. If this impacts performance, you can disable this feature."</string>
+
 	<string name="frame_editor_drag_hint_tip">Drag your finger across the pins to mark them as knocked down, or to reset them.</string>
 
 	<string name="cd_pin_left_two_pin">Left Two Pin</string>

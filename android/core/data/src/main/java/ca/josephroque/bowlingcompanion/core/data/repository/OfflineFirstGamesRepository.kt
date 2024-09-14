@@ -19,6 +19,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameInProgress
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
+import ca.josephroque.bowlingcompanion.core.model.GameListItemBySeries
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.LaneID
@@ -54,6 +55,15 @@ class OfflineFirstGamesRepository @Inject constructor(
 
 	override fun getTeamSeriesGameIds(teamSeriesId: TeamSeriesID): Flow<List<GameID>> =
 		gameDao.getTeamSeriesGameIds(teamSeriesId)
+
+	override fun getGamesFromSeries(
+		series: List<SeriesID>,
+		gameIndex: Int,
+	): Flow<List<GameListItemBySeries>> = gameDao.getGamesFromSeries(series, gameIndex)
+		.map {
+			val seriesIndex = series.mapIndexed { index, seriesId -> seriesId to index }.toMap()
+			it.sortedBy { game -> seriesIndex[game.seriesId] }
+		}
 
 	override fun getArchivedGames(): Flow<List<ArchivedGame>> = gameDao.getArchivedGames()
 

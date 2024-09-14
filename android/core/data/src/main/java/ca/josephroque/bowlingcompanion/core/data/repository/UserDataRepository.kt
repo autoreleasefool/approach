@@ -32,6 +32,7 @@ interface UserDataRepository {
 	suspend fun setIsHidingWidgetsInBowlersList(isHidingWidgetsInBowlersList: Boolean)
 	suspend fun setIsHidingWidgetsInLeaguesList(isHidingWidgetsInLeaguesList: Boolean)
 	suspend fun setLastTrackableFilterSource(source: TrackableFilter.Source?)
+	suspend fun setIsHidingTeamScoresInGameDetails(isHidingTeamScoresInGameDetails: Boolean)
 
 	suspend fun didRecentlyUseBowler(id: String)
 	suspend fun didRecentlyUseLeague(id: String)

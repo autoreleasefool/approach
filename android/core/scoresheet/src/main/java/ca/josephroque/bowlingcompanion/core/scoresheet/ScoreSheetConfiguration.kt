@@ -18,7 +18,6 @@ data class ScoreSheetConfiguration(
 	val framePosition: Set<FramePosition> = setOf(FramePosition.BOTTOM),
 	val scorePosition: Set<ScorePosition> = setOf(ScorePosition.END),
 ) {
-
 	enum class Style(
 		@StringRes val title: Int,
 		@ColorRes val textColorOnBackground: Int,
@@ -59,5 +58,14 @@ data class ScoreSheetConfiguration(
 			borderColor = R.color.scoresheet_default_border,
 			strongBorderColor = R.color.scoresheet_default_border_strong,
 		),
+	}
+
+	companion object {
+		val DEFAULT = ScoreSheetConfiguration()
+		val LIST_DEFAULT = ScoreSheetConfiguration(
+			style = Style.PLAIN,
+			framePosition = setOf(FramePosition.BOTTOM),
+			scorePosition = setOf(ScorePosition.START, ScorePosition.END),
+		)
 	}
 }

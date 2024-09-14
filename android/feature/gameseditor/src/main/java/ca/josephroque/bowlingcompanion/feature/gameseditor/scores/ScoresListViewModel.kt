@@ -82,7 +82,7 @@ class ScoresListViewModel @Inject constructor(
 				_uiState.update {
 					it.copy(
 						scoreSheetList = it.scoreSheetList.copy(
-							it.scoreSheetList.bowlerScores
+							bowlerScores = it.scoreSheetList.bowlerScores
 								.flatten()
 								.toMutableList()
 								.apply {

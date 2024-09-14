@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameInProgress
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
+import ca.josephroque.bowlingcompanion.core.model.GameListItemBySeries
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.LaneID
@@ -22,6 +23,7 @@ interface GamesRepository {
 	fun getGameIds(seriesId: SeriesID): Flow<List<GameID>>
 	fun getGameIndex(gameId: GameID): Flow<Int>
 	fun getTeamSeriesGameIds(teamSeriesId: TeamSeriesID): Flow<List<GameID>>
+	fun getGamesFromSeries(series: List<SeriesID>, gameIndex: Int): Flow<List<GameListItemBySeries>>
 
 	suspend fun isGameInProgress(): Boolean
 	suspend fun getGameInProgress(): GameInProgress?

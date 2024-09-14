@@ -62,6 +62,7 @@ class ApproachPreferencesDataSource @Inject constructor(
 				latestGameInEditor = if (it.latestGameInEditor.isNullOrBlank()) null else it.latestGameInEditor,
 				latestTeamSeriesInEditor =
 				if (it.latestTeamSeriesInEditor.isNullOrBlank()) null else it.latestTeamSeriesInEditor,
+				isHidingTeamScoresInGameDetails = it.isHidingTeamScoresInGameDetails,
 			)
 		}
 
@@ -198,6 +199,12 @@ class ApproachPreferencesDataSource @Inject constructor(
 					}
 				}
 			}
+		}
+	}
+
+	suspend fun setIsHidingTeamScoresInGameDetails(isHiding: Boolean) {
+		userPreferences.updateData {
+			it.copy { this.isHidingTeamScoresInGameDetails = isHiding }
 		}
 	}
 
