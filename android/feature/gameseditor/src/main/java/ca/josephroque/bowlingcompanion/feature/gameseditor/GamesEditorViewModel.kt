@@ -8,6 +8,8 @@ import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.game.GameManualScoreSet
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.game.GameUpdated
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.game.GameViewed
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.di.ApplicationScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
@@ -69,6 +71,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateHeader
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateSelection
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -112,6 +115,7 @@ class GamesEditorViewModel @Inject constructor(
 	private val userDataRepository: UserDataRepository,
 	private val featureFlagsClient: FeatureFlagsClient,
 	@ApplicationScope private val scope: CoroutineScope,
+	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ) : ApproachViewModel<GamesEditorScreenEvent>(),
 	DefaultLifecycleObserver {
 	private val teamSeriesId = Route.EditTeamSeries.getTeamSeries(savedStateHandle)
@@ -283,7 +287,7 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun calculateHighestPossibleScore() {
-		viewModelScope.launch {
+		viewModelScope.launch(ioDispatcher) {
 			val gameId = currentGameId.value
 			val highestScorePossible = scoresRepository.getHighestScorePossible(gameId)
 			highestScorePossibleAlert.value = HighestScorePossibleAlertUiState(score = highestScorePossible)
@@ -293,7 +297,7 @@ class GamesEditorViewModel @Inject constructor(
 	private fun updateSeries(series: List<SeriesID>) {
 		this.series.update { series }
 		if (teamSeriesId != null) {
-			viewModelScope.launch {
+			viewModelScope.launch(ioDispatcher) {
 				teamSeriesRepository.updateTeamSeries(
 					TeamSeriesUpdate(
 						id = teamSeriesId,
@@ -316,7 +320,7 @@ class GamesEditorViewModel @Inject constructor(
 
 	private fun loadTeamSeries() {
 		if (teamSeriesId == null || series.value.isNotEmpty()) return
-		viewModelScope.launch {
+		viewModelScope.launch(ioDispatcher) {
 			val teamSeries = seriesRepository.getTeamSeriesIds(teamSeriesId).first()
 			series.update { teamSeries }
 		}
@@ -329,7 +333,7 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun loadBowlerGame(bowlerId: BowlerID, gameIndex: Int? = null) {
-		viewModelScope.launch {
+		viewModelScope.launch(ioDispatcher) {
 			val gameIndexToLoad = gameIndex ?: gameDetailsState.value.currentGameIndex
 			val bowlerSeriesId = getBowlerSeriesId(bowlerId)
 			val seriesGames = gamesRepository.getGamesList(bowlerSeriesId).first()
@@ -348,7 +352,7 @@ class GamesEditorViewModel @Inject constructor(
 		analyticsClient.trackEvent(GameViewed(gameId = gameId))
 		setLatestGameId(gameId)
 
-		viewModelScope.launch {
+		viewModelScope.launch(ioDispatcher) {
 			userDataRepository.userData.collect { userData ->
 				gamesEditorState.update {
 					it.copy(
@@ -361,7 +365,7 @@ class GamesEditorViewModel @Inject constructor(
 		}
 
 		gameDetailsJob?.cancel()
-		gameDetailsJob = viewModelScope.launch {
+		gameDetailsJob = viewModelScope.launch(ioDispatcher) {
 			gamesRepository.getGameDetails(gameToLoad).collect { gameDetails ->
 				currentBowlerId.update { gameDetails.bowler.id }
 
@@ -418,7 +422,7 @@ class GamesEditorViewModel @Inject constructor(
 		}
 
 		seriesDetailsJob?.cancel()
-		seriesDetailsJob = viewModelScope.launch {
+		seriesDetailsJob = viewModelScope.launch(ioDispatcher) {
 			val seriesId = currentSeriesId()
 			gamesRepository.getGameIds(seriesId).collect { ids ->
 				gameDetailsState.updateGameDetails(gameToLoad) {
@@ -428,7 +432,7 @@ class GamesEditorViewModel @Inject constructor(
 		}
 
 		bowlerDetailsJob?.cancel()
-		bowlerDetailsJob = viewModelScope.launch {
+		bowlerDetailsJob = viewModelScope.launch(ioDispatcher) {
 			combine(currentBowlerId.filterNotNull(), bowlers) { currentBowlerId, bowlers ->
 				Pair(currentBowlerId, bowlers)
 			}.collect { currentBowlers ->
@@ -443,7 +447,7 @@ class GamesEditorViewModel @Inject constructor(
 		}
 
 		ballsJob?.cancel()
-		ballsJob = viewModelScope.launch {
+		ballsJob = viewModelScope.launch(ioDispatcher) {
 			gearRepository.getRecentlyUsedGear(GearKind.BOWLING_BALL, limit = 4).collect { gear ->
 				gamesEditorState.updateGamesEditor(gameToLoad) {
 					it.copy(
@@ -465,7 +469,7 @@ class GamesEditorViewModel @Inject constructor(
 		}
 
 		gearJob?.cancel()
-		gearJob = viewModelScope.launch {
+		gearJob = viewModelScope.launch(ioDispatcher) {
 			gearRepository.getGameGear(gameToLoad).collect { gear ->
 				gameDetailsState.updateGameDetails(gameToLoad) {
 					it.copy(
@@ -478,7 +482,7 @@ class GamesEditorViewModel @Inject constructor(
 		}
 
 		matchPlayJob?.cancel()
-		matchPlayJob = viewModelScope.launch {
+		matchPlayJob = viewModelScope.launch(ioDispatcher) {
 			matchPlaysRepository.getMatchPlay(gameToLoad).collect { matchPlay ->
 				gameDetailsState.updateGameDetails(gameToLoad) {
 					it.copy(
@@ -493,7 +497,7 @@ class GamesEditorViewModel @Inject constructor(
 		}
 
 		alleyJob?.cancel()
-		alleyJob = viewModelScope.launch {
+		alleyJob = viewModelScope.launch(ioDispatcher) {
 			alleysRepository.getGameAlleyDetails(gameToLoad).collect { alley ->
 				gameDetailsState.updateGameDetails(gameToLoad) {
 					it.copy(
@@ -506,7 +510,7 @@ class GamesEditorViewModel @Inject constructor(
 		}
 
 		lanesJob?.cancel()
-		lanesJob = viewModelScope.launch {
+		lanesJob = viewModelScope.launch(ioDispatcher) {
 			lanesRepository.getGameLanes(gameToLoad).collect { lanes ->
 				gameDetailsState.updateGameDetails(gameToLoad) {
 					it.copy(
@@ -570,7 +574,7 @@ class GamesEditorViewModel @Inject constructor(
 
 		var isInitialFrameLoad = true
 		framesJob?.cancel()
-		framesJob = viewModelScope.launch {
+		framesJob = viewModelScope.launch(ioDispatcher) {
 			framesRepository.getFrames(gameToLoad).collect { frames ->
 				gamesEditorState.updateGamesEditor(gameToLoad) {
 					it.copy(
@@ -589,14 +593,14 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun dismiss() {
-		viewModelScope.launch {
+		viewModelScope.launch(ioDispatcher) {
 			userDataRepository.dismissLatestGameInEditor()
 			sendEvent(GamesEditorScreenEvent.Dismissed)
 		}
 	}
 
 	private fun setLatestGameId(gameId: GameID) {
-		viewModelScope.launch {
+		viewModelScope.launch(ioDispatcher) {
 			userDataRepository.setLatestGameInEditor(gameId)
 			userDataRepository.setLatestSeriesInEditor(series.value)
 			userDataRepository.setLatestTeamSeriesInEditor(teamSeriesId)
@@ -611,7 +615,7 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun dismissDragHint() {
-		viewModelScope.launch {
+		viewModelScope.launch(ioDispatcher) {
 			userDataRepository.didDismissFrameDragHint()
 		}
 	}
@@ -679,7 +683,7 @@ class GamesEditorViewModel @Inject constructor(
 
 	private fun openSeriesStats() {
 		isGameDetailsSheetVisible.value = false
-		viewModelScope.launch {
+		viewModelScope.launch(ioDispatcher) {
 			sendEvent(
 				GamesEditorScreenEvent.ShowStatistics(
 					filter = TrackableFilter(
@@ -757,7 +761,7 @@ class GamesEditorViewModel @Inject constructor(
 			)
 		}
 
-		viewModelScope.launch {
+		viewModelScope.launch(ioDispatcher) {
 			gamesRepository.setGameLockState(
 				gameDetailsState.gameId,
 				gameDetailsState.gameProperties.locked,
@@ -784,7 +788,7 @@ class GamesEditorViewModel @Inject constructor(
 			)
 		}
 
-		viewModelScope.launch {
+		viewModelScope.launch(ioDispatcher) {
 			gamesRepository.setGameExcludedFromStatistics(
 				gameDetailState.gameId,
 				gameDetailState.gameProperties.gameExcludeFromStatistics,
@@ -900,7 +904,7 @@ class GamesEditorViewModel @Inject constructor(
 		if (id == null) {
 			updateSelectedBall(ball = null)
 		} else {
-			viewModelScope.launch {
+			viewModelScope.launch(ioDispatcher) {
 				val gear = gearRepository.getGearDetails(id).first()
 				updateSelectedBall(
 					FrameEdit.Gear(
@@ -942,7 +946,7 @@ class GamesEditorViewModel @Inject constructor(
 
 		val updatedBallId = gamesEditorState.rollEditor.selectedBall?.id
 		if (updatedBallId != null) {
-			viewModelScope.launch {
+			viewModelScope.launch(ioDispatcher) {
 				recentlyUsedRepository.didRecentlyUseGear(updatedBallId)
 			}
 		}
@@ -1008,7 +1012,7 @@ class GamesEditorViewModel @Inject constructor(
 			)
 		}
 
-		viewModelScope.launch {
+		viewModelScope.launch(ioDispatcher) {
 			gamesRepository.setGameScoringMethod(gameId, scoringMethod, score)
 		}
 	}
@@ -1016,7 +1020,7 @@ class GamesEditorViewModel @Inject constructor(
 	private fun updateAlley(alleyId: AlleyID?) {
 		if (isGameLocked) return
 
-		viewModelScope.launch {
+		viewModelScope.launch(ioDispatcher) {
 			seriesRepository.setSeriesAlley(currentSeriesId(), alleyId)
 		}
 	}
@@ -1029,7 +1033,7 @@ class GamesEditorViewModel @Inject constructor(
 			setCopyLanesDialog(isVisible = true)
 		}
 
-		viewModelScope.launch {
+		viewModelScope.launch(ioDispatcher) {
 			gamesRepository.setGameLanes(currentGameId.value, laneIds)
 		}
 	}
@@ -1040,7 +1044,7 @@ class GamesEditorViewModel @Inject constructor(
 		}
 
 		isGameDetailsSheetVisible.value = false
-		viewModelScope.launch {
+		viewModelScope.launch(ioDispatcher) {
 			isGameDetailsSheetVisible.value = true
 		}
 	}
@@ -1048,7 +1052,7 @@ class GamesEditorViewModel @Inject constructor(
 	private fun copyLanesToAllGames() {
 		val laneIds = gameDetailsState.value.alley.selectedLanes.map(LaneListItem::id).toSet()
 		setCopyLanesDialog(isVisible = false)
-		viewModelScope.launch {
+		viewModelScope.launch(ioDispatcher) {
 			gamesRepository.setAllGameLanes(currentSeriesId(), laneIds)
 		}
 	}
@@ -1057,7 +1061,7 @@ class GamesEditorViewModel @Inject constructor(
 		if (isGameLocked) return
 
 		val gameId = currentGameId.value
-		viewModelScope.launch {
+		viewModelScope.launch(ioDispatcher) {
 			gearRepository.setGameGear(gameId, gearIds)
 		}
 	}
@@ -1088,7 +1092,7 @@ class GamesEditorViewModel @Inject constructor(
 
 		analyticsClient.trackEvent(GameUpdated(gameId = currentGameId.value))
 
-		viewModelScope.launch {
+		viewModelScope.launch(ioDispatcher) {
 			framesRepository.updateFrame(frame)
 		}
 	}
