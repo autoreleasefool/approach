@@ -32,6 +32,7 @@ fun QuickPlayOnboarding(
 	modifier: Modifier = Modifier,
 ) {
 	Column(
+
 		horizontalAlignment = Alignment.Start,
 		verticalArrangement = Arrangement.spacedBy(8.dp),
 		modifier = modifier.padding(horizontal = 16.dp),

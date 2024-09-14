@@ -19,22 +19,32 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultViewModel
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesForm
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBar
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiAction
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun SeriesFormRoute(
 	onDismissWithResult: (SeriesID?) -> Unit,
 	onStartTeamSeries: (TeamSeriesID, GameID) -> Unit,
-	onEditAlley: (AlleyID?, NavResultCallback<Set<AlleyID>>) -> Unit,
+	onEditAlley: (AlleyID?, ResourcePickerResultKey) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: SeriesFormViewModel = hiltViewModel(),
+	resultViewModel: ResourcePickerResultViewModel = hiltViewModel(),
 ) {
 	val seriesFormScreenState = viewModel.uiState.collectAsState().value
+
+	LaunchedEffect(Unit) {
+		resultViewModel.getSelectedIds(SERIES_FORM_ALLEY_PICKER_RESULT_KEY) { AlleyID(it) }
+			.onEach { viewModel.handleAction(SeriesFormScreenUiAction.AlleyUpdated(it.firstOrNull())) }
+			.launchIn(this)
+	}
 
 	val lifecycleOwner = LocalLifecycleOwner.current
 	LaunchedEffect(Unit) {
@@ -45,9 +55,7 @@ internal fun SeriesFormRoute(
 					when (it) {
 						is SeriesFormScreenEvent.Dismissed -> onDismissWithResult(it.seriesId)
 						is SeriesFormScreenEvent.EditAlley ->
-							onEditAlley(it.alleyId) @JvmSerializableLambda { ids ->
-								viewModel.handleAction(SeriesFormScreenUiAction.AlleyUpdated(ids.firstOrNull()))
-							}
+							onEditAlley(it.alleyId, SERIES_FORM_ALLEY_PICKER_RESULT_KEY)
 						is SeriesFormScreenEvent.StartTeamSeries -> onStartTeamSeries(
 							it.teamSeriesId,
 							it.initialGameId,

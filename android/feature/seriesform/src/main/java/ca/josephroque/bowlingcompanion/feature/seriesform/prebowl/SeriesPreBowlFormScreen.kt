@@ -18,21 +18,33 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultViewModel
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.prebowl.SeriesPreBowlForm
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.prebowl.SeriesPreBowlFormTopBar
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.prebowl.SeriesPreBowlFormTopBarUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.prebowl.SeriesPreBowlFormTopBarUiState
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun SeriesPreBowlFormRoute(
 	onDismiss: () -> Unit,
-	onShowSeriesPicker: (LeagueID, SeriesID?, NavResultCallback<Set<SeriesID>>) -> Unit,
+	onShowSeriesPicker: (LeagueID, SeriesID?, ResourcePickerResultKey) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: SeriesPreBowlFormViewModel = hiltViewModel(),
+	resultViewModel: ResourcePickerResultViewModel = hiltViewModel(),
 ) {
 	val seriesPreBowlFormScreenState by viewModel.uiState.collectAsStateWithLifecycle()
+
+	LaunchedEffect(Unit) {
+		resultViewModel.getSelectedIds(SERIES_PRE_BOWL_FORM_SERIES_RESULT_KEY) { SeriesID(it) }
+			.onEach {
+				viewModel.handleAction(SeriesPreBowlFormScreenUiAction.SeriesUpdated(it.firstOrNull()))
+			}
+			.launchIn(this)
+	}
 
 	val lifecycleOwner = LocalLifecycleOwner.current
 	LaunchedEffect(Unit) {
@@ -43,9 +55,7 @@ internal fun SeriesPreBowlFormRoute(
 					when (it) {
 						is SeriesPreBowlFormScreenEvent.Dismissed -> onDismiss()
 						is SeriesPreBowlFormScreenEvent.ShowSeriesPicker ->
-							onShowSeriesPicker(it.leagueId, it.seriesId) { ids ->
-								viewModel.handleAction(SeriesPreBowlFormScreenUiAction.SeriesUpdated(ids.firstOrNull()))
-							}
+							onShowSeriesPicker(it.leagueId, it.seriesId, SERIES_PRE_BOWL_FORM_SERIES_RESULT_KEY)
 					}
 				}
 		}

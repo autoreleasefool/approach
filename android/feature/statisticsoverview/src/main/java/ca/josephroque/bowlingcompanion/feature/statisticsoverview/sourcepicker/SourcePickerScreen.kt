@@ -22,26 +22,52 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultViewModel
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePicker
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerTopBar
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerUiAction
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun SourcePickerRoute(
 	onDismiss: () -> Unit,
-	onPickTeam: (TeamID?, NavResultCallback<Set<TeamID>>) -> Unit,
-	onPickBowler: (BowlerID?, NavResultCallback<Set<BowlerID>>) -> Unit,
-	onPickLeague: (BowlerID, LeagueID?, NavResultCallback<Set<LeagueID>>) -> Unit,
-	onPickSeries: (LeagueID, SeriesID?, NavResultCallback<Set<SeriesID>>) -> Unit,
-	onPickGame: (SeriesID, GameID?, NavResultCallback<Set<GameID>>) -> Unit,
+	onPickTeam: (TeamID?, ResourcePickerResultKey) -> Unit,
+	onPickBowler: (BowlerID?, ResourcePickerResultKey) -> Unit,
+	onPickLeague: (BowlerID, LeagueID?, ResourcePickerResultKey) -> Unit,
+	onPickSeries: (LeagueID, SeriesID?, ResourcePickerResultKey) -> Unit,
+	onPickGame: (SeriesID, GameID?, ResourcePickerResultKey) -> Unit,
 	onShowStatistics: (TrackableFilter) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: SourcePickerViewModel = hiltViewModel(),
+	resultViewModel: ResourcePickerResultViewModel = hiltViewModel(),
 ) {
 	val sourcePickerScreenState by viewModel.uiState.collectAsStateWithLifecycle()
+
+	LaunchedEffect(Unit) {
+		resultViewModel.getSelectedIds(SOURCE_PICKER_TEAM_RESULT_KEY) { TeamID(it) }
+			.onEach { viewModel.handleAction(SourcePickerScreenUiAction.UpdatedTeam(it.firstOrNull())) }
+			.launchIn(this)
+
+		resultViewModel.getSelectedIds(SOURCE_PICKER_BOWLER_RESULT_KEY) { BowlerID(it) }
+			.onEach { viewModel.handleAction(SourcePickerScreenUiAction.UpdatedBowler(it.firstOrNull())) }
+			.launchIn(this)
+
+		resultViewModel.getSelectedIds(SOURCE_PICKER_LEAGUE_RESULT_KEY) { LeagueID(it) }
+			.onEach { viewModel.handleAction(SourcePickerScreenUiAction.UpdatedLeague(it.firstOrNull())) }
+			.launchIn(this)
+
+		resultViewModel.getSelectedIds(SOURCE_PICKER_SERIES_RESULT_KEY) { SeriesID(it) }
+			.onEach { viewModel.handleAction(SourcePickerScreenUiAction.UpdatedSeries(it.firstOrNull())) }
+			.launchIn(this)
+
+		resultViewModel.getSelectedIds(SOURCE_PICKER_GAME_RESULT_KEY) { GameID(it) }
+			.onEach { viewModel.handleAction(SourcePickerScreenUiAction.UpdatedGame(it.firstOrNull())) }
+			.launchIn(this)
+	}
 
 	val lifecycleOwner = LocalLifecycleOwner.current
 	LaunchedEffect(Unit) {
@@ -53,25 +79,15 @@ internal fun SourcePickerRoute(
 						SourcePickerScreenEvent.Dismissed -> onDismiss()
 						is SourcePickerScreenEvent.ShowStatistics -> onShowStatistics(it.filter)
 						is SourcePickerScreenEvent.EditTeam ->
-							onPickTeam(it.team) @JvmSerializableLambda { ids ->
-								viewModel.handleAction(SourcePickerScreenUiAction.UpdatedTeam(ids.firstOrNull()))
-							}
+							onPickTeam(it.team, SOURCE_PICKER_TEAM_RESULT_KEY)
 						is SourcePickerScreenEvent.EditBowler ->
-							onPickBowler(it.bowler) @JvmSerializableLambda { ids ->
-								viewModel.handleAction(SourcePickerScreenUiAction.UpdatedBowler(ids.firstOrNull()))
-							}
+							onPickBowler(it.bowler, SOURCE_PICKER_BOWLER_RESULT_KEY)
 						is SourcePickerScreenEvent.EditLeague ->
-							onPickLeague(it.bowler, it.league) @JvmSerializableLambda { ids ->
-								viewModel.handleAction(SourcePickerScreenUiAction.UpdatedLeague(ids.firstOrNull()))
-							}
+							onPickLeague(it.bowler, it.league, SOURCE_PICKER_LEAGUE_RESULT_KEY)
 						is SourcePickerScreenEvent.EditSeries ->
-							onPickSeries(it.league, it.series) @JvmSerializableLambda { ids ->
-								viewModel.handleAction(SourcePickerScreenUiAction.UpdatedSeries(ids.firstOrNull()))
-							}
+							onPickSeries(it.league, it.series, SOURCE_PICKER_SERIES_RESULT_KEY)
 						is SourcePickerScreenEvent.EditGame ->
-							onPickGame(it.series, it.game) @JvmSerializableLambda { ids ->
-								viewModel.handleAction(SourcePickerScreenUiAction.UpdatedGame(ids.firstOrNull()))
-							}
+							onPickGame(it.series, it.game, SOURCE_PICKER_GAME_RESULT_KEY)
 					}
 				}
 		}

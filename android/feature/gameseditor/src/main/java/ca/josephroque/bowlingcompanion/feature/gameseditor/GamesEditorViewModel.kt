@@ -41,6 +41,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.nextIndexToRecord
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiAction
@@ -84,7 +85,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 
-const val GAMES_EDITOR_GAME_GEAR = "GAMES_EDITOR_GAME_GEAR"
+val GAMES_EDITOR_GAME_GEAR_RESULT_KEY =
+	ResourcePickerResultKey("GamesEditorGameGearResultKey")
+val GAMES_EDITOR_GAME_ROLLED_BALL_RESULT_KEY =
+	ResourcePickerResultKey("GamesEditorGameRolledBallResultKey")
+val GAMES_EDITOR_GAME_ALLEY_RESULT_KEY =
+	ResourcePickerResultKey("GamesEditorGameAlleyResultKey")
+val GAMES_EDITOR_GAME_LANES_RESULT_KEY =
+	ResourcePickerResultKey("GamesEditorGameLanesResultKey")
 
 @HiltViewModel
 class GamesEditorViewModel @Inject constructor(

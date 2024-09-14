@@ -23,6 +23,7 @@ import ca.josephroque.bowlingcompanion.core.model.ui.LaneRow
 import ca.josephroque.bowlingcompanion.core.model.ui.LeagueRow
 import ca.josephroque.bowlingcompanion.core.model.ui.SeriesRow
 import ca.josephroque.bowlingcompanion.core.model.ui.TeamRow
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourceItem
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePicker
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBar
@@ -33,7 +34,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 internal fun ResourcePickerRoute(
-	onDismissWithResult: (String?, Set<UUID>) -> Unit,
+	onDismissWithResult: (ResourcePickerResultKey?, Set<UUID>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: ResourcePickerViewModel = hiltViewModel(),
 ) {

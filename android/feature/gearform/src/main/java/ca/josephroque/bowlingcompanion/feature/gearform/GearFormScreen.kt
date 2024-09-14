@@ -18,21 +18,32 @@ import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultViewModel
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearForm
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBar
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiAction
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun GearFormRoute(
 	onDismiss: () -> Unit,
 	onEditAvatar: (Avatar, NavResultCallback<Avatar>) -> Unit,
-	onEditOwner: (BowlerID?, NavResultCallback<Set<BowlerID>>) -> Unit,
+	onEditOwner: (BowlerID?, ResourcePickerResultKey) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: GearFormViewModel = hiltViewModel(),
+	resultViewModel: ResourcePickerResultViewModel = hiltViewModel(),
 ) {
 	val gearFormScreenState = viewModel.uiState.collectAsState().value
+
+	LaunchedEffect(Unit) {
+		resultViewModel.getSelectedIds(GEAR_FORM_OWNER_PICKER_RESULT_KEY) { BowlerID(it) }
+			.onEach { viewModel.handleAction(GearFormScreenUiAction.UpdatedOwner(it.firstOrNull())) }
+			.launchIn(this)
+	}
 
 	val lifecycleOwner = LocalLifecycleOwner.current
 	LaunchedEffect(Unit) {
@@ -47,9 +58,7 @@ internal fun GearFormRoute(
 								viewModel.handleAction(GearFormScreenUiAction.UpdatedAvatar(avatar))
 							}
 						is GearFormScreenEvent.EditOwner ->
-							onEditOwner(it.owner) @JvmSerializableLambda { ids ->
-								viewModel.handleAction(GearFormScreenUiAction.UpdatedOwner(ids.firstOrNull()))
-							}
+							onEditOwner(it.owner, GEAR_FORM_OWNER_PICKER_RESULT_KEY)
 					}
 				}
 		}

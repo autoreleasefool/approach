@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
 import ca.josephroque.bowlingcompanion.feature.seriesform.SeriesFormRoute
@@ -39,7 +40,7 @@ fun NavController.navigateToNewTeamSeriesForm(
 
 fun NavGraphBuilder.seriesFormScreen(
 	onDismissWithResult: (SeriesID?) -> Unit,
-	onEditAlley: (AlleyID?, NavResultCallback<Set<AlleyID>>) -> Unit,
+	onEditAlley: (AlleyID?, ResourcePickerResultKey) -> Unit,
 ) {
 	composable(
 		route = Route.EditSeries.route,
@@ -74,7 +75,7 @@ fun NavGraphBuilder.seriesFormScreen(
 fun NavGraphBuilder.teamSeriesFormScreen(
 	onDismiss: () -> Unit,
 	onStartTeamSeries: (TeamSeriesID, GameID) -> Unit,
-	onEditAlley: (AlleyID?, NavResultCallback<Set<AlleyID>>) -> Unit,
+	onEditAlley: (AlleyID?, ResourcePickerResultKey) -> Unit,
 ) {
 	composable(
 		route = Route.AddTeamSeries.route,

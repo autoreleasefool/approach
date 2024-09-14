@@ -16,19 +16,31 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultViewModel
 import ca.josephroque.bowlingcompanion.feature.matchplayeditor.ui.MatchPlayEditor
 import ca.josephroque.bowlingcompanion.feature.matchplayeditor.ui.MatchPlayEditorTopBar
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun MatchPlayEditorRoute(
 	onDismiss: () -> Unit,
-	onEditOpponent: (BowlerID?, NavResultCallback<Set<BowlerID>>) -> Unit,
+	onEditOpponent: (BowlerID?, ResourcePickerResultKey) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: MatchPlayEditorViewModel = hiltViewModel(),
+	resultViewModel: ResourcePickerResultViewModel = hiltViewModel(),
 ) {
 	val matchPlayEditorScreenState by viewModel.uiState.collectAsStateWithLifecycle()
+
+	LaunchedEffect(Unit) {
+		resultViewModel.getSelectedIds(MATCH_PLAY_OPPONENT_RESULT_KEY) { BowlerID(it) }
+			.onEach {
+				viewModel.handleAction(MatchPlayEditorScreenUiAction.UpdatedOpponent(it.firstOrNull()))
+			}
+			.launchIn(this)
+	}
 
 	val lifecycleOwner = LocalLifecycleOwner.current
 	LaunchedEffect(Unit) {
@@ -39,9 +51,7 @@ internal fun MatchPlayEditorRoute(
 					when (it) {
 						MatchPlayEditorScreenEvent.Dismissed -> onDismiss()
 						is MatchPlayEditorScreenEvent.EditOpponent ->
-							onEditOpponent(it.opponent) @JvmSerializableLambda { ids ->
-								viewModel.handleAction(MatchPlayEditorScreenUiAction.UpdatedOpponent(ids.firstOrNull()))
-							}
+							onEditOpponent(it.opponent, MATCH_PLAY_OPPONENT_RESULT_KEY)
 					}
 				}
 		}
