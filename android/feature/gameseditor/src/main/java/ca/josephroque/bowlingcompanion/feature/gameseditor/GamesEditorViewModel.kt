@@ -215,6 +215,14 @@ class GamesEditorViewModel @Inject constructor(
 		initialValue = GamesEditorScreenUiState.Loading,
 	)
 
+	init {
+		viewModelScope.launch(ioDispatcher) {
+			currentGameId
+				.onEach { Route.EditGame.setGame(savedStateHandle, it) }
+				.launchIn(this)
+		}
+	}
+
 	override fun onResume(owner: LifecycleOwner) {
 		isGameDetailsSheetVisible.value = true
 	}

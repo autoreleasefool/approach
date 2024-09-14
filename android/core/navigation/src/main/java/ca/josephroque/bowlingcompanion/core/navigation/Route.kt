@@ -120,6 +120,9 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 			savedStateHandle.get<String>("series")?.decodeListFromRoute()?.map {
 				SeriesID.fromString(it)
 			} ?: emptyList()
+		fun setGame(savedStateHandle: SavedStateHandle, game: GameID) {
+			savedStateHandle["game"] = game.toString()
+		}
 	}
 	data object EditTeamSeries : Route(
 		"edit_team_series/{teamSeries}/{game}",
