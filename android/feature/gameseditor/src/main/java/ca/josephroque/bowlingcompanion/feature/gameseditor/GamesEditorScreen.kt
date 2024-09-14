@@ -47,17 +47,20 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultViewModel
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorTopBar
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetails
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun GamesEditorRoute(
 	onBackPressed: () -> Unit,
 	onEditMatchPlay: (GameID) -> Unit,
-	onEditGear: (Set<GearID>, NavResultCallback<Set<GearID>>) -> Unit,
+	onEditGear: (Set<GearID>, String) -> Unit,
 	onEditRolledBall: (GearID?, NavResultCallback<Set<GearID>>) -> Unit,
 	onEditAlley: (AlleyID?, NavResultCallback<Set<AlleyID>>) -> Unit,
 	onEditLanes: (AlleyID, Set<LaneID>, NavResultCallback<Set<LaneID>>) -> Unit,
@@ -76,6 +79,7 @@ internal fun GamesEditorRoute(
 	) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: GamesEditorViewModel = hiltViewModel(),
+	resultViewModel: ResourcePickerResultViewModel = hiltViewModel(),
 ) {
 	val gamesEditorScreenState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -90,6 +94,12 @@ internal fun GamesEditorRoute(
 	}
 
 	LaunchedEffect(Unit) {
+		resultViewModel.getSelectedIds(GAMES_EDITOR_GAME_GEAR) { GearID(it) }
+			.onEach { viewModel.handleAction(GamesEditorScreenUiAction.GearUpdated(it)) }
+			.launchIn(this)
+	}
+
+	LaunchedEffect(Unit) {
 		lifecycleOwner.lifecycleScope.launch {
 			viewModel.events
 				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
@@ -97,9 +107,10 @@ internal fun GamesEditorRoute(
 					when (it) {
 						GamesEditorScreenEvent.Dismissed -> onBackPressed()
 						is GamesEditorScreenEvent.EditMatchPlay -> onEditMatchPlay(it.gameId)
-						is GamesEditorScreenEvent.EditGear -> onEditGear(it.gearIds) @JvmSerializableLambda { ids ->
-							viewModel.handleAction(GamesEditorScreenUiAction.GearUpdated(ids))
-						}
+						is GamesEditorScreenEvent.EditGear -> onEditGear(
+							it.gearIds,
+							GAMES_EDITOR_GAME_GEAR,
+						)
 						is GamesEditorScreenEvent.EditAlley -> onEditAlley(it.alleyId) @JvmSerializableLambda { ids ->
 							viewModel.handleAction(GamesEditorScreenUiAction.AlleyUpdated(ids.firstOrNull()))
 						}

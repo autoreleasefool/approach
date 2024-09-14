@@ -1,6 +1,8 @@
 package ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation
 
 import android.net.Uri
+import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -20,6 +22,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultViewModel
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ResourcePickerRoute
@@ -162,6 +165,25 @@ fun NavController.navigateToAlleyPickerForResult(
 }
 
 fun NavController.navigateToGearPickerForResult(
+	resultKey: String,
+	selectedIds: Set<GearID>,
+	hiddenIds: Set<GearID> = emptySet(),
+	limit: Int = 0,
+	kind: GearKind? = null,
+	navOptions: NavOptions? = null,
+) {
+	this.navigateToResourcePickerForResult(
+		resultKey = resultKey,
+		selectedIds = selectedIds.map { it.value }.toSet(),
+		hiddenIds = hiddenIds.map { it.value }.toSet(),
+		limit = limit,
+		filter = kind?.name,
+		resourceType = ResourcePickerType.GEAR,
+		navOptions = navOptions,
+	)
+}
+
+fun NavController.navigateToGearPickerForResult(
 	selectedIds: Set<GearID>,
 	hiddenIds: Set<GearID> = emptySet(),
 	limit: Int = 0,
@@ -204,6 +226,30 @@ fun NavController.navigateToLanePickerForResult(
 }
 
 fun NavController.navigateToResourcePickerForResult(
+	resultKey: String,
+	selectedIds: Set<UUID>,
+	hiddenIds: Set<UUID> = emptySet(),
+	resourceType: ResourcePickerType,
+	filter: String? = null,
+	titleOverride: String? = null,
+	limit: Int = 0,
+	navOptions: NavOptions? = null,
+) {
+	this.navigate(
+		route = Route.ResourcePicker.createRoute(
+			resultKey = resultKey,
+			resourceType.toString(),
+			filter,
+			selectedIds,
+			hiddenIds,
+			limit,
+			Uri.encode(titleOverride),
+		),
+		navOptions = navOptions,
+	)
+}
+
+fun NavController.navigateToResourcePickerForResult(
 	selectedIds: Set<UUID>,
 	hiddenIds: Set<UUID> = emptySet(),
 	resourceType: ResourcePickerType,
@@ -215,6 +261,7 @@ fun NavController.navigateToResourcePickerForResult(
 ) {
 	this.navigateForResult(
 		route = Route.ResourcePicker.createRoute(
+			resultKey = null,
 			resourceType.toString(),
 			filter,
 			selectedIds,
@@ -228,10 +275,18 @@ fun NavController.navigateToResourcePickerForResult(
 }
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
-fun NavGraphBuilder.resourcePickerSheet(onDismissWithResult: (Set<UUID>) -> Unit) {
+fun NavGraphBuilder.resourcePickerSheet(
+	navController: NavController,
+	onDismiss: () -> Unit,
+	onDismissWithResult: (Set<UUID>) -> Unit,
+) {
 	bottomSheet(
 		route = Route.ResourcePicker.route,
 		arguments = listOf(
+			navArgument(Route.ResourcePicker.RESULT_KEY) {
+				type = NavType.StringType
+				nullable = true
+			},
 			navArgument(Route.ResourcePicker.RESOURCE_TYPE) {
 				type = NavType.EnumType(ResourcePickerType::class.java)
 			},
@@ -248,8 +303,25 @@ fun NavGraphBuilder.resourcePickerSheet(onDismissWithResult: (Set<UUID>) -> Unit
 			},
 		),
 	) {
+		val parentEntry = remember(it) {
+			navController.previousBackStackEntry
+		}
+
+		val resultViewModel = if (parentEntry == null) {
+			hiltViewModel<ResourcePickerResultViewModel>()
+		} else {
+			hiltViewModel<ResourcePickerResultViewModel>(parentEntry)
+		}
+
 		ResourcePickerRoute(
-			onDismissWithResult = onDismissWithResult,
+			onDismissWithResult = { resultKey, ids ->
+				if (resultKey == null) {
+					onDismissWithResult(ids)
+				} else {
+					resultViewModel.setSelectedIds(resultKey, ids)
+					onDismiss()
+				}
+			},
 		)
 	}
 }

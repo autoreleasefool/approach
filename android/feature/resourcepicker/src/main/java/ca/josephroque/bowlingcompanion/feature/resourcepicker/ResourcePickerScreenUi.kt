@@ -8,20 +8,16 @@ import java.util.UUID
 sealed interface ResourcePickerScreenUiState {
 	data object Loading : ResourcePickerScreenUiState
 
-	data class Loaded(
-		val picker: ResourcePickerUiState,
-		val topBar: ResourcePickerTopBarUiState,
-	) : ResourcePickerScreenUiState
+	data class Loaded(val picker: ResourcePickerUiState, val topBar: ResourcePickerTopBarUiState) :
+		ResourcePickerScreenUiState
 }
 
 sealed interface ResourcePickerScreenUiAction {
 	data object LoadResources : ResourcePickerScreenUiAction
 
-	data class ResourcePickerAction(
-		val action: ResourcePickerUiAction,
-	) : ResourcePickerScreenUiAction
+	data class ResourcePickerAction(val action: ResourcePickerUiAction) : ResourcePickerScreenUiAction
 }
 
 sealed interface ResourcePickerScreenEvent {
-	data class Dismissed(val result: Set<UUID>) : ResourcePickerScreenEvent
+	data class Dismissed(val key: String?, val result: Set<UUID>) : ResourcePickerScreenEvent
 }
