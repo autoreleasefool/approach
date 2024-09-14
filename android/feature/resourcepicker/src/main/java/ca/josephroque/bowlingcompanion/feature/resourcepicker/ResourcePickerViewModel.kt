@@ -55,9 +55,9 @@ class ResourcePickerViewModel @Inject constructor(
 		MutableStateFlow(ResourcePickerScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
 
-	private val resultKey = Route.ResourcePicker.getResultKey(savedStateHandle).let { key ->
-		if (key == null) null else ResourcePickerResultKey(key)
-	}
+	private val resultKey = ResourcePickerResultKey(
+		Route.ResourcePicker.getResultKey(savedStateHandle)!!,
+	)
 	private val resourceType = Route.ResourcePicker.getResourceType(savedStateHandle)!!
 	private val initiallySelectedIds = Route.ResourcePicker.getSelectedIds(savedStateHandle)
 	private val hiddenIds = Route.ResourcePicker.getHiddenIds(savedStateHandle)

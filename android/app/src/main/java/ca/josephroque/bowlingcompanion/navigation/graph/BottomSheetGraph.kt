@@ -4,7 +4,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
-import ca.josephroque.bowlingcompanion.core.navigation.popBackStackWithResult
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.accessoriesOnboardingSheet
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.gamesSettingsScreen
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToGamesEditor
@@ -31,7 +30,6 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 	resourcePickerSheet(
 		navController = navController,
 		onDismiss = navController::popBackStack,
-		onDismissWithResult = navController::popBackStackWithResult,
 	)
 	accessoriesOnboardingSheet(
 		onBackPressed = navController::popBackStack,
@@ -106,7 +104,8 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 		onShowStatistics = navController::navigateToStatisticsDetails,
 	)
 	gamesSettingsScreen(
-		onDismissWithResult = navController::popBackStackWithResult,
+		navController = navController,
+		onDismiss = navController::popBackStack,
 	)
 	scoresListScreen(
 		onDismiss = navController::popBackStack,
@@ -129,10 +128,12 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 		},
 	)
 	scoreEditorScreen(
-		onDismissWithResult = navController::popBackStackWithResult,
+		navController = navController,
+		onDismiss = navController::popBackStack,
 	)
 	statisticPickerSheet(
-		onDismissWithResult = navController::popBackStackWithResult,
+		navController = navController,
+		onDismiss = navController::popBackStack,
 	)
 	statisticsWidgetError(
 		onDismiss = navController::popBackStack,

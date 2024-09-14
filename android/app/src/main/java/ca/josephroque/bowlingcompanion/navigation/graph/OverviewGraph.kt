@@ -9,7 +9,6 @@ import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.navigation.Route
-import ca.josephroque.bowlingcompanion.core.navigation.popBackStackWithResult
 import ca.josephroque.bowlingcompanion.feature.avatarform.navigation.avatarFormScreen
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.bowlerDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.navigateToBowlerDetails
@@ -152,15 +151,14 @@ fun NavGraphBuilder.overviewGraph(
 	)
 	leagueDetailsScreen(
 		onEditSeries = navController::navigateToSeriesForm,
-		onAddSeries = { leagueId, result ->
-			navController.navigateToNewSeriesForm(leagueId, result)
-		},
+		onAddSeries = navController::navigateToNewSeriesForm,
 		onShowSeriesDetails = navController::navigateToSeriesDetails,
 		onBackPressed = navController::popBackStack,
 		onUsePreBowl = navController::navigateToSeriesPreBowlForm,
 	)
 	seriesFormScreen(
-		onDismissWithResult = navController::popBackStackWithResult,
+		navController = navController,
+		onDismiss = navController::popBackStack,
 		onEditAlley = { alley, resultKey ->
 			navController.navigateToAlleyPickerForResult(
 				selectedIds = alley?.let { setOf(it) } ?: emptySet(),
@@ -188,10 +186,12 @@ fun NavGraphBuilder.overviewGraph(
 		},
 	)
 	avatarFormScreen(
-		onDismissWithResult = navController::popBackStackWithResult,
+		navController = navController,
+		onDismiss = navController::popBackStack,
 	)
 	laneFormScreen(
-		onDismissWithResult = navController::popBackStackWithResult,
+		navController = navController,
+		onDismiss = navController::popBackStack,
 	)
 	gamesEditorScreen(
 		onBackPressed = navController::popBackStack,
@@ -216,12 +216,11 @@ fun NavGraphBuilder.overviewGraph(
 				alleyId = alleyId,
 			)
 		},
-		onShowGamesSettings = { teamSeriesId, seriesIds, gameId, result ->
+		onShowGamesSettings = { teamSeriesId, seriesIds, gameId ->
 			navController.navigateToGamesSettingsForResult(
 				teamSeriesId = teamSeriesId,
 				seriesIds = seriesIds,
 				currentGameId = gameId,
-				navResultCallback = result,
 			)
 		},
 		onEditRolledBall = { ballId, resultKey ->
@@ -257,12 +256,7 @@ fun NavGraphBuilder.overviewGraph(
 				bowlerId = bowler,
 			)
 		},
-		onPickStatistic = { statistic, result ->
-			navController.navigateToStatisticPickerForResult(
-				selectedStatistic = statistic,
-				navResultCallback = result,
-			)
-		},
+		onPickStatistic = navController::navigateToStatisticPickerForResult,
 	)
 	statisticsDetailsScreen(
 		onBackPressed = navController::popBackStack,

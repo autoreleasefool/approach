@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -47,9 +46,10 @@ import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.GamesSettingsResultViewModel
 import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultViewModel
+import ca.josephroque.bowlingcompanion.core.navigation.ScoreEditorResultViewModel
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorTopBar
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
@@ -70,18 +70,18 @@ internal fun GamesEditorRoute(
 		TeamSeriesID?,
 		List<SeriesID>,
 		GameID,
-		NavResultCallback<Pair<List<SeriesID>, GameID>>,
 	) -> Unit,
 	onShowStatistics: (TrackableFilter) -> Unit,
 	onShowBowlerScores: (List<SeriesID>, gameIndex: Int) -> Unit,
 	onEditScore: (
 		score: Int,
 		GameScoringMethod,
-		NavResultCallback<Pair<GameScoringMethod, Int>>,
 	) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: GamesEditorViewModel = hiltViewModel(),
-	resultViewModel: ResourcePickerResultViewModel = hiltViewModel(),
+	pickerResultViewModel: ResourcePickerResultViewModel = hiltViewModel(),
+	gamesSettingsResultViewModel: GamesSettingsResultViewModel = hiltViewModel(),
+	scoreResultViewModel: ScoreEditorResultViewModel = hiltViewModel(),
 ) {
 	val gamesEditorScreenState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -96,28 +96,36 @@ internal fun GamesEditorRoute(
 	}
 
 	LaunchedEffect(Unit) {
-		Log.d("GamesEditorRoute", "LaunchedEffect")
-	}
-
-	LaunchedEffect(Unit) {
-		Log.d("GamesEditorRoute", "LaunchedEffect2")
-		resultViewModel.getSelectedIds(GAMES_EDITOR_GAME_GEAR_RESULT_KEY) { GearID(it) }
+		pickerResultViewModel.getSelectedIds(GAMES_EDITOR_GAME_GEAR_RESULT_KEY) { GearID(it) }
 			.onEach { viewModel.handleAction(GamesEditorScreenUiAction.GearUpdated(it)) }
 			.launchIn(this)
 
-// 		resultViewModel.getSelectedIds(GAMES_EDITOR_GAME_ALLEY_RESULT_KEY) { AlleyID(it) }
-// 			.onEach { viewModel.handleAction(GamesEditorScreenUiAction.AlleyUpdated(it.firstOrNull())) }
-// 			.launchIn(this)
-//
-// 		resultViewModel.getSelectedIds(GAMES_EDITOR_GAME_LANES_RESULT_KEY) { LaneID(it) }
-// 			.onEach { viewModel.handleAction(GamesEditorScreenUiAction.LanesUpdated(it)) }
-// 			.launchIn(this)
-//
-// 		resultViewModel.getSelectedIds(GAMES_EDITOR_GAME_ROLLED_BALL_RESULT_KEY) { GearID(it) }
-// 			.onEach {
-// 				viewModel.handleAction(GamesEditorScreenUiAction.SelectedBallUpdated(it.firstOrNull()))
-// 			}
-// 			.launchIn(this)
+		pickerResultViewModel.getSelectedIds(GAMES_EDITOR_GAME_ALLEY_RESULT_KEY) { AlleyID(it) }
+			.onEach { viewModel.handleAction(GamesEditorScreenUiAction.AlleyUpdated(it.firstOrNull())) }
+			.launchIn(this)
+
+		pickerResultViewModel.getSelectedIds(GAMES_EDITOR_GAME_LANES_RESULT_KEY) { LaneID(it) }
+			.onEach { viewModel.handleAction(GamesEditorScreenUiAction.LanesUpdated(it)) }
+			.launchIn(this)
+
+		pickerResultViewModel.getSelectedIds(GAMES_EDITOR_GAME_ROLLED_BALL_RESULT_KEY) { GearID(it) }
+			.onEach {
+				viewModel.handleAction(GamesEditorScreenUiAction.SelectedBallUpdated(it.firstOrNull()))
+			}
+			.launchIn(this)
+
+		gamesSettingsResultViewModel.getResult()
+			.onEach { seriesAndGame ->
+				viewModel.handleAction(GamesEditorScreenUiAction.SeriesUpdated(seriesAndGame.first))
+				viewModel.handleAction(GamesEditorScreenUiAction.CurrentGameUpdated(seriesAndGame.second))
+			}
+			.launchIn(this)
+
+		scoreResultViewModel.getScore()
+			.onEach {
+				viewModel.handleAction(GamesEditorScreenUiAction.ScoreUpdated(it.second, it.first))
+			}
+			.launchIn(this)
 	}
 
 	LaunchedEffect(Unit) {
@@ -145,10 +153,7 @@ internal fun GamesEditorRoute(
 							it.teamSeriesId,
 							it.series,
 							it.currentGameId,
-						) @JvmSerializableLambda { seriesAndGame ->
-							viewModel.handleAction(GamesEditorScreenUiAction.SeriesUpdated(seriesAndGame.first))
-							viewModel.handleAction(GamesEditorScreenUiAction.CurrentGameUpdated(seriesAndGame.second))
-						}
+						)
 						is GamesEditorScreenEvent.EditRolledBall -> onEditRolledBall(
 							it.ballId,
 							GAMES_EDITOR_GAME_ROLLED_BALL_RESULT_KEY,
@@ -161,9 +166,7 @@ internal fun GamesEditorRoute(
 						is GamesEditorScreenEvent.EditScore -> onEditScore(
 							it.score,
 							it.scoringMethod,
-						) @JvmSerializableLambda { result ->
-							viewModel.handleAction(GamesEditorScreenUiAction.ScoreUpdated(result.second, result.first))
-						}
+						)
 					}
 				}
 		}

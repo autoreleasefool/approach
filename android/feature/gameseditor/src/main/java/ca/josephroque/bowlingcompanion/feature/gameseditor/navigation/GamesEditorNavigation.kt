@@ -14,7 +14,6 @@ import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorRoute
@@ -46,14 +45,12 @@ fun NavGraphBuilder.gamesEditorScreen(
 		TeamSeriesID?,
 		List<SeriesID>,
 		GameID,
-		NavResultCallback<Pair<List<SeriesID>, GameID>>,
 	) -> Unit,
 	onShowStatistics: (TrackableFilter) -> Unit,
 	onShowBowlerScores: (List<SeriesID>, gameIndex: Int) -> Unit,
 	onEditScore: (
 		score: Int,
 		GameScoringMethod,
-		NavResultCallback<Pair<GameScoringMethod, Int>>,
 	) -> Unit,
 ) {
 	composable(
