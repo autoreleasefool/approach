@@ -54,6 +54,7 @@ class ResourcePickerViewModel @Inject constructor(
 		MutableStateFlow(ResourcePickerScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
 
+	private val resultKey = Route.ResourcePicker.getResultKey(savedStateHandle)
 	private val resourceType = Route.ResourcePicker.getResourceType(savedStateHandle)!!
 	private val initiallySelectedIds = Route.ResourcePicker.getSelectedIds(savedStateHandle)
 	private val hiddenIds = Route.ResourcePicker.getHiddenIds(savedStateHandle)
@@ -126,10 +127,13 @@ class ResourcePickerViewModel @Inject constructor(
 	private fun handleResourcePickerAction(action: ResourcePickerUiAction) {
 		when (action) {
 			ResourcePickerUiAction.BackClicked -> sendEvent(
-				ResourcePickerScreenEvent.Dismissed(initiallySelectedIds),
+				ResourcePickerScreenEvent.Dismissed(resultKey, initiallySelectedIds),
 			)
 			ResourcePickerUiAction.DoneClicked -> sendEvent(
-				ResourcePickerScreenEvent.Dismissed(getPickerUiState()?.selectedItems ?: initiallySelectedIds),
+				ResourcePickerScreenEvent.Dismissed(
+					resultKey,
+					getPickerUiState()?.selectedItems ?: initiallySelectedIds,
+				),
 			)
 			is ResourcePickerUiAction.ItemClicked -> onResourceClicked(action.itemId)
 		}
@@ -180,7 +184,7 @@ class ResourcePickerViewModel @Inject constructor(
 		setPickerUiState(state.copy(selectedItems = newSelectedIds))
 
 		if (limit == 1 && newSelectedIds.size == 1) {
-			sendEvent(ResourcePickerScreenEvent.Dismissed(newSelectedIds))
+			sendEvent(ResourcePickerScreenEvent.Dismissed(resultKey, newSelectedIds))
 		}
 	}
 }

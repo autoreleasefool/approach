@@ -99,11 +99,11 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 			currentGame: GameID,
 		): String = "games_settings/${Uri.encode(
 			teamSeriesId?.toString(),
-		)}/${Uri.encode(series.encode())}/${Uri.encode(currentGame.toString())}"
+		)}/${Uri.encode(series.encodeForRoute())}/${Uri.encode(currentGame.toString())}"
 		fun getTeamSeries(savedStateHandle: SavedStateHandle): TeamSeriesID? =
 			savedStateHandle.get<String>("teamSeries")?.let { TeamSeriesID.fromString(it) }
 		fun getSeries(savedStateHandle: SavedStateHandle): List<SeriesID> =
-			savedStateHandle.get<String>("series")?.decodeList()?.map {
+			savedStateHandle.get<String>("series")?.decodeListFromRoute()?.map {
 				SeriesID.fromString(it)
 			} ?: emptyList()
 		fun getCurrentGame(savedStateHandle: SavedStateHandle): GameID? =
@@ -113,11 +113,11 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		const val ARG_SERIES = "series"
 		const val ARG_GAME = "game"
 		fun createRoute(series: List<SeriesID>, game: GameID): String =
-			"edit_game/${Uri.encode(series.encode())}/${Uri.encode(game.toString())}"
+			"edit_game/${Uri.encode(series.encodeForRoute())}/${Uri.encode(game.toString())}"
 		fun getGame(savedStateHandle: SavedStateHandle): GameID? =
 			savedStateHandle.get<String>("game")?.let { GameID.fromString(it) }
 		fun getSeries(savedStateHandle: SavedStateHandle): List<SeriesID> =
-			savedStateHandle.get<String>("series")?.decodeList()?.map {
+			savedStateHandle.get<String>("series")?.decodeListFromRoute()?.map {
 				SeriesID.fromString(it)
 			} ?: emptyList()
 	}
@@ -138,9 +138,9 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		const val ARG_SERIES = "series"
 		const val ARG_GAME_INDEX = "gameIndex"
 		fun createRoute(series: List<SeriesID>, gameIndex: Int): String =
-			"scores_list/${Uri.encode(series.encode())}/$gameIndex"
+			"scores_list/${Uri.encode(series.encodeForRoute())}/$gameIndex"
 		fun getSeries(savedStateHandle: SavedStateHandle): List<SeriesID> =
-			savedStateHandle.get<String>("series")?.decodeList()?.map {
+			savedStateHandle.get<String>("series")?.decodeListFromRoute()?.map {
 				SeriesID.fromString(it)
 			} ?: emptyList()
 		fun getGameIndex(savedStateHandle: SavedStateHandle): Int? =
@@ -169,9 +169,9 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	// Lanes
 	data object EditLanes : Route("edit_lanes/{lanes}", isBottomBarVisible = false) {
 		const val ARG_LANES = "lanes"
-		fun createRoute(lanes: List<String>): String = "edit_lanes/${lanes.encode()}"
+		fun createRoute(lanes: List<String>): String = "edit_lanes/${lanes.encodeForRoute()}"
 		fun getLanes(savedStateHandle: SavedStateHandle): List<LaneID> =
-			savedStateHandle.get<String>("lanes")?.decodeList()?.map {
+			savedStateHandle.get<String>("lanes")?.decodeListFromRoute()?.map {
 				LaneID.fromString(it)
 			} ?: emptyList()
 	}
@@ -216,9 +216,10 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 
 	// Resource Picker
 	data object ResourcePicker : Route(
-		"resource_picker/{type}/{filter}/{selected}/{hidden}/{limit}/{title}",
+		"resource_picker/{result_key}/{type}/{filter}/{selected}/{hidden}/{limit}/{title}",
 		isBottomBarVisible = false,
 	) {
+		const val RESULT_KEY = "result_key"
 		const val RESOURCE_TYPE = "type"
 		const val RESOURCE_FILTER = "filter"
 		const val SELECTED_IDS = "selected"
@@ -226,6 +227,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		const val SELECTION_LIMIT = "limit"
 		const val TITLE_OVERRIDE = "title"
 		fun createRoute(
+			resultKey: String?, // TODO: should not be optional
 			resourceType: String,
 			resourceFilter: String?,
 			selectedIds: Set<UUID>,
@@ -233,22 +235,25 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 			limit: Int,
 			titleOverride: String?,
 		): String = "resource_picker/" +
+			"${Uri.encode(resultKey)}/" +
 			"${Uri.encode(resourceType)}/" +
 			"${Uri.encode(resourceFilter)}/" +
-			"${selectedIds.toList().encode()}/" +
-			"${hiddenIds.toList().encode()}/" +
+			"${selectedIds.toList().encodeForRoute()}/" +
+			"${hiddenIds.toList().encodeForRoute()}/" +
 			"${Uri.encode(limit.toString())}/" +
 			Uri.encode(titleOverride)
+		fun getResultKey(savedStateHandle: SavedStateHandle): String? =
+			savedStateHandle.get<String>("result_key") // TODO: should not be optional
 		fun getResourceType(savedStateHandle: SavedStateHandle): ResourcePickerType? =
 			savedStateHandle.get<ResourcePickerType>("type")
 		fun getResourceFilter(savedStateHandle: SavedStateHandle): String? =
 			savedStateHandle.get<String>("filter")
 		fun getSelectedIds(savedStateHandle: SavedStateHandle): Set<UUID> =
-			savedStateHandle.get<String>("selected")?.decodeList()?.mapNotNull {
+			savedStateHandle.get<String>("selected")?.decodeListFromRoute()?.mapNotNull {
 				UUID.fromString(it)
 			}?.toSet() ?: emptySet()
 		fun getHiddenIds(savedStateHandle: SavedStateHandle): Set<UUID> =
-			savedStateHandle.get<String>("hidden")?.decodeList()?.mapNotNull {
+			savedStateHandle.get<String>("hidden")?.decodeListFromRoute()?.mapNotNull {
 				UUID.fromString(it)
 			}?.toSet() ?: emptySet()
 		fun getLimit(savedStateHandle: SavedStateHandle): Int? = savedStateHandle.get<Int>("limit")
@@ -262,11 +267,11 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		const val ARG_LEAGUES = "leagues"
 		fun createRoute(team: TeamID, leagues: List<LeagueID>): String = "add_team_series/" +
 			"${Uri.encode(team.toString())}/" +
-			leagues.encode()
+			leagues.encodeForRoute()
 		fun getTeam(savedStateHandle: SavedStateHandle): TeamID? =
 			savedStateHandle.get<String>("team")?.let { TeamID.fromString(it) }
 		fun getLeagues(savedStateHandle: SavedStateHandle): List<LeagueID> =
-			savedStateHandle.get<String>("leagues")?.decodeList()?.map {
+			savedStateHandle.get<String>("leagues")?.decodeListFromRoute()?.map {
 				LeagueID.fromString(it)
 			} ?: emptyList()
 	}
@@ -428,14 +433,15 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	}
 }
 
-fun <T> List<T>.encode(): String = if (isEmpty()) {
+private fun <T> List<T>.encodeForRoute(): String = if (isEmpty()) {
 	"nan"
 } else {
 	joinToString(",") {
 		Uri.encode(it.toString())
 	}
 }
-fun String.decodeList(): List<String> = if (this == "nan") {
+
+private fun String.decodeListFromRoute(): List<String> = if (this == "nan") {
 	emptyList()
 } else {
 	split(",").map {

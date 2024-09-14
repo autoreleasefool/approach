@@ -29,6 +29,8 @@ import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.stati
 
 fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 	resourcePickerSheet(
+		navController = navController,
+		onDismiss = navController::popBackStack,
 		onDismissWithResult = navController::popBackStackWithResult,
 	)
 	accessoriesOnboardingSheet(

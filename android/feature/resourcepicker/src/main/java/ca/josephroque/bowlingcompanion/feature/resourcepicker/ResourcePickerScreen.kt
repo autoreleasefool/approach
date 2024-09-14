@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 internal fun ResourcePickerRoute(
-	onDismissWithResult: (Set<UUID>) -> Unit,
+	onDismissWithResult: (String?, Set<UUID>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: ResourcePickerViewModel = hiltViewModel(),
 ) {
@@ -46,7 +46,7 @@ internal fun ResourcePickerRoute(
 				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
 				.collect {
 					when (it) {
-						is ResourcePickerScreenEvent.Dismissed -> onDismissWithResult(it.result)
+						is ResourcePickerScreenEvent.Dismissed -> onDismissWithResult(it.key, it.result)
 					}
 				}
 		}

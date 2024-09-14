@@ -196,10 +196,10 @@ fun NavGraphBuilder.overviewGraph(
 	gamesEditorScreen(
 		onBackPressed = navController::popBackStack,
 		onEditMatchPlay = navController::navigateToMatchPlayEditor,
-		onEditGear = { gearIds, result ->
+		onEditGear = { gearIds, resultKey ->
 			navController.navigateToGearPickerForResult(
+				resultKey = resultKey,
 				selectedIds = gearIds,
-				navResultCallback = result,
 			)
 		},
 		onEditAlley = { alleyId, result ->

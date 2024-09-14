@@ -37,7 +37,7 @@ fun NavController.navigateToGamesEditor(
 fun NavGraphBuilder.gamesEditorScreen(
 	onBackPressed: () -> Unit,
 	onEditMatchPlay: (GameID) -> Unit,
-	onEditGear: (Set<GearID>, NavResultCallback<Set<GearID>>) -> Unit,
+	onEditGear: (Set<GearID>, String) -> Unit,
 	onEditRolledBall: (GearID?, NavResultCallback<Set<GearID>>) -> Unit,
 	onEditAlley: (AlleyID?, NavResultCallback<Set<AlleyID>>) -> Unit,
 	onEditLanes: (AlleyID, Set<LaneID>, NavResultCallback<Set<LaneID>>) -> Unit,

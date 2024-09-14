@@ -84,6 +84,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 
+const val GAMES_EDITOR_GAME_GEAR = "GAMES_EDITOR_GAME_GEAR"
+
 @HiltViewModel
 class GamesEditorViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
