@@ -6,11 +6,12 @@
 - Fix: App Icon previews are correctly shown in app
 ```
 
-## Android 4.1.1b327
+## Android 4.2.0b328
 
 ```
-- Fix: All bowlers and opponents can be selected in the Match Play editor
-- Chore: Strongly-typed IDs replacing UUIds
+- Feat: Teams -- creating, deleting, bowling with teams has all been reintroduced and improved
+- Feat: Sentry now registers breadcrumbs on compose navigation
+- Fix: Resolves crashes that would cause the app to frequently restart when left running in the background, due to navigation not being serializable
 ```
 
 ---
@@ -209,6 +210,13 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.1.1b327
+
+```
+- Fix: All bowlers and opponents can be selected in the Match Play editor
+- Chore: Strongly-typed IDs replacing UUIds
+```
 
 ## Android 4.1.0b326
 
