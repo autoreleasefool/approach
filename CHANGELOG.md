@@ -6,11 +6,10 @@
 - Fix: App Icon previews are correctly shown in app
 ```
 
-## Android 4.3.0b329
+## Android 4.3.1b330
 
 ```
-- Feat: Team scores for the current game now show in the game details
-- Fix: The Game Editor is much more responsive after offloading heavy tasks to background threads from the UI
+- Fix: Fixes a crash that would occur when picking statistics for a widget
 ```
 
 ---
@@ -209,6 +208,13 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.3.0b329
+
+```
+- Feat: Team scores for the current game now show in the game details
+- Fix: The Game Editor is much more responsive after offloading heavy tasks to background threads from the UI
+```
 
 ## Android 4.2.0b328
 
