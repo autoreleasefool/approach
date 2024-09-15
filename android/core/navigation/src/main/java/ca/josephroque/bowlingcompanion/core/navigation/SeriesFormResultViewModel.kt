@@ -23,6 +23,6 @@ class SeriesFormResultViewModel @Inject constructor(
 		.map { SeriesID.fromString(it) }
 
 	fun setResult(result: SeriesID) {
-		savedStateHandle[SERIES_FORM_RESULT_KEY] = result
+		savedStateHandle[SERIES_FORM_RESULT_KEY] = result.toString()
 	}
 }

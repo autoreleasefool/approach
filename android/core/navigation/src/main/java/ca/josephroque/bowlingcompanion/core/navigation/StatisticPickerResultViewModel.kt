@@ -23,6 +23,6 @@ class StatisticPickerResultViewModel @Inject constructor(
 		.map { StatisticID.valueOf(it) }
 
 	fun setResult(result: StatisticID) {
-		savedStateHandle[STATISTIC_PICKER_RESULT_KEY] = result
+		savedStateHandle[STATISTIC_PICKER_RESULT_KEY] = result.name
 	}
 }
