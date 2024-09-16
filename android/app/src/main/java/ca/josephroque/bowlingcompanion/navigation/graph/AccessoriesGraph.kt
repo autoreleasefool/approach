@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.feature.gearform.navigation.navigateToGea
 import ca.josephroque.bowlingcompanion.feature.gearform.navigation.navigateToNewGearForm
 import ca.josephroque.bowlingcompanion.feature.gearlist.navigation.gearListScreen
 import ca.josephroque.bowlingcompanion.feature.gearlist.navigation.navigateToGearList
+import ca.josephroque.bowlingcompanion.feature.laneform.navigation.laneFormScreen
 import ca.josephroque.bowlingcompanion.feature.laneform.navigation.navigateToLaneFormForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
 
@@ -56,5 +57,9 @@ fun NavGraphBuilder.accessoriesGraph(navController: NavController) {
 				kind = BowlerKind.PLAYABLE,
 			)
 		},
+	)
+	laneFormScreen(
+		navController = navController,
+		onDismiss = navController::popBackStack,
 	)
 }

@@ -20,7 +20,6 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateTo
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToGamesSettingsForResult
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToScoreEditorForResult
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToScoresList
-import ca.josephroque.bowlingcompanion.feature.laneform.navigation.laneFormScreen
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.navigation.leagueDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.navigation.navigateToLeagueDetails
 import ca.josephroque.bowlingcompanion.feature.leagueform.navigation.leagueFormScreen
@@ -186,10 +185,6 @@ fun NavGraphBuilder.overviewGraph(
 		},
 	)
 	avatarFormScreen(
-		navController = navController,
-		onDismiss = navController::popBackStack,
-	)
-	laneFormScreen(
 		navController = navController,
 		onDismiss = navController::popBackStack,
 	)
