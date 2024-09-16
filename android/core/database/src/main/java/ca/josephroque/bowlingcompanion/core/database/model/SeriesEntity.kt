@@ -91,6 +91,8 @@ data class SeriesUpdateEntity(
 	val date: LocalDate,
 	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
+	@ColumnInfo(name = "applied_date") val appliedDate: LocalDate?,
+	@ColumnInfo(name = "alley_id") val alleyId: AlleyID?,
 )
 
 fun SeriesUpdate.asEntity(): SeriesUpdateEntity = SeriesUpdateEntity(
@@ -98,6 +100,8 @@ fun SeriesUpdate.asEntity(): SeriesUpdateEntity = SeriesUpdateEntity(
 	date = date,
 	preBowl = preBowl,
 	excludeFromStatistics = excludeFromStatistics,
+	appliedDate = appliedDate,
+	alleyId = alleyId,
 )
 
 data class SeriesDetailsEntity(
