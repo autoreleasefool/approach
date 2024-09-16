@@ -22,6 +22,6 @@ class LaneFormResultViewModel @Inject constructor(private val savedStateHandle: 
 		.map { it.split(",").map { id -> LaneID.fromString(id) } }
 
 	fun setResult(result: List<LaneID>) {
-		savedStateHandle[LANE_FORM_RESULT_KEY] = result.joinToString(",")
+		savedStateHandle[LANE_FORM_RESULT_KEY] = result.joinToString(",") { it.toString() }
 	}
 }
