@@ -15,6 +15,7 @@ data class GearFormUiState(
 	val isShowingDeleteDialog: Boolean = false,
 	val isDeleteButtonEnabled: Boolean = false,
 	val isShowingDiscardChangesDialog: Boolean = false,
+	val isKindPickerEnabled: Boolean = true,
 )
 
 sealed interface GearFormUiAction {

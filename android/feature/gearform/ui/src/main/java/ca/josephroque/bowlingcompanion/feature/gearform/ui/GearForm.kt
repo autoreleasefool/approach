@@ -89,6 +89,7 @@ fun GearForm(
 			GearKindPicker(
 				kind = state.kind,
 				onKindChanged = { onAction(GearFormUiAction.KindChanged(it)) },
+				enabled = state.isKindPickerEnabled,
 			)
 		}
 
@@ -198,10 +199,11 @@ private fun NameTextField(
 }
 
 @Composable
-private fun GearKindPicker(kind: GearKind, onKindChanged: (GearKind) -> Unit) {
+private fun GearKindPicker(kind: GearKind, onKindChanged: (GearKind) -> Unit, enabled: Boolean) {
 	FormRadioGroup(
 		title = stringResource(R.string.gear_form_section_kind),
 		subtitle = stringResource(R.string.gear_form_section_kind_description),
+		enabled = enabled,
 		options = GearKind.entries.toTypedArray(),
 		selected = kind,
 		titleForOption = {

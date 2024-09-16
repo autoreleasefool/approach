@@ -97,6 +97,7 @@ class GearFormViewModel @Inject constructor(
 						isDeleteButtonEnabled = true,
 						isShowingDeleteDialog = false,
 						isShowingDiscardChangesDialog = false,
+						isKindPickerEnabled = false,
 					),
 					topBar = GearFormTopBarUiState(
 						existingName = gear.name,
