@@ -21,7 +21,7 @@ fun SeriesFormTopBar(
 	TopAppBar(
 		title = { Title(state) },
 		navigationIcon = { BackButton(onClick = { onAction(SeriesFormUiAction.BackClicked) }) },
-		actions = { Actions(onAction) },
+		actions = { Actions(state, onAction) },
 		scrollBehavior = scrollBehavior,
 	)
 }
@@ -39,8 +39,11 @@ private fun Title(state: SeriesFormTopBarUiState) {
 }
 
 @Composable
-private fun Actions(onAction: (SeriesFormUiAction) -> Unit) {
-	TextButton(onClick = { onAction(SeriesFormUiAction.DoneClicked) }) {
+private fun Actions(state: SeriesFormTopBarUiState, onAction: (SeriesFormUiAction) -> Unit) {
+	TextButton(
+		onClick = { onAction(SeriesFormUiAction.DoneClicked) },
+		enabled = state.isSaveButtonEnabled,
+	) {
 		Text(
 			text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_save),
 			style = MaterialTheme.typography.bodyMedium,

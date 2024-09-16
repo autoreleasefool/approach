@@ -65,8 +65,18 @@ fun MutableStateFlow<AlleyFormScreenUiState>.updateForm(
 	this.update { state ->
 		when (state) {
 			AlleyFormScreenUiState.Loading -> state
-			is AlleyFormScreenUiState.Create -> state.copy(form = function(state.form))
-			is AlleyFormScreenUiState.Edit -> state.copy(form = function(state.form))
+			is AlleyFormScreenUiState.Create -> {
+				val updatedState = state.copy(form = function(state.form))
+				updatedState.copy(
+					topBar = updatedState.topBar.copy(isSaveButtonEnabled = updatedState.hasAnyChanges()),
+				)
+			}
+			is AlleyFormScreenUiState.Edit -> {
+				val updatedState = state.copy(form = function(state.form))
+				updatedState.copy(
+					topBar = updatedState.topBar.copy(isSaveButtonEnabled = updatedState.hasAnyChanges()),
+				)
+			}
 		}
 	}
 }

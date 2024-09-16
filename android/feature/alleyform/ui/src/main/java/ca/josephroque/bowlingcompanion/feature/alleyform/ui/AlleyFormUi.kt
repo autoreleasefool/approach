@@ -43,4 +43,5 @@ sealed interface AlleyFormUiAction {
 
 data class AlleyFormTopBarUiState(
 	val existingName: String? = null,
+	val isSaveButtonEnabled: Boolean = false,
 )

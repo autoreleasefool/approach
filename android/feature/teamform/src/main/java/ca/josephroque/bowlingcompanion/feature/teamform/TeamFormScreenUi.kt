@@ -62,8 +62,18 @@ fun MutableStateFlow<TeamFormScreenUiState>.updateForm(
 	this.update { state ->
 		when (state) {
 			TeamFormScreenUiState.Loading -> state
-			is TeamFormScreenUiState.Create -> state.copy(form = function(state.form))
-			is TeamFormScreenUiState.Edit -> state.copy(form = function(state.form))
+			is TeamFormScreenUiState.Create -> {
+				val updatedState = state.copy(form = function(state.form))
+				updatedState.copy(
+					topBar = updatedState.topBar.copy(isSaveButtonEnabled = updatedState.hasAnyChanges()),
+				)
+			}
+			is TeamFormScreenUiState.Edit -> {
+				val updatedState = state.copy(form = function(state.form))
+				updatedState.copy(
+					topBar = updatedState.topBar.copy(isSaveButtonEnabled = updatedState.hasAnyChanges()),
+				)
+			}
 		}
 	}
 }

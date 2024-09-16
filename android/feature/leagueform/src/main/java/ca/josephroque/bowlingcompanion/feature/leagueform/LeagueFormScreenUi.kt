@@ -66,8 +66,18 @@ fun MutableStateFlow<LeagueFormScreenUiState>.updateForm(
 	this.update { state ->
 		when (state) {
 			LeagueFormScreenUiState.Loading -> state
-			is LeagueFormScreenUiState.Create -> state.copy(form = function(state.form))
-			is LeagueFormScreenUiState.Edit -> state.copy(form = function(state.form))
+			is LeagueFormScreenUiState.Create -> {
+				val updatedState = state.copy(form = function(state.form))
+				updatedState.copy(
+					topBar = updatedState.topBar.copy(isSaveButtonEnabled = updatedState.hasAnyChanges()),
+				)
+			}
+			is LeagueFormScreenUiState.Edit -> {
+				val updatedState = state.copy(form = function(state.form))
+				updatedState.copy(
+					topBar = updatedState.topBar.copy(isSaveButtonEnabled = updatedState.hasAnyChanges()),
+				)
+			}
 		}
 	}
 }

@@ -27,6 +27,7 @@ import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneForm
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormFloatingActionButton
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormTopBar
+import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormUiAction
 import kotlinx.coroutines.launch
 
@@ -80,6 +81,10 @@ private fun LaneFormScreen(
 	Scaffold(
 		topBar = {
 			LaneFormTopBar(
+				state = when (state) {
+					LaneFormScreenUiState.Loading -> LaneFormTopBarUiState()
+					is LaneFormScreenUiState.Loaded -> state.topBar
+				},
 				onAction = { onAction(LaneFormScreenUiAction.LaneForm(it)) },
 				scrollBehavior = scrollBehavior,
 			)

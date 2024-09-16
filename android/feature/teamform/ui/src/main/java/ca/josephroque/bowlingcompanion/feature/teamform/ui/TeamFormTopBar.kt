@@ -20,7 +20,7 @@ fun TeamFormTopBar(
 	TopAppBar(
 		title = { Title(state) },
 		navigationIcon = { BackButton(onClick = { onAction(TeamFormUiAction.BackClicked) }) },
-		actions = { Actions(onAction) },
+		actions = { Actions(state, onAction) },
 		scrollBehavior = scrollBehavior,
 	)
 }
@@ -38,9 +38,10 @@ private fun Title(state: TeamFormTopBarUiState) {
 }
 
 @Composable
-private fun Actions(onAction: (TeamFormUiAction) -> Unit) {
+private fun Actions(state: TeamFormTopBarUiState, onAction: (TeamFormUiAction) -> Unit) {
 	TextButton(
 		onClick = { onAction(TeamFormUiAction.DoneClicked) },
+		enabled = state.isSaveButtonEnabled,
 	) {
 		Text(
 			stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_save),

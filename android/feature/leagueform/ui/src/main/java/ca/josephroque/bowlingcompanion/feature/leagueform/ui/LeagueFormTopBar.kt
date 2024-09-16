@@ -20,7 +20,7 @@ fun LeagueFormTopBar(
 	TopAppBar(
 		title = { Title(state.existingName) },
 		navigationIcon = { BackButton(onClick = { onAction(LeagueFormUiAction.BackClicked) }) },
-		actions = { Actions(onAction) },
+		actions = { Actions(state, onAction) },
 		scrollBehavior = scrollBehavior,
 	)
 }
@@ -38,8 +38,11 @@ private fun Title(leagueName: String?) {
 }
 
 @Composable
-private fun Actions(onAction: (LeagueFormUiAction) -> Unit) {
-	TextButton(onClick = { onAction(LeagueFormUiAction.DoneClicked) }) {
+private fun Actions(state: LeagueFormTopBarUiState, onAction: (LeagueFormUiAction) -> Unit) {
+	TextButton(
+		onClick = { onAction(LeagueFormUiAction.DoneClicked) },
+		enabled = state.isSaveButtonEnabled,
+	) {
 		Text(
 			text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_save),
 			style = MaterialTheme.typography.bodyMedium,

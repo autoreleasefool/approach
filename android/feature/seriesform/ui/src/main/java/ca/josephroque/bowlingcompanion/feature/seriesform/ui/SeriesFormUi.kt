@@ -49,16 +49,13 @@ sealed interface SeriesFormUiAction {
 	data class PreBowlChanged(val preBowl: SeriesPreBowl) : SeriesFormUiAction
 	data class IsUsingPreBowlChanged(val isUsingPreBowl: Boolean) : SeriesFormUiAction
 	data class AppliedDateChanged(val date: LocalDate) : SeriesFormUiAction
-	data class ExcludeFromStatisticsChanged(
-		val excludeFromStatistics: ExcludeFromStatistics,
-	) : SeriesFormUiAction
+	data class ExcludeFromStatisticsChanged(val excludeFromStatistics: ExcludeFromStatistics) :
+		SeriesFormUiAction
 	data class IsCreatingManualSeriesChanged(val isCreatingManualSeries: Boolean) : SeriesFormUiAction
-	data class ManualScoreChanged(
-		val index: Int,
-		val score: String,
-	) : SeriesFormUiAction
+	data class ManualScoreChanged(val index: Int, val score: String) : SeriesFormUiAction
 }
 
 data class SeriesFormTopBarUiState(
 	val existingDate: LocalDate? = null,
+	val isSaveButtonEnabled: Boolean = false,
 )

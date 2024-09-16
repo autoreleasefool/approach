@@ -16,6 +16,7 @@ enum class GamesPerSeries {
 
 data class LeagueFormTopBarUiState(
 	val existingName: String? = null,
+	val isSaveButtonEnabled: Boolean = false,
 )
 
 data class LeagueFormUiState(
@@ -46,9 +47,8 @@ sealed interface LeagueFormUiAction {
 
 	data class NameChanged(val name: String) : LeagueFormUiAction
 	data class RecurrenceChanged(val recurrence: LeagueRecurrence) : LeagueFormUiAction
-	data class ExcludeFromStatisticsChanged(
-		val excludeFromStatistics: ExcludeFromStatistics,
-	) : LeagueFormUiAction
+	data class ExcludeFromStatisticsChanged(val excludeFromStatistics: ExcludeFromStatistics) :
+		LeagueFormUiAction
 	data class IncludeAdditionalPinFallChanged(
 		val includeAdditionalPinFall: IncludeAdditionalPinFall,
 	) : LeagueFormUiAction

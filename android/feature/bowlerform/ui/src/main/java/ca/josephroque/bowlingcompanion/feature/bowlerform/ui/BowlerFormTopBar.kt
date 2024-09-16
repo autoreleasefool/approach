@@ -21,7 +21,7 @@ fun BowlerFormTopBar(
 	TopAppBar(
 		title = { Title(state) },
 		navigationIcon = { BackButton(onClick = { onAction(BowlerFormUiAction.BackClicked) }) },
-		actions = { Actions(onAction) },
+		actions = { Actions(state, onAction) },
 		scrollBehavior = scrollBehavior,
 	)
 }
@@ -42,8 +42,11 @@ private fun Title(state: BowlerFormTopBarUiState) {
 }
 
 @Composable
-private fun Actions(onAction: (BowlerFormUiAction) -> Unit) {
-	TextButton(onClick = { onAction(BowlerFormUiAction.DoneClicked) }) {
+private fun Actions(state: BowlerFormTopBarUiState, onAction: (BowlerFormUiAction) -> Unit) {
+	TextButton(
+		onClick = { onAction(BowlerFormUiAction.DoneClicked) },
+		enabled = state.isSaveButtonEnabled,
+	) {
 		Text(
 			text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_save),
 			style = MaterialTheme.typography.bodyMedium,

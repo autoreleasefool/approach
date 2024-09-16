@@ -27,5 +27,6 @@ sealed interface BowlerFormUiAction {
 
 data class BowlerFormTopBarUiState(
 	val existingName: String? = null,
+	val isSaveButtonEnabled: Boolean = false,
 	val kind: BowlerKind = BowlerKind.PLAYABLE,
 )

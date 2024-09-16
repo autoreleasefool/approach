@@ -56,8 +56,18 @@ fun MutableStateFlow<BowlerFormScreenUiState>.updateForm(
 	this.update { state ->
 		when (state) {
 			BowlerFormScreenUiState.Loading -> state
-			is BowlerFormScreenUiState.Create -> state.copy(form = function(state.form))
-			is BowlerFormScreenUiState.Edit -> state.copy(form = function(state.form))
+			is BowlerFormScreenUiState.Create -> {
+				val updatedState = state.copy(form = function(state.form))
+				updatedState.copy(
+					topBar = updatedState.topBar.copy(isSaveButtonEnabled = updatedState.hasAnyChanges()),
+				)
+			}
+			is BowlerFormScreenUiState.Edit -> {
+				val updatedState = state.copy(form = function(state.form))
+				updatedState.copy(
+					topBar = updatedState.topBar.copy(isSaveButtonEnabled = updatedState.hasAnyChanges()),
+				)
+			}
 		}
 	}
 }

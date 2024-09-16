@@ -64,8 +64,18 @@ fun MutableStateFlow<GearFormScreenUiState>.updateForm(
 	this.update { state ->
 		when (state) {
 			GearFormScreenUiState.Loading -> state
-			is GearFormScreenUiState.Create -> state.copy(form = function(state.form))
-			is GearFormScreenUiState.Edit -> state.copy(form = function(state.form))
+			is GearFormScreenUiState.Create -> {
+				val updatedState = state.copy(form = function(state.form))
+				updatedState.copy(
+					topBar = updatedState.topBar.copy(isSaveButtonEnabled = updatedState.hasAnyChanges()),
+				)
+			}
+			is GearFormScreenUiState.Edit -> {
+				val updatedState = state.copy(form = function(state.form))
+				updatedState.copy(
+					topBar = updatedState.topBar.copy(isSaveButtonEnabled = updatedState.hasAnyChanges()),
+				)
+			}
 		}
 	}
 }

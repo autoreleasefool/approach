@@ -77,9 +77,24 @@ fun MutableStateFlow<SeriesFormScreenUiState>.updateForm(
 	this.update { state ->
 		when (state) {
 			SeriesFormScreenUiState.Loading -> state
-			is SeriesFormScreenUiState.TeamCreate -> state.copy(form = function(state.form))
-			is SeriesFormScreenUiState.Create -> state.copy(form = function(state.form))
-			is SeriesFormScreenUiState.Edit -> state.copy(form = function(state.form))
+			is SeriesFormScreenUiState.TeamCreate -> {
+				val updatedState = state.copy(form = function(state.form))
+				updatedState.copy(
+					topBar = updatedState.topBar.copy(isSaveButtonEnabled = updatedState.hasAnyChanges()),
+				)
+			}
+			is SeriesFormScreenUiState.Create -> {
+				val updatedState = state.copy(form = function(state.form))
+				updatedState.copy(
+					topBar = updatedState.topBar.copy(isSaveButtonEnabled = updatedState.hasAnyChanges()),
+				)
+			}
+			is SeriesFormScreenUiState.Edit -> {
+				val updatedState = state.copy(form = function(state.form))
+				updatedState.copy(
+					topBar = updatedState.topBar.copy(isSaveButtonEnabled = updatedState.hasAnyChanges()),
+				)
+			}
 		}
 	}
 }

@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.AddLanesDialogUiAction
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.AddLanesDialogUiState
+import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormUiAction
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormUiState
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneLabelDialogUiAction
@@ -50,6 +51,7 @@ class LaneFormViewModel @Inject constructor(
 			laneForm = form.copy(
 				isShowingSwipeToEditTip = !isSwipeToEditTipDismissed,
 			),
+			topBar = LaneFormTopBarUiState(isSaveButtonEnabled = form.hasAnyChanges()),
 		)
 	}.stateIn(
 		scope = viewModelScope,

@@ -4,6 +4,8 @@ import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 
+data class LaneFormTopBarUiState(val isSaveButtonEnabled: Boolean = false)
+
 data class LaneFormUiState(
 	val isShowingSwipeToEditTip: Boolean = false,
 	val existingLanes: List<LaneListItem> = emptyList(),

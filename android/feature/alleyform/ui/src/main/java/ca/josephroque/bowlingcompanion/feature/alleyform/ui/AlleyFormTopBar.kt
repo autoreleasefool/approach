@@ -20,7 +20,7 @@ fun AlleyFormTopBar(
 	TopAppBar(
 		title = { Title(state) },
 		navigationIcon = { BackButton(onClick = { onAction(AlleyFormUiAction.BackClicked) }) },
-		actions = { Actions(onAction) },
+		actions = { Actions(state, onAction) },
 		scrollBehavior = scrollBehavior,
 	)
 }
@@ -38,8 +38,11 @@ private fun Title(state: AlleyFormTopBarUiState) {
 }
 
 @Composable
-private fun Actions(onAction: (AlleyFormUiAction) -> Unit) {
-	TextButton(onClick = { onAction(AlleyFormUiAction.DoneClicked) }) {
+private fun Actions(state: AlleyFormTopBarUiState, onAction: (AlleyFormUiAction) -> Unit) {
+	TextButton(
+		onClick = { onAction(AlleyFormUiAction.DoneClicked) },
+		enabled = state.isSaveButtonEnabled,
+	) {
 		Text(
 			stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_save),
 			style = MaterialTheme.typography.bodyMedium,

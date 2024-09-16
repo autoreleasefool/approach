@@ -12,14 +12,18 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LaneFormTopBar(onAction: (LaneFormUiAction) -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
+fun LaneFormTopBar(
+	state: LaneFormTopBarUiState,
+	onAction: (LaneFormUiAction) -> Unit,
+	scrollBehavior: TopAppBarScrollBehavior,
+) {
 	TopAppBar(
 		title = { Title() },
 		navigationIcon = {
 			BackButton(onClick = { onAction(LaneFormUiAction.BackClicked) })
 		},
 		actions = {
-			Actions(onAction = onAction)
+			Actions(state, onAction)
 		},
 		scrollBehavior = scrollBehavior,
 	)
@@ -34,8 +38,11 @@ private fun Title() {
 }
 
 @Composable
-private fun Actions(onAction: (LaneFormUiAction) -> Unit) {
-	TextButton(onClick = { onAction(LaneFormUiAction.DoneClicked) }) {
+private fun Actions(state: LaneFormTopBarUiState, onAction: (LaneFormUiAction) -> Unit) {
+	TextButton(
+		onClick = { onAction(LaneFormUiAction.DoneClicked) },
+		enabled = state.isSaveButtonEnabled,
+	) {
 		Text(
 			text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_save),
 			style = MaterialTheme.typography.bodyMedium,

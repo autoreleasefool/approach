@@ -20,7 +20,7 @@ fun GearFormTopBar(
 	TopAppBar(
 		title = { Title(state) },
 		navigationIcon = { BackButton(onClick = { onAction(GearFormUiAction.BackClicked) }) },
-		actions = { Actions(onAction) },
+		actions = { Actions(state, onAction) },
 		scrollBehavior = scrollBehavior,
 	)
 }
@@ -38,8 +38,11 @@ private fun Title(state: GearFormTopBarUiState) {
 }
 
 @Composable
-private fun Actions(onAction: (GearFormUiAction) -> Unit) {
-	TextButton(onClick = { onAction(GearFormUiAction.DoneClicked) }) {
+private fun Actions(state: GearFormTopBarUiState, onAction: (GearFormUiAction) -> Unit) {
+	TextButton(
+		onClick = { onAction(GearFormUiAction.DoneClicked) },
+		enabled = state.isSaveButtonEnabled,
+	) {
 		Text(
 			text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_save),
 			style = MaterialTheme.typography.bodyMedium,
