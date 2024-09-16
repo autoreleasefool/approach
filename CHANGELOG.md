@@ -6,10 +6,13 @@
 - Fix: App Icon previews are correctly shown in app
 ```
 
-## Android 4.3.1b330
+## Android 4.3.2b331
 
 ```
-- Fix: Fixes a crash that would occur when picking statistics for a widget
+- Fix: Series pre-bowls and alleys can now be correctly updated
+- Fix: Resolve crash when adding multiple lanes to an alley
+- Fix: Can no longer erroneously set manual scores when editing a series
+- Fix: Can no longer erroneously edit team members after creation
 ```
 
 ---
@@ -208,6 +211,12 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.3.1b330
+
+```
+- Fix: Fixes a crash that would occur when picking statistics for a widget
+```
 
 ## Android 4.3.0b329
 
