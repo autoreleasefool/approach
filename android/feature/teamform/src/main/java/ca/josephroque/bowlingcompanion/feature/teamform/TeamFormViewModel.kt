@@ -85,6 +85,7 @@ class TeamFormViewModel @Inject constructor(
 					form = TeamFormUiState(
 						name = team.name,
 						members = team.members,
+						isEditingMembersEnabled = false,
 					),
 					topBar = TeamFormTopBarUiState(
 						existingName = team.name,

@@ -84,10 +84,14 @@ fun TeamForm(
 
 			FormSectionHeader(
 				titleResourceId = R.string.team_form_team_members,
-				headerAction = HeaderAction(
-					actionResourceId = R.string.team_form_manage_team_members,
-					onClick = { onAction(TeamFormUiAction.ManageTeamMembersClicked) },
-				),
+				headerAction = if (state.isEditingMembersEnabled) {
+					HeaderAction(
+						actionResourceId = R.string.team_form_manage_team_members,
+						onClick = { onAction(TeamFormUiAction.ManageTeamMembersClicked) },
+					)
+				} else {
+					null
+				},
 				modifier = Modifier.padding(top = 16.dp),
 			)
 

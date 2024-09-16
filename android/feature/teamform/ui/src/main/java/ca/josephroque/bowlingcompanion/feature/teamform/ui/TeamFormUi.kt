@@ -12,6 +12,7 @@ data class TeamFormUiState(
 	val isShowingDeleteDialog: Boolean = false,
 	val isDeleteButtonEnabled: Boolean = false,
 	val isShowingDiscardChangesDialog: Boolean = false,
+	val isEditingMembersEnabled: Boolean = true,
 )
 
 sealed interface TeamFormUiAction {
