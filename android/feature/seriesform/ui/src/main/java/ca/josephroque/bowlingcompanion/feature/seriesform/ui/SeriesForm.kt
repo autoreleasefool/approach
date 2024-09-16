@@ -82,7 +82,7 @@ fun SeriesForm(
 
 		HorizontalDivider()
 
-		if (state.isManualSeriesEnabled && state.isCreatingManualSeries != null) {
+		if (state.isManualSeriesEnabled) {
 			ManualSeriesSection(
 				isCreatingManualSeries = state.isCreatingManualSeries,
 				manualScores = state.manualScores,

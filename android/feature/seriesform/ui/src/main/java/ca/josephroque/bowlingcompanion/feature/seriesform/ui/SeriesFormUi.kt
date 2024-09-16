@@ -19,7 +19,7 @@ data class SeriesFormUiState(
 	val isShowingArchiveDialog: Boolean,
 	val isArchiveButtonEnabled: Boolean,
 	val isShowingDiscardChangesDialog: Boolean,
-	val isCreatingManualSeries: Boolean?,
+	val isCreatingManualSeries: Boolean,
 	val manualScores: List<Int>,
 	val isPreBowlSectionVisible: Boolean,
 	val isPreBowlFormEnabled: Boolean,

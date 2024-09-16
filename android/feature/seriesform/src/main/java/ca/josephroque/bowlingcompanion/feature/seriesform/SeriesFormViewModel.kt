@@ -192,7 +192,7 @@ class SeriesFormViewModel @Inject constructor(
 						isPreBowlFormEnabled = featureFlags.isEnabled(FeatureFlag.PRE_BOWL_FORM),
 						isCreatingManualSeries = false,
 						manualScores = emptyList(),
-						isManualSeriesEnabled = featureFlags.isEnabled(FeatureFlag.MANUAL_SERIES_FORM),
+						isManualSeriesEnabled = false,
 					),
 					topBar = SeriesFormTopBarUiState(
 						existingDate = series.properties.date,
@@ -373,7 +373,7 @@ class SeriesFormViewModel @Inject constructor(
 		_uiState.updateForm {
 			it.copy(
 				numberOfGames = numberOfGames.coerceIn(League.NumberOfGamesRange),
-				manualScores = if (it.isCreatingManualSeries == true) {
+				manualScores = if (it.isCreatingManualSeries) {
 					if (it.manualScores.size < numberOfGames) {
 						it.manualScores + List(numberOfGames - it.manualScores.size) { 0 }
 					} else {
@@ -431,7 +431,7 @@ class SeriesFormViewModel @Inject constructor(
 						},
 						numberOfGames = state.form.numberOfGames ?: Series.DEFAULT_NUMBER_OF_GAMES,
 						appliedDate = if (state.form.isUsingPreBowl) state.form.appliedDate else null,
-						manualScores = if (state.form.isCreatingManualSeries == true) {
+						manualScores = if (state.form.isCreatingManualSeries) {
 							state.form.manualScores
 						} else {
 							null
