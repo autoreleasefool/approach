@@ -24,12 +24,15 @@ abstract class TeamDao : LegacyMigratingDao<TeamEntity> {
 				teams.name AS name,
 				AVG(games.score) as average,
 				MAX(series.date) as lastSeriesDate,
-				(
-					SELECT GROUP_CONCAT(bowlers.name, ';')
-					FROM team_bowler
-					LEFT JOIN bowlers
-						ON bowlers.id = team_bowler.bowler_id
-					WHERE team_bowler.team_id = teams.id
+				COALESCE(
+					(
+						SELECT GROUP_CONCAT(bowlers.name, ';')
+						FROM team_bowler
+						LEFT JOIN bowlers
+							ON bowlers.id = team_bowler.bowler_id
+						WHERE team_bowler.team_id = teams.id
+					),
+					''
 				) as members
 			FROM teams
 			LEFT JOIN team_bowler
