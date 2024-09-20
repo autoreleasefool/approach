@@ -6,11 +6,11 @@
 - Fix: App Icon previews are correctly shown in app
 ```
 
-## Android 4.3.3b332
+## Android 4.3.4b333
 
 ```
-- Fix: Resolves a crash when loading teams
-- Fix: Resolved a crash in onboarding on some Nexus devices
+- Fix: Resolves the Accessories onboarding appear in light modesss
+- Fix: Resolves a crash when creating an Alley with no lanes
 ```
 
 ---
@@ -209,6 +209,13 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.3.3b332
+
+```
+- Fix: Resolves a crash when loading teams
+- Fix: Resolved a crash in onboarding on some Nexus devices
+```
 
 ## Android 4.3.2b331
 
