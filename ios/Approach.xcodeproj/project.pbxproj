@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA1FB19E2C99595D00A94F9F /* ApproachWatchOS.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = CA1FB17B2C99595B00A94F9F /* ApproachWatchOS.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890DD28F87FF2003C1EE9 /* AppFeature */; };
 		CA2B781F2AABC9E10044487E /* ScoresRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA2B781E2AABC9E10044487E /* ScoresRepository */; };
 		CA2B78212AABC9EC0044487E /* ScoresRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA2B78202AABC9EC0044487E /* ScoresRepository */; };
@@ -76,6 +77,20 @@
 			remoteInfo = "Approach for WatchOS";
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CA1FB19F2C99595D00A94F9F /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				CA1FB19E2C99595D00A94F9F /* ApproachWatchOS.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		CA0B357D2C995F0400A9F697 /* Target.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Target.xcconfig; sourceTree = "<group>"; };
@@ -370,6 +385,7 @@
 				CA8BBC5228D59B8B00653A1E /* Frameworks */,
 				CA8BBC5328D59B8B00653A1E /* Resources */,
 				5B8CBEA6A7864D49B251E753 /* Upload Debug Symbols to Sentry */,
+				CA1FB19F2C99595D00A94F9F /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
