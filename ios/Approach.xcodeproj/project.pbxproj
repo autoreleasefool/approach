@@ -3,11 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CA1FB19E2C99595D00A94F9F /* ApproachWatchOS.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = CA1FB17B2C99595B00A94F9F /* ApproachWatchOS.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890DD28F87FF2003C1EE9 /* AppFeature */; };
 		CA2B781F2AABC9E10044487E /* ScoresRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA2B781E2AABC9E10044487E /* ScoresRepository */; };
 		CA2B78212AABC9EC0044487E /* ScoresRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA2B78202AABC9EC0044487E /* ScoresRepository */; };
@@ -68,42 +67,14 @@
 		CAFF2FCB2AB19B3000AE31BF /* AvatarService in Frameworks */ = {isa = PBXBuildFile; productRef = CAFF2FCA2AB19B3000AE31BF /* AvatarService */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		CA1FB19C2C99595D00A94F9F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CA8BBC4D28D59B8B00653A1E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CA1FB17A2C99595B00A94F9F;
-			remoteInfo = "Approach for WatchOS";
-		};
-/* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		CA1FB19F2C99595D00A94F9F /* Embed Watch Content */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
-			dstSubfolderSpec = 16;
-			files = (
-				CA1FB19E2C99595D00A94F9F /* ApproachWatchOS.app in Embed Watch Content */,
-			);
-			name = "Embed Watch Content";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
-		CA0B357D2C995F0400A9F697 /* Target.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Target.xcconfig; sourceTree = "<group>"; };
-		CA0B357E2C995F4100A9F697 /* WatchOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = WatchOS.xcconfig; sourceTree = "<group>"; };
-		CA0B357F2C995F5000A9F697 /* ApproachWatchOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ApproachWatchOS.xcconfig; sourceTree = "<group>"; };
-		CA1FB17B2C99595B00A94F9F /* ApproachWatchOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ApproachWatchOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA2F033928F87C4100030BFE /* Approach */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Approach; sourceTree = "<group>"; };
-		CA5F86EE2A01E58D0092F519 /* IOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = IOS.xcconfig; sourceTree = "<group>"; };
+		CA5F86EE2A01E58D0092F519 /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = App.xcconfig; sourceTree = "<group>"; };
 		CA5F86EF2A01E5930092F519 /* Test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Test.xcconfig; sourceTree = "<group>"; };
 		CA5F86F02A01E59B0092F519 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
-		CA5F86F12A01E5A70092F519 /* ApproachIOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ApproachIOS.xcconfig; sourceTree = "<group>"; };
+		CA5F86F12A01E5A70092F519 /* AppApproach.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppApproach.xcconfig; sourceTree = "<group>"; };
 		CA5F86F22A01E5AF0092F519 /* Project.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Project.xcconfig; sourceTree = "<group>"; };
-		CA5F86F32A01E5BE0092F519 /* GameEditorIOSPreview.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = GameEditorIOSPreview.xcconfig; sourceTree = "<group>"; };
+		CA5F86F32A01E5BE0092F519 /* AppGameEditorPreview.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppGameEditorPreview.xcconfig; sourceTree = "<group>"; };
 		CA626E262A821846002BCC13 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		CA626E2A2A836881002BCC13 /* Configuration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Configuration.storekit; sourceTree = "<group>"; };
 		CA632F5529BD26E200272ADB /* GameEditorPreview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameEditorPreview.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -118,21 +89,10 @@
 		CABA39BC2C38AD7100F74E0C /* AvatarEditorPreview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AvatarEditorPreview.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CABA39BE2C38AD7100F74E0C /* AvatarEditorPreviewApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarEditorPreviewApp.swift; sourceTree = "<group>"; };
 		CABA39C22C38AD7200F74E0C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		CABA39CA2C38ADB800F74E0C /* AvatarEditorIOSPreview.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AvatarEditorIOSPreview.xcconfig; sourceTree = "<group>"; };
+		CABA39CA2C38ADB800F74E0C /* AppAvatarEditorPreview.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppAvatarEditorPreview.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		CA1FB17C2C99595B00A94F9F /* ApproachWatchOS */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ApproachWatchOS; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
-
 /* Begin PBXFrameworksBuildPhase section */
-		CA1FB1782C99595B00A94F9F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CA632F5229BD26E200272ADB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -227,11 +187,10 @@
 			isa = PBXGroup;
 			children = (
 				CA5F86ED2A01E5810092F519 /* Base */,
-				CA5F86F12A01E5A70092F519 /* ApproachIOS.xcconfig */,
-				CA0B357F2C995F5000A9F697 /* ApproachWatchOS.xcconfig */,
+				CA5F86F12A01E5A70092F519 /* AppApproach.xcconfig */,
 				CAB632A72AB4F96200C6D1BA /* Secrets.xcconfig */,
-				CA5F86F32A01E5BE0092F519 /* GameEditorIOSPreview.xcconfig */,
-				CABA39CA2C38ADB800F74E0C /* AvatarEditorIOSPreview.xcconfig */,
+				CA5F86F32A01E5BE0092F519 /* AppGameEditorPreview.xcconfig */,
+				CABA39CA2C38ADB800F74E0C /* AppAvatarEditorPreview.xcconfig */,
 			);
 			path = XCConfigs;
 			sourceTree = "<group>";
@@ -239,9 +198,7 @@
 		CA5F86ED2A01E5810092F519 /* Base */ = {
 			isa = PBXGroup;
 			children = (
-				CA0B357E2C995F4100A9F697 /* WatchOS.xcconfig */,
-				CA0B357D2C995F0400A9F697 /* Target.xcconfig */,
-				CA5F86EE2A01E58D0092F519 /* IOS.xcconfig */,
+				CA5F86EE2A01E58D0092F519 /* App.xcconfig */,
 				CA5F86F22A01E5AF0092F519 /* Project.xcconfig */,
 				CA5F86EF2A01E5930092F519 /* Test.xcconfig */,
 				CA5F86F02A01E59B0092F519 /* Version.xcconfig */,
@@ -272,7 +229,6 @@
 			children = (
 				CA2F033928F87C4100030BFE /* Approach */,
 				CA8BBC5728D59B8B00653A1E /* ApproachIOS */,
-				CA1FB17C2C99595B00A94F9F /* ApproachWatchOS */,
 				CA5F86EC2A01E5780092F519 /* XCConfigs */,
 				CA632F6329BD26F200272ADB /* Previews */,
 				CA8BBC5628D59B8B00653A1E /* Products */,
@@ -286,7 +242,6 @@
 				CA8BBC5528D59B8B00653A1E /* Approach.app */,
 				CA632F5529BD26E200272ADB /* GameEditorPreview.app */,
 				CABA39BC2C38AD7100F74E0C /* AvatarEditorPreview.app */,
-				CA1FB17B2C99595B00A94F9F /* ApproachWatchOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -322,28 +277,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CA1FB17A2C99595B00A94F9F /* ApproachWatchOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = CA1FB1A62C99595D00A94F9F /* Build configuration list for PBXNativeTarget "ApproachWatchOS" */;
-			buildPhases = (
-				CA1FB1772C99595B00A94F9F /* Sources */,
-				CA1FB1782C99595B00A94F9F /* Frameworks */,
-				CA1FB1792C99595B00A94F9F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				CA1FB17C2C99595B00A94F9F /* ApproachWatchOS */,
-			);
-			name = ApproachWatchOS;
-			packageProductDependencies = (
-			);
-			productName = "Approach for WatchOS";
-			productReference = CA1FB17B2C99595B00A94F9F /* ApproachWatchOS.app */;
-			productType = "com.apple.product-type.application";
-		};
 		CA632F5429BD26E200272ADB /* GameEditorPreview */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CA632F6229BD26E300272ADB /* Build configuration list for PBXNativeTarget "GameEditorPreview" */;
@@ -385,12 +318,10 @@
 				CA8BBC5228D59B8B00653A1E /* Frameworks */,
 				CA8BBC5328D59B8B00653A1E /* Resources */,
 				5B8CBEA6A7864D49B251E753 /* Upload Debug Symbols to Sentry */,
-				CA1FB19F2C99595D00A94F9F /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				CA1FB19D2C99595D00A94F9F /* PBXTargetDependency */,
 			);
 			name = Approach;
 			packageProductDependencies = (
@@ -460,12 +391,9 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1600;
+				LastSwiftUpdateCheck = 1540;
 				LastUpgradeCheck = 1540;
 				TargetAttributes = {
-					CA1FB17A2C99595B00A94F9F = {
-						CreatedOnToolsVersion = 16.0;
-					};
 					CA632F5429BD26E200272ADB = {
 						CreatedOnToolsVersion = 14.2;
 					};
@@ -495,19 +423,11 @@
 				CA8BBC5428D59B8B00653A1E /* Approach */,
 				CA632F5429BD26E200272ADB /* GameEditorPreview */,
 				CABA39BB2C38AD7100F74E0C /* AvatarEditorPreview */,
-				CA1FB17A2C99595B00A94F9F /* ApproachWatchOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		CA1FB1792C99595B00A94F9F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CA632F5329BD26E200272ADB /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -574,13 +494,6 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		CA1FB1772C99595B00A94F9F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CA632F5129BD26E200272ADB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -608,39 +521,17 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		CA1FB19D2C99595D00A94F9F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CA1FB17A2C99595B00A94F9F /* ApproachWatchOS */;
-			targetProxy = CA1FB19C2C99595D00A94F9F /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin XCBuildConfiguration section */
-		CA1FB1A02C99595D00A94F9F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = CA0B357F2C995F5000A9F697 /* ApproachWatchOS.xcconfig */;
-			buildSettings = {
-			};
-			name = Debug;
-		};
-		CA1FB1A12C99595D00A94F9F /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = CA0B357F2C995F5000A9F697 /* ApproachWatchOS.xcconfig */;
-			buildSettings = {
-			};
-			name = Release;
-		};
 		CA632F6029BD26E300272ADB /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CA5F86F32A01E5BE0092F519 /* GameEditorIOSPreview.xcconfig */;
+			baseConfigurationReference = CA5F86F32A01E5BE0092F519 /* AppGameEditorPreview.xcconfig */;
 			buildSettings = {
 			};
 			name = Debug;
 		};
 		CA632F6129BD26E300272ADB /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CA5F86F32A01E5BE0092F519 /* GameEditorIOSPreview.xcconfig */;
+			baseConfigurationReference = CA5F86F32A01E5BE0092F519 /* AppGameEditorPreview.xcconfig */;
 			buildSettings = {
 			};
 			name = Release;
@@ -661,28 +552,28 @@
 		};
 		CA8BBC7A28D59B8C00653A1E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CA5F86F12A01E5A70092F519 /* ApproachIOS.xcconfig */;
+			baseConfigurationReference = CA5F86F12A01E5A70092F519 /* AppApproach.xcconfig */;
 			buildSettings = {
 			};
 			name = Debug;
 		};
 		CA8BBC7B28D59B8C00653A1E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CA5F86F12A01E5A70092F519 /* ApproachIOS.xcconfig */;
+			baseConfigurationReference = CA5F86F12A01E5A70092F519 /* AppApproach.xcconfig */;
 			buildSettings = {
 			};
 			name = Release;
 		};
 		CABA39C72C38AD7200F74E0C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CABA39CA2C38ADB800F74E0C /* AvatarEditorIOSPreview.xcconfig */;
+			baseConfigurationReference = CABA39CA2C38ADB800F74E0C /* AppAvatarEditorPreview.xcconfig */;
 			buildSettings = {
 			};
 			name = Debug;
 		};
 		CABA39C82C38AD7200F74E0C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CABA39CA2C38ADB800F74E0C /* AvatarEditorIOSPreview.xcconfig */;
+			baseConfigurationReference = CABA39CA2C38ADB800F74E0C /* AppAvatarEditorPreview.xcconfig */;
 			buildSettings = {
 			};
 			name = Release;
@@ -690,15 +581,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CA1FB1A62C99595D00A94F9F /* Build configuration list for PBXNativeTarget "ApproachWatchOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CA1FB1A02C99595D00A94F9F /* Debug */,
-				CA1FB1A12C99595D00A94F9F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		CA632F6229BD26E300272ADB /* Build configuration list for PBXNativeTarget "GameEditorPreview" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
