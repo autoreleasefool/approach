@@ -23,10 +23,13 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.R
 
 @Composable
-fun AccessoriesOnboarding(onAction: (AccessoriesOnboardingUiAction) -> Unit) {
+fun AccessoriesOnboarding(
+	onAction: (AccessoriesOnboardingUiAction) -> Unit,
+	modifier: Modifier = Modifier,
+) {
 	Column(
 		verticalArrangement = Arrangement.spacedBy(16.dp),
-		modifier = Modifier
+		modifier = modifier
 			.padding(16.dp)
 			.verticalScroll(rememberScrollState()),
 	) {

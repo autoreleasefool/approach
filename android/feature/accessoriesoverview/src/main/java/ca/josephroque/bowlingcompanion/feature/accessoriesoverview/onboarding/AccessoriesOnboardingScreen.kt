@@ -1,8 +1,11 @@
 package ca.josephroque.bowlingcompanion.feature.accessoriesoverview.onboarding
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -42,7 +45,10 @@ private fun AccessoriesOnboardingScreen(onAction: (AccessoriesOnboardingScreenUi
 		}
 	}
 
-	AccessoriesOnboarding(
-		onAction = { onAction(AccessoriesOnboardingScreenUiAction.AccessoriesOnboarding(it)) },
-	)
+	Scaffold { padding ->
+		AccessoriesOnboarding(
+			onAction = { onAction(AccessoriesOnboardingScreenUiAction.AccessoriesOnboarding(it)) },
+			modifier = Modifier.padding(padding),
+		)
+	}
 }
