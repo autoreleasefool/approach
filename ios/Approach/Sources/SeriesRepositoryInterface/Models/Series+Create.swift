@@ -3,7 +3,7 @@ import IdentifiedCollections
 import ModelsLibrary
 
 extension Series {
-	public struct Create: Identifiable, Equatable, Codable, CanPreBowl {
+	public struct Create: Identifiable, Equatable, Codable, Sendable, CanPreBowl {
 		public let leagueId: League.ID
 		public let id: Series.ID
 

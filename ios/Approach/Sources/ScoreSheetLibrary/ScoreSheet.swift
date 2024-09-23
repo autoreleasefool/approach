@@ -22,7 +22,7 @@ public struct ScoreSheet: View {
 		self._selection = selection
 	}
 
-	public struct Selection: Hashable {
+	public struct Selection: Hashable, Sendable {
 		public var frameIndex: Int
 		public var rollIndex: Int
 

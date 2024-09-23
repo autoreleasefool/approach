@@ -2,7 +2,7 @@ import Dependencies
 import ModelsLibrary
 
 extension League {
-	public enum Ordering: Hashable, CaseIterable {
+	public enum Ordering: Hashable, CaseIterable, Sendable {
 		case byName
 		case byRecentlyUsed
 
@@ -81,7 +81,7 @@ public struct LeaguesRepository: Sendable {
 }
 
 extension LeaguesRepository {
-	public struct ListFilter {
+	public struct ListFilter: Sendable {
 		public let bowler: Bowler.ID
 		public let recurrence: League.Recurrence?
 		public let ordering: League.Ordering
@@ -97,11 +97,11 @@ extension LeaguesRepository {
 extension LeaguesRepository: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
-			list: { _, _, _ in unimplemented("\(Self.self).list") },
-			pickable: { _, _, _ in unimplemented("\(Self.self).pickable") },
-			archived: { unimplemented("\(Self.self).archived") },
-			seriesHost: { _ in unimplemented("\(Self.self).seriesHost") },
-			edit: { _ in unimplemented("\(Self.self).edit") },
+			list: { _, _, _ in unimplemented("\(Self.self).list", placeholder: .never) },
+			pickable: { _, _, _ in unimplemented("\(Self.self).pickable", placeholder: .never) },
+			archived: { unimplemented("\(Self.self).archived", placeholder: .never) },
+			seriesHost: { _ in unimplemented("\(Self.self).seriesHost", placeholder: .placeholder) },
+			edit: { _ in unimplemented("\(Self.self).edit", placeholder: .placeholder) },
 			create: { _ in unimplemented("\(Self.self).create") },
 			update: { _ in unimplemented("\(Self.self).update") },
 			archive: { _ in unimplemented("\(Self.self).archive") },

@@ -15,10 +15,11 @@ extension ScoresRepository: DependencyKey {
 	public static var liveValue: Self {
 		Self(
 			observeScore: { gameId in
-				@Dependency(FramesRepository.self) var framesRepository
-				@Dependency(GamesRepository.self) var gamesRepository
-				return .init { continuation in
+				AsyncThrowingStream { continuation in
 					let task = Task {
+						@Dependency(FramesRepository.self) var framesRepository
+						@Dependency(GamesRepository.self) var gamesRepository
+
 						do {
 							guard let game = try await gamesRepository.findIndex(gameId) else {
 								continuation.finish()

@@ -9,7 +9,7 @@ public struct GameAnalyticsService: Sendable {
 }
 
 extension GameAnalyticsService: TestDependencyKey {
-	public static var testValue = Self()
+	public static var testValue: Self { Self() }
 }
 
 extension DependencyValues {

@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-public enum Announcement: String, CaseIterable {
+public enum Announcement: String, CaseIterable, Sendable {
 	case christmas2023
 
 	public func meetsExpectationsToShow() -> Bool {

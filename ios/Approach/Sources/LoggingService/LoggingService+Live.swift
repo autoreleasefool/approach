@@ -1,4 +1,4 @@
-import CocoaLumberjack
+@preconcurrency import CocoaLumberjack
 import CocoaLumberjackSwift
 import Dependencies
 import LoggingServiceInterface

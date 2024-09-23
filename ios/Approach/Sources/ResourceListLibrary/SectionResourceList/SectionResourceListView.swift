@@ -8,7 +8,7 @@ import ViewsLibrary
 
 public struct SectionResourceListView<
 	R: ResourceListItem,
-	Q: Equatable,
+	Q: Equatable & Sendable,
 	Row: View,
 	Header: View,
 	Footer: View

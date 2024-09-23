@@ -140,7 +140,7 @@ public struct GameDetails: Reducer, Sendable {
 		}
 	}
 
-	enum CancelID {
+	enum CancelID: Sendable {
 		case saveMatchPlay
 		case observation
 	}

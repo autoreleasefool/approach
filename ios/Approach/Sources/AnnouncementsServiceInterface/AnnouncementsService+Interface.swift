@@ -17,7 +17,7 @@ public struct AnnouncementsService: Sendable {
 extension AnnouncementsService: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
-			announcement: { unimplemented("\(Self.self).announcement") },
+			announcement: { unimplemented("\(Self.self).announcement", placeholder: .christmas2023) },
 			hideAnnouncement: { _ in unimplemented("\(Self.self).hideAnnouncement")}
 		)
 	}

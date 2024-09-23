@@ -25,8 +25,8 @@ extension AppIconService: TestDependencyKey {
 		Self(
 			setAppIcon: { _ in unimplemented("\(Self.self).setAppIcon") },
 			resetAppIcon: { unimplemented("\(Self.self).resetAppIcon") },
-			getAppIconName: { unimplemented("\(Self.self).getAppIconName") },
-			supportsAlternateIcons: { unimplemented("\(Self.self).supportsAlternateIcons") }
+			getAppIconName: { unimplemented("\(Self.self).getAppIconName", placeholder: nil) },
+			supportsAlternateIcons: { unimplemented("\(Self.self).supportsAlternateIcons", placeholder: false) }
 		)
 	}
 }

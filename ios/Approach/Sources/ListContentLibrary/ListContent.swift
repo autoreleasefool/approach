@@ -63,7 +63,7 @@ public enum ListContentState<Element: Identifiable & Equatable, ErrorContent: Eq
 	case error(ErrorContent)
 }
 
-public struct ListErrorContent: Equatable {
+public struct ListErrorContent: Equatable, Sendable {
 	public let title: String
 	public let message: String?
 	public let action: String

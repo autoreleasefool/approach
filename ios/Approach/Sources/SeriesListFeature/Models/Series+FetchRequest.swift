@@ -2,7 +2,7 @@ import ModelsLibrary
 import SeriesRepositoryInterface
 
 extension Series.List {
-	public struct FetchRequest: Equatable {
+	public struct FetchRequest: Equatable, Sendable {
 		public let league: League.ID
 		public let ordering: Series.Ordering
 

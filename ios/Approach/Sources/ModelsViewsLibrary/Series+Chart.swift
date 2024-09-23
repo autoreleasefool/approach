@@ -99,7 +99,7 @@ struct ScoreAnnotation: ChartContent {
 }
 
 extension Series.ScoreChart {
-	public struct Style {
+	public struct Style: Sendable {
 		public let areaMarkForeground: LinearGradient
 		public let lineMarkForeground: LinearGradient
 		public let annotationForeground: Color

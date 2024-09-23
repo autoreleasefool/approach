@@ -95,7 +95,7 @@ public struct SeriesListItem: View {
 private struct ContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 
 extension Series.ScoreChart.Style {
-	static var listItem: Self = Self(
+	static let listItem: Self = Self(
 		areaMarkForeground: .linearGradient(
 			stops: [
 				.init(color: Asset.Colors.Charts.Series.areaMark.swiftUIColor, location: 0.3),

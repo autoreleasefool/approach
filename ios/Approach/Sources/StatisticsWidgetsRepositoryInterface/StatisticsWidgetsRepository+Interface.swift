@@ -44,10 +44,10 @@ public struct StatisticsWidgetsRepository: Sendable {
 extension StatisticsWidgetsRepository: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
-			loadSources: { _ in unimplemented("\(Self.self).loadSources") },
-			loadDefaultSources: { unimplemented("\(Self.self).loadDefaultSources") },
-			loadChart: { _ in unimplemented("\(Self.self).loadChart") },
-			fetchAll: { _ in unimplemented("\(Self.self).fetchAll") },
+			loadSources: { _ in unimplemented("\(Self.self).loadSources", placeholder: .placeholder) },
+			loadDefaultSources: { unimplemented("\(Self.self).loadDefaultSources", placeholder: nil) },
+			loadChart: { _ in unimplemented("\(Self.self).loadChart", placeholder: .chartUnavailable(statistic: "")) },
+			fetchAll: { _ in unimplemented("\(Self.self).fetchAll", placeholder: .never) },
 			updatePriorities: { _ in unimplemented("\(Self.self).updatePriorities") },
 			create: { _ in unimplemented("\(Self.self).create") },
 			delete: { _ in unimplemented("\(Self.self).delete") }

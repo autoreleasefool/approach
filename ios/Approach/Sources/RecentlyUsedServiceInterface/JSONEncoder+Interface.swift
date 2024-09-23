@@ -18,7 +18,7 @@ public struct JSONEncoderService: Sendable {
 extension JSONEncoderService: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
-			encode: { _ in unimplemented("\(Self.self).encode") }
+			encode: { _ in unimplemented("\(Self.self).encode", placeholder: Data()) }
 		)
 	}
 }

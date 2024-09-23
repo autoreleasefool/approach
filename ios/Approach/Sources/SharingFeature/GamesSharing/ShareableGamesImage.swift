@@ -109,7 +109,7 @@ public struct ShareableGamesImage: View {
 }
 
 extension ShareableGamesImage {
-	public struct Configuration: Equatable {
+	public struct Configuration: Equatable, Sendable {
 		public let scores: [ScoredGame]
 		public let style: Style
 		public let bowlerName: String?
@@ -263,7 +263,7 @@ private struct ScoreSheetLabel: View {
 }
 
 extension ShareableGamesImage.Configuration {
-	public enum Style: CaseIterable, Identifiable {
+	public enum Style: CaseIterable, Identifiable, Sendable {
 		case plain
 		case grayscale
 

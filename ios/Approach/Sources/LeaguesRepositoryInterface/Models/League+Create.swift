@@ -2,7 +2,7 @@ import Foundation
 import ModelsLibrary
 
 extension League {
-	public struct Create: Identifiable, Codable, Equatable {
+	public struct Create: Identifiable, Codable, Equatable, Sendable {
 		public let bowlerId: Bowler.ID
 		public let id: League.ID
 

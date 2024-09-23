@@ -1,6 +1,6 @@
 import StringsLibrary
 
-public struct Tip: Hashable {
+public struct Tip: Hashable, Sendable {
 	public let id: String
 	public let title: String
 	public let message: String?

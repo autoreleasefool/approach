@@ -10,7 +10,7 @@ import ViewsLibrary
 @Reducer
 public struct SectionResourceList<
 	R: ResourceListItem,
-	Q: Equatable
+	Q: Equatable & Sendable
 >: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
@@ -65,7 +65,7 @@ public struct SectionResourceList<
 		}
 	}
 
-	public struct Section: Identifiable, Equatable {
+	public struct Section: Identifiable, Equatable, Sendable {
 		public let id: String
 		public var title: String?
 		public var items: IdentifiedArrayOf<R>
@@ -138,7 +138,7 @@ public struct SectionResourceList<
 		case error
 	}
 
-	enum CancelID { case observation }
+	enum CancelID: Sendable { case observation }
 
 	public init(fetchSections: @escaping @Sendable (Q) -> AsyncThrowingStream<[Section], Swift.Error>) {
 		self.fetchSections = fetchSections

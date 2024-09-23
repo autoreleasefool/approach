@@ -2,7 +2,7 @@ import Dependencies
 import ModelsLibrary
 
 extension Gear {
-	public enum Ordering: Hashable, CaseIterable {
+	public enum Ordering: Hashable, CaseIterable, Sendable {
 		case byName
 		case byRecentlyUsed
 
@@ -67,10 +67,10 @@ public struct GearRepository: Sendable {
 extension GearRepository: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
-			list: { _, _, _ in unimplemented("\(Self.self).list") },
-			preferred: { _ in unimplemented("\(Self.self).preferred") },
-			mostRecentlyUsed: { _, _ in unimplemented("\(Self.self).mostRecentlyUsed") },
-			edit: { _ in unimplemented("\(Self.self).edit") },
+			list: { _, _, _ in unimplemented("\(Self.self).list", placeholder: .never) },
+			preferred: { _ in unimplemented("\(Self.self).preferred", placeholder: []) },
+			mostRecentlyUsed: { _, _ in unimplemented("\(Self.self).mostRecentlyUsed", placeholder: .never) },
+			edit: { _ in unimplemented("\(Self.self).edit", placeholder: .placeholder) },
 			create: { _ in unimplemented("\(Self.self).create") },
 			update: { _ in unimplemented("\(Self.self).update") },
 			delete: { _ in unimplemented("\(Self.self).delete") },

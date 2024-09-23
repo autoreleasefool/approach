@@ -185,7 +185,7 @@ private struct ChartLabel: View {
 }
 
 extension ShareableSeriesImage {
-	public struct Configuration: Equatable {
+	public struct Configuration: Equatable, Sendable {
 		public let date: Date?
 		public let total: Int?
 		public let showDetails: Bool

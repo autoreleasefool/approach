@@ -123,7 +123,7 @@ public struct FrameEditorView: View {
 	}
 
 	struct PinContainerPreferenceKey: PreferenceKey {
-		static var defaultValue: [PinContainer] = []
+		static let defaultValue: [PinContainer] = []
 		static func reduce(value: inout [FrameEditorView.PinContainer], nextValue: () -> [FrameEditorView.PinContainer]) {
 			value.append(contentsOf: nextValue())
 		}

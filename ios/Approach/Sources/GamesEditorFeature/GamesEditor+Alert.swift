@@ -29,17 +29,19 @@ extension GamesEditor {
 }
 
 extension AlertState where Action == GamesEditor.Destination.DuplicateLanesAlertAction {
-	static let duplicateLanes = Self {
-		TextState(Strings.Game.Editor.Fields.Alley.Lanes.Duplicate.title)
-	} actions: {
-		ButtonState(action: .confirmDuplicateLanes) {
-			TextState(Strings.Game.Editor.Fields.Alley.Lanes.Duplicate.copyToAll)
+	static var duplicateLanes: Self {
+		Self {
+			TextState(Strings.Game.Editor.Fields.Alley.Lanes.Duplicate.title)
+		} actions: {
+			ButtonState(action: .confirmDuplicateLanes) {
+				TextState(Strings.Game.Editor.Fields.Alley.Lanes.Duplicate.copyToAll)
+			}
+			
+			ButtonState(role: .cancel, action: .didTapDismissButton) {
+				TextState(Strings.Game.Editor.Fields.Alley.Lanes.Duplicate.dismiss)
+			}
+		} message: {
+			TextState(Strings.Game.Editor.Fields.Alley.Lanes.Duplicate.message)
 		}
-
-		ButtonState(role: .cancel, action: .didTapDismissButton) {
-			TextState(Strings.Game.Editor.Fields.Alley.Lanes.Duplicate.dismiss)
-		}
-	} message: {
-		TextState(Strings.Game.Editor.Fields.Alley.Lanes.Duplicate.message)
 	}
 }

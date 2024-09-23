@@ -242,7 +242,7 @@ public struct GearEditor: Reducer, Sendable {
 }
 
 extension Gear.Create: CreateableRecord {
-	public static var modelName = Strings.Gear.title
+	public static let modelName = Strings.Gear.title
 
 	public var isSaveable: Bool {
 		!name.isEmpty

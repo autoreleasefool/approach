@@ -82,7 +82,7 @@ public struct CountingChart: View {
 // MARK: - Data
 
 extension CountingChart {
-	public struct Data: Equatable {
+	public struct Data: Equatable, Sendable {
 		public let title: String
 		public let entries: [Entry]
 		public let isAccumulating: Bool
@@ -100,7 +100,7 @@ extension CountingChart {
 }
 
 extension CountingChart.Data {
-	public struct Entry: Equatable, Identifiable {
+	public struct Entry: Equatable, Identifiable, Sendable {
 		public let id: UUID
 		public let value: Int
 		public let xAxis: XAxis
@@ -159,7 +159,7 @@ extension CountingChart.Data {
 }
 
 extension CountingChart.Data {
-	public enum XAxis: Equatable {
+	public enum XAxis: Equatable, Sendable {
 		case date(Date, TimeInterval)
 		case game(ordinal: Int)
 	}

@@ -4,12 +4,12 @@ import FeatureActionLibrary
 import ListContentLibrary
 import ViewsLibrary
 
-public protocol PickableResource: Equatable, Identifiable {
+public protocol PickableResource: Equatable, Identifiable, Sendable {
 	static func pickableModelName(forCount: Int) -> String
 }
 
 @Reducer
-public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Reducer, Sendable {
+public struct ResourcePicker<Resource: PickableResource, Query: Equatable & Sendable>: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var resources: IdentifiedArrayOf<Resource>?
@@ -73,7 +73,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 		case `internal`(Internal)
 	}
 
-	enum CancelID { case observation }
+	enum CancelID: Sendable { case observation }
 
 	public init(observeResources: @escaping @Sendable (Query) -> AsyncThrowingStream<[Resource], Error>) {
 		self.observeResources = observeResources

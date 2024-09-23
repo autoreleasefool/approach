@@ -282,7 +282,7 @@ public struct LeagueEditor: Reducer, Sendable {
 }
 
 extension League.Create: CreateableRecord {
-	public static var modelName = Strings.League.title
+	public static let modelName = Strings.League.title
 
 	public var isSaveable: Bool {
 		!name.isEmpty

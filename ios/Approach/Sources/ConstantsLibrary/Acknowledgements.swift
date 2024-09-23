@@ -1,7 +1,7 @@
 import Dependencies
 import Foundation
 
-public struct Acknowledgement: Equatable {
+public struct Acknowledgement: Equatable, Sendable {
 	public let name: String
 	public let license: LicenseFile
 
@@ -17,7 +17,7 @@ public struct Acknowledgement: Equatable {
 }
 
 extension Acknowledgement {
-	public struct LicenseFile: Equatable {
+	public struct LicenseFile: Equatable, Sendable {
 		public let fileName: String
 		public let type: String
 	}

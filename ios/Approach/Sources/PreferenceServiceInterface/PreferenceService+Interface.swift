@@ -15,10 +15,12 @@ public struct PreferenceService: Sendable {
 	public var setString: @Sendable (_ forKey: PreferenceKey, _ to: String) -> Void
 	public var stringArray: @Sendable (_ forKey: PreferenceKey) -> [String]?
 	public var setStringArray: @Sendable (_ forKey: PreferenceKey, _ to: [String]) -> Void
-	public var contains: @Sendable (_ key: PreferenceKey) -> Bool = { _ in unimplemented("\(Self.self).contains") }
+	public var contains: @Sendable (_ key: PreferenceKey) -> Bool = { _ in
+		unimplemented("\(Self.self).contains", placeholder: false)
+	}
 	public var remove: @Sendable (_ key: PreferenceKey) -> Void
 	public var observe: @Sendable (_ keys: Set<PreferenceKey>) -> AsyncStream<PreferenceKey> = { _ in
-		unimplemented("\(Self.self).observe")
+		unimplemented("\(Self.self).observe", placeholder: .never)
 	}
 }
 

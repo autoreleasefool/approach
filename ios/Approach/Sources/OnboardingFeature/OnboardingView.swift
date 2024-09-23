@@ -9,7 +9,7 @@ import ViewsLibrary
 public struct OnboardingView: View {
 	@Bindable public var store: StoreOf<Onboarding>
 
-	@Environment(\.safeAreaInsets) private var safeAreaInsets
+	@Environment(\.safeAreaInsetsProvider) private var safeAreaInsetsProvider
 	@State private var minimumSheetSize: CGSize = .zero
 
 	public init(store: StoreOf<Onboarding>) {
@@ -56,7 +56,7 @@ public struct OnboardingView: View {
 						.frame(maxWidth: .infinity)
 				}
 				.padding(.top, .extraLargeSpacing)
-				.padding(.bottom, safeAreaInsets.bottom + .standardSpacing)
+				.padding(.bottom, safeAreaInsetsProvider.get().bottom + .standardSpacing)
 				.background(OnboardingContainer(fadedEdges: [.top]))
 				.opacity(store.step.isShowingGetStarted ? 1 : 0)
 			}

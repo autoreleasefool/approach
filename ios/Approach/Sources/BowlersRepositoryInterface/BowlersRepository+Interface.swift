@@ -2,11 +2,11 @@ import Dependencies
 import ModelsLibrary
 
 extension Bowler {
-	public enum Ordering: Hashable, CaseIterable {
+	public enum Ordering: Hashable, CaseIterable, Sendable {
 		case byName
 		case byRecentlyUsed
 
-		public static var `default`: Self = .byRecentlyUsed
+		public static let `default`: Self = .byRecentlyUsed
 	}
 }
 
@@ -74,13 +74,13 @@ public struct BowlersRepository: Sendable {
 extension BowlersRepository: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
-			list: { _ in unimplemented("\(Self.self).list") },
-			summaries: { _, _ in unimplemented("\(Self.self).summaries") },
-			archived: { unimplemented("\(Self.self).archived") },
-			opponents: { _ in unimplemented("\(Self.self).opponents") },
-			fetchSummaries: { _ in unimplemented("\(Self.self).fetchSummaries") },
-			opponentRecord: { _ in unimplemented("\(Self.self).opponentRecord") },
-			edit: { _ in unimplemented("\(Self.self).edit") },
+			list: { _ in unimplemented("\(Self.self).list", placeholder: .never) },
+			summaries: { _, _ in unimplemented("\(Self.self).summaries", placeholder: .never) },
+			archived: { unimplemented("\(Self.self).archived", placeholder: .never) },
+			opponents: { _ in unimplemented("\(Self.self).opponents", placeholder: .never) },
+			fetchSummaries: { _ in unimplemented("\(Self.self).fetchSummaries", placeholder: []) },
+			opponentRecord: { _ in unimplemented("\(Self.self).opponentRecord", placeholder: .placeholder) },
+			edit: { _ in unimplemented("\(Self.self).edit", placeholder: .placeholder) },
 			create: { _ in unimplemented("\(Self.self).create") },
 			update: { _ in unimplemented("\(Self.self).update") },
 			archive: { _ in unimplemented("\(Self.self).archive") },

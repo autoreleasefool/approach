@@ -21,8 +21,8 @@ public struct FramesRepository: Sendable {
 extension FramesRepository: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
-			observe: { _ in unimplemented("\(Self.self).observe") },
-			observeRolls: { _ in unimplemented("\(Self.self).observeRolls") },
+			observe: { _ in unimplemented("\(Self.self).observe", placeholder: .never) },
+			observeRolls: { _ in unimplemented("\(Self.self).observeRolls", placeholder: .never) },
 			update: { _ in unimplemented("\(Self.self).update") }
 		)
 	}

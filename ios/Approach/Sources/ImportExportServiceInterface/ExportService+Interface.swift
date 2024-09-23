@@ -15,7 +15,7 @@ public struct ExportService: Sendable {
 }
 
 extension ExportService {
-	public enum Event: Equatable {
+	public enum Event: Equatable, Sendable {
 		case progress(stepsComplete: Int, totalSteps: Int)
 		case response(URL)
 	}
@@ -24,7 +24,7 @@ extension ExportService {
 extension ExportService: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
-			exportDatabase: { unimplemented("\(Self.self).exportDatabase") },
+			exportDatabase: { unimplemented("\(Self.self).exportDatabase", placeholder: .never) },
 			cleanUp: { unimplemented("\(Self.self).cleanUp") }
 		)
 	}

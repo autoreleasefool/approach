@@ -38,7 +38,7 @@ extension Series {
 // MARK: - Models
 
 extension Series {
-	public struct Summary: Identifiable, Codable, Equatable {
+	public struct Summary: Identifiable, Codable, Equatable, Sendable {
 		public let id: Series.ID
 		public let date: Date
 
@@ -50,7 +50,7 @@ extension Series {
 }
 
 extension Series {
-	public struct GameHost: Identifiable, Codable, Equatable, CanPreBowl {
+	public struct GameHost: Identifiable, Codable, Equatable, Sendable, CanPreBowl {
 		public let id: Series.ID
 		public let date: Date
 		public let appliedDate: Date?
@@ -62,11 +62,13 @@ extension Series {
 			self.appliedDate = appliedDate
 			self.preBowl = preBowl
 		}
+
+		public static let placeholder = GameHost(id: Series.ID(), date: Date(), appliedDate: nil, preBowl: .regular)
 	}
 }
 
 extension Series {
-	public struct List: Identifiable, Codable, Equatable, CanPreBowl {
+	public struct List: Identifiable, Codable, Equatable, Sendable, CanPreBowl {
 		public let id: Series.ID
 		public let date: Date
 		public let appliedDate: Date?
@@ -101,7 +103,7 @@ extension Series {
 }
 
 extension Series {
-	public struct Archived: Identifiable, Codable, Equatable {
+	public struct Archived: Identifiable, Codable, Equatable, Sendable {
 		public let id: Series.ID
 		public let date: Date
 		public let bowlerName: String
@@ -112,7 +114,7 @@ extension Series {
 }
 
 extension Series {
-	public struct Shareable: Identifiable, Codable, Equatable {
+	public struct Shareable: Identifiable, Codable, Equatable, Sendable {
 		public let id: Series.ID
 		public let date: Date
 		public let bowlerName: String
@@ -135,6 +137,15 @@ extension Series {
 			self.total = total
 			self.scores = scores
 		}
+
+		public static let placeholder = Shareable(
+			id: Series.ID(),
+			date: Date(),
+			bowlerName: "",
+			leagueName: "",
+			total: 0,
+			scores: []
+		)
 	}
 }
 

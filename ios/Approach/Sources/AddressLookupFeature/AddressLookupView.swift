@@ -41,11 +41,11 @@ public struct AddressLookupView: View {
 						ForEach(store.results) { result in
 							Button { send(.didTapResult(result.id)) } label: {
 								VStack(alignment: .leading, spacing: .tinySpacing) {
-									Text(result.completion.wrapped.title)
+									Text(result.title)
 										.font(.body)
 										.foregroundColor(Color(uiColor: .label))
-									if !result.completion.wrapped.subtitle.isEmpty {
-										Text(result.completion.wrapped.subtitle)
+									if !result.subtitle.isEmpty {
+										Text(result.subtitle)
 											.font(.caption)
 											.foregroundColor(Color(uiColor: .secondaryLabel))
 									}

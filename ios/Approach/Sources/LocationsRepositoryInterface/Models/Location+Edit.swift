@@ -2,7 +2,7 @@ import Foundation
 import ModelsLibrary
 
 extension Location {
-	public struct Edit: Identifiable, Codable, Equatable {
+	public struct Edit: Identifiable, Codable, Equatable, Sendable {
 		public let id: Location.ID
 		public var title: String
 		public var subtitle: String

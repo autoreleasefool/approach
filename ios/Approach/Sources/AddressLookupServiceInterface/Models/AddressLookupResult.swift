@@ -2,12 +2,14 @@ import EquatablePackageLibrary
 import Foundation
 import MapKit
 
-public struct AddressLookupResult: Identifiable, Equatable {
+public struct AddressLookupResult: Identifiable, Equatable, Sendable {
 	public let id: UUID
-	public let completion: AlwaysEqual<MKLocalSearchCompletion>
+	public let title: String
+	public let subtitle: String
 
 	public init(id: UUID, completion: MKLocalSearchCompletion) {
 		self.id = id
-		self.completion = .init(completion)
+		self.title = completion.title
+		self.subtitle = completion.subtitle
 	}
 }

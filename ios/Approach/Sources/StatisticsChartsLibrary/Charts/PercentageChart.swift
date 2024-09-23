@@ -54,7 +54,7 @@ public struct PercentageChart: View {
 // MARK: - Data
 
 extension PercentageChart {
-	public struct Data: Equatable {
+	public struct Data: Equatable, Sendable {
 		public let title: String
 		public let entries: [Entry]
 		public let isAccumulating: Bool
@@ -91,7 +91,7 @@ extension PercentageChart {
 }
 
 extension PercentageChart.Data {
-	public struct Entry: Equatable, Identifiable {
+	public struct Entry: Equatable, Identifiable, Sendable {
 		public let id: UUID
 		public let numerator: Int
 		public let denominator: Int
@@ -174,7 +174,7 @@ extension PercentageChart.Data {
 }
 
 extension PercentageChart.Data {
-	public enum XAxis: Equatable {
+	public enum XAxis: Equatable, Sendable {
 		case date(Date, TimeInterval)
 		case game(ordinal: Int)
 	}

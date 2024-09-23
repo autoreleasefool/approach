@@ -2,7 +2,7 @@ import LeaguesRepositoryInterface
 import ModelsLibrary
 
 extension League.List {
-	public struct FetchRequest: Equatable {
+	public struct FetchRequest: Equatable, Sendable {
 		public let filter: Filter
 		public let ordering: League.Ordering
 
@@ -14,7 +14,7 @@ extension League.List {
 }
 
 extension League.List.FetchRequest {
-	public struct Filter: Equatable {
+	public struct Filter: Equatable, Sendable {
 		public let bowler: Bowler.ID
 		public var recurrence: League.Recurrence?
 

@@ -22,7 +22,7 @@ public struct ShareableStatisticsImage: View {
 }
 
 extension ShareableStatisticsImage {
-	public struct Configuration: Equatable {
+	public struct Configuration: Equatable, Sendable {
 		public let widget: StatisticsWidget.Configuration
 		public let chart: Statistics.ChartContent
 		public let displayScale: CGFloat

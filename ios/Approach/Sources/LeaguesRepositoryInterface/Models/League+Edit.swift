@@ -1,7 +1,7 @@
 import ModelsLibrary
 
 extension League {
-	public struct Edit: Identifiable, Equatable, Codable {
+	public struct Edit: Identifiable, Equatable, Codable, Sendable {
 		public let id: League.ID
 		public let recurrence: League.Recurrence
 		public let defaultNumberOfGames: Int?
@@ -22,5 +22,13 @@ extension League {
 				recurrence: recurrence
 			)
 		}
+
+		public static let placeholder = Edit(
+			id: League.ID(),
+			recurrence: .repeating,
+			defaultNumberOfGames: nil,
+			name: "",
+			excludeFromStatistics: .include
+		)
 	}
 }

@@ -12,7 +12,7 @@ import SwiftUI
 public struct AlleyLanesEditorView: View {
 	@Bindable public var store: StoreOf<AlleyLanesEditor>
 
-	@Environment(\.safeAreaInsets) private var safeAreaInsets
+	@Environment(\.safeAreaInsetsProvider) private var safeAreaInsetsProvider
 
 	@State private var addLaneSheetHeight: CGFloat = .zero
 
@@ -55,7 +55,7 @@ public struct AlleyLanesEditorView: View {
 						Color.clear
 							.preference(
 								key: HeightPreferenceKey.self,
-								value: proxy.size.height + safeAreaInsets.bottom
+								value: proxy.size.height + safeAreaInsetsProvider.get().bottom
 							)
 					}
 				}
@@ -68,7 +68,7 @@ public struct AlleyLanesEditorView: View {
 }
 
 private struct HeightPreferenceKey: PreferenceKey {
-	static var defaultValue: CGFloat = .zero
+	static let defaultValue: CGFloat = .zero
 	static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
 		value = nextValue()
 	}

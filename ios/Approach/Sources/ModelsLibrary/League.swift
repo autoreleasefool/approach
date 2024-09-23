@@ -28,7 +28,7 @@ extension League {
 }
 
 extension League {
-	public struct Summary: Identifiable, Codable, Equatable {
+	public struct Summary: Identifiable, Codable, Equatable, Sendable {
 		public let id: League.ID
 		public let name: String
 
@@ -40,7 +40,7 @@ extension League {
 }
 
 extension League {
-	public struct Archived: Identifiable, Codable, Equatable {
+	public struct Archived: Identifiable, Codable, Equatable, Sendable {
 		public let id: League.ID
 		public let name: String
 		public let bowlerName: String
@@ -51,7 +51,7 @@ extension League {
 }
 
 extension League {
-	public struct SeriesHost: Identifiable, Codable, Equatable {
+	public struct SeriesHost: Identifiable, Codable, Equatable, Sendable {
 		public let id: League.ID
 		public let name: String
 		public let defaultNumberOfGames: Int?
@@ -74,11 +74,20 @@ extension League {
 			self.excludeFromStatistics = excludeFromStatistics
 			self.recurrence = recurrence
 		}
+
+		public static let placeholder = SeriesHost(
+			id: League.ID(),
+			name: "",
+			defaultNumberOfGames: nil,
+			alley: nil,
+			excludeFromStatistics: .include,
+			recurrence: .repeating
+		)
 	}
 }
 
 extension League {
-	public struct List: Identifiable, Codable, Equatable {
+	public struct List: Identifiable, Codable, Equatable, Sendable {
 		public let id: League.ID
 		public let name: String
 		public let recurrence: Recurrence

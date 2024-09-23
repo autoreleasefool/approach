@@ -5,14 +5,14 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
-public protocol ResourceListItem: Equatable, Identifiable {
+public protocol ResourceListItem: Equatable, Identifiable, Sendable where ID: Sendable {
 	var name: String { get }
 }
 
 @Reducer
 public struct ResourceList<
 	R: ResourceListItem,
-	Q: Equatable
+	Q: Equatable & Sendable
 >: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {

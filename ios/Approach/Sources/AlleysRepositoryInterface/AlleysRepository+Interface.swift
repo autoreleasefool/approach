@@ -2,11 +2,11 @@ import Dependencies
 import ModelsLibrary
 
 extension Alley {
-	public enum Ordering {
+	public enum Ordering: Sendable {
 		case byName
 		case byRecentlyUsed
 
-		public static var `default`: Self = .byRecentlyUsed
+		public static let `default`: Self = .byRecentlyUsed
 	}
 }
 
@@ -74,11 +74,11 @@ public struct AlleysRepository: Sendable {
 extension AlleysRepository: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
-			list: { _, _, _, _, _ in unimplemented("\(Self.self).list") },
-			mostRecentlyUsed: { _ in unimplemented("\(Self.self).mostRecentlyUsed") },
-			pickable: { unimplemented("\(Self.self).pickable") },
-			load: { _ in unimplemented("\(Self.self).load") },
-			edit: { _ in unimplemented("\(Self.self).edit") },
+			list: { _, _, _, _, _ in unimplemented("\(Self.self).list", placeholder: .never) },
+			mostRecentlyUsed: { _ in unimplemented("\(Self.self).mostRecentlyUsed", placeholder: .never) },
+			pickable: { unimplemented("\(Self.self).pickable", placeholder: .never) },
+			load: { _ in unimplemented("\(Self.self).load", placeholder: .never) },
+			edit: { _ in unimplemented("\(Self.self).edit", placeholder: .placeholder) },
 			create: { _ in unimplemented("\(Self.self).create") },
 			update: { _ in unimplemented("\(Self.self).update") },
 			delete: { _ in unimplemented("\(Self.self).delete") }

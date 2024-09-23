@@ -67,7 +67,7 @@ public struct StatisticsWidgetSharing: Reducer, Sendable {
 		case binding(BindingAction<State>)
 	}
 
-	public enum CancelID {
+	public enum CancelID: Hashable, Sendable {
 		case imageRenderer
 		case loadingPreview
 	}

@@ -100,14 +100,14 @@ public struct GamesRepository: Sendable {
 extension GamesRepository: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
-			list: { _, _ in unimplemented("\(Self.self).list") },
-			archived: { unimplemented("\(Self.self).archived") },
-			summariesList: { _, _ in unimplemented("\(Self.self).summariesList") },
-			matchesAgainstOpponent: { _ in unimplemented("\(Self.self).matchesAgainstOpponent") },
-			shareGames: { _ in unimplemented("\(Self.self).shareGames") },
-			shareSeries: { _ in unimplemented("\(Self.self).shareSeries") },
-			observe: { _ in unimplemented("\(Self.self).observeChanges") },
-			findIndex: { _ in unimplemented("\(Self.self).findIndex") },
+			list: { _, _ in unimplemented("\(Self.self).list", placeholder: .never) },
+			archived: { unimplemented("\(Self.self).archived", placeholder: .never) },
+			summariesList: { _, _ in unimplemented("\(Self.self).summariesList", placeholder: .never) },
+			matchesAgainstOpponent: { _ in unimplemented("\(Self.self).matchesAgainstOpponent", placeholder: .never) },
+			shareGames: { _ in unimplemented("\(Self.self).shareGames", placeholder: []) },
+			shareSeries: { _ in unimplemented("\(Self.self).shareSeries", placeholder: []) },
+			observe: { _ in unimplemented("\(Self.self).observeChanges", placeholder: .never) },
+			findIndex: { _ in unimplemented("\(Self.self).findIndex", placeholder: nil) },
 			update: { _ in unimplemented("\(Self.self).update") },
 			archive: { _ in unimplemented("\(Self.self).archive") },
 			unarchive: { _ in unimplemented("\(Self.self).unarchive") },

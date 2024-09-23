@@ -17,7 +17,7 @@ extension Lane {
 }
 
 extension Lane {
-	public struct Summary: Identifiable, Codable, Hashable {
+	public struct Summary: Identifiable, Codable, Hashable, Sendable {
 		public let id: Lane.ID
 		public let label: String
 		public let position: Lane.Position

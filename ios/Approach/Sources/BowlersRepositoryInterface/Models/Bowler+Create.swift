@@ -2,7 +2,7 @@ import Foundation
 import ModelsLibrary
 
 extension Bowler {
-	public struct Create: Identifiable, Codable, Equatable {
+	public struct Create: Identifiable, Codable, Equatable, Sendable {
 		public let id: Bowler.ID
 		public var name: String
 		public let kind: Bowler.Kind

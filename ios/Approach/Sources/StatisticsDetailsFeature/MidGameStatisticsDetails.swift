@@ -56,7 +56,7 @@ public struct MidGameStatisticsDetails: Reducer, Sendable {
 		case binding(BindingAction<State>)
 	}
 
-	public enum CancelID {
+	public enum CancelID: Sendable {
 		case loadingStaticValues
 	}
 

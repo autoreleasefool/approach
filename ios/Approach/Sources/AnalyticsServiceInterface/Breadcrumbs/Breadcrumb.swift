@@ -1,4 +1,4 @@
-public struct Breadcrumb {
+public struct Breadcrumb: Sendable {
 	public let message: String
 	public let category: Category
 
@@ -13,7 +13,7 @@ public struct Breadcrumb {
 }
 
 extension Breadcrumb {
-	public enum Category: String {
+	public enum Category: String, Sendable {
 		case navigation
 	}
 }

@@ -9,7 +9,7 @@ extension Location {
 }
 
 extension Location {
-	public struct Coordinate: Equatable, Codable {
+	public struct Coordinate: Equatable, Codable, Sendable {
 		public let latitude: Double
 		public let longitude: Double
 
@@ -25,7 +25,7 @@ extension Location {
 }
 
 extension Location {
-	public struct Summary: Identifiable, Codable, Equatable {
+	public struct Summary: Identifiable, Codable, Equatable, Sendable {
 		public let id: Location.ID
 		public let title: String
 		public let subtitle: String

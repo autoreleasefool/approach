@@ -1,4 +1,5 @@
 import Algorithms
+@preconcurrency import Combine
 import Dependencies
 import Foundation
 import RecentlyUsedServiceInterface
@@ -112,7 +113,7 @@ extension RecentlyUsedService: DependencyKey {
 }
 
 extension RecentlyUsedTrackableFilterService: DependencyKey {
-	private static var userDefaultsKey = "RecentlyUsedTrackableFilter.TrackableFilter"
+	private static let userDefaultsKey = "RecentlyUsedTrackableFilter.TrackableFilter"
 
 	public static var liveValue: Self {
 		// FIXME: Replace with a @Dependency

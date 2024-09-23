@@ -40,7 +40,7 @@ extension Game {
 }
 
 extension Game {
-	public struct Summary: Identifiable, Equatable, Codable {
+	public struct Summary: Identifiable, Equatable, Codable, Sendable {
 		public let id: Game.ID
 		public let index: Int
 		public let score: Int
@@ -54,7 +54,7 @@ extension Game {
 }
 
 extension Game {
-	public struct Indexed: Identifiable, Codable, Equatable {
+	public struct Indexed: Identifiable, Codable, Equatable, Sendable {
 		public let id: Game.ID
 		public let index: Int
 
@@ -66,7 +66,7 @@ extension Game {
 }
 
 extension Game {
-	public struct List: Identifiable, Equatable, Codable {
+	public struct List: Identifiable, Equatable, Codable, Sendable {
 		public let id: Game.ID
 		public let bowlerId: Bowler.ID
 		public let index: Int
@@ -75,7 +75,7 @@ extension Game {
 }
 
 extension Game {
-	public struct Archived: Identifiable, Equatable, Codable {
+	public struct Archived: Identifiable, Equatable, Codable, Sendable {
 		public let id: Game.ID
 		public let scoringMethod: ScoringMethod
 		public let bowlerName: String
@@ -87,7 +87,7 @@ extension Game {
 }
 
 extension Game {
-	public struct ListMatch: Identifiable, Equatable, Codable {
+	public struct ListMatch: Identifiable, Equatable, Codable, Sendable {
 		public let id: Game.ID
 		public let score: Int
 		public let opponentScore: Int?
@@ -96,7 +96,7 @@ extension Game {
 }
 
 extension Game {
-	public struct Score: Identifiable, Equatable, Codable {
+	public struct Score: Identifiable, Equatable, Codable, Sendable {
 		public let index: Int
 		public let score: Int
 
@@ -151,7 +151,7 @@ extension Array where Element == ScoredGame {
 }
 
 extension Game {
-	public struct Shareable: Identifiable, Equatable, Decodable {
+	public struct Shareable: Identifiable, Equatable, Decodable, Sendable {
 		public let id: Game.ID
 		public let index: Int
 		public let score: Int
@@ -185,7 +185,7 @@ extension Game {
 }
 
 extension Game.Shareable {
-	public struct ShareableBowler: Equatable, Decodable {
+	public struct ShareableBowler: Equatable, Decodable, Sendable {
 		public let name: String
 
 		public init(name: String) {
@@ -195,7 +195,7 @@ extension Game.Shareable {
 }
 
 extension Game.Shareable {
-	public struct ShareableLeague: Equatable, Decodable {
+	public struct ShareableLeague: Equatable, Decodable, Sendable {
 		public let name: String
 
 		public init(name: String) {
@@ -205,7 +205,7 @@ extension Game.Shareable {
 }
 
 extension Game.Shareable {
-	public struct ShareableSeries: Equatable, Decodable {
+	public struct ShareableSeries: Equatable, Decodable, Sendable {
 		public let date: Date
 		public let alley: ShareableAlley?
 
@@ -217,7 +217,7 @@ extension Game.Shareable {
 }
 
 extension Game.Shareable {
-	public struct ShareableAlley: Equatable, Decodable {
+	public struct ShareableAlley: Equatable, Decodable, Sendable {
 		public let name: String
 
 		public init(name: String) {

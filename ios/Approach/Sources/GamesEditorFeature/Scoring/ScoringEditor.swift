@@ -35,7 +35,7 @@ public struct ScoringEditor: Reducer, Sendable {
 		case binding(BindingAction<State>)
 	}
 
-	enum CancelID { case manualScore }
+	enum CancelID: Sendable { case manualScore }
 
 	@Dependency(\.continuousClock) var clock
 

@@ -46,7 +46,7 @@ extension Alley {
 }
 
 extension Alley {
-	public struct Summary: Identifiable, Codable, Equatable {
+	public struct Summary: Identifiable, Codable, Equatable, Sendable {
 		public let id: Alley.ID
 		public let name: String
 		public let material: Material?
@@ -80,7 +80,7 @@ extension Alley {
 }
 
 extension Alley {
-	public struct List: Identifiable, Codable, Equatable {
+	public struct List: Identifiable, Codable, Equatable, Sendable {
 		public let id: Alley.ID
 		public let name: String
 		public let material: Material?
@@ -117,7 +117,7 @@ extension Alley {
 }
 
 extension Alley {
-	public struct Named: Identifiable, Codable, Hashable {
+	public struct Named: Identifiable, Codable, Hashable, Sendable {
 		public let id: Alley.ID
 		public let name: String
 

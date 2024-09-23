@@ -2,7 +2,7 @@ import Foundation
 import IdentifiedCollections
 import ModelsLibrary
 
-public struct TrackableFilter: Codable, Hashable {
+public struct TrackableFilter: Codable, Hashable, Sendable {
 	public var source: Source
 	public var leagueFilter: LeagueFilter
 	public var seriesFilter: SeriesFilter
@@ -39,7 +39,7 @@ public struct TrackableFilter: Codable, Hashable {
 // MARK: - Source
 
 extension TrackableFilter {
-	public enum Source: Codable, Hashable {
+	public enum Source: Codable, Hashable, Sendable {
 		case bowler(Bowler.ID)
 		case league(League.ID)
 		case series(Series.ID)
@@ -55,7 +55,7 @@ extension TrackableFilter {
 }
 
 extension TrackableFilter {
-	public struct Sources: Equatable {
+	public struct Sources: Equatable, Sendable {
 		public var bowler: Bowler.Summary
 		public var league: League.Summary?
 		public var series: Series.Summary?
@@ -71,6 +71,13 @@ extension TrackableFilter {
 		public var primaryId: UUID {
 			game?.id ?? series?.id ?? league?.id ?? bowler.id
 		}
+
+		public static let placeholder = Sources(
+			bowler: Bowler.Summary(id: Bowler.ID(), name: ""),
+			league: nil,
+			series: nil,
+			game: nil
+		)
 	}
 }
 
@@ -96,7 +103,7 @@ extension StatisticsWidget.Source {
 // MARK: - Leagues
 
 extension TrackableFilter {
-	public struct LeagueFilter: Codable, Hashable {
+	public struct LeagueFilter: Codable, Hashable, Sendable {
 		public var recurrence: League.Recurrence?
 
 		public init(recurrence: League.Recurrence? = nil) {
@@ -108,7 +115,7 @@ extension TrackableFilter {
 // MARK: - Series
 
 extension TrackableFilter {
-	public struct SeriesFilter: Codable, Hashable {
+	public struct SeriesFilter: Codable, Hashable, Sendable {
 		public var startDate: Date?
 		public var endDate: Date?
 		public var alley: AlleyFilter?
@@ -122,14 +129,14 @@ extension TrackableFilter {
 }
 
 extension TrackableFilter.SeriesFilter {
-	public enum AlleyFilter: Codable, Hashable {
+	public enum AlleyFilter: Codable, Hashable, Sendable {
 		case alley(Alley.Named)
 		case properties(Properties)
 	}
 }
 
 extension TrackableFilter.SeriesFilter.AlleyFilter {
-	public struct Properties: Codable, Hashable {
+	public struct Properties: Codable, Hashable, Sendable {
 		public var material: Alley.Material?
 		public var pinFall: Alley.PinFall?
 		public var pinBase: Alley.PinBase?
@@ -152,7 +159,7 @@ extension TrackableFilter.SeriesFilter.AlleyFilter {
 // MARK: - Games
 
 extension TrackableFilter {
-	public struct GameFilter: Codable, Hashable {
+	public struct GameFilter: Codable, Hashable, Sendable {
 		public var lanes: LaneFilter?
 		public var gearUsed: IdentifiedArrayOf<Gear.Summary>
 		public var opponent: Bowler.Summary?
@@ -173,7 +180,7 @@ extension TrackableFilter {
 }
 
 extension TrackableFilter.GameFilter {
-	public enum LaneFilter: Codable, Hashable {
+	public enum LaneFilter: Codable, Hashable, Sendable {
 		case lanes(IdentifiedArrayOf<Lane.Summary>)
 		case positions([Lane.Position])
 	}
@@ -182,7 +189,7 @@ extension TrackableFilter.GameFilter {
 // MARK: - Frames
 
 extension TrackableFilter {
-	public struct FrameFilter: Codable, Hashable {
+	public struct FrameFilter: Codable, Hashable, Sendable {
 		public var bowlingBallsUsed: IdentifiedArrayOf<Gear.Summary>
 
 		public init(bowlingBallsUsed: IdentifiedArrayOf<Gear.Summary> = []) {
@@ -194,7 +201,7 @@ extension TrackableFilter {
 // MARK: - TimePrecision
 
 extension TrackableFilter {
-	public enum Aggregation: Int, Codable, Hashable, Identifiable, CaseIterable {
+	public enum Aggregation: Int, Codable, Hashable, Identifiable, CaseIterable, Sendable {
 		case accumulate
 		case periodic
 

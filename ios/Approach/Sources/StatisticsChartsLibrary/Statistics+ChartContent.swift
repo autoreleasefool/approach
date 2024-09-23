@@ -2,7 +2,7 @@ import StatisticsLibrary
 import StringsLibrary
 
 extension Statistics {
-	public enum ChartContent: Equatable {
+	public enum ChartContent: Equatable, Sendable {
 		case averaging(AveragingChart.Data)
 		case counting(CountingChart.Data)
 		case percentage(PercentageChart.Data)

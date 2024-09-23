@@ -50,7 +50,7 @@ extension LoggingService: TestDependencyKey {
 		Self(
 			initialize: { unimplemented("\(Self.self).initialize") },
 			log: { _, _ in unimplemented("\(Self.self).log") },
-			fetchLogData: { unimplemented("\(Self.self).initialize") }
+			fetchLogData: { unimplemented("\(Self.self).initialize", placeholder: .temporaryDirectory) }
 		)
 	}
 }

@@ -7,10 +7,10 @@ import GRDB
 @DependencyClient
 public struct DatabaseService: Sendable {
 	public var initialize: @Sendable () -> Void
-	public var dbUrl: @Sendable () -> URL = { unimplemented("\(Self.self).dbUrl") }
+	public var dbUrl: @Sendable () -> URL = { unimplemented("\(Self.self).dbUrl", placeholder: .temporaryDirectory) }
 	public var close: @Sendable () throws -> Void
-	public var reader: @Sendable () -> DatabaseReader = { unimplemented("\(Self.self).reader") }
-	public var writer: @Sendable () -> DatabaseWriter = { unimplemented("\(Self.self).writer") }
+	public var reader: @Sendable () -> DatabaseReader = { { fatalError("\(Self.self).reader not implemented") }() }
+	public var writer: @Sendable () -> DatabaseWriter = { { fatalError("\(Self.self).writer not implemented") }() }
 }
 
 extension DatabaseService: TestDependencyKey {

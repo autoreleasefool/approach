@@ -2,7 +2,7 @@ import AlleysRepositoryInterface
 import DatabaseModelsLibrary
 import DatabaseServiceInterface
 import Dependencies
-import GRDB
+@preconcurrency import GRDB
 import LocationsRepositoryInterface
 import ModelsLibrary
 import RecentlyUsedServiceInterface

@@ -146,7 +146,7 @@ public struct BowlerEditor: Reducer, Sendable {
 }
 
 extension Bowler.Create: CreateableRecord {
-	public static var modelName = Strings.Bowler.title
+	public static let modelName = Strings.Bowler.title
 
 	public var isSaveable: Bool {
 		!name.isEmpty

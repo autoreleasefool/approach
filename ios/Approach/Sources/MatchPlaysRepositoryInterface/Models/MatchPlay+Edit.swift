@@ -1,7 +1,7 @@
 import ModelsLibrary
 
 extension MatchPlay {
-	public struct Edit: Identifiable, Codable, Equatable {
+	public struct Edit: Identifiable, Codable, Equatable, Sendable {
 		public let gameId: Game.ID
 		public let id: MatchPlay.ID
 

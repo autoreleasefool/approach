@@ -6,7 +6,7 @@ import SwiftUI
 import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
-public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, Row: View>: View {
+public struct ResourcePickerView<Resource: PickableResource, Query: Equatable & Sendable, Row: View>: View {
 	public var store: StoreOf<ResourcePicker<Resource, Query>>
 	let row: (Resource) -> Row
 

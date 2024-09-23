@@ -2,7 +2,7 @@ import Foundation
 import ModelsLibrary
 
 extension Gear {
-	public struct Create: Identifiable, Codable, Equatable {
+	public struct Create: Identifiable, Codable, Equatable, Sendable {
 		public let id: Gear.ID
 		public var name: String
 		public var kind: Kind

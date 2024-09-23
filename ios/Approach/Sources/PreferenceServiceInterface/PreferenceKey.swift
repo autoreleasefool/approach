@@ -1,4 +1,4 @@
-public enum PreferenceKey: String {
+public enum PreferenceKey: String, Sendable {
 
 	// MARK: - App
 

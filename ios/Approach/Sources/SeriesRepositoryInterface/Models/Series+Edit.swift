@@ -3,7 +3,7 @@ import IdentifiedCollections
 import ModelsLibrary
 
 extension Series {
-	public struct Edit: Identifiable, Equatable, Codable, CanPreBowl {
+	public struct Edit: Identifiable, Equatable, Codable, Sendable, CanPreBowl {
 		public let leagueId: League.ID
 		public let id: Series.ID
 		public let numberOfGames: Int
@@ -22,5 +22,15 @@ extension Series {
 		public var asGameHost: Series.GameHost {
 			.init(id: id, date: date, appliedDate: appliedDate, preBowl: preBowl)
 		}
+
+		public static let placeholder = Edit(
+			leagueId: League.ID(),
+			id: Series.ID(),
+			numberOfGames: 0,
+			leagueRecurrence: .repeating,
+			date: Date(),
+			preBowl: .regular,
+			excludeFromStatistics: .include
+		)
 	}
 }

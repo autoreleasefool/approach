@@ -93,7 +93,7 @@ public struct StatisticsWidgetEditor: Reducer, Sendable {
 		}
 	}
 
-	public enum CancelID {
+	public enum CancelID: Sendable {
 		case loadingPreview
 	}
 

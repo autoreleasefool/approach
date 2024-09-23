@@ -56,7 +56,7 @@ public struct StatisticsDetailsList: Reducer, Sendable {
 		case binding(BindingAction<State>)
 	}
 
-	enum CancelID {
+	enum CancelID: Sendable {
 		case setHidingZeroStatistics
 		case setHidingStatisticsDescriptions
 	}

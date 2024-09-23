@@ -301,7 +301,7 @@ public struct AlleyEditor: Reducer, Sendable {
 }
 
 extension Alley.Create: CreateableRecord {
-	public static var modelName = Strings.Alley.title
+	public static let modelName = Strings.Alley.title
 
 	public var isSaveable: Bool {
 		!name.isEmpty

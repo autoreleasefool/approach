@@ -46,7 +46,7 @@ public struct GamesHeader: Reducer, Sendable {
 		case `internal`(Internal)
 	}
 
-	enum CancelID { case shimmering }
+	enum CancelID: Sendable { case shimmering }
 
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.preferences) var preferences

@@ -108,7 +108,7 @@ public struct StatisticsDetails: Reducer, Sendable {
 		case sharing(Sharing)
 	}
 
-	public enum CancelID {
+	public enum CancelID: Sendable {
 		case loadingStaticValues
 		case loadingChartValues
 	}

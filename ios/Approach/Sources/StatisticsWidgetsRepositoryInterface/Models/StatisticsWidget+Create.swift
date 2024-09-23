@@ -3,7 +3,7 @@ import ModelsLibrary
 import StatisticsWidgetsLibrary
 
 extension StatisticsWidget {
-	public struct Create: Identifiable, Codable, Equatable {
+	public struct Create: Identifiable, Codable, Equatable, Sendable {
 		public let id: StatisticsWidget.ID
 		public var created: Date
 		public var bowlerId: Bowler.ID?

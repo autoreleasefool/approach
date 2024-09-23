@@ -80,7 +80,7 @@ public struct GearList: Reducer, Sendable {
 		case delegate(Delegate)
 	}
 
-	public struct Query: Equatable {
+	public struct Query: Equatable, Sendable {
 		public var kind: Gear.Kind?
 		public var sortOrder: Gear.Ordering
 	}

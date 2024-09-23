@@ -336,7 +336,7 @@ public struct SeriesEditor: Reducer, Sendable {
 }
 
 extension Series.Create: CreateableRecord {
-	public static var modelName = Strings.Series.title
+	public static let modelName = Strings.Series.title
 	public static var isSaveableWithoutChanges: Bool { true }
 
 	public var isSaveable: Bool { true }

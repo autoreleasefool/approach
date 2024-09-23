@@ -33,11 +33,11 @@ extension ProductsService: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
 			initialize: { unimplemented("\(Self.self).initialize") },
-			peekIsAvailable: { _ in unimplemented("\(Self.self).peekIsAvailable") },
-			isAvailable: { _ in unimplemented("\(Self.self).isAvailable") },
-			observe: { _ in unimplemented("\(Self.self).observe") },
-			fetchVariants: { _ in unimplemented("\(Self.self).fetchVariants") },
-			enableVariant: { _ in unimplemented("\(Self.self).enableVariant") },
+			peekIsAvailable: { _ in unimplemented("\(Self.self).peekIsAvailable", placeholder: false) },
+			isAvailable: { _ in unimplemented("\(Self.self).isAvailable", placeholder: false) },
+			observe: { _ in unimplemented("\(Self.self).observe", placeholder: .never) },
+			fetchVariants: { _ in unimplemented("\(Self.self).fetchVariants", placeholder: []) },
+			enableVariant: { _ in unimplemented("\(Self.self).enableVariant", placeholder: false) },
 			restore: { unimplemented("\(Self.self).restore") }
 		)
 	}

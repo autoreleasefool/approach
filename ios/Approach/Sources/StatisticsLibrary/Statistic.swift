@@ -70,7 +70,7 @@ public enum StatisticCategory: CaseIterable, CustomStringConvertible {
 
 // MARK: - Trend
 
-public enum StatisticTrendDirection {
+public enum StatisticTrendDirection: Sendable {
 	case upwards
 	case downwards
 }

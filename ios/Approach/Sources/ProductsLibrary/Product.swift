@@ -1,4 +1,4 @@
-public struct Product: Hashable {
+public struct Product: Sendable, Hashable {
 	public let name: String
 	public let introduced: String
 
@@ -13,7 +13,7 @@ public struct Product: Hashable {
 	]
 }
 
-public struct ProductVariant: Equatable {
+public struct ProductVariant: Sendable, Equatable {
 	public let product: Product
 	public let name: String
 }

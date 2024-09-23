@@ -72,7 +72,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer, Sendable {
 		case binding(BindingAction<State>)
 	}
 
-	enum CancelID { case updatePriorities }
+	enum CancelID: Sendable { case updatePriorities }
 
 	public enum ErrorID: Hashable {
 		case failedToLoadWidgets

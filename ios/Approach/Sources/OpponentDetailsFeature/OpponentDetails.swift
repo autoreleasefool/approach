@@ -41,7 +41,7 @@ public struct OpponentDetails: Reducer, Sendable {
 		case `internal`(Internal)
 	}
 
-	public enum CancelID { case details }
+	public enum CancelID: Sendable { case details }
 	public enum ErrorID { case failedToLoadDetails }
 
 	public init() {}

@@ -81,7 +81,7 @@ public struct SeriesSharing: Reducer, Sendable {
 		case seriesNotFound
 	}
 
-	public enum CancelID: Hashable {
+	public enum CancelID: Hashable, Sendable {
 		case imageRenderer
 	}
 

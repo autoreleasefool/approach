@@ -51,11 +51,13 @@ extension DatabaseService: DependencyKey {
 			},
 			reader: {
 				@Dependency(\.grdb) var grdb
-				return grdb.reader()
+				// swiftlint:disable:next force_try
+				return try! grdb.reader()
 			},
 			writer: {
 				@Dependency(\.grdb) var grdb
-				return grdb.writer()
+				// swiftlint:disable:next force_try
+				return try! grdb.writer()
 			}
 		)
 	}

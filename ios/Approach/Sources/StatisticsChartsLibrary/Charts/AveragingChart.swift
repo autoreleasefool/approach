@@ -54,7 +54,7 @@ public struct AveragingChart: View {
 // MARK: - Data
 
 extension AveragingChart {
-	public struct Data: Equatable {
+	public struct Data: Equatable, Sendable {
 		public let title: String
 		public let entries: [Entry]
 		public let minimumValue: Double
@@ -87,7 +87,7 @@ extension AveragingChart {
 }
 
 extension AveragingChart.Data {
-	public struct Entry: Equatable, Identifiable {
+	public struct Entry: Equatable, Identifiable, Sendable {
 		public let id: UUID
 		public let value: Double
 		public let xAxis: XAxis
@@ -116,7 +116,7 @@ extension AveragingChart.Data {
 }
 
 extension AveragingChart.Data {
-	public enum XAxis: Equatable {
+	public enum XAxis: Equatable, Sendable {
 		case date(Date)
 		case game(ordinal: Int)
 	}

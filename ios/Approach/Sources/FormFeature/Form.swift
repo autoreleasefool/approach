@@ -3,7 +3,7 @@ import ErrorsFeature
 import FeatureActionLibrary
 import StringsLibrary
 
-public protocol FormRecord: Identifiable, Equatable {
+public protocol FormRecord: Identifiable, Equatable, Sendable {
 	static var isSaveableWithoutChanges: Bool { get }
 	var name: String { get }
 	var isSaveable: Bool { get }

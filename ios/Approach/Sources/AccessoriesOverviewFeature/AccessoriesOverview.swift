@@ -82,7 +82,7 @@ public struct AccessoriesOverview: Reducer, Sendable {
 		case edit
 	}
 
-	enum CancelID {
+	enum CancelID: Sendable {
 		case observeAlleys
 		case observeGear
 	}

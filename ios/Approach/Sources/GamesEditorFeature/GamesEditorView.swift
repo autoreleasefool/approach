@@ -19,7 +19,7 @@ public struct GamesEditorView: View {
 	@Bindable public var store: StoreOf<GamesEditor>
 
 	@Environment(\.continuousClock) private var clock
-	@Environment(\.safeAreaInsets) private var safeAreaInsets
+	@Environment(\.safeAreaInsetsProvider) private var safeAreaInsetsProvider
 	@Environment(\.requestReview) private var requestReview
 
 	public init(store: StoreOf<GamesEditor>) {
@@ -81,7 +81,7 @@ public struct GamesEditorView: View {
 			Spacer()
 		}
 		.measure(key: WindowContentSizeKey.self, to: $store.windowContentSize)
-		.onChange(of: safeAreaInsets) { send(.didChangeSafeAreaInsets(safeAreaInsets)) }
+		.onChange(of: safeAreaInsetsProvider.get()) { send(.didChangeSafeAreaInsets(safeAreaInsetsProvider.get())) }
 		.background(alignment: .top) {
 			VStack(spacing: 0) {
 				Asset.Media.Lane.galaxy.swiftUIImage

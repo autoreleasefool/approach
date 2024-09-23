@@ -54,7 +54,7 @@ public struct MatchPlayEditor: Reducer, Sendable {
 		case `internal`(Internal)
 	}
 
-	enum CancelID { case savingScore }
+	enum CancelID: Sendable { case savingScore }
 
 	@Dependency(BowlersRepository.self) var bowlers
 	@Dependency(\.continuousClock) var clock

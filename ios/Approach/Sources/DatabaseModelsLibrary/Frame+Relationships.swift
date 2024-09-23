@@ -1,8 +1,8 @@
-import GRDB
+@preconcurrency import GRDB
 import ModelsLibrary
 
 extension Frame.Database {
-	public  static let game = belongsTo(Game.Database.self)
+	public static let game = belongsTo(Game.Database.self)
 	public static let series = hasOne(Series.Database.self, through: game, using: Game.Database.series)
 
 	public static let ball0ForeignKey = ForeignKey(["ball0"])

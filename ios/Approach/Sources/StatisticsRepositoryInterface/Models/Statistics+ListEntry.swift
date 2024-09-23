@@ -3,7 +3,7 @@ import StatisticsLibrary
 import UIKit
 
 extension Statistics {
-	public struct ListEntry: Identifiable, Equatable {
+	public struct ListEntry: Identifiable, Equatable, Sendable {
 		public let title: String
 		public let description: String?
 		public let value: String
@@ -23,7 +23,7 @@ extension Statistics {
 }
 
 extension Statistics {
-	public struct ListEntryGroup: Identifiable, Equatable {
+	public struct ListEntryGroup: Identifiable, Equatable, Sendable {
 		public let title: String
 		public let description: String?
 		public let images: [Image]?
@@ -46,7 +46,7 @@ extension Statistics {
 }
 
 extension Statistics.ListEntryGroup {
-	public struct Image: Identifiable, Equatable {
+	public struct Image: Identifiable, Equatable, Sendable {
 		public let id: Int
 		public let image: UIImage
 

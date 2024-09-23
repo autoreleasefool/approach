@@ -69,7 +69,7 @@ public protocol InspectableFrame {
 	var pinsLeftOnDeck: Set<Pin> { get }
 }
 
-public struct RollPair: Equatable {
+public struct RollPair: Equatable, Sendable {
 	public let firstRoll: Frame.OrderedRoll
 	public let secondRoll: Frame.OrderedRoll
 }

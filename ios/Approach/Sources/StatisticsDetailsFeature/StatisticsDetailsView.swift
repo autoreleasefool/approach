@@ -13,7 +13,7 @@ public struct StatisticsDetailsView: View {
 	@Bindable public var store: StoreOf<StatisticsDetails>
 
 	@Environment(\.continuousClock) private var clock
-	@Environment(\.safeAreaInsets) private var safeAreaInsets
+	@Environment(\.safeAreaInsetsProvider) private var safeAreaInsetsProvider
 	@State private var sheetContentSize: CGSize = .zero
 	@State private var windowContentSize: CGSize = .zero
 
@@ -86,7 +86,7 @@ public struct StatisticsDetailsView: View {
 		let sheetContentSize = store.ignoreSheetSizeForBackdrop ? .zero : self.sheetContentSize
 		return .init(
 			width: windowContentSize.width,
-			height: windowContentSize.height - sheetContentSize.height - safeAreaInsets.bottom
+			height: windowContentSize.height - sheetContentSize.height - safeAreaInsetsProvider.get().bottom
 		)
 	}
 }

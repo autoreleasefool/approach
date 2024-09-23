@@ -2,7 +2,7 @@ import ExtensionsPackageLibrary
 import ModelsLibrary
 
 extension Frame {
-	public struct Edit: Identifiable, Equatable, Codable {
+	public struct Edit: Identifiable, Equatable, Codable, Sendable {
 		public let gameId: Game.ID
 		public let index: Int
 		public internal(set) var rolls: [OrderedRoll]

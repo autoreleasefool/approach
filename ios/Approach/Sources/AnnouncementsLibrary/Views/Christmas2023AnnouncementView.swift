@@ -58,7 +58,7 @@ public struct Christmas2023AnnouncementView: View {
 }
 
 extension Christmas2023AnnouncementView {
-	static func meetsExpectationsToShow() -> Bool {
+	nonisolated static func meetsExpectationsToShow() -> Bool {
 		@Dependency(\.date) var date
 		// Before January 1, 2024
 		return date() < Date(timeIntervalSince1970: 1704067200)

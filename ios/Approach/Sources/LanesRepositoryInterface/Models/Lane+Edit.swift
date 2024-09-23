@@ -1,7 +1,7 @@
 import ModelsLibrary
 
 extension Lane {
-	public struct Edit: Identifiable, Codable, Equatable {
+	public struct Edit: Identifiable, Codable, Equatable, Sendable {
 		public let id: Lane.ID
 		public var label: String
 		public var position: Lane.Position

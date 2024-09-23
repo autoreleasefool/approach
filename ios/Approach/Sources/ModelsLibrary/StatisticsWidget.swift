@@ -7,7 +7,7 @@ extension StatisticsWidget {
 }
 
 extension StatisticsWidget {
-	public struct Configuration: Equatable, Codable, Identifiable {
+	public struct Configuration: Equatable, Codable, Identifiable, Sendable {
 		public let id: StatisticsWidget.ID
 		public let bowlerId: Bowler.ID?
 		public let leagueId: League.ID?

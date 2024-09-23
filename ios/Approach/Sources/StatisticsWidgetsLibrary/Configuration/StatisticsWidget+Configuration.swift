@@ -2,7 +2,7 @@ import ModelsLibrary
 import StringsLibrary
 
 extension StatisticsWidget {
-	public struct Sources: Equatable {
+	public struct Sources: Equatable, Sendable {
 		public let bowler: Bowler.Summary
 		public let league: League.Summary?
 
@@ -10,6 +10,11 @@ extension StatisticsWidget {
 			self.bowler = bowler
 			self.league = league
 		}
+
+		public static let placeholder = Sources(
+			bowler: Bowler.Summary(id: Bowler.ID(), name: ""),
+			league: nil
+		)
 	}
 }
 

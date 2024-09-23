@@ -1,4 +1,4 @@
-import GRDB
+@preconcurrency import GRDB
 import ModelsLibrary
 
 extension GameLane.Database {

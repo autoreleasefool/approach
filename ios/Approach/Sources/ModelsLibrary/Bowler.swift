@@ -15,7 +15,7 @@ extension Bowler {
 }
 
 extension Bowler {
-	public struct Summary: Identifiable, Codable, Hashable {
+	public struct Summary: Identifiable, Codable, Hashable, Sendable {
 		public let id: Bowler.ID
 		public let name: String
 
@@ -27,7 +27,7 @@ extension Bowler {
 }
 
 extension Bowler {
-	public struct Opponent: Identifiable, Codable, Equatable {
+	public struct Opponent: Identifiable, Codable, Equatable, Sendable {
 		public let id: Bowler.ID
 		public let name: String
 		public let kind: Kind
@@ -43,7 +43,7 @@ extension Bowler {
 }
 
 extension Bowler {
-	public struct List: Identifiable, Codable, Equatable {
+	public struct List: Identifiable, Codable, Equatable, Sendable {
 		public let id: Bowler.ID
 		public let name: String
 		public let average: Double?
@@ -55,7 +55,7 @@ extension Bowler {
 }
 
 extension Bowler {
-	public struct Archived: Identifiable, Codable, Equatable {
+	public struct Archived: Identifiable, Codable, Equatable, Sendable {
 		public let id: Bowler.ID
 		public let name: String
 		public let totalNumberOfLeagues: Int
@@ -66,7 +66,7 @@ extension Bowler {
 }
 
 extension Bowler {
-	public struct OpponentDetails: Identifiable, Decodable, Equatable {
+	public struct OpponentDetails: Identifiable, Decodable, Equatable, Sendable {
 		public let id: Bowler.ID
 		public let name: String
 		public let matchesAgainst: IdentifiedArrayOf<Game.ListMatch>
@@ -74,5 +74,15 @@ extension Bowler {
 		public let gamesWon: Int
 		public let gamesLost: Int
 		public let gamesTied: Int
+
+		public static let placeholder = OpponentDetails(
+			id: Bowler.ID(),
+			name: "",
+			matchesAgainst: [],
+			gamesPlayed: 0,
+			gamesWon: 0,
+			gamesLost: 0,
+			gamesTied: 0
+		)
 	}
 }

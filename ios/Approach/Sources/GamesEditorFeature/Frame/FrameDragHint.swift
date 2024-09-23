@@ -30,9 +30,9 @@ struct FrameDragHint: View {
 					.foregroundColor(Asset.Colors.Primary.light)
 					.frame(width: .largeIcon, height: .largeIcon)
 					.keyframeAnimator(
-						initialValue: AnimationValues()
+						initialValue: AnimationValues(frameWidth: frameWidth)
 					) { content, value in
-						let animationWidth = frameWidth - CGFloat.standardSpacing * 2 - CGFloat.largeIcon
+						let animationWidth = value.frameWidth - CGFloat.standardSpacing * 2 - CGFloat.largeIcon
 
 						content
 							.opacity(value.opacity)
@@ -86,6 +86,7 @@ struct FrameDragHint: View {
 }
 
 private struct AnimationValues {
+	let frameWidth: CGFloat
 	var opacity: CGFloat = 0
 	var xOffset: CGFloat = 0
 }

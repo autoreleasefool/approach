@@ -2,8 +2,8 @@ import AsyncAlgorithms
 import Foundation
 import SortingLibrary
 
-public func asyncThrowingStream<T>(
-	asyncTask: @escaping (AsyncThrowingStream<T, Error>.Continuation) async throws -> Void
+public func asyncThrowingStream<T: Sendable>(
+	asyncTask: @escaping @Sendable (AsyncThrowingStream<T, Error>.Continuation) async throws -> Void
 ) -> AsyncThrowingStream<T, Error> {
 	.init { continuation in
 		let task = Task {
@@ -14,7 +14,7 @@ public func asyncThrowingStream<T>(
 	}
 }
 
-public func sort<T: Identifiable>(
+public func sort<T: Identifiable & Sendable>(
 	_ itemsStream: AsyncStream<[T]>,
 	byIds idsStream: AsyncStream<[UUID]>
 ) -> AsyncStream<[T]> where T.ID == UUID {
@@ -32,7 +32,7 @@ public func sort<T: Identifiable>(
 	}
 }
 
-public func sort<T: Identifiable>(
+public func sort<T: Identifiable & Sendable>(
 	_ itemsStream: AsyncThrowingStream<[T], Error>,
 	byIds idsStream: AsyncStream<[UUID]>
 ) -> AsyncThrowingStream<[T], Error> where T.ID == UUID {
@@ -54,7 +54,7 @@ public func sort<T: Identifiable>(
 	}
 }
 
-public func `prefix`<T>(
+public func `prefix`<T: Sendable>(
 	_ itemsStream: AsyncStream<[T]>,
 	ofSize: Int
 ) -> AsyncStream<[T]> {
@@ -69,7 +69,7 @@ public func `prefix`<T>(
 	}
 }
 
-public func `prefix`<T>(
+public func `prefix`<T: Sendable>(
 	_ itemsStream: AsyncThrowingStream<[T], Error>,
 	ofSize: Int
 ) -> AsyncThrowingStream<[T], Error> {

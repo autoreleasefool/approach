@@ -54,7 +54,7 @@ extension Series.Database {
 		public static let alleyId = Column(CodingKeys.alleyId)
 		public static let archivedOn = Column(CodingKeys.archivedOn)
 
-		public static var coalescedDate = "COALESCE(\(appliedDate.name), \(date.name))"
+		public static let coalescedDate = "COALESCE(\(appliedDate.name), \(date.name))"
 	}
 }
 

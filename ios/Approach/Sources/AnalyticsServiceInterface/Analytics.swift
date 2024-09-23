@@ -1,7 +1,7 @@
 @_exported import AnalyticsPackageServiceInterface
 import Foundation
 
-public protocol GameSessionTrackableEvent {
+public protocol GameSessionTrackableEvent: Sendable {
 	var name: String { get }
 	var payload: [String: String]? { get }
 	var eventId: UUID { get }

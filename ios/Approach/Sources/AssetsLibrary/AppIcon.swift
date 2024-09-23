@@ -1,6 +1,6 @@
 import UIKit
 
-public enum AppIcon: String, CaseIterable, Identifiable {
+public enum AppIcon: String, CaseIterable, Identifiable, Sendable {
 	case primary = "AppIcon"
 	case dark = "AppIcon-Dark"
 

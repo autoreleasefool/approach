@@ -39,7 +39,7 @@ extension ToastState {
 	}
 }
 
-public struct ToastStyle: Equatable {
+public struct ToastStyle: Equatable, Sendable {
 	public let id: ID
 	public let foreground: ColorAsset
 	public let background: ColorAsset
@@ -68,7 +68,7 @@ public struct ToastStyle: Equatable {
 }
 
 extension ToastStyle {
-	public enum ID {
+	public enum ID: Sendable {
 		case primary
 		case error
 		case success

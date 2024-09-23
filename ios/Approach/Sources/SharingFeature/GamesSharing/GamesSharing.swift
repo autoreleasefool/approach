@@ -86,7 +86,7 @@ public struct GamesSharing: Reducer, Sendable {
 		case failedToCalculateScore
 	}
 
-	public enum CancelID: Hashable {
+	public enum CancelID: Hashable, Sendable {
 		case scoreKeeper
 		case imageRenderer
 	}

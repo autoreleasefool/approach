@@ -1,7 +1,7 @@
 import ModelsLibrary
 
 extension Lane {
-	public struct Create: Identifiable, Codable, Equatable {
+	public struct Create: Identifiable, Codable, Equatable, Sendable {
 		public let alleyId: Alley.ID
 		public let id: Lane.ID
 		public var label: String

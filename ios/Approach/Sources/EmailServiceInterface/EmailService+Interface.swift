@@ -13,7 +13,7 @@ public struct EmailService: Sendable {
 extension EmailService: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
-			canSendEmail: { unimplemented("\(Self.self).canSendEmail") }
+			canSendEmail: { unimplemented("\(Self.self).canSendEmail", placeholder: false) }
 		)
 	}
 }

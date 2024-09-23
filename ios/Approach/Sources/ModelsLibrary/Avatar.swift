@@ -20,9 +20,7 @@ extension Avatar {
 		case rgb(RGB)
 		case gradient(RGB, RGB)
 
-		public static var `default`: Self {
-			.rgb(.default)
-		}
+		public static let `default`: Self = .rgb(.default)
 	}
 }
 

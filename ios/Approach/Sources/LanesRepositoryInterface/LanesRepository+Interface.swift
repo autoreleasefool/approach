@@ -26,8 +26,8 @@ public struct LanesRepository: Sendable {
 extension LanesRepository: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
-			list: { _ in unimplemented("\(Self.self).list") },
-			edit: { _ in unimplemented("\(Self.self).edit") },
+			list: { _ in unimplemented("\(Self.self).list", placeholder: .never) },
+			edit: { _ in unimplemented("\(Self.self).edit", placeholder: []) },
 			create: { _ in unimplemented("\(Self.self).create") },
 			update: { _ in unimplemented("\(Self.self).update") },
 			delete: { _ in unimplemented("\(Self.self).delete") }

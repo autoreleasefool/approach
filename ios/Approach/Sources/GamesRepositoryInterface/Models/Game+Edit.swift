@@ -4,7 +4,7 @@ import MatchPlaysRepositoryInterface
 import ModelsLibrary
 
 extension Game {
-	public struct Edit: Identifiable, Codable, Equatable {
+	public struct Edit: Identifiable, Codable, Equatable, Sendable {
 		public let id: Game.ID
 		public let index: Int
 		public let bowler: BowlerInfo
@@ -53,7 +53,7 @@ extension Game {
 }
 
 extension Game.Edit {
-	public struct SeriesInfo: Codable, Equatable {
+	public struct SeriesInfo: Codable, Equatable, Sendable {
 		public let id: Series.ID
 		public let date: Date
 		public let preBowl: Series.PreBowl
@@ -63,7 +63,7 @@ extension Game.Edit {
 }
 
 extension Game.Edit {
-	public struct AlleyInfo: Identifiable, Codable, Equatable {
+	public struct AlleyInfo: Identifiable, Codable, Equatable, Sendable {
 		public let id: Alley.ID
 		public let name: String
 
@@ -75,13 +75,13 @@ extension Game.Edit {
 }
 
 extension Game.Edit {
-	public struct BowlerInfo: Codable, Equatable {
+	public struct BowlerInfo: Codable, Equatable, Sendable {
 		public let name: String
 	}
 }
 
 extension Game.Edit {
-	public struct LeagueInfo: Codable, Equatable {
+	public struct LeagueInfo: Codable, Equatable, Sendable {
 		public let name: String
 		public let excludeFromStatistics: League.ExcludeFromStatistics
 	}

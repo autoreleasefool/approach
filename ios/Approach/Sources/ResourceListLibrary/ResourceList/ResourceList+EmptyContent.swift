@@ -5,7 +5,7 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
-public struct ResourceListEmptyContent: Equatable {
+public struct ResourceListEmptyContent: Equatable, Sendable {
 	public let image: ImageAsset
 	public let title: String
 	public let message: String?
@@ -35,7 +35,7 @@ public struct ResourceListEmptyContent: Equatable {
 @Reducer
 public struct ResourceListEmpty: Reducer, Sendable {
 	@ObservableState
-	public struct State: Equatable {
+	public struct State: Equatable, Sendable {
 		public var content: ResourceListEmptyContent
 		public var style: Style
 
@@ -72,7 +72,7 @@ public struct ResourceListEmpty: Reducer, Sendable {
 		case delegate(Delegate)
 	}
 
-	public enum Style {
+	public enum Style: Sendable {
 		case empty
 		case error
 	}

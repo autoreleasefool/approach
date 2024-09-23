@@ -1,5 +1,6 @@
 import AssetsLibrary
 import ComposableArchitecture
+import ComposableExtensionsLibrary
 import EquatablePackageLibrary
 import FeatureActionLibrary
 import ModelsLibrary
@@ -74,7 +75,7 @@ public struct PhotoAvatarEditor: Reducer, Sendable {
 		}
 	}
 
-	public struct PhotoData: Equatable {
+	public struct PhotoData: Equatable, Sendable {
 		public let data: Data
 		public let image: UIImage
 	}
@@ -92,7 +93,7 @@ public struct PhotoAvatarEditor: Reducer, Sendable {
 						}
 
 						send(.internal(.didStartLoadingPhoto))
-						await send(.internal(.didLoadPhoto(Result {
+						await send(.internal(.didLoadPhoto(Result.of {
 							try await loadTransferable(from: item)
 						})))
 					}

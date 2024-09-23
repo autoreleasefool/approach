@@ -3,13 +3,13 @@ import Foundation
 import ModelsLibrary
 
 extension Series {
-	public enum Ordering: Hashable, CaseIterable {
+	public enum Ordering: Hashable, CaseIterable, Sendable {
 		case newestFirst
 		case oldestFirst
 		case lowestToHighest
 		case highestToLowest
 
-		public static var `default`: Self = .newestFirst
+		public static let `default`: Self = .newestFirst
 	}
 }
 
@@ -77,14 +77,14 @@ public struct SeriesRepository: Sendable {
 extension SeriesRepository: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
-			list: { _, _ in unimplemented("\(Self.self).list") },
-			summaries: { _ in unimplemented("\(Self.self).summaries") },
-			unusedPreBowls: { _ in unimplemented("\(Self.self).unusedPreBowls") },
-			gameHost: { _ in unimplemented("\(Self.self).gameHost") },
-			eventSeries: { _ in unimplemented("\(Self.self).eventSeries") },
-			shareable: { _ in unimplemented("\(Self.self).shareable") },
-			archived: { unimplemented("\(Self.self).archived") },
-			edit: { _ in unimplemented("\(Self.self).edit") },
+			list: { _, _ in unimplemented("\(Self.self).list", placeholder: .never) },
+			summaries: { _ in unimplemented("\(Self.self).summaries", placeholder: .never) },
+			unusedPreBowls: { _ in unimplemented("\(Self.self).unusedPreBowls", placeholder: .never) },
+			gameHost: { _ in unimplemented("\(Self.self).gameHost", placeholder: .placeholder) },
+			eventSeries: { _ in unimplemented("\(Self.self).eventSeries", placeholder: .placeholder) },
+			shareable: { _ in unimplemented("\(Self.self).shareable", placeholder: .placeholder) },
+			archived: { unimplemented("\(Self.self).archived", placeholder: .never) },
+			edit: { _ in unimplemented("\(Self.self).edit", placeholder: .placeholder) },
 			usePreBowl: { _, _ in unimplemented("\(Self.self).usePreBowl") },
 			create: { _ in unimplemented("\(Self.self).create") },
 			update: { _ in unimplemented("\(Self.self).update") },

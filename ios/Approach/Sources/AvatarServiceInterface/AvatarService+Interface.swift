@@ -3,7 +3,7 @@ import Foundation
 import ModelsLibrary
 import SwiftUI
 
-public struct AvatarService {
+public struct AvatarService: Sendable {
 	public var render: @Sendable (Avatar.Value) async -> UIImage?
 	public var preRender: @Sendable (Avatar.Value) async -> Void
 
@@ -19,7 +19,7 @@ public struct AvatarService {
 extension AvatarService: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
-			render: { _ in unimplemented("\(Self.self).render") },
+			render: { _ in unimplemented("\(Self.self).render", placeholder: nil) },
 			preRender: { _ in unimplemented("\(Self.self).preRender")}
 		)
 	}

@@ -47,8 +47,8 @@ public struct AddressLookup: Reducer, Sendable {
 		case binding(BindingAction<State>)
 	}
 
-	enum SearchID { case lookup }
-	enum CancelID { case lookup }
+	enum SearchID: Hashable, Sendable { case lookup }
+	enum CancelID: Sendable { case lookup }
 	enum LookupError: Error, LocalizedError {
 		case addressNotFound
 
@@ -77,7 +77,7 @@ public struct AddressLookup: Reducer, Sendable {
 				case .didFirstAppear:
 					return .merge(
 						.run { send in
-							for try await results in await addressLookup.beginSearch(SearchID.lookup) {
+							for try await results in await addressLookup.beginSearch(AnyHashableSendable(SearchID.lookup)) {
 								await send(.internal(.didReceiveResults(.success(results))))
 							}
 						} catch: { error, send in
@@ -85,7 +85,7 @@ public struct AddressLookup: Reducer, Sendable {
 						},
 						.run { [query = state.query] _ in
 							guard !query.isEmpty else { return }
-							await addressLookup.updateSearchQuery(SearchID.lookup, query)
+							await addressLookup.updateSearchQuery(AnyHashableSendable(SearchID.lookup), query)
 						}
 					)
 
@@ -105,7 +105,7 @@ public struct AddressLookup: Reducer, Sendable {
 					guard !state.query.isEmpty else { return .none }
 
 					return .run { [query = state.query] _ in
-						await addressLookup.updateSearchQuery(SearchID.lookup, query)
+						await addressLookup.updateSearchQuery(AnyHashableSendable(SearchID.lookup), query)
 					}
 					.cancellable(id: CancelID.lookup)
 

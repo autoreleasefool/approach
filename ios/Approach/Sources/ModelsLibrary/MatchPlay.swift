@@ -17,7 +17,7 @@ extension MatchPlay {
 }
 
 extension MatchPlay {
-	public struct Summary: Identifiable, Codable, Equatable {
+	public struct Summary: Identifiable, Codable, Equatable, Sendable {
 		public let gameId: Game.ID
 		public let id: MatchPlay.ID
 		public let opponent: Bowler.Summary

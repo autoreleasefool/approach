@@ -193,7 +193,7 @@ public struct GamesEditor: Reducer, Sendable {
 		case frames
 	}
 
-	enum CancelID { case observation }
+	enum CancelID: Sendable { case observation }
 
 	public enum ErrorID: Hashable {
 		case outdatedFramesLoaded

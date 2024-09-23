@@ -21,8 +21,8 @@ public struct ScoresRepository: Sendable {
 extension ScoresRepository: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
-			observeScore: { _ in unimplemented("\(Self.self).observeScore") },
-			highestScorePossible: { _ in unimplemented("\(Self.self).highestScorePossible") }
+			observeScore: { _ in unimplemented("\(Self.self).observeScore", placeholder: .never) },
+			highestScorePossible: { _ in unimplemented("\(Self.self).highestScorePossible", placeholder: 0) }
 		)
 	}
 }

@@ -11,14 +11,14 @@ import ModelsLibrary
 import SeriesRepositoryInterface
 import StringsLibrary
 
-public struct ArchiveItem: Identifiable, Equatable {
+public struct ArchiveItem: Identifiable, Equatable, Sendable {
 	public let id: ArchiveItemID
 	public let title: String
 	public let subtitle: String
 	public let archivedOn: Date?
 }
 
-public enum ArchiveItemID: Hashable {
+public enum ArchiveItemID: Hashable, Sendable {
 	case bowler(Bowler.ID)
 	case league(League.ID)
 	case series(Series.ID)

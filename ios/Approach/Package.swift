@@ -1,4 +1,4 @@
-// swift-tools-version: 5.10
+// swift-tools-version: 6.0
 
 import PackageDescription
 
@@ -152,15 +152,16 @@ let package = Package(
 		.package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.0"),
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.0"),
 		.package(url: "https://github.com/apple/swift-collections.git", from: "1.1.3"),
-		.package(url: "https://github.com/autoreleasefool/swift-utilities.git", from: "2.4.1"),
+		.package(url: "https://github.com/autoreleasefool/swift-utilities.git", from: "2.5.3"),
 		.package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.5"),
 		.package(url: "https://github.com/getsentry/sentry-cocoa.git", from: "8.36.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.29.3"),
-		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.14.0"),
-		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.3.9"),
+		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.15.0"),
+		.package(url: "https://github.com/pointfreeco/swift-concurrency-extras.git", from: "1.2.0"),
+		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.4.1"),
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "1.1.0"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.4"),
-		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "1.2.5"),
+		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "1.4.0"),
 		.package(url: "https://github.com/quanshousio/ToastUI.git", from: "4.0.0"),
 		.package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", from: "5.3.0"),
 		.package(url: "https://github.com/weichsel/ZIPFoundation.git", from: "0.9.19"),
@@ -1140,6 +1141,7 @@ let package = Package(
 		.target(
 			name: "AddressLookupServiceInterface",
 			dependencies: [
+				.product(name: "ConcurrencyExtras", package: "swift-concurrency-extras"),
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "EquatablePackageLibrary", package: "swift-utilities"),
 				.product(name: "XCTestDynamicOverlay", package: "xctest-dynamic-overlay"),

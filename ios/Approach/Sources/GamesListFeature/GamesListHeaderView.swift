@@ -128,7 +128,7 @@ private struct MockGamesListHeaderView: View {
 }
 
 extension Series.ScoreChart.Style {
-	static var gamesListHeader: Self = Self(
+	static let gamesListHeader: Self = Self(
 		areaMarkForeground: .linearGradient(
 			stops: gradientStops(withColor: Asset.Colors.Charts.Game.areaMark.swiftUIColor),
 			startPoint: .leading,
@@ -141,7 +141,7 @@ extension Series.ScoreChart.Style {
 		)
 	)
 
-	static var gamesListHeaderMock: Self = Self(
+	static let gamesListHeaderMock: Self = Self(
 		areaMarkForeground: .linearGradient(
 			stops: gradientStops(withColor: Asset.Colors.Charts.Mock.areaMark.swiftUIColor),
 			startPoint: .leading,
