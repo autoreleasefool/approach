@@ -4,8 +4,8 @@ import Dependencies
 @preconcurrency import MapKit
 import ModelsLibrary
 
-fileprivate typealias SearchCache = [AnyHashableSendable: (completer: MKLocalSearchCompleter, delegate: Delegate)]
-fileprivate typealias ResultCache = [AddressLookupResult.ID: MKLocalSearchCompletion]
+private typealias SearchCache = [AnyHashableSendable: (completer: MKLocalSearchCompleter, delegate: Delegate)]
+private typealias ResultCache = [AddressLookupResult.ID: MKLocalSearchCompletion]
 
 extension AddressLookupService: DependencyKey {
 	public static var liveValue: Self {

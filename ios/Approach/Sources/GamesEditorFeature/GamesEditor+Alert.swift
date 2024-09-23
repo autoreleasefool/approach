@@ -36,7 +36,7 @@ extension AlertState where Action == GamesEditor.Destination.DuplicateLanesAlert
 			ButtonState(action: .confirmDuplicateLanes) {
 				TextState(Strings.Game.Editor.Fields.Alley.Lanes.Duplicate.copyToAll)
 			}
-			
+
 			ButtonState(role: .cancel, action: .didTapDismissButton) {
 				TextState(Strings.Game.Editor.Fields.Alley.Lanes.Duplicate.dismiss)
 			}
