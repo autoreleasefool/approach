@@ -185,7 +185,8 @@ extension AppIcon.Category: CustomStringConvertible {
 		switch self {
 		case .pride: return Strings.App.Icon.Category.pride
 		case .standard: return Strings.App.Icon.Category.standard
-		case .seasonal: return Strings.App.Icon.Category.seasonal
+		case .christmas: return Strings.App.Icon.Category.christmas
+		case .halloween: return Strings.App.Icon.Category.halloween
 		}
 	}
 }
@@ -194,12 +195,15 @@ extension AppIcon: CustomStringConvertible {
 	public var description: String {
 		switch self {
 		case .bisexual: Strings.App.Icon.bisexual
+		case .candyCorn: Strings.App.Icon.candyCorn
 		case .christmas: Strings.App.Icon.christmas
 		case .dark: Strings.App.Icon.dark
+		case .devilHorns: Strings.App.Icon.devilHorns
 		case .pride: Strings.App.Icon.pride
 		case .primary: Strings.App.Icon.primary
 		case .purple: Strings.App.Icon.purple
 		case .trans: Strings.App.Icon.trans
+		case .witchHat: Strings.App.Icon.witchHat
 		}
 	}
 }
@@ -207,7 +211,11 @@ extension AppIcon: CustomStringConvertible {
 extension AppIcon {
 	public var isProRequired: Bool {
 		switch self {
-		case .primary, .bisexual, .pride, .trans, .christmas, .purple, .dark: false
+		case .primary, .purple, .dark,
+				.bisexual, .pride, .trans,
+				.christmas,
+				.candyCorn, .devilHorns, .witchHat:
+			false
 		}
 	}
 }

@@ -222,12 +222,16 @@ public enum Strings {
     public enum Icon {
       /// Bisexual Pride
       public static let bisexual = Strings.tr("Localizable", "app.icon.bisexual", fallback: "Bisexual Pride")
+      /// Candy Corn
+      public static let candyCorn = Strings.tr("Localizable", "app.icon.candyCorn", fallback: "Candy Corn")
       /// Christmas
       public static let christmas = Strings.tr("Localizable", "app.icon.christmas", fallback: "Christmas")
       /// Current icon
       public static let current = Strings.tr("Localizable", "app.icon.current", fallback: "Current icon")
       /// Dark
       public static let dark = Strings.tr("Localizable", "app.icon.dark", fallback: "Dark")
+      /// Devil Horns
+      public static let devilHorns = Strings.tr("Localizable", "app.icon.devilHorns", fallback: "Devil Horns")
       /// Pride
       public static let pride = Strings.tr("Localizable", "app.icon.pride", fallback: "Pride")
       /// Primary
@@ -238,11 +242,15 @@ public enum Strings {
       public static let tapToReset = Strings.tr("Localizable", "app.icon.tapToReset", fallback: "Tap to Reset")
       /// Trans Pride
       public static let trans = Strings.tr("Localizable", "app.icon.trans", fallback: "Trans Pride")
+      /// Witch's Hat
+      public static let witchHat = Strings.tr("Localizable", "app.icon.witchHat", fallback: "Witch's Hat")
       public enum Category {
+        /// Christmas
+        public static let christmas = Strings.tr("Localizable", "app.icon.category.christmas", fallback: "Christmas")
+        /// Halloween
+        public static let halloween = Strings.tr("Localizable", "app.icon.category.halloween", fallback: "Halloween")
         /// Pride
         public static let pride = Strings.tr("Localizable", "app.icon.category.pride", fallback: "Pride")
-        /// Seasonal
-        public static let seasonal = Strings.tr("Localizable", "app.icon.category.seasonal", fallback: "Seasonal")
         /// Standard
         public static let standard = Strings.tr("Localizable", "app.icon.category.standard", fallback: "Standard")
       }

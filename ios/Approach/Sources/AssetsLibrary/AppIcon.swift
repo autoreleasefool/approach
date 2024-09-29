@@ -1,22 +1,32 @@
 import UIKit
 
 public enum AppIcon: String, CaseIterable, Identifiable, Sendable {
+	// Primary
 	case primary = "AppIcon"
 	case dark = "AppIcon-Dark"
-
-	case bisexual = "AppIcon-Bisexual"
-	case christmas = "AppIcon-Christmas"
-	case pride = "AppIcon-Pride"
 	case purple = "AppIcon-Purple"
+
+	// Pride
+	case bisexual = "AppIcon-Bisexual"
+	case pride = "AppIcon-Pride"
 	case trans = "AppIcon-Trans"
+
+	// Christmas
+	case christmas = "AppIcon-Christmas"
+
+	// Halloween
+	case candyCorn = "AppIcon-CandyCorn"
+	case devilHorns = "AppIcon-DevilHorns"
+	case witchHat = "AppIcon-WitchHat"
 
 	public var id: String { rawValue }
 
 	public var category: Category {
 		switch self {
-		case .primary, .purple, .dark: return .standard
-		case .christmas: return .seasonal
-		case .bisexual, .pride, .trans: return .pride
+		case .primary, .purple, .dark: .standard
+		case .christmas: .christmas
+		case .witchHat, .candyCorn, .devilHorns: .halloween
+		case .bisexual, .pride, .trans: .pride
 		}
 	}
 
@@ -32,8 +42,9 @@ public enum AppIcon: String, CaseIterable, Identifiable, Sendable {
 extension AppIcon {
 	public enum Category: Int, CaseIterable, Identifiable {
 		case standard
-		case seasonal
+		case halloween
 		case pride
+		case christmas
 
 		public var id: Int { rawValue }
 

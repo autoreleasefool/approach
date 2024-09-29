@@ -700,16 +700,20 @@
 "app.tabs.settings" = "Settings";
 "app.tabs.statistics" = "Statistics";
 "tab" = "Tab";
+"app.icon.category.christmas" = "Christmas";
+"app.icon.category.halloween" = "Halloween";
 "app.icon.category.pride" = "Pride";
-"app.icon.category.seasonal" = "Seasonal";
 "app.icon.category.standard" = "Standard";
 "app.icon.primary" = "Primary";
 "app.icon.bisexual" = "Bisexual Pride";
+"app.icon.candyCorn" = "Candy Corn";
 "app.icon.christmas" = "Christmas";
 "app.icon.dark" = "Dark";
+"app.icon.devilHorns" = "Devil Horns";
 "app.icon.pride" = "Pride";
 "app.icon.purple" = "Purple";
 "app.icon.trans" = "Trans Pride";
+"app.icon.witchHat" = "Witch's Hat";
 "app.icon.current" = "Current icon";
 "app.icon.tapToReset" = "Tap to Reset";
 
