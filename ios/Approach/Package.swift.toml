@@ -35,7 +35,8 @@ libraries = [ "FeatureFlags", "ResourceList" ]
 dependencies = [ "ExtensionsPackageLibrary" ]
 
 [features.Announcements]
-services = [ "Announcements" ]
+libraries = [ "Views" ]
+dependencies = [ "UserDefaultsPackageServiceInterface" ]
 
 [features.ArchiveList]
 features = [ "Errors" ]
@@ -44,7 +45,7 @@ libraries = [ "DateTime", "ModelsViews" ]
 
 [features.AvatarEditor]
 services = [ "Avatar" ]
-libraries = [ "FeatureFlags", "Views" ]
+libraries = [ "ComposableExtensions", "FeatureFlags", "Views" ]
 dependencies = [ "EquatablePackageLibrary", "ExtensionsPackageLibrary" ]
 
 [features.BowlerDetails]
@@ -237,11 +238,6 @@ dependencies = [ "Sentry" ]
 [services.Analytics.interface]
 dependencies = [ "AnalyticsPackageServiceInterface", "ComposableArchitecture", "DependenciesMacros", "ErrorReportingClientPackageLibrary" ]
 
-[services.Announcements]
-dependencies = [ "UserDefaultsPackageServiceInterface" ]
-[services.Announcements.interface]
-libraries = [ "Announcements" ]
-
 [services.AppIcon]
 skip_tests = true
 [services.AppIcon.interface]
@@ -310,10 +306,6 @@ dependencies = [ "FileManagerPackageServiceInterface", "ZIPFoundation" ]
 dependencies = [ "DependenciesMacros" ]
 
 # Libraries
-
-[libraries.Announcements]
-libraries = [ "Views" ]
-dependencies = [ "Dependencies" ]
 
 [libraries.Assets]
 skip_tests = true

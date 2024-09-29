@@ -1,80 +1,102 @@
-import AnnouncementsLibrary
-import AnnouncementsServiceInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import SwiftUI
+import SwiftUIExtensionsPackageLibrary
+import ViewsLibrary
 
 @Reducer
 public struct Announcements: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
-		public let announcement: Announcement
+		@Presents public var destination: Destination.State?
 
-		public init(announcement: Announcement) {
-			self.announcement = announcement
-		}
+		public init() {}
 	}
 
 	public enum Action: FeatureAction, ViewAction {
 		@CasePathable public enum View {
-			case didDoAction(AnnouncementView.Action)
-			case didDismiss
+			case didFirstAppear
 		}
-		@CasePathable public enum Delegate {
-			case openAppIconSettings
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
+			case showHalloweenAnnouncement
+
+			case destination(PresentationAction<Destination.Action>)
 		}
-		@CasePathable public enum Internal { case doNothing }
 
 		case view(View)
 		case delegate(Delegate)
 		case `internal`(Internal)
 	}
 
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case halloween2024(Halloween2024Announcement)
+	}
+
 	public init() {}
 
-	@Dependency(\.dismiss) var dismiss
-
 	public var body: some ReducerOf<Self> {
-		Reduce<State, Action> { _, action in
+		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case let .didDoAction(action):
-					switch action {
-					case .openAppIconSettings:
-						return .concatenate(
-							.send(.delegate(.openAppIconSettings)),
-							.run { _ in await dismiss() }
-						)
+				case .didFirstAppear:
+					return .run { send in
+						// Check for announcements
+						if await Halloween2024Announcement.shouldShow() {
+							await send(.internal(.showHalloweenAnnouncement))
+						}
 					}
-
-				case .didDismiss:
-					return .run { _ in await dismiss() }
 				}
 
-			case .internal(.doNothing):
-				return .none
+			case let .internal(internalAction):
+				switch internalAction {
+				case .showHalloweenAnnouncement:
+					state.destination = .halloween2024(Halloween2024Announcement.State())
+					return .none
+
+				case .destination(.dismiss):
+					switch state.destination {
+					case .halloween2024:
+						return .run { _ in await Halloween2024Announcement.didDismiss() }
+
+					case .none:
+						return .none
+					}
+
+				case .destination(.presented(.halloween2024(.delegate(.doNothing)))),
+						.destination(.presented(.halloween2024(.internal))),
+						.destination(.presented(.halloween2024(.view))):
+					return .none
+				}
 
 			case .delegate:
 				return .none
 			}
 		}
+		.ifLet(\.$destination, action: \.internal.destination)
 	}
 }
 
-@ViewAction(for: Announcements.self)
-public struct AnnouncementsView: View {
-	public let store: StoreOf<Announcements>
+// MARK: - View
 
-	public init(store: StoreOf<Announcements>) {
-		self.store = store
+public struct AnnouncementsViewModifier: ViewModifier {
+	@SwiftUI.State var store: StoreOf<Announcements>
+
+	public func body(content: Content) -> some View {
+		content
+			.onFirstAppear { store.send(.view(.didFirstAppear)) }
+			.sheet(
+				item: $store.scope(state: \.destination?.halloween2024, action: \.internal.destination.halloween2024)
+			) {
+				Halloween2024AnnouncementView(store: $0)
+			}
 	}
+}
 
-	public var body: some View {
-		AnnouncementsLibrary.AnnouncementView(
-			announcement: store.announcement,
-			onAction: { send(.didDoAction($0)) },
-			onDismiss: { send(.didDismiss) }
-		)
+extension View {
+	public func announcements(store: StoreOf<Announcements>) -> some View {
+		self.modifier(AnnouncementsViewModifier(store: store))
 	}
 }

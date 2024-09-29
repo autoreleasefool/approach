@@ -48,7 +48,6 @@
 		CAA668BE2A8F29A800DF3E75 /* EmailService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA668BD2A8F29A800DF3E75 /* EmailService */; };
 		CABA39BF2C38AD7100F74E0C /* AvatarEditorPreviewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABA39BE2C38AD7100F74E0C /* AvatarEditorPreviewApp.swift */; };
 		CABA39C32C38AD7200F74E0C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CABA39C22C38AD7200F74E0C /* Assets.xcassets */; };
-		CABD35C22B85EC98001FB3C2 /* AnnouncementsService in Frameworks */ = {isa = PBXBuildFile; productRef = CABD35C12B85EC98001FB3C2 /* AnnouncementsService */; };
 		CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */ = {isa = PBXBuildFile; productRef = CABEC0CE29CBF9CD003CF669 /* AddressLookupService */; };
 		CAC458A32AB838C500898C16 /* ImportExportService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC458A22AB838C500898C16 /* ImportExportService */; };
 		CAC51C1A2A4FDF9D00A99164 /* DatabaseMockingService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC51C192A4FDF9D00A99164 /* DatabaseMockingService */; };
@@ -130,7 +129,6 @@
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
 				CA2B78212AABC9EC0044487E /* ScoresRepository in Frameworks */,
 				CA439E5229E32A9900B09020 /* LeaguesRepository in Frameworks */,
-				CABD35C22B85EC98001FB3C2 /* AnnouncementsService in Frameworks */,
 				CAA668BE2A8F29A800DF3E75 /* EmailService in Frameworks */,
 				CA30F8E22B2670A100A80543 /* LaunchService in Frameworks */,
 				CAC51C1A2A4FDF9D00A99164 /* DatabaseMockingService in Frameworks */,
@@ -356,7 +354,6 @@
 				CAC458A22AB838C500898C16 /* ImportExportService */,
 				CA4A66172B09F37E00DCD52B /* QuickLaunchRepository */,
 				CA30F8E12B2670A100A80543 /* LaunchService */,
-				CABD35C12B85EC98001FB3C2 /* AnnouncementsService */,
 				CAC7A9F72BFA61FE00F35921 /* ZIPService */,
 			);
 			productName = Approach;
@@ -743,10 +740,6 @@
 		CAA668BD2A8F29A800DF3E75 /* EmailService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = EmailService;
-		};
-		CABD35C12B85EC98001FB3C2 /* AnnouncementsService */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AnnouncementsService;
 		};
 		CABEC0CE29CBF9CD003CF669 /* AddressLookupService */ = {
 			isa = XCSwiftPackageProductDependency;

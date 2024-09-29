@@ -207,13 +207,13 @@ public enum Strings {
     }
   }
   public enum Announcement {
-    public enum Christmas2023 {
-      /// A new Christmas-themed icon has been launched. Open the app settings to try out the new icon!
-      public static let message = Strings.tr("Localizable", "announcement.christmas2023.message", fallback: "A new Christmas-themed icon has been launched. Open the app settings to try out the new icon!")
+    public enum Halloween2024 {
+      /// Have a spooky time this Halloween season. Show your spirit by setting one of three new App Icons!
+      public static let message = Strings.tr("Localizable", "announcement.halloween2024.message", fallback: "Have a spooky time this Halloween season. Show your spirit by setting one of three new App Icons!")
       /// Open Settings
-      public static let openSettings = Strings.tr("Localizable", "announcement.christmas2023.openSettings", fallback: "Open Settings")
+      public static let openSettings = Strings.tr("Localizable", "announcement.halloween2024.openSettings", fallback: "Open Settings")
       /// Announcements
-      public static let title = Strings.tr("Localizable", "announcement.christmas2023.title", fallback: "Happy Holidays!")
+      public static let title = Strings.tr("Localizable", "announcement.halloween2024.title", fallback: "Happy Halloween!")
     }
   }
   public enum App {

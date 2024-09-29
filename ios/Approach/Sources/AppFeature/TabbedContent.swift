@@ -77,7 +77,8 @@ public struct TabbedContent: Reducer, Sendable {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .bowlersList(.internal(.destination(.presented(.announcement(.delegate(.openAppIconSettings)))))):
+				// swiftlint:disable:next line_length
+				case .bowlersList(.internal(.announcements(.internal(.destination(.presented(.halloween2024(.view(.didTapOpenIconSettingsButton)))))))):
 					state.selectedTab = .settings
 					return state.settings.showAppIconList().map { .internal(.settings($0)) }
 

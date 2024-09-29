@@ -1,7 +1,5 @@
 import AnalyticsServiceInterface
 import AnnouncementsFeature
-import AnnouncementsLibrary
-import AnnouncementsServiceInterface
 import AssetsLibrary
 import BowlerDetailsFeature
 import BowlerEditorFeature
@@ -51,6 +49,7 @@ public struct BowlersList: Reducer, Sendable {
 
 		public var errors: Errors<ErrorID>.State = .init()
 
+		public var announcements = Announcements.State()
 		@Presents public var destination: Destination.State?
 
 		public var isShowingQuickLaunchTip: Bool
@@ -98,8 +97,8 @@ public struct BowlersList: Reducer, Sendable {
 			case didLoadQuickLaunch(Result<QuickLaunchSource?, Error>)
 			case didArchiveBowler(Result<Bowler.List, Error>)
 			case didSetIsShowingWidgets(Bool)
-			case showAnnouncement(Announcement)
 
+			case announcements(Announcements.Action)
 			case list(ResourceList<Bowler.List, Bowler.Ordering>.Action)
 			case widgets(StatisticsWidgetLayout.Action)
 			case destination(PresentationAction<Destination.Action>)
@@ -119,7 +118,6 @@ public struct BowlersList: Reducer, Sendable {
 		case sortOrder(SortOrder<Bowler.Ordering>)
 		case seriesEditor(SeriesEditor)
 		case games(GamesList)
-		case announcement(Announcements)
 	}
 
 	public enum ErrorID {
@@ -130,7 +128,6 @@ public struct BowlersList: Reducer, Sendable {
 	public init() {}
 
 	@Dependency(\.analytics) var analytics
-	@Dependency(AnnouncementsService.self) var announcements
 	@Dependency(BowlersRepository.self) var bowlers
 	@Dependency(\.calendar) var calendar
 	@Dependency(\.continuousClock) var clock
@@ -157,6 +154,10 @@ public struct BowlersList: Reducer, Sendable {
 			Errors()
 		}
 
+		Scope(state: \.announcements, action: \.internal.announcements) {
+			Announcements()
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
@@ -165,19 +166,13 @@ public struct BowlersList: Reducer, Sendable {
 					return .none
 
 				case .didFirstAppear:
-					return .merge(
-						.run { send in
-							guard let announcement = announcements.announcement() else { return }
-							await send(.internal(.showAnnouncement(announcement)))
-						},
-						.run { _ in
-							do {
-								try await games.lockStaleGames()
-							} catch {
-								errors.captureError(error)
-							}
+					return .run { _ in
+						do {
+							try await games.lockStaleGames()
+						} catch {
+							errors.captureError(error)
 						}
-					)
+					}
 
 				case .didStartTask:
 					return .merge(
@@ -235,10 +230,6 @@ public struct BowlersList: Reducer, Sendable {
 				case .didArchiveBowler(.success):
 					return .none
 
-				case let .showAnnouncement(announcement):
-					state.destination = .announcement(.init(announcement: announcement))
-					return .none
-
 				case let .didLoadEditableBowler(.failure(error)):
 					return state.errors
 						.enqueue(.bowlerNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
@@ -267,12 +258,6 @@ public struct BowlersList: Reducer, Sendable {
 						return .none
 
 					case .didFinishArchiving, .didFinishUpdating:
-						return .none
-					}
-
-				case let .destination(.presented(.announcement(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .openAppIconSettings:
 						return .none
 					}
 
@@ -310,14 +295,7 @@ public struct BowlersList: Reducer, Sendable {
 					}
 
 				case .destination(.dismiss):
-					switch state.destination {
-					case let .announcement(announcement):
-						return .run { [announcement = announcement.announcement] _ in
-							await announcements.hideAnnouncement(announcement)
-						}
-					case .editor, .leagues, .sortOrder, .seriesEditor, .games, .details, .none:
-						return .none
-					}
+					return .none
 
 				case .destination(.presented(.editor(.internal))),
 						.destination(.presented(.editor(.view))),
@@ -336,8 +314,7 @@ public struct BowlersList: Reducer, Sendable {
 						.destination(.presented(.games(.internal))),
 						.destination(.presented(.games(.view))),
 						.destination(.presented(.games(.delegate(.doNothing)))),
-						.destination(.presented(.announcement(.internal))),
-						.destination(.presented(.announcement(.view))),
+						.announcements(.internal), .announcements(.view), .announcements(.delegate(.doNothing)),
 						.list(.internal), .list(.view),
 						.widgets(.internal), .widgets(.view), .widgets(.delegate(.doNothing)),
 						.errors(.view), .errors(.internal), .errors(.delegate(.doNothing)):

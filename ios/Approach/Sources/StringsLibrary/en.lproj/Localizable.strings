@@ -740,9 +740,9 @@
 "list.averages.allBowlers" = "All bowlers";
 
 /* Announcements */
-"announcement.christmas2023.title" = "Happy Holidays!";
-"announcement.christmas2023.message" = "A new Christmas-themed icon has been launched. Open the app settings to try out the new icon!";
-"announcement.christmas2023.openSettings" = "Open Settings";
+"announcement.halloween2024.title" = "Happy Halloween!";
+"announcement.halloween2024.message" = "Have a spooky time this Halloween season. Show your spirit by setting one of three new App Icons!";
+"announcement.halloween2024.openSettings" = "Open Settings";
 
 /* Errors */
 

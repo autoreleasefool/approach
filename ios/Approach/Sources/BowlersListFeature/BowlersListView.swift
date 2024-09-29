@@ -50,6 +50,7 @@ public struct BowlersListView: View {
 		.onAppear { send(.onAppear) }
 		.onFirstAppear { send(.didFirstAppear) }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.announcements(store: store.scope(state: \.announcements, action: \.internal.announcements))
 		.destinations($store)
 	}
 
@@ -116,7 +117,6 @@ public struct BowlersListView: View {
 			.seriesEditor(store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
 			.leaguesList(store.scope(state: \.destination?.leagues, action: \.internal.destination.leagues))
 			.gamesList(store.scope(state: \.destination?.games, action: \.internal.destination.games))
-			.announcement(store.scope(state: \.destination?.announcement, action: \.internal.destination.announcement))
 	}
 
 	fileprivate func bowlerEditor(_ store: Binding<StoreOf<BowlerEditor>?>) -> some View {
@@ -159,12 +159,6 @@ public struct BowlersListView: View {
 	fileprivate func gamesList(_ store: Binding<StoreOf<GamesList>?>) -> some View {
 		navigationDestination(item: store) { (store: StoreOf<GamesList>) in
 			GamesListView(store: store)
-		}
-	}
-
-	fileprivate func announcement(_ store: Binding<StoreOf<Announcements>?>) -> some View {
-		sheet(item: store) { (store: StoreOf<Announcements>) in
-			AnnouncementsView(store: store)
 		}
 	}
 }
