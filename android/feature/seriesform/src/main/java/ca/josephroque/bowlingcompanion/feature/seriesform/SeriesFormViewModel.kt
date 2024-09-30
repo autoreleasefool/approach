@@ -134,7 +134,10 @@ class SeriesFormViewModel @Inject constructor(
 						manualScores = emptyList(),
 						isManualSeriesEnabled = featureFlags.isEnabled(FeatureFlag.MANUAL_TEAM_SERIES_FORM),
 					),
-					topBar = SeriesFormTopBarUiState(existingDate = null),
+					topBar = SeriesFormTopBarUiState(
+						existingDate = null,
+						isSaveButtonEnabled = true,
+					),
 				)
 			} else if (series == null) {
 				val currentDate = Clock.System.todayIn(TimeZone.currentSystemDefault())
@@ -161,6 +164,7 @@ class SeriesFormViewModel @Inject constructor(
 					),
 					topBar = SeriesFormTopBarUiState(
 						existingDate = null,
+						isSaveButtonEnabled = true,
 					),
 				)
 			} else {
