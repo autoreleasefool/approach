@@ -7,11 +7,10 @@
 - Chore: Migrated to Swift 6
 ```
 
-## Android 4.3.4b333
+## Android 4.3.5b334
 
 ```
-- Fix: Resolves the Accessories onboarding appear in light modesss
-- Fix: Resolves a crash when creating an Alley with no lanes
+- Fix: New series can be saved without needing to change any settings
 ```
 
 ---
@@ -216,6 +215,13 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.3.4b333
+
+```
+- Fix: Resolves the Accessories onboarding appear in light modesss
+- Fix: Resolves a crash when creating an Alley with no lanes
+```
 
 ## Android 4.3.3b332
 
