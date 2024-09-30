@@ -1,9 +1,10 @@
 # Most recent version
 
-## iOS 1.7.0b29
+## iOS 1.8.0b30
 
 ```
-- Fix: App Icon previews are correctly shown in app
+- Feat: Candy Corn, Witch's Hat, and Devil Horns app icons
+- Chore: Migrated to Swift 6
 ```
 
 ## Android 4.3.4b333
@@ -16,6 +17,12 @@
 ---
 
 # Legacy iOS Versions
+
+## iOS 1.7.0b29
+
+```
+- Fix: App Icon previews are correctly shown in app
+```
 
 ## iOS 1.7.0b28
 
