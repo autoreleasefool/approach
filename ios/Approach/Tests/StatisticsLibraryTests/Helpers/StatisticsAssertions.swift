@@ -5,7 +5,7 @@ import XCTest
 func AssertCounting<T>(
 	_ statistic: T,
 	equals count: Int,
-	file: StaticString = #file,
+	file: StaticString = #filePath,
 	line: UInt = #line
 ) where T: Statistic & CountingStatistic {
 	XCTAssertEqual(statistic.count, count, file: file, line: line)
@@ -16,7 +16,7 @@ func AssertCounting<T>(
 func AssertHighestOf<T>(
 	_ statistic: T,
 	equals highest: Int,
-	file: StaticString = #file,
+	file: StaticString = #filePath,
 	line: UInt = #line
 ) where T: Statistic & HighestOfStatistic {
 	XCTAssertEqual(statistic.highest, highest, "Highest does not match", file: file, line: line)
@@ -29,7 +29,7 @@ func AssertAveraging<T>(
 	hasTotal total: Int,
 	withDivisor divisor: Int,
 	formattedAs formattedValue: String,
-	file: StaticString = #file,
+	file: StaticString = #filePath,
 	line: UInt = #line
 ) where T: Statistic & AveragingStatistic {
 	let average = divisor > 0 ? Double(total) / Double(divisor) : 0
@@ -46,7 +46,7 @@ func AssertPercentage<T>(
 	withDenominator denominator: Int,
 	formattedAs formattedValue: String,
 	overridingIsEmptyExpectation: Bool? = nil,
-	file: StaticString = #file,
+	file: StaticString = #filePath,
 	line: UInt = #line
 ) where T: Statistic & PercentageStatistic {
 	let percentage = denominator > 0 ? Double(numerator) / Double(denominator) : 0

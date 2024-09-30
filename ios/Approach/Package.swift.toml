@@ -36,7 +36,7 @@ dependencies = [ "ExtensionsPackageLibrary" ]
 
 [features.Announcements]
 libraries = [ "Views" ]
-dependencies = [ "UserDefaultsPackageServiceInterface" ]
+dependencies = [ "SwiftUIExtensionsPackageLibrary", "UserDefaultsPackageServiceInterface" ]
 
 [features.ArchiveList]
 features = [ "Errors" ]

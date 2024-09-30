@@ -28,9 +28,9 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AnnouncementsServiceTests"
-               BuildableName = "AnnouncementsServiceTests"
-               BlueprintName = "AnnouncementsServiceTests"
+               BlueprintIdentifier = "StatisticsWidgetEditorFeatureTests"
+               BuildableName = "StatisticsWidgetEditorFeatureTests"
+               BlueprintName = "StatisticsWidgetEditorFeatureTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </BuildActionEntry>
@@ -42,34 +42,6 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AnnouncementsLibraryTests"
-               BuildableName = "AnnouncementsLibraryTests"
-               BlueprintName = "AnnouncementsLibraryTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "StatisticsWidgetEditorFeatureTests"
-               BuildableName = "StatisticsWidgetEditorFeatureTests"
-               BlueprintName = "StatisticsWidgetEditorFeatureTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "BowlerDetailsFeatureTests"
                BuildableName = "BowlerDetailsFeatureTests"
                BlueprintName = "BowlerDetailsFeatureTests"
@@ -78,10 +50,10 @@
          </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "ZIPServiceTests"
@@ -912,9 +884,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AnnouncementsLibraryTests"
-               BuildableName = "AnnouncementsLibraryTests"
-               BlueprintName = "AnnouncementsLibraryTests"
+               BlueprintIdentifier = "BowlerDetailsFeatureTests"
+               BuildableName = "BowlerDetailsFeatureTests"
+               BlueprintName = "BowlerDetailsFeatureTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
@@ -922,9 +894,19 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AnnouncementsServiceTests"
-               BuildableName = "AnnouncementsServiceTests"
-               BlueprintName = "AnnouncementsServiceTests"
+               BlueprintIdentifier = "StatisticsWidgetEditorFeatureTests"
+               BuildableName = "StatisticsWidgetEditorFeatureTests"
+               BlueprintName = "StatisticsWidgetEditorFeatureTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ZIPServiceTests"
+               BuildableName = "ZIPServiceTests"
+               BlueprintName = "ZIPServiceTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>

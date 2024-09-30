@@ -235,6 +235,7 @@ let package = Package(
 		.target(
 			name: "AnnouncementsFeature",
 			dependencies: [
+				.product(name: "SwiftUIExtensionsPackageLibrary", package: "swift-utilities"),
 				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
 				"AnalyticsServiceInterface",
 				"FeatureActionLibrary",

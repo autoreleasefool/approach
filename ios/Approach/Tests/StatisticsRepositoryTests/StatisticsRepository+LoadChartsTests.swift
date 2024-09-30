@@ -140,7 +140,7 @@ final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 		withFilter filter: TrackableFilter,
 		withDb db: any DatabaseWriter,
 		equals expectedEntries: (first: Entry?, last: Entry?),
-		file: StaticString = #file,
+		file: StaticString = #filePath,
 		line: UInt = #line
 	) async throws {
 		let entries: (first: Entry?, last: Entry?) = try await withDependencies {
