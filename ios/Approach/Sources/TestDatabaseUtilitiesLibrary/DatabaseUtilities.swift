@@ -41,7 +41,7 @@ public func initializeApproachDatabase(
 	let gameGear = coallesce(withGameGear, ifHasAllOf: games, gear)
 	let bowlerPreferredGear = coallesce(withBowlerPreferredGear, ifHasAllOf: bowlers, gear)
 
-	let dbQueue = try initializeDatabase(migrations: Migrations.approachMigrations) {
+	let dbQueue = try initializeDatabase(migrations: Migrations.approachMigrations, to: db) {
 		try insert(avatars: avatars, into: $0)
 		try insert(locations: locations, into: $0)
 		try insert(alleys: alleys, into: $0)
