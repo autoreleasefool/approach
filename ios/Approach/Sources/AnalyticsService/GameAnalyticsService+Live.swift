@@ -5,13 +5,13 @@ import Foundation
 
 extension GameAnalyticsService: DependencyKey {
 	public static var liveValue: Self {
-		let sessionID = ActorIsolated<UUID?>(nil)
-		let sessions = ActorIsolated<[UUID: Set<UUID>]>([:])
+		let sessionID = LockIsolated<UUID?>(nil)
+		let sessions = LockIsolated<[UUID: Set<UUID>]>([:])
 
 		return Self(
 			trackEvent: { event in
-				if let session = await sessionID.value {
-					let inserted = await sessions.withValue {
+				if let session = sessionID.value {
+					let inserted = sessions.withValue {
 						$0[session, default: []].insert(event.eventId).inserted
 					}
 
@@ -26,7 +26,7 @@ extension GameAnalyticsService: DependencyKey {
 			},
 			resetGameSessionID: {
 				@Dependency(\.uuid) var uuid
-				await sessionID.setValue(uuid())
+				sessionID.setValue(uuid())
 			}
 		)
 	}
