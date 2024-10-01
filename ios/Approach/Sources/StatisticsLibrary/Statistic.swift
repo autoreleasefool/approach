@@ -4,7 +4,7 @@ import StringsLibrary
 
 public enum Statistics {}
 
-public protocol Statistic {
+public protocol Statistic: Sendable {
 	static var title: String { get }
 	static var category: StatisticCategory { get }
 	static var isEligibleForNewLabel: Bool { get }
