@@ -38,6 +38,7 @@ public struct SeriesSharing: Reducer, Sendable {
 		var configuration: ShareableSeriesImage.Configuration? {
 			guard let series else { return nil }
 			return .init(
+				id: seriesId,
 				date: isShowingSeriesDate ? series.date : nil,
 				total: series.total,
 				showDetails: isShowingSeriesSummary,

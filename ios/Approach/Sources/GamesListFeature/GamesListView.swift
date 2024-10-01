@@ -38,7 +38,10 @@ public struct GamesListView: View {
 			}
 		} header: {
 			PreBowlHeader(series: store.series)
-			GamesListHeaderView(scores: store.list.resources?.map { .init(index: $0.index, score: $0.score) } ?? [])
+			GamesListHeaderView(
+				id: store.series.id,
+				scores: store.list.resources?.map { .init(index: $0.index, score: $0.score) } ?? []
+			)
 		} footer: {
 			if store.isShowingArchiveTip {
 				BasicTipView(tip: .gameArchiveTip) {

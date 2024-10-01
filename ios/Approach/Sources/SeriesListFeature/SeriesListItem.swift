@@ -16,6 +16,7 @@ public struct SeriesListItem: View {
 	public var body: some View {
 		ZStack(alignment: .bottomLeading) {
 			Series.ScoreChart(
+				id: series.id,
 				scores: series.scores,
 				style: .listItem
 			)
@@ -87,6 +88,7 @@ public struct SeriesListItem: View {
 			}
 			.padding(.smallSpacing)
 			.measure(key: ContentSizeKey.self, to: $contentSize)
+			.id(series.id)
 		}
 		.contentShape(Rectangle())
 	}

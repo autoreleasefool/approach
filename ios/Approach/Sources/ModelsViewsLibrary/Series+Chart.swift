@@ -6,13 +6,16 @@ import SwiftUI
 
 extension Series {
 	public struct ScoreChart: View {
+		public let id: Series.ID
 		public let scores: [Game.Score]
 		public let style: Style
 
 		public init(
+			id: Series.ID,
 			scores: [Game.Score],
 			style: Style
 		) {
+			self.id = id
 			self.scores = scores
 			self.style = style
 		}
@@ -56,6 +59,7 @@ extension Series {
 						}
 					}
 				}
+				.id(id)
 				.chartXAxis(.hidden)
 				.chartYAxis(.hidden)
 				.chartLegend(.hidden)

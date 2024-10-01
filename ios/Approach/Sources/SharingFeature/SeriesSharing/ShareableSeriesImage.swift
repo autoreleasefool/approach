@@ -95,6 +95,7 @@ public struct ShareableSeriesImage: View {
 
 	private var chart: some View {
 		Series.ScoreChart(
+			id: configuration.id,
 			scores: configuration.scores,
 			style: .init(
 				areaMarkForeground: .linearGradient(
@@ -186,6 +187,7 @@ private struct ChartLabel: View {
 
 extension ShareableSeriesImage {
 	public struct Configuration: Equatable, Sendable {
+		public let id: Series.ID
 		public let date: Date?
 		public let total: Int?
 		public let showDetails: Bool
@@ -199,6 +201,7 @@ extension ShareableSeriesImage {
 		public let colorScheme: ColorScheme
 
 		public init(
+			id: Series.ID,
 			date: Date? = nil,
 			total: Int? = nil,
 			showDetails: Bool = true,
@@ -211,6 +214,7 @@ extension ShareableSeriesImage {
 			displayScale: CGFloat = .zero,
 			colorScheme: ColorScheme
 		) {
+			self.id = id
 			self.date = date
 			self.total = total
 			self.showDetails = showDetails
@@ -228,6 +232,7 @@ extension ShareableSeriesImage {
 
 #Preview {
 	ShareableSeriesImage(configuration: .init(
+		id: UUID(),
 //		date: Date(),
 		total: 485,
 		scores: [

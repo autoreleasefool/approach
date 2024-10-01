@@ -11,10 +11,12 @@ import ViewsLibrary
 public struct GamesListHeaderView: View {
 	@State private var contentSize: CGSize = .zero
 
+	let id: Series.ID
 	let scores: [Game.Score]
 	let total: Int
 
-	init(scores: [Game.Score]) {
+	init(id: Series.ID, scores: [Game.Score]) {
+		self.id = id
 		self.scores = scores
 		self.total = scores.reduce(0) { $0 + $1.score }
 	}
@@ -38,6 +40,7 @@ public struct GamesListHeaderView: View {
 			} else {
 				ZStack(alignment: .bottomLeading) {
 					Series.ScoreChart(
+						id: id,
 						scores: scores,
 						style: .gamesListHeader
 					)
@@ -95,6 +98,7 @@ public struct GamesListHeaderView: View {
 
 private struct MockGamesListHeaderView: View {
 	@State private var contentSize: CGSize = .zero
+	@State private var id = UUID()
 
 	private static let scores: [Game.Score] = [
 		.init(index: 0, score: 0),
@@ -106,6 +110,7 @@ private struct MockGamesListHeaderView: View {
 	var body: some View {
 		ZStack(alignment: .bottomLeading) {
 			Series.ScoreChart(
+				id: id,
 				scores: MockGamesListHeaderView.scores,
 				style: .gamesListHeaderMock
 			)
@@ -173,6 +178,7 @@ struct GamesListHeaderViewPreview: PreviewProvider {
 	static var previews: some View {
 		List {
 			GamesListHeaderView(
+				id: UUID(),
 				scores: [
 					.init(index: 0, score: 0),
 					.init(index: 1, score: 0),
@@ -181,6 +187,7 @@ struct GamesListHeaderViewPreview: PreviewProvider {
 			)
 
 			GamesListHeaderView(
+				id: UUID(),
 				scores: [
 					.init(index: 0, score: 5),
 					.init(index: 1, score: 445),
@@ -188,6 +195,7 @@ struct GamesListHeaderViewPreview: PreviewProvider {
 			)
 
 			GamesListHeaderView(
+				id: UUID(),
 				scores: [
 					.init(index: 0, score: 233),
 					.init(index: 1, score: 198),
@@ -205,6 +213,7 @@ struct GamesListHeaderViewPreview: PreviewProvider {
 			)
 
 			GamesListHeaderView(
+				id: UUID(),
 				scores: [
 					.init(index: 0, score: 233),
 					.init(index: 1, score: 198),
@@ -222,16 +231,19 @@ struct GamesListHeaderViewPreview: PreviewProvider {
 			)
 
 			GamesListHeaderView(
+				id: UUID(),
 				scores: [
 					.init(index: 0, score: 233),
 				]
 			)
 
 			GamesListHeaderView(
+				id: UUID(),
 				scores: []
 			)
 
 			GamesListHeaderView(
+				id: UUID(),
 				scores: [
 					.init(index: 0, score: 445),
 					.init(index: 1, score: 5),
