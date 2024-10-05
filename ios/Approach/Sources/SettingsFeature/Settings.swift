@@ -130,11 +130,7 @@ public struct Settings: Reducer, Sendable {
 					return .none
 
 				case .didFirstAppear:
-					return .run { send in
-						await send(.internal(.didFetchIcon(Result {
-							AppIcon(rawValue: await appIcon.getAppIconName() ?? "")
-						})))
-					}
+					return refreshAppIcon()
 
 				case .didTapPopulateDatabase:
 					return .run { _ in try await databaseMocking.mockDatabase() }
@@ -242,7 +238,9 @@ public struct Settings: Reducer, Sendable {
 					switch state.destination {
 					case .export:
 						return .run { _ in export.cleanUp() }
-					case .analytics, .appIcon, .archive, .featureFlags, .opponentsList, .statistics, .alert, .none, .import:
+					case .appIcon:
+						return refreshAppIcon()
+					case .analytics, .archive, .featureFlags, .opponentsList, .statistics, .alert, .none, .import:
 						return .none
 					}
 
@@ -308,6 +306,14 @@ public struct Settings: Reducer, Sendable {
 			default:
 				return nil
 			}
+		}
+	}
+
+	private func refreshAppIcon() -> Effect<Action> {
+		return .run { send in
+			await send(.internal(.didFetchIcon(Result {
+				AppIcon(rawValue: await appIcon.getAppIconName() ?? "")
+			})))
 		}
 	}
 }
