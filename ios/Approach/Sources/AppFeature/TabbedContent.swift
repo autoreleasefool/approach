@@ -1,5 +1,6 @@
 import AccessoriesOverviewFeature
 import AnalyticsServiceInterface
+import BadgesFeature
 import BowlersListFeature
 import ComposableArchitecture
 import FeatureActionLibrary
@@ -18,6 +19,8 @@ public struct TabbedContent: Reducer, Sendable {
 		public var statistics = StatisticsOverview.State()
 		public var settings = Settings.State()
 
+		public var badges = BadgesObserver.State()
+
 		public init() {}
 	}
 
@@ -31,6 +34,7 @@ public struct TabbedContent: Reducer, Sendable {
 			case bowlersList(BowlersList.Action)
 			case settings(Settings.Action)
 			case statistics(StatisticsOverview.Action)
+			case badges(BadgesObserver.Action)
 		}
 
 		case view(View)
@@ -67,6 +71,10 @@ public struct TabbedContent: Reducer, Sendable {
 			StatisticsOverview()
 		}
 
+		Scope(state: \.badges, action: \.internal.badges) {
+			BadgesObserver()
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
@@ -85,7 +93,8 @@ public struct TabbedContent: Reducer, Sendable {
 				case .accessories(.view), .accessories(.internal), .accessories(.delegate(.doNothing)),
 						.bowlersList(.view), .bowlersList(.internal), .bowlersList(.delegate(.doNothing)),
 						.settings(.view), .settings(.internal), .settings(.delegate(.doNothing)), .settings(.binding),
-						.statistics(.view), .statistics(.internal), .statistics(.delegate(.doNothing)):
+						.statistics(.view), .statistics(.internal), .statistics(.delegate(.doNothing)),
+						.badges(.view), .badges(.internal), .badges(.delegate(.doNothing)):
 					return .none
 				}
 

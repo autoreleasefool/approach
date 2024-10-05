@@ -1,6 +1,8 @@
 import AnalyticsServiceInterface
 import AppIconServiceInterface
 import AssetsLibrary
+import BadgesLibrary
+import BadgesServiceInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsLibrary
@@ -50,6 +52,7 @@ public struct AppIconList: Reducer, Sendable {
 	}
 
 	@Dependency(AppIconService.self) var appIcon
+	@Dependency(BadgesService.self) var badges
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in
@@ -60,7 +63,10 @@ public struct AppIconList: Reducer, Sendable {
 					return .none
 
 				case .didFirstAppear:
-					return fetchCurrentAppIcon()
+					return .merge(
+						fetchCurrentAppIcon(),
+						.run { _ in await self.badges.sendEvent(EarnableBadges.Iconista.Events.AppIconsViewed()) }
+					)
 
 				case let .didTapIcon(icon):
 					guard state.currentAppIcon != icon && !(icon == .primary && state.currentAppIcon == nil) else {

@@ -79,6 +79,7 @@ extension ToastState {
 	public enum Content {
 		case toast(SnackContent<Action>)
 		case hud(HUDContent)
+		case badge(BadgeContent)
 	}
 }
 
@@ -89,6 +90,14 @@ public struct HUDContent: Equatable {
 	public init(message: String, icon: SFSymbol?) {
 		self.message = message
 		self.icon = icon
+	}
+}
+
+public struct BadgeContent: Equatable {
+	public let title: String
+
+	public init(title: String) {
+		self.title = title
 	}
 }
 
@@ -119,7 +128,9 @@ extension View {
 		self.toast(
 			isPresented: Binding(item),
 			dismissAfter: toastState?.duration ?? 3.0,
-			onDismiss: { store?.send(.didFinishDismissing) },
+			onDismiss: {
+				store?.send(.didFinishDismissing)
+			},
 			content: {
 				switch toastState?.content {
 				case let .toast(content):
@@ -138,6 +149,12 @@ extension View {
 						title: content.message,
 						icon: content.icon,
 						style: toastState?.style ?? .primary
+					) {
+						store?.send(.didDismiss)
+					}
+				case let .badge(content):
+					BadgeView(
+						title: content.title
 					) {
 						store?.send(.didDismiss)
 					}

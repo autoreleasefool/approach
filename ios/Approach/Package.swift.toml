@@ -10,7 +10,7 @@ supported = [ "\"17.0\"" ]
 # Features
 
 [features.App]
-features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
+features = [ "AccessoriesOverview", "Badges", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
 services = [ "Launch" ]
 dependencies = [ "AppInfoPackageService", "BundlePackageService", "FeatureFlagsPackageService", "FileManagerPackageService", "GRDBDatabasePackageService", "PasteboardPackageService", "SentryErrorReportingPackageService", "StoreReviewPackageService", "TelemetryDeckAnalyticsPackageService", "UserDefaultsPackageService" ]
 
@@ -47,6 +47,10 @@ libraries = [ "DateTime", "ModelsViews" ]
 services = [ "Avatar" ]
 libraries = [ "ComposableExtensions", "FeatureFlags", "Views" ]
 dependencies = [ "EquatablePackageLibrary", "ExtensionsPackageLibrary" ]
+
+[features.Badges]
+services = [ "Badges" ]
+libraries = [ "FeatureFlags", "Toast" ]
 
 [features.BowlerDetails]
 features = [ "BowlerEditor", "LeaguesList" ]
@@ -140,7 +144,7 @@ libraries = [ "SortOrder" ]
 
 [features.Settings]
 features = [ "ArchiveList", "FeatureFlagsList", "ImportExport", "OpponentsList" ]
-services = [ "AppIcon", "DatabaseMocking", "Products" ]
+services = [ "AppIcon", "Badges", "DatabaseMocking", "Products" ]
 dependencies = [ "BundlePackageServiceInterface" ]
 
 [features.Sharing]
@@ -248,6 +252,12 @@ dependencies = [ "ExtensionsPackageLibrary" ]
 [services.Avatar.interface]
 libraries = [ "ModelsViews" ]
 
+[services.Badges]
+libraries = [ "FeatureFlags" ]
+[services.Badges.interface]
+libraries = [ "Badges" ]
+dependencies = [ "DependenciesMacros" ]
+
 [services.Database]
 libraries = [ "DatabaseMigrations" ]
 dependencies = [ "FileManagerPackageServiceInterface" ]
@@ -312,6 +322,9 @@ skip_tests = true
 dependencies = [ "SFSafeSymbols" ]
 [libraries.Assets.resources]
 processed = [ "Resources" ]
+
+[libraries.Badges]
+libraries = [ "Models" ]
 
 [libraries.ComposableExtensions]
 skip_tests = true
