@@ -85,6 +85,7 @@
 		CA8BBC5A28D59B8B00653A1E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		CA8BBC5C28D59B8C00653A1E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CA8BBC5F28D59B8C00653A1E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		CA9B8C132CB22B9C0097952D /* Approach.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Approach.entitlements; sourceTree = "<group>"; };
 		CAB632A72AB4F96200C6D1BA /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		CABA39BC2C38AD7100F74E0C /* AvatarEditorPreview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AvatarEditorPreview.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CABA39BE2C38AD7100F74E0C /* AvatarEditorPreviewApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarEditorPreviewApp.swift; sourceTree = "<group>"; };
@@ -249,6 +250,7 @@
 		CA8BBC5728D59B8B00653A1E /* ApproachIOS */ = {
 			isa = PBXGroup;
 			children = (
+				CA9B8C132CB22B9C0097952D /* Approach.entitlements */,
 				CA626E2A2A836881002BCC13 /* Configuration.storekit */,
 				CA8BBC5C28D59B8C00653A1E /* Assets.xcassets */,
 				CA8BBC5E28D59B8C00653A1E /* Preview Content */,

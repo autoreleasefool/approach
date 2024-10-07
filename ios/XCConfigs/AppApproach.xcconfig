@@ -1,5 +1,6 @@
 #include "./Base/App.xcconfig"
 
+CODE_SIGN_ENTITLEMENTS = ApproachIOS/Approach.entitlements;
 DEVELOPMENT_ASSET_PATHS = "ApproachIOS/Preview Content"
 INFOPLIST_FILE = Approach/Info.plist
 INFOPLIST_KEY_CFBundleDisplayName = Approach
