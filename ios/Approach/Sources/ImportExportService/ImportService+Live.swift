@@ -43,20 +43,25 @@ extension ImportService: DependencyKey {
 			@Dependency(\.fileManager) var fileManager
 			@Dependency(ExportService.self) var export
 
+			var exportUrl: URL?
 			for try await event in export.exportDatabase() {
 				guard case let .response(url) = event else {
 					continue
 				}
 
-				let fileName = url.lastPathComponent
-				let backupFile = try getBackupDirectory()
-					.appending(path: fileName)
-
-				try fileManager.removeIfExists(backupFile)
-				try fileManager.moveItem(at: url, to: backupFile)
-				latestBackupUrl.setValue(backupFile)
+				exportUrl = url
 				break
 			}
+
+			guard let exportUrl else { return }
+
+			let fileName = exportUrl.lastPathComponent
+			let backupFile = try getBackupDirectory()
+				.appending(path: fileName)
+
+			try fileManager.removeIfExists(backupFile)
+			try fileManager.moveItem(at: exportUrl, to: backupFile)
+			latestBackupUrl.setValue(backupFile)
 		}
 
 		@Sendable func importDatabase(fromUrl: URL, performBackup: Bool) async throws {
@@ -99,7 +104,7 @@ extension ImportService: DependencyKey {
 					$0 = latest
 
 					if let latest {
-						let attributes = try FileManager.default.attributesOfItem(atPath: latest.path())
+						let attributes = try fileManager.attributesOfItem(atPath: latest.path())
 						if let modificationDate = attributes[FileAttributeKey.modificationDate] as? Date {
 							return modificationDate
 						}
