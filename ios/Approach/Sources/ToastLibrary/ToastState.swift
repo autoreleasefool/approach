@@ -12,17 +12,20 @@ public struct ToastState<Action: ToastableAction>: Identifiable {
 	public let id: UUID
 	public let content: Content
 	public let duration: Double
+	public let isDimmedBackgroundEnabled: Bool
 	public let style: ToastStyle
 
 	public init(
 		id: UUID = UUID(),
 		content: Content,
 		duration: Double = 3.0,
+		isDimmedBackgroundEnabled: Bool = true,
 		style: ToastStyle = .primary
 	) {
 		self.id = id
 		self.content = content
 		self.duration = duration
+		self.isDimmedBackgroundEnabled = isDimmedBackgroundEnabled
 		self.style = style
 	}
 }
@@ -163,5 +166,6 @@ extension View {
 				}
 			}
 		)
+		.toastDimmedBackground(toastState?.isDimmedBackgroundEnabled ?? true)
 	}
 }
