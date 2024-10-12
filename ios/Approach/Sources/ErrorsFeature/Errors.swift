@@ -42,6 +42,7 @@ public struct Errors<ErrorID: Hashable>: Reducer, Sendable {
 					icon: error.icon,
 					button: reportButton
 				)),
+				isDimmedBackgroundEnabled: false,
 				style: .error
 			)
 
