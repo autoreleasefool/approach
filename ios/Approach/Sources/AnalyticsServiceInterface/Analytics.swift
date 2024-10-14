@@ -11,6 +11,7 @@ extension Analytics {
 	public enum Alley {}
 	public enum Announcement {}
 	public enum App {}
+	public enum Backups {}
 	public enum Bowler {}
 	public enum Data {}
 	public enum Feature {}
