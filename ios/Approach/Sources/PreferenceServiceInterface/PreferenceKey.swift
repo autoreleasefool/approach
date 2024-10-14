@@ -32,5 +32,5 @@ public enum PreferenceKey: String, Sendable {
 	// MARK: - Data Management
 	case dataLastExportDate                         // default: 0
 	case dataLastBackupDate                         // default: nil // 0
-	case dataICloudBackupEnabled                    // default: false
+	case dataICloudBackupEnabled                    // default: true
 }
