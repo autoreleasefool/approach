@@ -3,7 +3,7 @@ extension Analytics.Backups {
 		public let name = "Backup.Created"
 		public let fileSizeBytes: Int
 
-		public var payload: [String : String]? {
+		public var payload: [String: String]? {
 			[
 				"FileSizeBytes": String(fileSizeBytes)
 			]
