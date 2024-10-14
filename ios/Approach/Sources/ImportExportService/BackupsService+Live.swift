@@ -1,5 +1,6 @@
 import DatabaseServiceInterface
 import Dependencies
+import FeatureFlagsLibrary
 import FileManagerPackageServiceInterface
 import Foundation
 import ImportExportServiceInterface
@@ -7,18 +8,19 @@ import PreferenceServiceInterface
 
 extension BackupsService: DependencyKey {
 	public static var liveValue: Self {
-		let coordinatorId = LockIsolated<FileCoordinatorID?>(nil)
-		@Sendable func getCoordinatorId() -> FileCoordinatorID {
-			coordinatorId.withValue {
-				if let id = $0 {
-					return id
-				} else {
-					@Dependency(\.fileCoordinator) var fileCoordinator
-					let id = fileCoordinator.createCoordinator()
-					$0 = id
-					return id
-				}
-			}
+		@Sendable func isEnabled() -> Bool {
+			@Dependency(\.featureFlags) var featureFlags
+			@Dependency(\.fileManager) var fileManager
+			@Dependency(\.preferences) var preferences
+
+			return featureFlags.isFlagEnabled(.automaticBackups) &&
+				fileManager.ubiquityIdentityToken() != nil &&
+				(preferences.bool(forKey: .dataICloudBackupEnabled) ?? true)
+		}
+
+		@Sendable func getNewCoordinatorId() -> FileCoordinatorID {
+			@Dependency(\.fileCoordinator) var fileCoordinator
+			return fileCoordinator.createCoordinator()
 		}
 
 		@Sendable func getBackupDirectory() async throws -> URL? {
@@ -29,10 +31,13 @@ extension BackupsService: DependencyKey {
 				return nil
 			}
 
-			let directory = containerUrl.appending(path: "Backups")
+			let coordinatorId = getNewCoordinatorId()
+			defer { fileCoordinator.discardCoordinator(coordinatorId) }
+
+			let directory = containerUrl.appending(path: "Documents").appending(path: "Backups")
 			let directoryExists = try fileManager.exists(directory)
 			if !directoryExists {
-				try await fileCoordinator.write(itemAt: directory, withCoordinator: getCoordinatorId(), options: []) {
+				try await fileCoordinator.write(itemAt: directory, withCoordinator: coordinatorId, options: []) {
 					try fileManager.createDirectory($0)
 				}
 			}
@@ -40,22 +45,34 @@ extension BackupsService: DependencyKey {
 			return directory
 		}
 
+		@Sendable func getBackupFile(for url: URL, attributes: [FileAttributeKey: Any]) -> BackupFile? {
+			guard let dateCreated = attributes[.creationDate] as? Date,
+						let fileSize = attributes[.size] as? NSNumber else { return nil }
+			return BackupFile(url: url, dateCreated: dateCreated, fileSizeBytes: Int(truncating: fileSize))
+		}
+
 		return Self(
+			isEnabled: isEnabled,
 			lastSuccessfulBackupDate: {
 				@Dependency(\.preferences) var preferences
 				guard let lastBackupDate = preferences.double(forKey: .dataLastBackupDate) else { return nil }
 				return Date(timeIntervalSince1970: lastBackupDate)
 			},
 			listBackups: {
+				guard isEnabled() else { return [] }
+
 				@Dependency(\.fileCoordinator) var fileCoordinator
 				@Dependency(\.fileManager) var fileManager
 
 				guard let backupsDirectory = try await getBackupDirectory() else { return [] }
 				let backups = LockIsolated<[BackupFile]>([])
 
+				let coordinatorId = getNewCoordinatorId()
+				defer { fileCoordinator.discardCoordinator(coordinatorId) }
+
 				try await fileCoordinator.read(
 					itemAt: backupsDirectory,
-					withCoordinator: getCoordinatorId(),
+					withCoordinator: coordinatorId,
 					options: []
 				) { url in
 					let contents = try fileManager.contentsOfDirectory(at: url)
@@ -64,8 +81,7 @@ extension BackupsService: DependencyKey {
 					}
 
 					let backupsToReturn: [BackupFile] = zip(contents, attributes).compactMap { url, attributes in
-						guard let dateCreated = attributes[.creationDate] as? Date else { return nil }
-						return BackupFile(url: url, dateCreated: dateCreated)
+						getBackupFile(for: url, attributes: attributes)
 					}
 
 					backups.setValue(backupsToReturn)
@@ -74,13 +90,20 @@ extension BackupsService: DependencyKey {
 				return backups.value
 			},
 			createBackup: {
+				guard isEnabled() else { return nil }
+
 				@Dependency(\.date) var date
 				@Dependency(ExportService.self) var export
 				@Dependency(\.fileCoordinator) var fileCoordinator
 				@Dependency(\.fileManager) var fileManager
 				@Dependency(\.preferences) var preferences
 
-				guard let backupsDirectory = try await getBackupDirectory() else { return }
+				guard let backupsDirectory = try await getBackupDirectory() else {
+					throw BackupsService.ServiceError.failedToAccessDirectory
+				}
+
+				let coordinatorId = getNewCoordinatorId()
+				defer { fileCoordinator.discardCoordinator(coordinatorId) }
 
 				var exportUrl: URL?
 				for try await event in export.exportDatabase() {
@@ -92,20 +115,27 @@ extension BackupsService: DependencyKey {
 					break
 				}
 
-				guard let exportUrl else { return }
+				guard let exportUrl else {
+					throw BackupsService.ServiceError.failedToCreateExport
+				}
 
 				let fileName = exportUrl.lastPathComponent
 				let backupFile = backupsDirectory.appending(path: fileName)
+				let result = LockIsolated<BackupFile?>(nil)
 
 				try await fileCoordinator.write(
 					itemAt: backupFile,
-					withCoordinator: getCoordinatorId(),
+					withCoordinator: coordinatorId,
 					options: []
 				) { url in
 					try fileManager.copyItem(at: exportUrl, to: url)
+					let attributes = try fileManager.attributesOfItem(atPath: url.path())
+					let resultFile = getBackupFile(for: url, attributes: attributes)
+					result.setValue(resultFile)
 				}
 
 				preferences.setDouble(forKey: .dataLastBackupDate, to: date().timeIntervalSince1970)
+				return result.value
 			}
 		)
 	}
