@@ -128,7 +128,7 @@ extension BackupsService: DependencyKey {
 					withCoordinator: coordinatorId,
 					options: []
 				) { url in
-					try fileManager.copyItem(at: exportUrl, to: url)
+					try fileManager.moveItem(at: exportUrl, to: url)
 					let attributes = try fileManager.attributesOfItem(atPath: url.path())
 					let resultFile = getBackupFile(for: url, attributes: attributes)
 					result.setValue(resultFile)
