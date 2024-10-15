@@ -215,6 +215,24 @@ public enum Strings {
       /// Announcements
       public static let title = Strings.tr("Localizable", "announcement.halloween2024.title", fallback: "Happy Halloween!")
     }
+    public enum StartingBackups {
+      /// Automatic Backups
+      public static let title = Strings.tr("Localizable", "announcement.startingBackups.title", fallback: "Automatic Backups")
+      public enum Description {
+        public enum AutomaticSyncing {
+          /// Your data will automatically begin syncing in case of data or device loss.
+          public static let description = Strings.tr("Localizable", "announcement.startingBackups.description.automaticSyncing.description", fallback: "Your data will automatically begin syncing in case of data or device loss.")
+          /// Approach now supports iCloud
+          public static let title = Strings.tr("Localizable", "announcement.startingBackups.description.automaticSyncing.title", fallback: "Approach now supports iCloud")
+        }
+        public enum ToRestore {
+          /// To disable sync, or restore data, go to the settings.
+          public static let description = Strings.tr("Localizable", "announcement.startingBackups.description.toRestore.description", fallback: "To disable sync, or restore data, go to the settings.")
+          /// See more in Settings
+          public static let title = Strings.tr("Localizable", "announcement.startingBackups.description.toRestore.title", fallback: "See more in Settings")
+        }
+      }
+    }
   }
   public enum App {
     /// App
@@ -363,6 +381,42 @@ public enum Strings {
           /// Label
           public static let title = Strings.tr("Localizable", "avatar.editor.properties.label.title", fallback: "Label")
         }
+      }
+    }
+  }
+  public enum Backups {
+    public enum Error {
+      public enum FailedToBackup {
+        /// Approach will attempt another backup later. You can ignore this message, or manually perform a sync from the settings.
+        public static let instructions = Strings.tr("Localizable", "backups.error.failedToBackup.instructions", fallback: "Approach will attempt another backup later. You can ignore this message, or manually perform a sync from the settings.")
+        /// Open Settings
+        public static let openSettings = Strings.tr("Localizable", "backups.error.failedToBackup.openSettings", fallback: "Open Settings")
+        /// Something went wrong!
+        public static let subtitle = Strings.tr("Localizable", "backups.error.failedToBackup.subtitle", fallback: "Something went wrong!")
+        /// Backup failed
+        public static let title = Strings.tr("Localizable", "backups.error.failedToBackup.title", fallback: "Backup failed")
+        public enum SyncStatus {
+          /// Your data has never successfully been backed up!
+          public static let neverBackedUp = Strings.tr("Localizable", "backups.error.failedToBackup.syncStatus.neverBackedUp", fallback: "Your data has never successfully been backed up!")
+          /// You've never exported your data!
+          public static let neverExported = Strings.tr("Localizable", "backups.error.failedToBackup.syncStatus.neverExported", fallback: "You've never exported your data!")
+          /// Plural format key: "%#@days@"
+          public static func timeSinceLastBackup(_ p1: Int) -> String {
+            return Strings.tr("Localizable", "backups.error.failedToBackup.syncStatus.timeSinceLastBackup", p1, fallback: "Plural format key: \"%#@days@\"")
+          }
+          /// Plural format key: "%#@days@"
+          public static func timeSinceLastExport(_ p1: Int) -> String {
+            return Strings.tr("Localizable", "backups.error.failedToBackup.syncStatus.timeSinceLastExport", p1, fallback: "Plural format key: \"%#@days@\"")
+          }
+          /// Backup Status
+          public static let title = Strings.tr("Localizable", "backups.error.failedToBackup.syncStatus.title", fallback: "Backup Status")
+        }
+      }
+    }
+    public enum Toast {
+      public enum Success {
+        /// Backups
+        public static let message = Strings.tr("Localizable", "backups.toast.success.message", fallback: "Backup successful")
       }
     }
   }

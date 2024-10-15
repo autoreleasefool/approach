@@ -692,6 +692,16 @@
 "export.lastExportedAt" = "You last exported your data on %@";
 "export.neverExported" = "You've never exported your data before.";
 
+/* Backups */
+"backups.toast.success.message" = "Backup successful";
+"backups.error.failedToBackup.title" = "Backup failed";
+"backups.error.failedToBackup.subtitle" = "Something went wrong!";
+"backups.error.failedToBackup.instructions" = "Approach will attempt another backup later. You can ignore this message, or manually perform a sync from the settings.";
+"backups.error.failedToBackup.syncStatus.title" = "Backup Status";
+"backups.error.failedToBackup.syncStatus.neverBackedUp" = "Your data has never successfully been backed up!";
+"backups.error.failedToBackup.syncStatus.neverExported" = "You've never exported your data!";
+"backups.error.failedToBackup.openSettings" = "Open Settings";
+
 /* App */
 
 "app.name" = "Approach";
@@ -743,6 +753,12 @@
 "announcement.halloween2024.title" = "Happy Halloween!";
 "announcement.halloween2024.message" = "Have a spooky time this Halloween season. Show your spirit by setting one of three new App Icons!";
 "announcement.halloween2024.openSettings" = "Open Settings";
+
+"announcement.startingBackups.title" = "Automatic Backups";
+"announcement.startingBackups.description.automaticSyncing.title" = "Approach now supports iCloud";
+"announcement.startingBackups.description.automaticSyncing.description" = "Your data will automatically begin syncing in case of data or device loss.";
+"announcement.startingBackups.description.toRestore.title" = "See more in Settings";
+"announcement.startingBackups.description.toRestore.description" = "To disable sync, or restore data, go to the settings.";
 
 /* Errors */
 
