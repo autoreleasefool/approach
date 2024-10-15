@@ -1,5 +1,6 @@
 import AccessoriesOverviewFeature
 import AnalyticsServiceInterface
+import AutomaticBackupsFeature
 import BadgesFeature
 import BowlersListFeature
 import ComposableArchitecture
@@ -20,6 +21,7 @@ public struct TabbedContent: Reducer, Sendable {
 		public var settings = Settings.State()
 
 		public var badges = BadgesObserver.State()
+		public var backups = AutomaticBackups.State()
 
 		public init() {}
 	}
@@ -35,6 +37,7 @@ public struct TabbedContent: Reducer, Sendable {
 			case settings(Settings.Action)
 			case statistics(StatisticsOverview.Action)
 			case badges(BadgesObserver.Action)
+			case backups(AutomaticBackups.Action)
 		}
 
 		case view(View)
@@ -75,6 +78,10 @@ public struct TabbedContent: Reducer, Sendable {
 			BadgesObserver()
 		}
 
+		Scope(state: \.backups, action: \.internal.backups) {
+			AutomaticBackups()
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
@@ -90,11 +97,17 @@ public struct TabbedContent: Reducer, Sendable {
 					state.selectedTab = .settings
 					return state.settings.showAppIconList().map { .internal(.settings($0)) }
 
+				case .backups(.internal(.destination(.presented(.backupFailure(.view(.didTapOpenSettingsButton)))))):
+					state.selectedTab = .settings
+					// TODO: Open backup settings
+					return .none
+
 				case .accessories(.view), .accessories(.internal), .accessories(.delegate(.doNothing)),
 						.bowlersList(.view), .bowlersList(.internal), .bowlersList(.delegate(.doNothing)),
 						.settings(.view), .settings(.internal), .settings(.delegate(.doNothing)), .settings(.binding),
 						.statistics(.view), .statistics(.internal), .statistics(.delegate(.doNothing)),
-						.badges(.view), .badges(.internal), .badges(.delegate(.doNothing)):
+						.badges(.view), .badges(.internal), .badges(.delegate(.doNothing)),
+						.backups(.view), .backups(.internal), .backups(.delegate(.doNothing)):
 					return .none
 				}
 

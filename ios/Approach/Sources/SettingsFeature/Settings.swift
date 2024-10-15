@@ -3,6 +3,7 @@ import AppIconServiceInterface
 import AppInfoPackageServiceInterface
 import ArchiveListFeature
 import AssetsLibrary
+import AutomaticBackupsFeature
 import BundlePackageServiceInterface
 import ComposableArchitecture
 import ConstantsLibrary

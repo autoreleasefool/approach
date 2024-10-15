@@ -1,5 +1,6 @@
 import AccessoriesOverviewFeature
 import AssetsLibrary
+import AutomaticBackupsFeature
 import BadgesFeature
 import BowlersListFeature
 import ComposableArchitecture
@@ -55,6 +56,7 @@ public struct TabbedContentView: View {
 		.tint(Asset.Colors.Action.default)
 		.task { await send(.didAppear).finish() }
 		.observeBadges(store: store.scope(state: \.badges, action: \.internal.badges))
+		.automaticBackups(store: store.scope(state: \.backups, action: \.internal.backups))
 	}
 }
 

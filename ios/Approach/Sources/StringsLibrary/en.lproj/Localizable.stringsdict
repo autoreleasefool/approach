@@ -2,6 +2,38 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>backups.error.failedToBackup.syncStatus.timeSinceLastBackup</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@days@</string>
+		<key>days</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%d day since last sync</string>
+			<key>other</key>
+			<string>%d days since last sync</string>
+		</dict>
+	</dict>
+	<key>backups.error.failedToBackup.syncStatus.timeSinceLastExport</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@days@</string>
+		<key>days</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%d day since last export</string>
+			<key>other</key>
+			<string>%d days since last export</string>
+		</dict>
+	</dict>
 	<key>series.editor.fields.numberOfGames</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
