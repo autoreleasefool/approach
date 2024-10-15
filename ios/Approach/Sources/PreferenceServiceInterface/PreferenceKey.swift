@@ -30,7 +30,7 @@ public enum PreferenceKey: String, Sendable {
 	case analyticsOptInStatus                       // default: "optIn"
 
 	// MARK: - Data Management
-	case dataLastExportDate                         // default: 0
+	case dataLastExportDate                         // default: nil // 0
 	case dataLastBackupDate                         // default: nil // 0
 	case dataICloudBackupEnabled                    // default: true
 }

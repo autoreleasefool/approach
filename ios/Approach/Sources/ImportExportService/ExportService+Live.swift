@@ -2,14 +2,21 @@ import DatabaseServiceInterface
 import DateTimeLibrary
 import Dependencies
 import FileManagerPackageServiceInterface
+import Foundation
 import GRDB
 import ImportExportServiceInterface
+import PreferenceServiceInterface
 
 extension ExportService: DependencyKey {
 	public static var liveValue: Self {
 		let exportCache = LockIsolated<Set<String>>([])
 
 		return Self(
+			lastExportDate: {
+				@Dependency(\.preferences) var preferences
+				guard let lastExportAt = preferences.double(forKey: .dataLastExportDate) else { return nil }
+				return Date(timeIntervalSince1970: lastExportAt)
+			},
 			exportDatabase: {
 				.init { continuation in
 					@Dependency(DatabaseService.self) var database

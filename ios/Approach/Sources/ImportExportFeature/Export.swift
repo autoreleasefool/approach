@@ -16,12 +16,15 @@ public struct Export: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var exportUrl: URL?
-		public var lastExportAt: Date
+		public var lastExportAt: Date?
+		public var daysSinceLastExport: DaysSince
 		public var errorMessage: String?
 
 		public init() {
-			@Dependency(\.preferences) var preferences
-			self.lastExportAt = Date(timeIntervalSince1970: preferences.double(forKey: .dataLastExportDate) ?? 0)
+			@Dependency(\.date) var date
+			@Dependency(ExportService.self) var export
+			self.lastExportAt = export.lastExportDate()
+			self.daysSinceLastExport = export.lastExportDate()?.daysSince(date()) ?? .never
 		}
 
 		public var shareUrl: URL { exportUrl ?? URL(string: "https://tryapproach.app")! }
@@ -146,11 +149,27 @@ public struct ExportView: View {
 
 				Section {
 					Text(Strings.Export.weRecommend)
-				} footer: {
-					if store.lastExportAt.timeIntervalSince1970 == .zero {
-						Text(Strings.Export.neverExported)
-					} else {
-						Text(Strings.Export.lastExportedAt(store.lastExportAt.longFormat))
+				}
+
+				Section {
+					HStack(spacing: .standardSpacing) {
+						let (warningSymbol, warningSymbolColor) = store.daysSinceLastExport.warningSymbol()
+						Image(systemSymbol: warningSymbol)
+							.foregroundStyle(warningSymbolColor)
+
+						Group {
+							switch store.daysSinceLastExport {
+							case .never:
+								Text(Strings.Export.neverExported)
+							case .days:
+								if let lastExportAt = store.lastExportAt {
+									Text(Strings.Export.lastExportedAt(lastExportAt.longFormat))
+								} else {
+									Text(Strings.Export.neverExported)
+								}
+							}
+						}
+						.frame(maxWidth: .infinity, alignment: .leading)
 					}
 				}
 
