@@ -11,8 +11,6 @@ import ViewsLibrary
 
 @Reducer
 public struct BackupFailure: Reducer, Sendable {
-	fileprivate static let daysSinceWarningCutoff = 14
-
 	@ObservableState
 	public struct State: Equatable {
 		public let errorDescription: String
@@ -23,22 +21,10 @@ public struct BackupFailure: Reducer, Sendable {
 			self.errorDescription = errorDescription
 
 			@Dependency(\.date) var date
-			@Dependency(\.preferences) var preferences
-			if let lastExportAt = preferences.double(forKey: .dataLastExportDate) {
-				let lastExportDate = Date(timeIntervalSince1970: lastExportAt)
-				let daysSince = date().timeIntervalSince(lastExportDate)
-				daysSinceLastExport = .days(daysSince.asDaysRoundingDown)
-			} else {
-				daysSinceLastExport = .never
-			}
-
+			@Dependency(ExportService.self) var export
 			@Dependency(BackupsService.self) var backups
-			if let lastBackupDate = backups.lastSuccessfulBackupDate() {
-				let daysSince = date().timeIntervalSince(lastBackupDate)
-				daysSinceLastBackup = .days(daysSince.asDaysRoundingDown)
-			} else {
-				daysSinceLastBackup = .never
-			}
+			daysSinceLastBackup = backups.lastSuccessfulBackupDate()?.daysSince(date()) ?? .never
+			daysSinceLastExport = export.lastExportDate()?.daysSince(date()) ?? .never
 		}
 	}
 
@@ -55,18 +41,13 @@ public struct BackupFailure: Reducer, Sendable {
 		case `internal`(Internal)
 	}
 
-	public enum DaysSince: Equatable {
-		case never
-		case days(Int)
-	}
-
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(BackupsService.self) var backups
 	@Dependency(ExportService.self) var exports
 	@Dependency(\.preferences) var preferences
 
 	public var body: some ReducerOf<Self> {
-		Reduce<State, Action> { state, action in
+		Reduce<State, Action> { _, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
@@ -212,34 +193,6 @@ public struct BackupFailureView: View {
 			RoundedRectangle(cornerRadius: .standardRadius)
 				.fill(Asset.Colors.Background.secondary.swiftUIColor)
 		)
-	}
-}
-
-extension BackupFailure.DaysSince {
-	var backgroundColor: Color {
-		switch self {
-		case .never:
-			Asset.Colors.Error.default.swiftUIColor
-		case let .days(days):
-			if days < BackupFailure.daysSinceWarningCutoff {
-				Asset.Colors.Warning.background.swiftUIColor
-			} else {
-				Asset.Colors.Success.default.swiftUIColor
-			}
-		}
-	}
-
-	var foregroundColor: Color {
-		switch self {
-		case .never:
-			Asset.Colors.Text.onError.swiftUIColor
-		case let .days(days):
-			if days < BackupFailure.daysSinceWarningCutoff {
-				Color.black
-			} else {
-				Asset.Colors.Text.onSuccess.swiftUIColor
-			}
-		}
 	}
 }
 
