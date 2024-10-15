@@ -571,6 +571,7 @@
 "settings.data.title" = "Data";
 "settings.data.import" = "Import Data";
 "settings.data.export" = "Export Data";
+"settings.data.automaticBackups" = "Automatic Backups";
 "settings.developer.name" = "Joseph Roque";
 "settings.developer.contact" = "Contact";
 "settings.developer.mastodonHandle" = "@autoreleasefool@iosdev.space";

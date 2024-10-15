@@ -162,13 +162,14 @@ public struct BackupFailureView: View {
 				Strings.Backups.Error.FailedToBackup.SyncStatus.neverBackedUp
 			}
 
+			let (backupForeground, backupBackground) = store.daysSinceLastBackup.bannerStyle()
 			Text(daysSinceLastBackup)
-				.foregroundColor(store.daysSinceLastBackup.foregroundColor)
+				.foregroundStyle(backupForeground)
 				.frame(maxWidth: .infinity, alignment: .leading)
 				.padding()
 				.background(
 					RoundedRectangle(cornerRadius: .standardRadius)
-						.fill(store.daysSinceLastBackup.backgroundColor)
+						.fill(backupBackground)
 				)
 				.padding(.bottom, .smallSpacing)
 
@@ -179,13 +180,14 @@ public struct BackupFailureView: View {
 				Strings.Backups.Error.FailedToBackup.SyncStatus.neverExported
 			}
 
+			let (exportForeground, exportBackground) = store.daysSinceLastExport.bannerStyle()
 			Text(daysSinceLastExport)
-				.foregroundColor(store.daysSinceLastExport.foregroundColor)
+				.foregroundStyle(exportForeground)
 				.frame(maxWidth: .infinity, alignment: .leading)
 				.padding()
 				.background(
 					RoundedRectangle(cornerRadius: .standardRadius)
-						.fill(store.daysSinceLastExport.backgroundColor)
+						.fill(exportBackground)
 				)
 		}
 		.padding()

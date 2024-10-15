@@ -8,6 +8,7 @@ import BundlePackageServiceInterface
 import ComposableArchitecture
 import ConstantsLibrary
 import DatabaseMockingServiceInterface
+import DateTimeLibrary
 import EmailServiceInterface
 import FeatureActionLibrary
 import FeatureFlagsLibrary
@@ -17,9 +18,11 @@ import ImportExportFeature
 import ImportExportServiceInterface
 import OpponentsListFeature
 import PasteboardPackageServiceInterface
+import PreferenceServiceInterface
 import StringsLibrary
 
 @Reducer
+// swiftlint:disable:next type_body_length
 public struct Settings: Reducer, Sendable {
 
 	@ObservableState
@@ -38,17 +41,28 @@ public struct Settings: Reducer, Sendable {
 		public let appVersion: String
 
 		public let isImportEnabled: Bool
+		public let isAutomaticBackupsEnabled: Bool
 		public let isDeveloperOptionsEnabled: Bool
+
+		public var daysSinceLastBackup: DaysSince
+		public var daysSinceLastExport: DaysSince
 
 		public init() {
 			@Dependency(\.featureFlags) var featureFlags
 			self.isShowingDeveloperOptions = featureFlags.isFlagEnabled(.developerOptions)
 			self.isImportEnabled = featureFlags.isFlagEnabled(.dataImport)
+			self.isAutomaticBackupsEnabled = featureFlags.isFlagEnabled(.automaticBackups)
 			self.isDeveloperOptionsEnabled = featureFlags.isFlagEnabled(.developerOptions)
 
 			@Dependency(\.appInfo) var appInfo
 			self.appVersion = appInfo.getFullAppVersion()
 			self.appName = Strings.App.name
+
+			@Dependency(\.date) var date
+			@Dependency(ExportService.self) var export
+			@Dependency(BackupsService.self) var backups
+			daysSinceLastBackup = backups.lastSuccessfulBackupDate()?.daysSince(date()) ?? .never
+			daysSinceLastExport = export.lastExportDate()?.daysSince(date()) ?? .never
 		}
 
 		public mutating func showAppIconList() -> Effect<Settings.Action> {
@@ -76,6 +90,7 @@ public struct Settings: Reducer, Sendable {
 			case didTapViewSource
 			case didTapImportButton
 			case didTapExportButton
+			case didTapBackupsButton
 			case didTapForceCrashButton
 		}
 		@CasePathable public enum Delegate { case doNothing }
@@ -96,6 +111,7 @@ public struct Settings: Reducer, Sendable {
 	public enum Destination {
 		case archive(ArchiveList)
 		case appIcon(AppIconList)
+		case backups(BackupsList)
 		case featureFlags(FeatureFlagsList)
 		case opponentsList(OpponentsList)
 		case statistics(StatisticsSettings)
@@ -111,12 +127,15 @@ public struct Settings: Reducer, Sendable {
 
 	@Dependency(\.analytics) var analytics
 	@Dependency(AppIconService.self) var appIcon
+	@Dependency(BackupsService.self) var backups
 	@Dependency(\.crash) var crash
 	@Dependency(DatabaseMockingService.self) var databaseMocking
-	@Dependency(EmailService.self) var email
+	@Dependency(\.date) var date
 	@Dependency(ExportService.self) var export
+	@Dependency(EmailService.self) var email
 	@Dependency(\.openURL) var openURL
 	@Dependency(\.pasteboard) var pasteboard
+	@Dependency(\.preferences) var preferences
 
 	public init() {}
 
@@ -128,6 +147,8 @@ public struct Settings: Reducer, Sendable {
 			case let .view(viewAction):
 				switch viewAction {
 				case .onAppear:
+					state.daysSinceLastBackup = backups.lastSuccessfulBackupDate()?.daysSince(date()) ?? .never
+					state.daysSinceLastExport = export.lastExportDate()?.daysSince(date()) ?? .never
 					return .none
 
 				case .didFirstAppear:
@@ -206,6 +227,10 @@ public struct Settings: Reducer, Sendable {
 				case .didTapExportButton:
 					state.destination = .export(Export.State())
 					return .none
+
+				case .didTapBackupsButton:
+					state.destination = .backups(BackupsList.State())
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -232,12 +257,13 @@ public struct Settings: Reducer, Sendable {
 						.destination(.presented(.appIcon(.delegate(.doNothing)))),
 						.destination(.presented(.analytics(.delegate(.doNothing)))),
 						.destination(.presented(.export(.delegate(.doNothing)))),
-						.destination(.presented(.import(.delegate(.doNothing)))):
+						.destination(.presented(.import(.delegate(.doNothing)))),
+						.destination(.presented(.backups(.delegate(.doNothing)))):
 					return .none
 
 				case .destination(.dismiss):
 					switch state.destination {
-					case .export:
+					case .export, .backups:
 						return .run { _ in export.cleanUp() }
 					case .appIcon:
 						return refreshAppIcon()
@@ -256,6 +282,7 @@ public struct Settings: Reducer, Sendable {
 						.destination(.presented(.export(.internal))), .destination(.presented(.export(.view))),
 						.destination(.presented(.import(.internal))), .destination(.presented(.import(.view))),
 						.destination(.presented(.import(.binding))),
+						.destination(.presented(.backups(.internal))), .destination(.presented(.backups(.view))),
 						.destination(.presented(.alert(.didTapDismissButton))):
 					return .none
 				}
@@ -288,6 +315,10 @@ public struct Settings: Reducer, Sendable {
 				return Analytics.Settings.ViewedAnalytics()
 			case .view(.didTapExportButton):
 				return Analytics.Settings.ViewedDataExport()
+			case .view(.didTapImportButton):
+				return Analytics.Settings.ViewedDataImport()
+			case .view(.didTapBackupsButton):
+				return Analytics.Settings.ViewedBackups()
 			default:
 				return nil
 			}
