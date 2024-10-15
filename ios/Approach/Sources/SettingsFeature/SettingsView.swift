@@ -1,5 +1,6 @@
 import ArchiveListFeature
 import AssetsLibrary
+import AutomaticBackupsFeature
 import ComposableArchitecture
 import ConstantsLibrary
 import ExtensionsPackageLibrary
@@ -53,8 +54,12 @@ public struct SettingsView: View {
 
 			DataSection(
 				isImportButtonVisible: store.isImportEnabled,
+				isBackupsButtonVisible: store.isAutomaticBackupsEnabled,
+				daysSinceLastBackup: store.daysSinceLastBackup,
+				daysSinceLastExport: store.daysSinceLastExport,
 				onTapImportButton: { send(.didTapImportButton) },
-				onTapExportButton: { send(.didTapExportButton) }
+				onTapExportButton: { send(.didTapExportButton) },
+				onTapBackupsButton: { send(.didTapBackupsButton) }
 			)
 
 			DevelopmentSection(
@@ -89,6 +94,7 @@ public struct SettingsView: View {
 			.analytics(store.scope(state: \.destination?.analytics, action: \.internal.destination.analytics))
 			.export(store.scope(state: \.destination?.export, action: \.internal.destination.export))
 			.import(store.scope(state: \.destination?.import, action: \.internal.destination.import))
+			.backups(store.scope(state: \.destination?.backups, action: \.internal.destination.backups))
 			.alert(store.scope(state: \.destination?.alert, action: \.internal.destination.alert))
 	}
 
@@ -107,6 +113,12 @@ public struct SettingsView: View {
 	fileprivate func `import`(_ store: Binding<StoreOf<Import>?>) -> some View {
 		navigationDestination(item: store) {
 			ImportView(store: $0)
+		}
+	}
+
+	fileprivate func backups(_ store: Binding<StoreOf<BackupsList>?>) -> some View {
+		navigationDestination(item: store) {
+			BackupsListView(store: $0)
 		}
 	}
 

@@ -1,10 +1,17 @@
+import AssetsLibrary
+import AutomaticBackupsFeature
+import DateTimeLibrary
 import StringsLibrary
 import SwiftUI
 
 struct DataSection: View {
 	let isImportButtonVisible: Bool
+	let isBackupsButtonVisible: Bool
+	let daysSinceLastBackup: DaysSince
+	let daysSinceLastExport: DaysSince
 	let onTapImportButton: () -> Void
 	let onTapExportButton: () -> Void
+	let onTapBackupsButton: () -> Void
 
 	var body: some View {
 		Section(Strings.Settings.Data.title) {
@@ -13,8 +20,43 @@ struct DataSection: View {
 					.buttonStyle(.navigation)
 			}
 
-			Button(Strings.Settings.Data.export, action: onTapExportButton)
+			Button(action: onTapExportButton) {
+				HStack {
+					let (warningSymbol, warningSymbolColor) = daysSinceLastExport.warningSymbol()
+					Image(systemSymbol: warningSymbol)
+						.foregroundStyle(warningSymbolColor)
+
+					Text(Strings.Settings.Data.export)
+				}
+			}
+			.buttonStyle(.navigation)
+
+			if isBackupsButtonVisible {
+				Button(action: onTapBackupsButton) {
+					HStack {
+						let (warningSymbol, warningSymbolColor) = daysSinceLastBackup.warningSymbol()
+						Image(systemSymbol: warningSymbol)
+							.foregroundStyle(warningSymbolColor)
+
+						Text(Strings.Settings.Data.automaticBackups)
+					}
+				}
 				.buttonStyle(.navigation)
+			}
 		}
+	}
+}
+
+#Preview {
+	List {
+		DataSection(
+			isImportButtonVisible: true,
+			isBackupsButtonVisible: true,
+			daysSinceLastBackup: .days(15),
+			daysSinceLastExport: .never,
+			onTapImportButton: {},
+			onTapExportButton: {},
+			onTapBackupsButton: {}
+		)
 	}
 }

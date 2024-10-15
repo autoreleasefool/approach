@@ -1423,6 +1423,8 @@ public enum Strings {
       public static let title = Strings.tr("Localizable", "settings.archive.title", fallback: "Archive")
     }
     public enum Data {
+      /// Automatic Backups
+      public static let automaticBackups = Strings.tr("Localizable", "settings.data.automaticBackups", fallback: "Automatic Backups")
       /// Export Data
       public static let export = Strings.tr("Localizable", "settings.data.export", fallback: "Export Data")
       /// Import Data
