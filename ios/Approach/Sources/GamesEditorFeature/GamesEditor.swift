@@ -519,6 +519,7 @@ public struct GamesEditor: Reducer, Sendable {
 		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
+		.ifLet(\.$toast, action: \.internal.toast) {}
 
 		GamesEditorAnalyticsReducer()
 
