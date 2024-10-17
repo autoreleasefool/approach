@@ -8,6 +8,8 @@ public struct BackupsService: Sendable {
 	public var lastSuccessfulBackupDate: @Sendable () -> Date?
 	public var listBackups: @Sendable () async throws -> [BackupFile]
 	public var createBackup: @Sendable (_ skipIfWithinMinimumTime: Bool) async throws -> BackupFile?
+	public var restoreBackup: @Sendable (_ fromUrl: URL) async throws -> Void
+	public var deleteBackup: @Sendable (_ fromUrl: URL) async throws -> Void
 }
 
 extension BackupsService {
