@@ -385,6 +385,12 @@ public enum Strings {
     }
   }
   public enum Backups {
+    public enum Delete {
+      /// Are you sure you want to delete this backup? It can't be restored later.
+      public static let message = Strings.tr("Localizable", "backups.delete.message", fallback: "Are you sure you want to delete this backup? It can't be restored later.")
+      /// Delete backup?
+      public static let title = Strings.tr("Localizable", "backups.delete.title", fallback: "Delete backup?")
+    }
     public enum Error {
       public enum FailedToBackup {
         /// Approach will attempt another backup later. You can ignore this message, or manually perform a sync from the settings.
@@ -451,6 +457,18 @@ public enum Strings {
         public static let description = Strings.tr("Localizable", "backups.list.whyEnable.description", fallback: "Approach can automatically backup your data to your iCloud account in case of lost data or a lost device. Backups will enable you to recover your Approach data any time from the Settings.")
         /// Why enable backups?
         public static let title = Strings.tr("Localizable", "backups.list.whyEnable.title", fallback: "Why enable backups?")
+      }
+    }
+    public enum Restore {
+      /// Restoring your data from a backup will overwrite any new data you've recorded since this backup. Are you sure about this?
+      public static let message = Strings.tr("Localizable", "backups.restore.message", fallback: "Restoring your data from a backup will overwrite any new data you've recorded since this backup. Are you sure about this?")
+      /// Data successfully restored!
+      public static let successRestoring = Strings.tr("Localizable", "backups.restore.successRestoring", fallback: "Data successfully restored!")
+      /// Restore from backup?
+      public static let title = Strings.tr("Localizable", "backups.restore.title", fallback: "Restore from backup?")
+      public enum Action {
+        /// Restore
+        public static let restore = Strings.tr("Localizable", "backups.restore.action.restore", fallback: "Restore")
       }
     }
     public enum Toast {

@@ -57,6 +57,13 @@ extension BackupsService: DependencyKey {
 			return BackupFile(url: url, dateCreated: dateCreated, fileSizeBytes: fileSize)
 		}
 
+		@Sendable func getTemporaryImportUrl() throws -> URL {
+			@Dependency(\.fileManager) var fileManager
+			return try fileManager
+				.getTemporaryDirectory()
+				.appending(path: "import.tmp")
+		}
+
 		return Self(
 			isEnabled: isEnabled,
 			lastSuccessfulBackupDate: lastSuccessfulBackupDate,
@@ -152,6 +159,53 @@ extension BackupsService: DependencyKey {
 
 				preferences.setDouble(forKey: .dataLastBackupDate, to: date().timeIntervalSince1970)
 				return result.value
+			},
+			restoreBackup: { url in
+				@Dependency(\.database) var database
+				@Dependency(\.fileCoordinator) var fileCoordinator
+				@Dependency(\.fileManager) var fileManager
+
+				let coordinatorId = getNewCoordinatorId()
+				defer { fileCoordinator.discardCoordinator(coordinatorId) }
+
+				try database.close()
+				defer { database.initialize() }
+
+				let temporaryImportUrl = try getTemporaryImportUrl()
+				try fileManager.removeIfExists(temporaryImportUrl)
+
+				for dbUrlItem in database.dbUrl().relativeSQLiteFileUrls {
+					try fileManager.removeIfExists(dbUrlItem)
+				}
+
+				try await fileCoordinator.read(
+					itemAt: url,
+					withCoordinator: coordinatorId,
+					options: []
+				) { url in
+					try fileManager.copyItem(at: url, to: temporaryImportUrl)
+				}
+
+				switch try FileType.of(url: temporaryImportUrl) {
+				case .sqlite:
+					try fileManager.copyItem(at: temporaryImportUrl, to: database.dbUrl())
+				case .none: break
+				}
+			},
+			deleteBackup: { url in
+				@Dependency(\.fileCoordinator) var fileCoordinator
+				@Dependency(\.fileManager) var fileManager
+
+				let coordinatorId = getNewCoordinatorId()
+				defer { fileCoordinator.discardCoordinator(coordinatorId) }
+
+				try await fileCoordinator.write(
+					itemAt: url,
+					withCoordinator: coordinatorId,
+					options: [.forDeleting]
+				) { url in
+					try fileManager.remove(url)
+				}
 			}
 		)
 	}

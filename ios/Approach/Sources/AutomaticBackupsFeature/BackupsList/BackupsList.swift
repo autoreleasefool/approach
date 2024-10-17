@@ -15,12 +15,13 @@ import ViewsLibrary
 public struct BackupsList: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
-		public var errorDescription: String?
 		public var daysSinceLastBackup: DaysSince
 		public var backups: IdentifiedArrayOf<BackupFile> = []
+
 		public var isAutomaticBackupsEnabled: Bool
 
 		public var errors: Errors<ErrorID>.State = .init()
+		@Presents public var destination: Destination.State?
 		@Presents public var toast: ToastState<ToastAction>?
 
 		public init() {
@@ -45,9 +46,12 @@ public struct BackupsList: Reducer, Sendable {
 		@CasePathable public enum Internal {
 			case didLoadRecentBackups(Result<[BackupFile], Error>)
 			case didCreateBackup(Result<BackupFile?, Error>)
+			case didRestoreBackup(Result<Void, Error>)
+			case didDeleteBackup(Result<Void, Error>)
 
 			case errors(Errors<ErrorID>.Action)
 			case toast(PresentationAction<ToastAction>)
+			case destination(PresentationAction<Destination.Action>)
 		}
 		@CasePathable public enum Delegate { case doNothing }
 
@@ -57,6 +61,17 @@ public struct BackupsList: Reducer, Sendable {
 		case binding(BindingAction<State>)
 	}
 
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case alert(AlertState<AlertAction>)
+	}
+
+	public enum AlertAction: Equatable {
+		case didTapDeleteButton(BackupFile)
+		case didTapRestoreButton(BackupFile)
+		case didTapDismissButton
+	}
+
 	public enum SwipeAction {
 		case delete
 	}
@@ -64,6 +79,8 @@ public struct BackupsList: Reducer, Sendable {
 	public enum ErrorID: Hashable {
 		case failedToLoadBackups
 		case failedToCreateBackup
+		case failedToRestore
+		case failedToDelete
 	}
 
 	public enum ToastAction: Equatable, ToastableAction {
@@ -96,12 +113,12 @@ public struct BackupsList: Reducer, Sendable {
 
 				case let .didTapBackupFile(id):
 					guard let file = state.backups[id: id] else { return .none }
-					// TODO: request overwrite
+					state.destination = .alert(Self.restore(file: file))
 					return .none
 
 				case let .didSwipe(id, .delete):
 					guard let file = state.backups[id: id] else { return .none }
-					// TODO: request delete
+					state.destination = .alert(Self.delete(file: file))
 					return .none
 
 				case .didTapManualSyncButton:
@@ -114,7 +131,25 @@ public struct BackupsList: Reducer, Sendable {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case .didRestoreBackup(.success):
+					state.destination = .alert(Self.restoreSuccess())
+					return .none
+
+				case let .didRestoreBackup(.failure(error)):
+					return state.errors
+						.enqueue(.failedToRestore, thrownError: error, toastMessage: Strings.Error.Toast.failedToRestore)
+						.map { .internal(.errors($0)) }
+
+				case .didDeleteBackup(.success):
+					return refreshBackups()
+
+				case let .didDeleteBackup(.failure(error)):
+					return state.errors
+						.enqueue(.failedToDelete, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
+						.map { .internal(.errors($0)) }
+
 				case let .didLoadRecentBackups(.success(backups)):
+					state.daysSinceLastBackup = self.backups.lastSuccessfulBackupDate()?.daysSince(date()) ?? .never
 					state.backups = IdentifiedArrayOf(uniqueElements: backups)
 					return .none
 
@@ -150,7 +185,31 @@ public struct BackupsList: Reducer, Sendable {
 						return .none
 					}
 
-				case .toast(.dismiss), .errors(.internal), .errors(.view), .errors(.delegate(.doNothing)):
+				case let .destination(.presented(.alert(alertAction))):
+					switch alertAction {
+					case let .didTapRestoreButton(file):
+						state.destination = nil
+						return .run { send in
+							await send(.internal(.didRestoreBackup(Result {
+								try await backups.restoreBackup(fromUrl: file.url)
+							})))
+						}
+
+					case let .didTapDeleteButton(file):
+						state.destination = nil
+						return .run { send in
+							await send(.internal(.didDeleteBackup(Result {
+								try await backups.deleteBackup(fromUrl: file.url)
+							})))
+						}
+
+					case .didTapDismissButton:
+						state.destination = nil
+						return .none
+					}
+
+				case .toast(.dismiss), .errors(.internal), .errors(.view), .errors(.delegate(.doNothing)),
+						.destination(.dismiss):
 					return .none
 				}
 
@@ -164,6 +223,7 @@ public struct BackupsList: Reducer, Sendable {
 				return .none
 			}
 		}
+		.ifLet(\.$destination, action: \.internal.destination)
 		.ifLet(\.$toast, action: \.internal.toast) {}
 
 		AnalyticsReducer<State, Action> { _, action in
@@ -190,6 +250,50 @@ public struct BackupsList: Reducer, Sendable {
 			await send(.internal(.didLoadRecentBackups(Result {
 				try await self.backups.listBackups()
 			})), animation: .default)
+		}
+	}
+}
+
+extension BackupsList {
+	static func restore(file: BackupFile) -> AlertState<AlertAction> {
+		AlertState {
+			TextState(Strings.Backups.Restore.title)
+		} actions: {
+			ButtonState(role: .destructive, action: .send(.didTapRestoreButton(file))) {
+				TextState(Strings.Backups.Restore.Action.restore)
+			}
+
+			ButtonState(role: .cancel, action: .send(.didTapDismissButton)) {
+				TextState(Strings.Action.cancel)
+			}
+		} message: {
+			TextState(Strings.Backups.Restore.message)
+		}
+	}
+
+	static func delete(file: BackupFile) -> AlertState<AlertAction> {
+		AlertState {
+			TextState(Strings.Backups.Delete.title)
+		} actions: {
+			ButtonState(role: .destructive, action: .send(.didTapDeleteButton(file))) {
+				TextState(Strings.Action.delete)
+			}
+
+			ButtonState(role: .cancel, action: .send(.didTapDismissButton)) {
+				TextState(Strings.Action.cancel)
+			}
+		} message: {
+			TextState(Strings.Backups.Delete.message)
+		}
+	}
+
+	static func restoreSuccess() -> AlertState<AlertAction> {
+		AlertState {
+			TextState(Strings.Backups.Restore.successRestoring)
+		} actions: {
+			ButtonState(role: .none, action: .send(.didTapDismissButton)) {
+				TextState(Strings.Action.dismiss)
+			}
 		}
 	}
 }
@@ -279,5 +383,7 @@ public struct BackupsListView: View {
 		.navigationTitle(Strings.Backups.List.title)
 		.task { await send(.didStartTask).finish() }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.alert($store.scope(state: \.destination?.alert, action: \.internal.destination.alert))
+		.toast($store.scope(state: \.toast, action: \.internal.toast))
 	}
 }
