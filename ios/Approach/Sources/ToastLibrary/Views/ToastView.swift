@@ -14,7 +14,6 @@ struct ToastView: View {
 			HStack(alignment: .center, spacing: 0) {
 				Text(title)
 					.bold()
-					.frame(maxWidth: .infinity, alignment: .leading)
 					.foregroundColor(style.foreground)
 
 				if let action {
@@ -35,7 +34,7 @@ struct ToastView: View {
 			}
 			.padding()
 			.background(
-				RoundedRectangle(cornerRadius: .standardRadius)
+				RoundedRectangle(cornerRadius: .largeRadius)
 					.fill(style.background.swiftUIColor)
 					.shadow(radius: .smallRadius)
 			)
