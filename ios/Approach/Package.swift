@@ -17,6 +17,7 @@ let package = Package(
 		.library(name: "AnnouncementsFeature", targets: ["AnnouncementsFeature"]),
 		.library(name: "AppFeature", targets: ["AppFeature"]),
 		.library(name: "ArchiveListFeature", targets: ["ArchiveListFeature"]),
+		.library(name: "AutomaticBackupsFeature", targets: ["AutomaticBackupsFeature"]),
 		.library(name: "AvatarEditorFeature", targets: ["AvatarEditorFeature"]),
 		.library(name: "BadgesFeature", targets: ["BadgesFeature"]),
 		.library(name: "BowlerDetailsFeature", targets: ["BowlerDetailsFeature"]),
@@ -153,7 +154,7 @@ let package = Package(
 		.package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.0"),
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.0"),
 		.package(url: "https://github.com/apple/swift-collections.git", from: "1.1.3"),
-		.package(url: "https://github.com/autoreleasefool/swift-utilities.git", from: "2.5.3"),
+		.package(url: "https://github.com/autoreleasefool/swift-utilities.git", from: "2.6.0"),
 		.package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.5"),
 		.package(url: "https://github.com/getsentry/sentry-cocoa.git", from: "8.36.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.29.3"),
@@ -287,7 +288,6 @@ let package = Package(
 			name: "ArchiveListFeature",
 			dependencies: [
 				"BowlersRepositoryInterface",
-				"DateTimeLibrary",
 				"ErrorsFeature",
 				"GamesRepositoryInterface",
 				"LeaguesRepositoryInterface",
@@ -300,6 +300,23 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ArchiveListFeature",
+			]
+		),
+		.target(
+			name: "AutomaticBackupsFeature",
+			dependencies: [
+				.product(name: "SwiftUIExtensionsPackageLibrary", package: "swift-utilities"),
+				"ErrorsFeature",
+				"FeatureFlagsLibrary",
+				"ImportExportServiceInterface",
+				"PreferenceServiceInterface",
+			]
+		),
+		.testTarget(
+			name: "AutomaticBackupsFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"AutomaticBackupsFeature",
 			]
 		),
 		.target(
@@ -508,7 +525,6 @@ let package = Package(
 			name: "ImportExportFeature",
 			dependencies: [
 				.product(name: "SwiftUIExtensionsPackageLibrary", package: "swift-utilities"),
-				"DateTimeLibrary",
 				"ErrorsFeature",
 				"ImportExportServiceInterface",
 				"PreferenceServiceInterface",
@@ -640,7 +656,6 @@ let package = Package(
 			name: "SeriesEditorFeature",
 			dependencies: [
 				"AlleysRepositoryInterface",
-				"DateTimeLibrary",
 				"FormFeature",
 				"ModelsViewsLibrary",
 				"PickableModelsLibrary",
@@ -675,6 +690,7 @@ let package = Package(
 				.product(name: "BundlePackageServiceInterface", package: "swift-utilities"),
 				"AppIconServiceInterface",
 				"ArchiveListFeature",
+				"AutomaticBackupsFeature",
 				"BadgesServiceInterface",
 				"DatabaseMockingServiceInterface",
 				"FeatureFlagsListFeature",
@@ -1320,7 +1336,9 @@ let package = Package(
 				.product(name: "FileManagerPackageServiceInterface", package: "swift-utilities"),
 				"DatabaseServiceInterface",
 				"DateTimeLibrary",
+				"FeatureFlagsLibrary",
 				"ImportExportServiceInterface",
+				"PreferenceServiceInterface",
 			]
 		),
 		.target(
@@ -1902,6 +1920,7 @@ let package = Package(
 			name: "ViewsLibrary",
 			dependencies: [
 				"AssetsLibrary",
+				"DateTimeLibrary",
 				"StringsLibrary",
 			]
 		),
