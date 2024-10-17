@@ -18,12 +18,20 @@ struct BackupFileView: View {
 				.foregroundStyle(Asset.Colors.Success.default.swiftUIColor)
 
 			VStack(alignment: .leading, spacing: .tinySpacing) {
-				LabeledContent(file.dateCreated.longFormat, value: Strings.Backups.List.fileSize(file.fileSizeMb))
+				Text(file.dateCreated.longFormat)
+					.font(.headline)
 
-				if isLatest {
-					Chip(title: Strings.Backups.List.latest, size: .compact, style: .primary)
-				}
+				Text(file.dateCreated.timeFormat)
+					.font(.caption)
 			}
+			.frame(maxWidth: .infinity, alignment: .leading)
+
+			if isLatest {
+				Chip(title: Strings.Backups.List.latest, size: .compact, style: .primary)
+			}
+
+			Text(Strings.Backups.List.fileSize(file.fileSizeMb))
+				.font(.caption2)
 		}
 	}
 }

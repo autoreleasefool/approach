@@ -12,6 +12,17 @@ extension Date {
 		Self.longFormatter.string(from: self)
 	}
 
+	private static let timeFormatter: DateFormatter = {
+		let formatter = DateFormatter()
+		formatter.dateStyle = .none
+		formatter.timeStyle = .long
+		return formatter
+	}()
+
+	public var timeFormat: String {
+		Self.timeFormatter.string(from: self)
+	}
+
 	private static let mediumFormatter: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.dateFormat = "eee, MMM d"
@@ -34,7 +45,7 @@ extension Date {
 
 	private static let machineDateFormatter: DateFormatter = {
 		let formatter = DateFormatter()
-		formatter.dateFormat = "yyyy-MM-dd"
+		formatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
 		return formatter
 	}()
 
