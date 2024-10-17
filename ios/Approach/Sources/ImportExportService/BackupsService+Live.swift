@@ -18,6 +18,12 @@ extension BackupsService: DependencyKey {
 				(preferences.bool(forKey: .dataICloudBackupEnabled) ?? true)
 		}
 
+		@Sendable func lastSuccessfulBackupDate() -> Date? {
+			@Dependency(\.preferences) var preferences
+			guard let lastBackupDate = preferences.double(forKey: .dataLastBackupDate) else { return nil }
+			return Date(timeIntervalSince1970: lastBackupDate)
+		}
+
 		@Sendable func getNewCoordinatorId() -> FileCoordinatorID {
 			@Dependency(\.fileCoordinator) var fileCoordinator
 			return fileCoordinator.createCoordinator()
@@ -53,11 +59,7 @@ extension BackupsService: DependencyKey {
 
 		return Self(
 			isEnabled: isEnabled,
-			lastSuccessfulBackupDate: {
-				@Dependency(\.preferences) var preferences
-				guard let lastBackupDate = preferences.double(forKey: .dataLastBackupDate) else { return nil }
-				return Date(timeIntervalSince1970: lastBackupDate)
-			},
+			lastSuccessfulBackupDate: lastSuccessfulBackupDate,
 			listBackups: {
 				guard isEnabled() else { return [] }
 
@@ -90,10 +92,22 @@ extension BackupsService: DependencyKey {
 
 				return backups.value
 			},
-			createBackup: {
+			createBackup: { skipIfWithinMinimumTime in
 				guard isEnabled() else { return nil }
 
 				@Dependency(\.date) var date
+
+				if skipIfWithinMinimumTime {
+					@Dependency(\.calendar) var calendar
+
+					let lastBackupDate = lastSuccessfulBackupDate() ?? .distantPast
+
+					let dayOfBackup = calendar.startOfDay(for: lastBackupDate)
+					guard date().timeIntervalSince(dayOfBackup) > BackupsService.MINIMUM_SECONDS_BETWEEN_BACKUPS else {
+						return nil
+					}
+				}
+
 				@Dependency(ExportService.self) var export
 				@Dependency(\.fileCoordinator) var fileCoordinator
 				@Dependency(\.fileManager) var fileManager
