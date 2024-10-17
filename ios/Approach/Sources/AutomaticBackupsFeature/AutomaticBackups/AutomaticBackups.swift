@@ -38,7 +38,6 @@ public struct AutomaticBackups: Reducer, Sendable {
 	public enum ToastAction: Equatable, ToastableAction {
 		case didDismiss
 		case didFinishDismissing
-		case didTapOpenBackupsButton
 	}
 
 	public init() {}
@@ -59,13 +58,8 @@ public struct AutomaticBackups: Reducer, Sendable {
 					return .run { send in
 						guard self.backups.isEnabled() else { return }
 
-						let lastBackupDate = backups.lastSuccessfulBackupDate() ?? .distantPast
-
-						let dayOfBackup = calendar.startOfDay(for: lastBackupDate)
-						guard date().timeIntervalSince(dayOfBackup) > BackupsService.MINIMUM_SECONDS_BETWEEN_BACKUPS else { return }
-
 						await send(.internal(.didCreateBackup(Result {
-							try await backups.createBackup()
+							try await backups.createBackup(skipIfWithinMinimumTime: true)
 						})))
 					}
 				}
@@ -89,9 +83,6 @@ public struct AutomaticBackups: Reducer, Sendable {
 
 				case let .toast(.presented(toastAction)):
 					switch toastAction {
-					case .didTapOpenBackupsButton:
-						return .none
-
 					case .didDismiss:
 						state.toast = nil
 						return .none
