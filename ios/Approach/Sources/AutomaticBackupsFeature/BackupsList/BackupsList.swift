@@ -8,6 +8,7 @@ import PreferenceServiceInterface
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsPackageLibrary
+import ToastLibrary
 import ViewsLibrary
 
 @Reducer
@@ -20,6 +21,7 @@ public struct BackupsList: Reducer, Sendable {
 		public var isAutomaticBackupsEnabled: Bool
 
 		public var errors: Errors<ErrorID>.State = .init()
+		@Presents public var toast: ToastState<ToastAction>?
 
 		public init() {
 			@Dependency(\.date) var date
@@ -42,8 +44,10 @@ public struct BackupsList: Reducer, Sendable {
 
 		@CasePathable public enum Internal {
 			case didLoadRecentBackups(Result<[BackupFile], Error>)
+			case didCreateBackup(Result<BackupFile?, Error>)
 
 			case errors(Errors<ErrorID>.Action)
+			case toast(PresentationAction<ToastAction>)
 		}
 		@CasePathable public enum Delegate { case doNothing }
 
@@ -59,6 +63,12 @@ public struct BackupsList: Reducer, Sendable {
 
 	public enum ErrorID: Hashable {
 		case failedToLoadBackups
+		case failedToCreateBackup
+	}
+
+	public enum ToastAction: Equatable, ToastableAction {
+		case didDismiss
+		case didFinishDismissing
 	}
 
 	public init() {}
@@ -82,11 +92,7 @@ public struct BackupsList: Reducer, Sendable {
 					return .none
 
 				case .didStartTask:
-					return .run { send in
-						await send(.internal(.didLoadRecentBackups(Result {
-							try await self.backups.listBackups()
-						})))
-					}
+					return refreshBackups()
 
 				case let .didTapBackupFile(id):
 					guard let file = state.backups[id: id] else { return .none }
@@ -99,8 +105,11 @@ public struct BackupsList: Reducer, Sendable {
 					return .none
 
 				case .didTapManualSyncButton:
-					// TODO: force manual sync
-					return .none
+					return .run { send in
+						await send(.internal(.didCreateBackup(Result {
+							try await backups.createBackup(skipIfWithinMinimumTime: false)
+						})))
+					}
 				}
 
 			case let .internal(internalAction):
@@ -109,12 +118,39 @@ public struct BackupsList: Reducer, Sendable {
 					state.backups = IdentifiedArrayOf(uniqueElements: backups)
 					return .none
 
+				case .didCreateBackup(.success(.some)):
+					state.toast = ToastState(
+						content: .toast(SnackContent(message: Strings.Backups.Toast.Success.message)),
+						isDimmedBackgroundEnabled: false,
+						style: .success
+					)
+					return refreshBackups()
+
+				case .didCreateBackup(.success(.none)):
+					return .none
+
+				case let .didCreateBackup(.failure(error)):
+					return state.errors
+						.enqueue(.failedToCreateBackup, thrownError: error, toastMessage: Strings.Error.Toast.failedToSave)
+						.map { .internal(.errors($0)) }
+
 				case let .didLoadRecentBackups(.failure(error)):
 					return state.errors
 						.enqueue(.failedToLoadBackups, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
 						.map { .internal(.errors($0)) }
 
-				case .errors(.internal), .errors(.view), .errors(.delegate(.doNothing)):
+				case let .toast(.presented(toastAction)):
+					switch toastAction {
+					case .didDismiss:
+						state.toast = nil
+						return .none
+
+					case .didFinishDismissing:
+						state.toast = nil
+						return .none
+					}
+
+				case .toast(.dismiss), .errors(.internal), .errors(.view), .errors(.delegate(.doNothing)):
 					return .none
 				}
 
@@ -128,6 +164,7 @@ public struct BackupsList: Reducer, Sendable {
 				return .none
 			}
 		}
+		.ifLet(\.$toast, action: \.internal.toast) {}
 
 		AnalyticsReducer<State, Action> { _, action in
 			switch action {
@@ -145,6 +182,14 @@ public struct BackupsList: Reducer, Sendable {
 			default:
 				return nil
 			}
+		}
+	}
+
+	private func refreshBackups() -> Effect<Action> {
+		.run { send in
+			await send(.internal(.didLoadRecentBackups(Result {
+				try await self.backups.listBackups()
+			})), animation: .default)
 		}
 	}
 }

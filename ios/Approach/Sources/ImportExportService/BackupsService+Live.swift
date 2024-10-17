@@ -83,9 +83,10 @@ extension BackupsService: DependencyKey {
 						options: []
 					)
 
-					let backupsToReturn: [BackupFile] = try contents.compactMap {
-						try getBackupFile(for: $0)
-					}
+					let backupsToReturn: [BackupFile] = try contents
+						.compactMap { try getBackupFile(for: $0) }
+						.sorted(by: { $0.dateCreated < $1.dateCreated })
+						.reversed()
 
 					backups.setValue(backupsToReturn)
 				}
