@@ -1,5 +1,5 @@
 {
-  "originHash" : "9f974443c36aaabaaec089a1479f98aed578124213968ef1d89ea2bb0c315ef3",
+  "originHash" : "13231c3fb492858e7c05722792e5aae5a1c18f267a6ad78edac482275294ec19",
   "pins" : [
     {
       "identity" : "cocoalumberjack",
@@ -195,8 +195,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/autoreleasefool/swift-utilities.git",
       "state" : {
-        "revision" : "37d082cdc9eb4b20844019c62929d272f0db417e",
-        "version" : "2.5.3"
+        "revision" : "f9f19119c9ca70f1270715cac78853acb8f4a557",
+        "version" : "2.6.0"
       }
     },
     {
@@ -204,8 +204,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/TelemetryDeck/SwiftSDK.git",
       "state" : {
-        "revision" : "9ec0f0c01b94acfe14d6745ab63c53ffbe1d2670",
-        "version" : "2.2.1"
+        "revision" : "b825e49b1e5d125191ac671f54402567b0a7a7f8",
+        "version" : "2.4.1"
       }
     },
     {

@@ -41,7 +41,13 @@ dependencies = [ "SwiftUIExtensionsPackageLibrary", "UserDefaultsPackageServiceI
 [features.ArchiveList]
 features = [ "Errors" ]
 repositories = [ "Bowlers", "Games", "Leagues", "Series" ]
-libraries = [ "DateTime", "ModelsViews" ]
+libraries = [ "ModelsViews" ]
+
+[features.AutomaticBackups]
+features = [ "Errors" ]
+services = [ "ImportExport", "Preference" ]
+libraries = [ "FeatureFlags" ]
+dependencies = [ "SwiftUIExtensionsPackageLibrary" ]
 
 [features.AvatarEditor]
 services = [ "Avatar" ]
@@ -98,7 +104,6 @@ libraries = [ "ResourceList", "SortOrder" ]
 [features.ImportExport]
 features = [ "Errors" ]
 services = [ "ImportExport", "Preference" ]
-libraries = [ "DateTime" ]
 dependencies = [ "SwiftUIExtensionsPackageLibrary" ]
 
 [features.LaneEditor]
@@ -136,14 +141,14 @@ services = [ "Products" ]
 [features.SeriesEditor]
 features = [ "Form" ]
 repositories = [ "Alleys", "Series" ]
-libraries = [ "DateTime", "ModelsViews", "PickableModels" ]
+libraries = [ "ModelsViews", "PickableModels" ]
 
 [features.SeriesList]
 features = [ "GamesList", "LeagueEditor" ]
 libraries = [ "SortOrder" ]
 
 [features.Settings]
-features = [ "ArchiveList", "FeatureFlagsList", "ImportExport", "OpponentsList" ]
+features = [ "ArchiveList", "AutomaticBackups", "FeatureFlagsList", "ImportExport", "OpponentsList" ]
 services = [ "AppIcon", "Badges", "DatabaseMocking", "Products" ]
 dependencies = [ "BundlePackageServiceInterface" ]
 
@@ -271,8 +276,8 @@ skip_tests = true
 [services.Email]
 
 [services.ImportExport]
-services = [ "Database" ]
-libraries = [ "DateTime" ]
+services = [ "Database", "Preference" ]
+libraries = [ "DateTime", "FeatureFlags" ]
 dependencies = [ "FileManagerPackageServiceInterface" ]
 [services.ImportExport.interface]
 dependencies = [ "DependenciesMacros" ]
@@ -446,7 +451,7 @@ libraries = [ "Assets" ]
 dependencies = [ "ToastUI", "ComposableArchitecture" ]
 
 [libraries.Views]
-libraries = [ "Assets", "Strings" ]
+libraries = [ "Assets", "DateTime", "Strings" ]
 
 # Dependency Versions
 
@@ -456,7 +461,7 @@ from = "3.8.5"
 
 [shared.refs.SwiftUtilities]
 url = "https://github.com/autoreleasefool/swift-utilities.git"
-from = "2.5.3"
+from = "2.6.0"
 
 [shared.refs.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"
