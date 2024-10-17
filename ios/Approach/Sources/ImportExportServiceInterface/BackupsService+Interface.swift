@@ -23,7 +23,7 @@ extension BackupsService: TestDependencyKey {
 	public static var testValue: Self { Self() }
 }
 
-public struct BackupFile: Identifiable, Sendable {
+public struct BackupFile: Identifiable, Equatable, Sendable {
 	public let url: URL
 	public let dateCreated: Date
 	public let fileSizeBytes: Int

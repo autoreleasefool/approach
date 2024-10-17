@@ -45,10 +45,10 @@ extension BackupsService: DependencyKey {
 			return directory
 		}
 
-		@Sendable func getBackupFile(for url: URL, attributes: [FileAttributeKey: Any]) -> BackupFile? {
-			guard let dateCreated = attributes[.creationDate] as? Date,
-						let fileSize = attributes[.size] as? NSNumber else { return nil }
-			return BackupFile(url: url, dateCreated: dateCreated, fileSizeBytes: Int(truncating: fileSize))
+		@Sendable func getBackupFile(for url: URL) throws -> BackupFile? {
+			let resourceValues = try url.resourceValues(forKeys: [.creationDateKey, .fileSizeKey])
+			guard let dateCreated = resourceValues.creationDate, let fileSize = resourceValues.fileSize else { return nil }
+			return BackupFile(url: url, dateCreated: dateCreated, fileSizeBytes: fileSize)
 		}
 
 		return Self(
@@ -75,13 +75,14 @@ extension BackupsService: DependencyKey {
 					withCoordinator: coordinatorId,
 					options: []
 				) { url in
-					let contents = try fileManager.contentsOfDirectory(at: url)
-					let attributes = try contents.map {
-						try fileManager.attributesOfItem(atPath: $0.path())
-					}
+					let contents = try fileManager.contentsOfDirectory(
+						at: url,
+						includingPropertiesForKeys: [.fileSizeKey, .creationDateKey],
+						options: []
+					)
 
-					let backupsToReturn: [BackupFile] = zip(contents, attributes).compactMap { url, attributes in
-						getBackupFile(for: url, attributes: attributes)
+					let backupsToReturn: [BackupFile] = try contents.compactMap {
+						try getBackupFile(for: $0)
 					}
 
 					backups.setValue(backupsToReturn)
@@ -120,6 +121,7 @@ extension BackupsService: DependencyKey {
 				}
 
 				let fileName = exportUrl.lastPathComponent
+
 				let backupFile = backupsDirectory.appending(path: fileName)
 				let result = LockIsolated<BackupFile?>(nil)
 
@@ -129,8 +131,7 @@ extension BackupsService: DependencyKey {
 					options: []
 				) { url in
 					try fileManager.moveItem(at: exportUrl, to: url)
-					let attributes = try fileManager.attributesOfItem(atPath: url.path())
-					let resultFile = getBackupFile(for: url, attributes: attributes)
+					let resultFile = try getBackupFile(for: url)
 					result.setValue(resultFile)
 				}
 
