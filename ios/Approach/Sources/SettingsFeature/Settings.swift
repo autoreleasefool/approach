@@ -69,6 +69,11 @@ public struct Settings: Reducer, Sendable {
 			self.destination = .appIcon(AppIconList.State())
 			return .none
 		}
+
+		public mutating func showBackupsList() -> Effect<Settings.Action> {
+			self.destination = .backups(BackupsList.State())
+			return .none
+		}
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
@@ -283,6 +288,7 @@ public struct Settings: Reducer, Sendable {
 						.destination(.presented(.import(.internal))), .destination(.presented(.import(.view))),
 						.destination(.presented(.import(.binding))),
 						.destination(.presented(.backups(.internal))), .destination(.presented(.backups(.view))),
+						.destination(.presented(.backups(.binding))),
 						.destination(.presented(.alert(.didTapDismissButton))):
 					return .none
 				}
