@@ -97,10 +97,9 @@ public struct TabbedContent: Reducer, Sendable {
 					state.selectedTab = .settings
 					return state.settings.showAppIconList().map { .internal(.settings($0)) }
 
-				case .backups(.internal(.destination(.presented(.backupFailure(.view(.didTapOpenSettingsButton)))))):
+				case .backups(.internal(.backupFailure(.presented(.view(.didTapOpenSettingsButton))))):
 					state.selectedTab = .settings
-					// TODO: Open backup settings
-					return .none
+					return state.settings.showBackupsList().map { .internal(.settings($0)) }
 
 				case .accessories(.view), .accessories(.internal), .accessories(.delegate(.doNothing)),
 						.bowlersList(.view), .bowlersList(.internal), .bowlersList(.delegate(.doNothing)),

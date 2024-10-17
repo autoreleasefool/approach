@@ -88,6 +88,7 @@ public struct BackupFailureView: View {
 				}
 				.padding(.horizontal)
 			}
+			.padding(.top)
 
 			Divider()
 				.padding(.vertical)

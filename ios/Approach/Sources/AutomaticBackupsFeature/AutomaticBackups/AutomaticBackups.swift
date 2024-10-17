@@ -12,7 +12,8 @@ import ToastLibrary
 public struct AutomaticBackups: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
-		@Presents public var destination: Destination.State?
+		@Presents public var backupFailure: BackupFailure.State?
+		@Presents public var toast: ToastState<ToastAction>?
 
 		public init() {}
 	}
@@ -24,32 +25,14 @@ public struct AutomaticBackups: Reducer, Sendable {
 		@CasePathable public enum Internal {
 			case didCreateBackup(Result<BackupFile?, Error>)
 
-			case destination(PresentationAction<Destination.Action>)
+			case backupFailure(PresentationAction<BackupFailure.Action>)
+			case toast(PresentationAction<ToastAction>)
 		}
 		@CasePathable public enum Delegate { case doNothing }
 
 		case view(View)
 		case delegate(Delegate)
 		case `internal`(Internal)
-	}
-
-	@Reducer
-	public struct Destination: Reducer, Sendable {
-		public enum State: Equatable {
-			case backupFailure(BackupFailure.State)
-			case toast(ToastState<ToastAction>)
-		}
-
-		public enum Action {
-			case backupFailure(BackupFailure.Action)
-			case toast(ToastAction)
-		}
-
-		public var body: some ReducerOf<Self> {
-			Scope(state: \.backupFailure, action: \.backupFailure) {
-				BackupFailure()
-			}
-		}
 	}
 
 	public enum ToastAction: Equatable, ToastableAction {
@@ -90,41 +73,37 @@ public struct AutomaticBackups: Reducer, Sendable {
 			case let .internal(internalAction):
 				switch internalAction {
 				case .didCreateBackup(.success(.some)):
-					state.destination = .toast(
-						ToastState(
-							content: .toast(SnackContent(message: Strings.Backups.Toast.Success.message)),
-							isDimmedBackgroundEnabled: false,
-							style: .success
-						)
+					state.toast = ToastState(
+						content: .toast(SnackContent(message: Strings.Backups.Toast.Success.message)),
+						isDimmedBackgroundEnabled: false,
+						style: .success
 					)
 					return .none
 
 				case .didCreateBackup(.success(.none)):
-					state.destination = .backupFailure(BackupFailure.State(errorDescription: "Error"))
 					return .none
 
 				case let .didCreateBackup(.failure(error)):
-					state.destination = .backupFailure(BackupFailure.State(errorDescription: error.localizedDescription))
+					state.backupFailure = BackupFailure.State(errorDescription: error.localizedDescription)
 					return .none
 
-				case let .destination(.presented(.toast(toastAction))):
+				case let .toast(.presented(toastAction)):
 					switch toastAction {
 					case .didTapOpenBackupsButton:
 						return .none
 
 					case .didDismiss:
-						state.destination = nil
+						state.toast = nil
 						return .none
 
 					case .didFinishDismissing:
-						state.destination = nil
+						state.toast = nil
 						return .none
 					}
 
-				case .destination(.dismiss),
-						.destination(.presented(.backupFailure(.internal))),
-						.destination(.presented(.backupFailure(.view))),
-						.destination(.presented(.backupFailure(.delegate(.doNothing)))):
+				case .backupFailure(.dismiss), .toast(.dismiss),
+						.backupFailure(.presented(.internal)), .backupFailure(.presented(.view)),
+						.backupFailure(.presented(.delegate(.doNothing))):
 					return .none
 				}
 
@@ -132,9 +111,10 @@ public struct AutomaticBackups: Reducer, Sendable {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: \.internal.destination) {
-			Destination()
+		.ifLet(\.$backupFailure, action: \.internal.backupFailure) {
+			BackupFailure()
 		}
+		.ifLet(\.$toast, action: \.internal.toast) {}
 
 		ErrorHandlerReducer<State, Action> { _, action in
 			switch action {
@@ -164,7 +144,8 @@ public struct AutomaticBackupsViewModifier: ViewModifier {
 	public func body(content: Content) -> some View {
 		content
 			.task { await store.send(.view(.didStartTask)).finish() }
-			.backupFailure($store.scope(state: \.destination?.backupFailure, action: \.internal.destination.backupFailure))
+			.backupFailure($store.scope(state: \.backupFailure, action: \.internal.backupFailure))
+			.toast($store.scope(state: \.toast, action: \.internal.toast))
 	}
 }
 
