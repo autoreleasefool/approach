@@ -703,6 +703,21 @@
 "backups.error.failedToBackup.syncStatus.neverExported" = "You've never exported your data!";
 "backups.error.failedToBackup.openSettings" = "Open Settings";
 
+"backups.list.title" = "Backups";
+"backups.list.manualSync" = "Sync now";
+"backups.list.enableAutomaticBackups.title" = "Enable automatic backups?";
+"backups.list.enableAutomaticBackups.description" = "Backups will be synced to your iCloud account";
+"backups.list.whyEnable.title" = "Why enable backups?";
+"backups.list.whyEnable.description" = "Approach can automatically backup your data to your iCloud account in case of lost data or a lost device. Backups will enable you to recover your Approach data any time from the Settings.";
+"backups.list.mostRecent" = "Most recent backups";
+"backups.list.mostRecent.none" = "You have no recent backups";
+"backups.list.neverBackedUp.title" = "You've never backed up your data!";
+"backups.list.neverBackedUp.description" = "If you don't want to use iCloud, you can export your data file from the Settings to any service you'd like";
+"backups.list.lastSyncWithinTwoWeeks" = "Your data was synced in the last 2 weeks";
+"backups.list.lastSyncNotWithinTwoWeeks" = "It's been more than 2 weeks since your data was last synced";
+"backups.list.fileSize" = "%@ mb";
+"backups.list.latest" = "Latest";
+
 /* App */
 
 "app.name" = "Approach";

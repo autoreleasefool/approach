@@ -413,6 +413,46 @@ public enum Strings {
         }
       }
     }
+    public enum List {
+      /// %@ mb
+      public static func fileSize(_ p1: Any) -> String {
+        return Strings.tr("Localizable", "backups.list.fileSize", String(describing: p1), fallback: "%@ mb")
+      }
+      /// It's been more than 2 weeks since your data was last synced
+      public static let lastSyncNotWithinTwoWeeks = Strings.tr("Localizable", "backups.list.lastSyncNotWithinTwoWeeks", fallback: "It's been more than 2 weeks since your data was last synced")
+      /// Your data was synced in the last 2 weeks
+      public static let lastSyncWithinTwoWeeks = Strings.tr("Localizable", "backups.list.lastSyncWithinTwoWeeks", fallback: "Your data was synced in the last 2 weeks")
+      /// Latest
+      public static let latest = Strings.tr("Localizable", "backups.list.latest", fallback: "Latest")
+      /// Sync now
+      public static let manualSync = Strings.tr("Localizable", "backups.list.manualSync", fallback: "Sync now")
+      /// Most recent backups
+      public static let mostRecent = Strings.tr("Localizable", "backups.list.mostRecent", fallback: "Most recent backups")
+      /// Backups
+      public static let title = Strings.tr("Localizable", "backups.list.title", fallback: "Backups")
+      public enum EnableAutomaticBackups {
+        /// Backups will be synced to your iCloud account
+        public static let description = Strings.tr("Localizable", "backups.list.enableAutomaticBackups.description", fallback: "Backups will be synced to your iCloud account")
+        /// Enable automatic backups?
+        public static let title = Strings.tr("Localizable", "backups.list.enableAutomaticBackups.title", fallback: "Enable automatic backups?")
+      }
+      public enum MostRecent {
+        /// You have no recent backups
+        public static let `none` = Strings.tr("Localizable", "backups.list.mostRecent.none", fallback: "You have no recent backups")
+      }
+      public enum NeverBackedUp {
+        /// If you don't want to use iCloud, you can export your data file from the Settings to any service you'd like
+        public static let description = Strings.tr("Localizable", "backups.list.neverBackedUp.description", fallback: "If you don't want to use iCloud, you can export your data file from the Settings to any service you'd like")
+        /// You've never backed up your data!
+        public static let title = Strings.tr("Localizable", "backups.list.neverBackedUp.title", fallback: "You've never backed up your data!")
+      }
+      public enum WhyEnable {
+        /// Approach can automatically backup your data to your iCloud account in case of lost data or a lost device. Backups will enable you to recover your Approach data any time from the Settings.
+        public static let description = Strings.tr("Localizable", "backups.list.whyEnable.description", fallback: "Approach can automatically backup your data to your iCloud account in case of lost data or a lost device. Backups will enable you to recover your Approach data any time from the Settings.")
+        /// Why enable backups?
+        public static let title = Strings.tr("Localizable", "backups.list.whyEnable.title", fallback: "Why enable backups?")
+      }
+    }
     public enum Toast {
       public enum Success {
         /// Backups

@@ -13,7 +13,7 @@ extension DaysSince {
 			if days >= threshold {
 				(.exclamationmarkTriangle, Asset.Colors.Warning.default.swiftUIColor)
 			} else {
-				(.checkmarkSealFill, Asset.Colors.Success.default.swiftUIColor)
+				(.checkmarkIcloud, Asset.Colors.Success.default.swiftUIColor)
 			}
 		}
 	}
