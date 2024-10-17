@@ -2,6 +2,18 @@ import Foundation
 
 private let emptyValue = "—"
 
+public let fileSizeFormatter: NumberFormatter = {
+	let formatter = NumberFormatter()
+	formatter.maximumFractionDigits = 1
+	formatter.alwaysShowsDecimalSeparator = true
+	return formatter
+}()
+
+public func formatAsMb(fileSizeBytes: Int) -> String {
+	let mb = Double(fileSizeBytes) / 1_000_000.0
+	return fileSizeFormatter.string(for: mb) ?? emptyValue
+}
+
 public let averageFormatter: NumberFormatter = {
 	let formatter = NumberFormatter()
 	formatter.maximumFractionDigits = 1
