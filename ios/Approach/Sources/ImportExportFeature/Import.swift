@@ -85,6 +85,8 @@ public struct Import: Reducer, Sendable {
 	@Dependency(ImportService.self) var importService
 
 	public var body: some ReducerOf<Self> {
+		BindingReducer()
+
 		Scope(state: \.errors, action: \.internal.errors) {
 			Errors<ErrorID>()
 		}
