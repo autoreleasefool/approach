@@ -105,7 +105,7 @@ public struct ErrorReport: Reducer, Sendable {
 						return .none
 					} else {
 						return .run { _ in
-							guard let mailto = URL(string: "mailto://\(Strings.Settings.Help.ReportBug.email)") else { return }
+							guard let mailto = URL(string: "mailto://\(Strings.supportEmail)") else { return }
 							await openURL(mailto)
 						}
 					}
@@ -236,7 +236,7 @@ public struct ErrorReportView: View {
 		.sheet(isPresented: $store.isShowingEmailReport) {
 			EmailView(
 				content: .init(
-					recipients: [Strings.Settings.Help.ReportBug.email],
+					recipients: [Strings.supportEmail],
 					subject: Strings.Settings.Help.ReportBug.subject(store.appVersion),
 					body: Strings.ErrorReport.emailBody(
 						store

@@ -29,7 +29,7 @@ struct DevelopmentSection: View {
 		.sheet(isPresented: isShowingBugReportEmail) {
 			EmailView(
 				content: .init(
-					recipients: [Strings.Settings.Help.ReportBug.email],
+					recipients: [Strings.supportEmail],
 					subject: Strings.Settings.Help.ReportBug.subject(appVersion)
 				)
 			)
@@ -37,7 +37,7 @@ struct DevelopmentSection: View {
 		.sheet(isPresented: isShowingSendFeedbackEmail) {
 			EmailView(
 				content: .init(
-					recipients: [Strings.Settings.Help.SendFeedback.email]
+					recipients: [Strings.supportEmail]
 				)
 			)
 		}

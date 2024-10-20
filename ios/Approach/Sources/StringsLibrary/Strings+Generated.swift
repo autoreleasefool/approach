@@ -18,6 +18,8 @@ public enum Strings {
   public static let `none` = Strings.tr("Localizable", "none", fallback: "None")
   /// Other
   public static let other = Strings.tr("Localizable", "other", fallback: "Other")
+  /// approach@josephroque.ca
+  public static let supportEmail = Strings.tr("Localizable", "supportEmail", fallback: "approach@josephroque.ca")
   /// Tab
   public static let tab = Strings.tr("Localizable", "tab", fallback: "Tab")
   /// Other
@@ -1552,16 +1554,10 @@ public enum Strings {
         public static let title = Strings.tr("Localizable", "settings.help.development.title", fallback: "Development")
       }
       public enum ReportBug {
-        /// approach@josephroque.ca
-        public static let email = Strings.tr("Localizable", "settings.help.reportBug.email", fallback: "approach@josephroque.ca")
         /// Approach Bug Report (%@)
         public static func subject(_ p1: Any) -> String {
           return Strings.tr("Localizable", "settings.help.reportBug.subject", String(describing: p1), fallback: "Approach Bug Report (%@)")
         }
-      }
-      public enum SendFeedback {
-        /// approach@josephroque.ca
-        public static let email = Strings.tr("Localizable", "settings.help.sendFeedback.email", fallback: "approach@josephroque.ca")
       }
     }
     public enum Opponents {

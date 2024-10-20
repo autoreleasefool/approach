@@ -194,7 +194,7 @@ public struct Settings: Reducer, Sendable {
 						if await email.canSendEmail() {
 							await send(.binding(.set(\.isShowingBugReportEmail, true)))
 						} else {
-							guard let mailto = URL(string: "mailto://\(Strings.Settings.Help.ReportBug.email)") else { return }
+							guard let mailto = URL(string: "mailto://\(Strings.supportEmail)") else { return }
 							await openURL(mailto)
 						}
 					}
@@ -204,7 +204,7 @@ public struct Settings: Reducer, Sendable {
 						if await email.canSendEmail() {
 							await send(.binding(.set(\.isShowingSendFeedbackEmail, true)))
 						} else {
-							guard let mailto = URL(string: "mailto://\(Strings.Settings.Help.SendFeedback.email)") else { return }
+							guard let mailto = URL(string: "mailto://\(Strings.supportEmail)") else { return }
 							await openURL(mailto)
 						}
 					}
