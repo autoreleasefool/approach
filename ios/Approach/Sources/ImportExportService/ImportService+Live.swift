@@ -32,13 +32,6 @@ extension ImportService: DependencyKey {
 				.last
 		}
 
-		@Sendable func getTemporaryImportUrl() throws -> URL {
-			@Dependency(\.fileManager) var fileManager
-			return try fileManager
-				.getTemporaryDirectory()
-				.appending(path: "import.tmp")
-		}
-
 		@Sendable func backupExistingDatabase() async throws {
 			@Dependency(\.fileManager) var fileManager
 			@Dependency(ExportService.self) var export
@@ -64,7 +57,7 @@ extension ImportService: DependencyKey {
 			latestBackupUrl.setValue(backupFile)
 		}
 
-		@Sendable func importDatabase(fromUrl: URL, performBackup: Bool) async throws {
+		@Sendable func importDatabase(fromUrl: URL, performBackup: Bool) async throws -> ImportResult {
 			@Dependency(\.database) var database
 			@Dependency(\.fileManager) var fileManager
 
@@ -72,22 +65,42 @@ extension ImportService: DependencyKey {
 				try await backupExistingDatabase()
 			}
 
+			// Copy the file to import to a temporary cache file
+			let temporaryImportUrl = try fileManager
+				.getTemporaryDirectory()
+				.appending(path: "importedFile.tmp")
+			defer { try? fileManager.removeIfExists(temporaryImportUrl) }
+
+			try fileManager.removeIfExists(temporaryImportUrl)
+			try fileManager.copyItem(at: fromUrl, to: temporaryImportUrl)
+
+			let importedDbUrl = try fileManager
+				.getTemporaryDirectory()
+				.appending(path: "importedDb.tmp")
+			defer { try? fileManager.removeIfExists(importedDbUrl) }
+
+			let result: ImportResult
+			let fileType = try FileType.of(url: temporaryImportUrl)
+			 switch fileType {
+			case .sqlite:
+				let dbType = try await DatabaseFormat.of(url: temporaryImportUrl)
+				guard let importer = dbType?.getImporter() else { return .unrecognized }
+				result = try await importer.startImport(of: temporaryImportUrl, to: importedDbUrl)
+			case .none:
+				return .unrecognized
+			}
+
+			// Delete existing DB
 			try database.close()
 			defer { database.initialize() }
 
-			let temporaryImportUrl = try getTemporaryImportUrl()
-			try fileManager.removeIfExists(temporaryImportUrl)
-
+			// Once the imported database is ready, replace the existing DB
 			for dbUrlItem in database.dbUrl().relativeSQLiteFileUrls {
 				try fileManager.removeIfExists(dbUrlItem)
 			}
-			try fileManager.copyItem(at: fromUrl, to: temporaryImportUrl)
+			try fileManager.copyItem(at: importedDbUrl, to: database.dbUrl())
 
-			switch try FileType.of(url: temporaryImportUrl) {
-			case .sqlite:
-				try fileManager.copyItem(at: temporaryImportUrl, to: database.dbUrl())
-			case .none: break
-			}
+			return result
 		}
 
 		return Self(
@@ -118,7 +131,7 @@ extension ImportService: DependencyKey {
 					throw ServiceError.backupDoesNotExist
 				}
 
-				try await importDatabase(fromUrl: backupUrl, performBackup: false)
+				_ = try await importDatabase(fromUrl: backupUrl, performBackup: false)
 			},
 			importDatabase: { url in
 				guard url.startAccessingSecurityScopedResource() else {
@@ -126,7 +139,7 @@ extension ImportService: DependencyKey {
 				}
 				defer { url.stopAccessingSecurityScopedResource() }
 
-				try await importDatabase(fromUrl: url, performBackup: true)
+				return try await importDatabase(fromUrl: url, performBackup: true)
 			}
 		)
 	}

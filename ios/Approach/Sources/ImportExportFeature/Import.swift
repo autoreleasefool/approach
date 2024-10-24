@@ -1,17 +1,22 @@
 import AnalyticsServiceInterface
+import AppInfoPackageServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import DateTimeLibrary
+import Dependencies
+import EmailServiceInterface
 import EquatablePackageLibrary
 import ErrorReportingClientPackageLibrary
 import ErrorsFeature
 import FeatureActionLibrary
 import Foundation
 import ImportExportServiceInterface
+import PasteboardPackageServiceInterface
 import PreferenceServiceInterface
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsPackageLibrary
+import ToastLibrary
 import ViewsLibrary
 
 @Reducer
@@ -20,13 +25,19 @@ public struct Import: Reducer, Sendable {
 	public struct State: Equatable {
 		public var lastBackupAt: Date?
 		public var progress: Progress = .notStarted
+		public let appVersion: String
 
 		public var isShowingFileImporter = false
 
+		public var isShowingEmail = false
 		public var errors = Errors<ErrorID>.State()
+		@Presents public var toast: ToastState<ToastAction>?
 		@Presents public var destination: Destination.State?
 
-		public init() {}
+		public init() {
+			@Dependency(\.appInfo) var appInfo
+			self.appVersion = appInfo.getFullAppVersion()
+		}
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
@@ -36,15 +47,19 @@ public struct Import: Reducer, Sendable {
 			case didTapImportButton
 			case didTapRestoreButton
 			case didCancelFileImport
+			case didTapSendEmailButton
+			case didTapCopyEmailButton
 			case didImportFiles(Result<[URL], Error>)
 		}
 		@CasePathable public enum Delegate { case doNothing }
 		@CasePathable public enum Internal {
 			case didFetchLatestBackupDate(Result<Date?, Error>)
 			case didRestoreBackup(Result<Void, Error>)
-			case didImportBackup(Result<Void, Error>)
+			case didImportBackup(Result<ImportResult, Error>)
+			case didCopyEmailToClipboard(Result<Void, Error>)
 
 			case errors(Errors<ErrorID>.Action)
+			case toast(PresentationAction<ToastAction>)
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -65,13 +80,18 @@ public struct Import: Reducer, Sendable {
 		case importing
 		case restoring
 		case failed(AlwaysEqual<Error>)
-		case importComplete
+		case importComplete(ImportResult)
 		case restoreComplete
 	}
 
 	public enum AlertAction: Equatable {
 		case didTapRestoreButton
 		case didTapDismissButton
+	}
+
+	public enum ToastAction: ToastableAction {
+		case didDismiss
+		case didFinishDismissing
 	}
 
 	public enum ErrorID: Hashable {
@@ -82,7 +102,10 @@ public struct Import: Reducer, Sendable {
 
 	public init() {}
 
+	@Dependency(EmailService.self) var email
 	@Dependency(ImportService.self) var importService
+	@Dependency(\.openURL) var openURL
+	@Dependency(\.pasteboard) var pasteboard
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer()
@@ -97,6 +120,23 @@ public struct Import: Reducer, Sendable {
 				switch viewAction {
 				case .didAppear:
 					return .none
+
+				case .didTapSendEmailButton:
+					return .run { send in
+						if await email.canSendEmail() {
+							await send(.binding(.set(\.isShowingEmail, true)))
+						} else {
+							guard let mailto = URL(string: "mailto://\(Strings.supportEmail)") else { return }
+							await openURL(mailto)
+						}
+					}
+
+				case .didTapCopyEmailButton:
+					return .run { send in
+						await send(.internal(.didCopyEmailToClipboard(Result {
+							try await pasteboard.copyToClipboard(Strings.supportEmail)
+						})))
+					}
 
 				case .didTapImportButton:
 					state.progress = .pickingFile
@@ -148,12 +188,23 @@ public struct Import: Reducer, Sendable {
 					state.lastBackupAt = date
 					return .none
 
-				case .didImportBackup(.success):
-					state.progress = .importComplete
+				case let .didImportBackup(.success(result)):
+					state.progress = .importComplete(result)
 					return .none
 
 				case .didRestoreBackup(.success):
 					state.progress = .restoreComplete
+					return .none
+
+				case .didCopyEmailToClipboard(.success):
+					state.toast = ToastState(
+						content: .toast(SnackContent(message: Strings.copiedToClipboard)),
+						isDimmedBackgroundEnabled: false,
+						style: .primary
+					)
+					return .none
+
+				case .didCopyEmailToClipboard(.failure):
 					return .none
 
 				case let .didFetchLatestBackupDate(.failure(error)):
@@ -173,6 +224,21 @@ public struct Import: Reducer, Sendable {
 					return state.errors
 						.enqueue(.failedToRestore, thrownError: error, toastMessage: Strings.Error.Toast.failedToRestore)
 						.map { .internal(.errors($0)) }
+
+				case .toast(.dismiss):
+					state.toast = nil
+					return .none
+
+				case let .toast(.presented(toastAction)):
+					switch toastAction {
+					case .didDismiss:
+						state.toast = nil
+						return .none
+
+					case .didFinishDismissing:
+						state.toast = nil
+						return .none
+					}
 
 				case let .destination(.presented(.alert(alertAction))):
 					switch alertAction {
@@ -198,6 +264,7 @@ public struct Import: Reducer, Sendable {
 			}
 		}
 		.ifLet(\.$destination, action: \.internal.destination)
+		.ifLet(\.$toast, action: \.internal.toast) {}
 
 		BreadcrumbReducer<State, Action> { _, action in
 			switch action {
@@ -272,12 +339,16 @@ public struct ImportView: View {
 					}
 				}
 
-				ProgressBanner(progress: store.progress)
+				ImportProgressBanner(progress: store.progress) {
+					send(.didTapSendEmailButton)
+				} onDidTapCopyEmail: {
+					send(.didTapCopyEmailButton)
+				}
 			}
 
 			Divider()
 
-			OverwriteWarningBanner(progress: store.progress)
+			ImportOverwriteWarningBanner(progress: store.progress)
 				.padding(.horizontal)
 				.padding(.top)
 
@@ -294,6 +365,7 @@ public struct ImportView: View {
 		.onFirstAppear { send(.didFirstAppear) }
 		.onAppear { send(.didAppear) }
 		.alert($store.scope(state: \.destination?.alert, action: \.internal.destination.alert))
+		.toast($store.scope(state: \.toast, action: \.internal.toast))
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		.fileImporter(
 			isPresented: $store.isShowingFileImporter,
@@ -302,50 +374,14 @@ public struct ImportView: View {
 			onCompletion: { send(.didImportFiles($0)) },
 			onCancellation: { send(.didCancelFileImport) }
 		)
-	}
-}
-
-private struct OverwriteWarningBanner: View {
-	let progress: Import.Progress
-
-	var body: some View {
-		if case .notStarted = progress {
-			Banner(
-				.titleAndMessage(
-					Strings.Import.Instructions.overwrite,
-					Strings.Import.Instructions.notRecover
-				),
-				style: .warning
+		.sheet(isPresented: $store.isShowingEmail) {
+			EmailView(
+				content: .init(
+					recipients: [Strings.supportEmail],
+					subject: Strings.Import.Importing.Report.emailSubject(store.appVersion)
+				)
 			)
 		}
-	}
-}
-
-private struct ProgressBanner: View {
-	let progress: Import.Progress
-
-	var body: some View {
-		Section {
-			switch progress {
-			case .notStarted, .pickingFile:
-				EmptyView()
-			case .importing, .restoring:
-				Banner(.message(Strings.Import.Importing.inProgress), style: .plain)
-			case let .failed(error):
-				Banner(
-					.titleAndMessage(
-						Strings.Import.Importing.error,
-						error.localizedDescription
-					),
-					style: .error
-				)
-			case .importComplete:
-				Banner(.message(Strings.Import.Importing.successImporting), style: .success)
-			case .restoreComplete:
-				Banner(.message(Strings.Import.Importing.successRestoring), style: .success)
-			}
-		}
-		.listRowInsets(EdgeInsets())
 	}
 }
 

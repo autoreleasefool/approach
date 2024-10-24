@@ -670,10 +670,15 @@
 "import.action.restore" = "Restore";
 "import.importing.notStarted" = "Import not started...";
 "import.importing.inProgress" = "Importing...";
+"import.importing.unrecognized" = "The file you selected was not recognized.";
+"import.importing.databaseTooNew" = "The file you selected may be from too new a version of Approach.";
+"import.importing.databaseTooOld" = "The file you selected may be from too old a version of Approach.";
 "import.importing.successImporting" = "Data successfully imported!";
 "import.importing.successRestoring" = "Data successfully restored!";
 "import.importing.error" = "There was an error importing your data";
-"import.importing.report" = "If you're having trouble importing your data, try sending us an email at approach@josephroque.ca for help.";
+"import.importing.report.sendEmail" = "Send email";
+"import.importing.report" = "If you're having trouble importing your data, try sending us an email at ";
+"import.importing.report.emailSubject" = "Approach Import Error (%@)";
 "import.restore.title" = "Restore to before last import?";
 "import.restore.message" = "You last imported your data on %@. If you choose to restore your data, you will lose any new data you've recorded since this import, and your records will be reset to before the imported data was applied. Are you sure about this?";
 "import.error.failedToFetchBackup" = "Could not find latest back up. Restart Approach to try again.";

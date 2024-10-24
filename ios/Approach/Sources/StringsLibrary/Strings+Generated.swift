@@ -915,18 +915,32 @@ public enum Strings {
       public static let failedToRestore = Strings.tr("Localizable", "import.error.failedToRestore", fallback: "Approach couldn't restore to the latest backup. Please try again.")
     }
     public enum Importing {
+      /// The file you selected may be from too new a version of Approach.
+      public static let databaseTooNew = Strings.tr("Localizable", "import.importing.databaseTooNew", fallback: "The file you selected may be from too new a version of Approach.")
+      /// The file you selected may be from too old a version of Approach.
+      public static let databaseTooOld = Strings.tr("Localizable", "import.importing.databaseTooOld", fallback: "The file you selected may be from too old a version of Approach.")
       /// There was an error importing your data
       public static let error = Strings.tr("Localizable", "import.importing.error", fallback: "There was an error importing your data")
       /// Importing...
       public static let inProgress = Strings.tr("Localizable", "import.importing.inProgress", fallback: "Importing...")
       /// Import not started...
       public static let notStarted = Strings.tr("Localizable", "import.importing.notStarted", fallback: "Import not started...")
-      /// If you're having trouble importing your data, try sending us an email at approach@josephroque.ca for help.
-      public static let report = Strings.tr("Localizable", "import.importing.report", fallback: "If you're having trouble importing your data, try sending us an email at approach@josephroque.ca for help.")
+      /// If you're having trouble importing your data, try sending us an email at 
+      public static let report = Strings.tr("Localizable", "import.importing.report", fallback: "If you're having trouble importing your data, try sending us an email at ")
       /// Data successfully imported!
       public static let successImporting = Strings.tr("Localizable", "import.importing.successImporting", fallback: "Data successfully imported!")
       /// Data successfully restored!
       public static let successRestoring = Strings.tr("Localizable", "import.importing.successRestoring", fallback: "Data successfully restored!")
+      /// The file you selected was not recognized.
+      public static let unrecognized = Strings.tr("Localizable", "import.importing.unrecognized", fallback: "The file you selected was not recognized.")
+      public enum Report {
+        /// Approach Import Error (%@)
+        public static func emailSubject(_ p1: Any) -> String {
+          return Strings.tr("Localizable", "import.importing.report.emailSubject", String(describing: p1), fallback: "Approach Import Error (%@)")
+        }
+        /// Send email
+        public static let sendEmail = Strings.tr("Localizable", "import.importing.report.sendEmail", fallback: "Send email")
+      }
     }
     public enum Instructions {
       /// You may not be able to recover it later.
