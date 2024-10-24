@@ -5,6 +5,7 @@ import BadgesFeature
 import BowlersListFeature
 import ComposableArchitecture
 import FeatureActionLibrary
+import HUDServiceInterface
 import SettingsFeature
 import StatisticsOverviewFeature
 
@@ -13,6 +14,8 @@ public struct TabbedContent: Reducer, Sendable {
 
 	@ObservableState
 	public struct State: Equatable {
+		public var isHudVisible: Bool = false
+
 		public var selectedTab: Tab = .overview
 
 		public var accessories = AccessoriesOverview.State()
@@ -28,10 +31,12 @@ public struct TabbedContent: Reducer, Sendable {
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
 		@CasePathable public enum View {
-			case didAppear
+			case didStartTask
 		}
 		@CasePathable public enum Delegate { case doNothing }
 		@CasePathable public enum Internal {
+			case showHUD(Bool)
+
 			case accessories(AccessoriesOverview.Action)
 			case bowlersList(BowlersList.Action)
 			case settings(Settings.Action)
@@ -54,6 +59,8 @@ public struct TabbedContent: Reducer, Sendable {
 	}
 
 	public init() {}
+
+	@Dependency(HUDService.self) var hud
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer()
@@ -86,12 +93,20 @@ public struct TabbedContent: Reducer, Sendable {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didAppear:
-					return .none
+				case .didStartTask:
+					return .run { send in
+						for await status in hud.hudStatusNotifications() {
+							await send(.internal(.showHUD(status.isShowing)))
+						}
+					}
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .showHUD(isShowing):
+					state.isHudVisible = isShowing
+					return .none
+
 				// swiftlint:disable:next line_length
 				case .bowlersList(.internal(.announcements(.internal(.destination(.presented(.halloween2024(.view(.didTapOpenIconSettingsButton)))))))):
 					state.selectedTab = .settings

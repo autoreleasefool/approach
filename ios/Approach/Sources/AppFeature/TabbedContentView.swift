@@ -9,6 +9,7 @@ import SettingsFeature
 import StatisticsOverviewFeature
 import StringsLibrary
 import SwiftUI
+import ToastUI
 
 @ViewAction(for: TabbedContent.self)
 public struct TabbedContentView: View {
@@ -54,9 +55,13 @@ public struct TabbedContentView: View {
 			.tabItem { TabbedContent.Tab.settings.label }
 		}
 		.tint(Asset.Colors.Action.default)
-		.task { await send(.didAppear).finish() }
+		.task { await send(.didStartTask).finish() }
 		.observeBadges(store: store.scope(state: \.badges, action: \.internal.badges))
 		.automaticBackups(store: store.scope(state: \.backups, action: \.internal.backups))
+		.toast(isPresented: $store.isHudVisible) {
+			ToastView("Loading")
+				.toastViewStyle(.indeterminate)
+		}
 	}
 }
 

@@ -103,7 +103,7 @@ libraries = [ "ResourceList", "SortOrder" ]
 
 [features.ImportExport]
 features = [ "Errors" ]
-services = [ "ImportExport", "Preference" ]
+services = [ "HUD", "ImportExport", "Preference" ]
 dependencies = [ "SwiftUIExtensionsPackageLibrary" ]
 
 [features.LaneEditor]
@@ -274,6 +274,10 @@ dependencies = [ "DependenciesMacros", "GRDB", "GRDBDatabasePackageServiceInterf
 skip_tests = true
 
 [services.Email]
+
+[services.HUD]
+[services.HUD.interface]
+dependencies = [ "DependenciesMacros" ]
 
 [services.ImportExport]
 services = [ "Database", "Preference" ]

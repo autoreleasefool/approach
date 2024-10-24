@@ -36,6 +36,7 @@
 		CA6CBA3929EBBE4C00B3BAF7 /* GearRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA6CBA3829EBBE4C00B3BAF7 /* GearRepository */; };
 		CA6CBA3B29EBBE4C00B3BAF7 /* LanesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA6CBA3A29EBBE4C00B3BAF7 /* LanesRepository */; };
 		CA7E892C2AC5153B004972E1 /* StatisticsRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA7E892B2AC5153B004972E1 /* StatisticsRepository */; };
+		CA7ED36E2CC9B68700A7828C /* HUDService in Frameworks */ = {isa = PBXBuildFile; productRef = CA7ED36D2CC9B68700A7828C /* HUDService */; };
 		CA8847382A587D1D001AA48F /* AppIconService in Frameworks */ = {isa = PBXBuildFile; productRef = CA8847372A587D1D001AA48F /* AppIconService */; };
 		CA8BBC5928D59B8B00653A1E /* ApproachApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8BBC5828D59B8B00653A1E /* ApproachApp.swift */; };
 		CA8BBC5B28D59B8B00653A1E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8BBC5A28D59B8B00653A1E /* ContentView.swift */; };
@@ -123,6 +124,7 @@
 				CAC51C1C2A4FFE8D00A99164 /* TestDatabaseUtilitiesLibrary in Frameworks */,
 				CA6CBA3B29EBBE4C00B3BAF7 /* LanesRepository in Frameworks */,
 				CA6CBA3729EBBE4C00B3BAF7 /* GamesRepository in Frameworks */,
+				CA7ED36E2CC9B68700A7828C /* HUDService in Frameworks */,
 				CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */,
 				CAC458A32AB838C500898C16 /* ImportExportService in Frameworks */,
 				CA439E5429E3796A00B09020 /* SeriesRepository in Frameworks */,
@@ -360,6 +362,7 @@
 				CA30F8E12B2670A100A80543 /* LaunchService */,
 				CAC7A9F72BFA61FE00F35921 /* ZIPService */,
 				CABED8AD2CAFBD8300B2D1CE /* BadgesService */,
+				CA7ED36D2CC9B68700A7828C /* HUDService */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -721,6 +724,10 @@
 		CA7E892B2AC5153B004972E1 /* StatisticsRepository */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = StatisticsRepository;
+		};
+		CA7ED36D2CC9B68700A7828C /* HUDService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HUDService;
 		};
 		CA8847372A587D1D001AA48F /* AppIconService */ = {
 			isa = XCSwiftPackageProductDependency;
