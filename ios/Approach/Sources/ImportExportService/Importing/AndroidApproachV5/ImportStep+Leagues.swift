@@ -43,7 +43,7 @@ extension AndroidApproachV5SQLiteImporter {
 					defaultNumberOfGames: numberOfGames,
 					additionalPinfall: additionalPinFall,
 					additionalGames: additionalGames,
-					excludeFromStatistics: League.ExcludeFromStatistics(rawValue: excludeFromStatistics) ?? .include,
+					excludeFromStatistics: League.ExcludeFromStatistics(rawValue: excludeFromStatistics.snakeCaseToCamelCase) ?? .include,
 					archivedOn: archivedOn?.instantToDate
 				)
 

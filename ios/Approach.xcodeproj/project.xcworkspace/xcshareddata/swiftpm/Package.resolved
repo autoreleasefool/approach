@@ -1,5 +1,5 @@
 {
-  "originHash" : "08866b13d4130325174e182825207f40462df0d03adde7b15c79a523e0ba4b4e",
+  "originHash" : "4d719958ab886ab66c76436a0bc7049302ac1b7d9c537dc386a06d58a601bc96",
   "pins" : [
     {
       "identity" : "cocoalumberjack",
@@ -195,8 +195,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/autoreleasefool/swift-utilities.git",
       "state" : {
-        "revision" : "7d9f5e2bf0c0ba1afdcaa7168cd228a5ecf49a9b",
-        "version" : "2.7.0"
+        "revision" : "8389d20b091e8f4fb9dc705889ff7b220b498f36",
+        "version" : "2.7.1"
       }
     },
     {

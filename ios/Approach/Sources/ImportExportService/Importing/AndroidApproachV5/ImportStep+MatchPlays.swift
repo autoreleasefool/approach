@@ -15,7 +15,7 @@ extension AndroidApproachV5SQLiteImporter {
 				let id: MatchPlay.ID = matchPlayRow["id"]
 				let gameId: Game.ID = matchPlayRow["game_id"]
 				let opponentId: Bowler.ID? = matchPlayRow["opponent_id"]
-				let opponentScore: Int? = matchPlayRow["score"]
+				let opponentScore: Int? = matchPlayRow["opponent_score"]
 				let result: String? = matchPlayRow["result"]
 
 				let matchPlay = MatchPlay.Database(

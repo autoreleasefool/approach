@@ -8,7 +8,7 @@ extension Bowler {
 }
 
 extension Bowler {
-	public enum Kind: String, Codable, Sendable {
+	public enum Kind: String, CaseIterable, Codable, Sendable {
 		case playable
 		case opponent
 	}
