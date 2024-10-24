@@ -34,6 +34,16 @@ public struct SettingsView: View {
 
 			StatisticsSection(onTapStatisticsButton: { send(.didTapStatistics) })
 
+			DataSection(
+				isImportButtonVisible: store.isImportEnabled,
+				isBackupsButtonVisible: store.isAutomaticBackupsEnabled,
+				daysSinceLastBackup: store.daysSinceLastBackup,
+				daysSinceLastExport: store.daysSinceLastExport,
+				onTapImportButton: { send(.didTapImportButton) },
+				onTapExportButton: { send(.didTapExportButton) },
+				onTapBackupsButton: { send(.didTapBackupsButton) }
+			)
+
 			if !store.isLoadingAppIcon {
 				AppIconSection(
 					appIconImage: store.appIconImage,
@@ -50,16 +60,6 @@ public struct SettingsView: View {
 				onTapForceCrashButton: { send(.didTapForceCrashButton) },
 				onTapAnalyticsButton: { send(.didTapAnalyticsButton) },
 				onAcknowledgementsFirstAppear: { send(.didShowAcknowledgements) }
-			)
-
-			DataSection(
-				isImportButtonVisible: store.isImportEnabled,
-				isBackupsButtonVisible: store.isAutomaticBackupsEnabled,
-				daysSinceLastBackup: store.daysSinceLastBackup,
-				daysSinceLastExport: store.daysSinceLastExport,
-				onTapImportButton: { send(.didTapImportButton) },
-				onTapExportButton: { send(.didTapExportButton) },
-				onTapBackupsButton: { send(.didTapBackupsButton) }
 			)
 
 			DevelopmentSection(
