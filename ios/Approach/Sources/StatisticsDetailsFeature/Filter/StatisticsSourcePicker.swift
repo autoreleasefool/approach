@@ -209,6 +209,7 @@ public struct StatisticsSourcePicker: Reducer, Sendable {
 					return .none
 
 				case let .didLoadSources(.failure(error)):
+					state.isLoadingSources = false
 					return state.errors
 						.enqueue(.failedToLoadSources, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
 						.map { .internal(.errors($0)) }
