@@ -154,7 +154,7 @@ let package = Package(
 		.package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.0"),
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.0"),
 		.package(url: "https://github.com/apple/swift-collections.git", from: "1.1.3"),
-		.package(url: "https://github.com/autoreleasefool/swift-utilities.git", from: "2.6.0"),
+		.package(url: "https://github.com/autoreleasefool/swift-utilities.git", from: "2.7.0"),
 		.package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.5"),
 		.package(url: "https://github.com/getsentry/sentry-cocoa.git", from: "8.36.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.29.3"),
@@ -1334,11 +1334,14 @@ let package = Package(
 			name: "ImportExportService",
 			dependencies: [
 				.product(name: "FileManagerPackageServiceInterface", package: "swift-utilities"),
+				"DatabaseMigrationsLibrary",
+				"DatabaseModelsLibrary",
 				"DatabaseServiceInterface",
 				"DateTimeLibrary",
 				"FeatureFlagsLibrary",
 				"ImportExportServiceInterface",
 				"PreferenceServiceInterface",
+				"StatisticsLibrary",
 			]
 		),
 		.target(

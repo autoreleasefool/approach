@@ -5,10 +5,12 @@ extension TeamSeriesSeries {
 	public struct Database: Sendable, Codable, Equatable {
 		public let teamSeriesId: TeamSeries.ID
 		public let seriesId: Series.ID
+		public let position: Int
 
-		public init(teamSeriesId: TeamSeries.ID, seriesId: Series.ID) {
+		public init(teamSeriesId: TeamSeries.ID, seriesId: Series.ID, position: Int) {
 			self.teamSeriesId = teamSeriesId
 			self.seriesId = seriesId
+			self.position = position
 		}
 	}
 }
