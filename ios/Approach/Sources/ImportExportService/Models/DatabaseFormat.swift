@@ -6,15 +6,16 @@ enum DatabaseFormat {
 	case androidBowlingCompanion
 	case iOSApproach
 
-	func getImporter() -> Importer? {
+	func getImporter() -> DataImporter? {
 		switch self {
 		case .iOSApproach:
 			IOSApproachSQLiteImporter()
+		case .androidApproach(.v5):
+			AndroidApproachV5SQLiteImporter()
 		case .androidApproach(.v1),
 				.androidApproach(.v2),
 				.androidApproach(.v3),
 				.androidApproach(.v4),
-				.androidApproach(.v5),
 				.androidBowlingCompanion:
 			StubResultImporter(result: .unrecognized)
 		}

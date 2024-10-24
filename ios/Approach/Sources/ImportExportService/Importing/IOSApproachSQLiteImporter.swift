@@ -5,7 +5,7 @@ import Foundation
 import GRDB
 import ImportExportServiceInterface
 
-actor IOSApproachSQLiteImporter: Importer {
+actor IOSApproachSQLiteImporter: DataImporter {
 	@Dependency(\.fileManager) var fileManager
 
 	func startImport(of: URL, to: URL) async throws -> ImportResult {
