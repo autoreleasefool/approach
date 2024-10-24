@@ -23,7 +23,7 @@ extension AndroidApproachV5SQLiteImporter {
 				let androidContext: String = statisticWidgetRow["context"]
 				let priority: Int = statisticWidgetRow["priority"]
 
-				guard let statistic = AndroidStatistics.map(androidStatistic) else {
+				guard let statistic = AndroidStatistic(rawValue: androidStatistic)?.statistic else {
 					@Dependency(\.errors) var errors
 					errors.captureMessage("Unable to parse statistic '\(androidStatistic)' while importing AndroidApproachV5")
 					continue

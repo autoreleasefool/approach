@@ -281,6 +281,10 @@ libraries = [ "DatabaseMigrations", "DatabaseModels", "DateTime", "FeatureFlags"
 dependencies = [ "FileManagerPackageServiceInterface" ]
 [services.ImportExport.interface]
 dependencies = [ "DependenciesMacros" ]
+[services.ImportExport.tests]
+dependencies = [ "DependenciesTestSupport" ]
+[services.ImportExport.tests.resources]
+processed = [ "Resources" ]
 
 [services.Launch]
 services = [ "Analytics", "Preference", "Products" ]
@@ -461,7 +465,7 @@ from = "3.8.5"
 
 [shared.refs.SwiftUtilities]
 url = "https://github.com/autoreleasefool/swift-utilities.git"
-from = "2.7.0"
+from = "2.7.1"
 
 [shared.refs.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"
@@ -501,6 +505,8 @@ from = "1.2.0"
 [dependencies.Dependencies]
 dep_ref = "Dependencies"
 [dependencies.DependenciesMacros]
+dep_ref = "Dependencies"
+[dependencies.DependenciesTestSupport]
 dep_ref = "Dependencies"
 
 [dependencies.GRDB]

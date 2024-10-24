@@ -144,13 +144,3 @@ extension ImportService: DependencyKey {
 		)
 	}
 }
-
-extension URL {
-	var relativeSQLiteFileUrls: [URL] {
-		[
-			self,
-			self.deletingLastPathComponent().appending(path: self.lastPathComponent + "-shm"),
-			self.deletingLastPathComponent().appending(path: self.lastPathComponent + "-wal"),
-		]
-	}
-}

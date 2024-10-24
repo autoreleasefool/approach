@@ -62,6 +62,62 @@
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BadgesLibraryTests"
+               BuildableName = "BadgesLibraryTests"
+               BlueprintName = "BadgesLibraryTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BadgesServiceTests"
+               BuildableName = "BadgesServiceTests"
+               BlueprintName = "BadgesServiceTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BadgesFeatureTests"
+               BuildableName = "BadgesFeatureTests"
+               BlueprintName = "BadgesFeatureTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AutomaticBackupsFeatureTests"
+               BuildableName = "AutomaticBackupsFeatureTests"
+               BlueprintName = "AutomaticBackupsFeatureTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -907,6 +963,46 @@
                BlueprintIdentifier = "ZIPServiceTests"
                BuildableName = "ZIPServiceTests"
                BlueprintName = "ZIPServiceTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AutomaticBackupsFeatureTests"
+               BuildableName = "AutomaticBackupsFeatureTests"
+               BlueprintName = "AutomaticBackupsFeatureTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BadgesFeatureTests"
+               BuildableName = "BadgesFeatureTests"
+               BlueprintName = "BadgesFeatureTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BadgesLibraryTests"
+               BuildableName = "BadgesLibraryTests"
+               BlueprintName = "BadgesLibraryTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BadgesServiceTests"
+               BuildableName = "BadgesServiceTests"
+               BlueprintName = "BadgesServiceTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
