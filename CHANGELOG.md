@@ -1,10 +1,10 @@
 # Most recent version
 
-## iOS 1.8.0b30
+## iOS 1.9.0b31
 
 ```
-- Feat: Candy Corn, Witch's Hat, and Devil Horns app icons
-- Chore: Migrated to Swift 6
+- Feat: Support importing from Android Approach app
+- Fix: Chart rendering has been improved in Series List
 ```
 
 ## Android 4.3.5b334
@@ -16,6 +16,13 @@
 ---
 
 # Legacy iOS Versions
+
+## iOS 1.8.0b30
+
+```
+- Feat: Candy Corn, Witch's Hat, and Devil Horns app icons
+- Chore: Migrated to Swift 6
+```
 
 ## iOS 1.7.0b29
 
