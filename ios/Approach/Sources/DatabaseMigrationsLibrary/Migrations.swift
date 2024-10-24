@@ -37,6 +37,7 @@ public enum Migrations {
 			Migration20231220RenameLeagueNumberOfGames.self,
 			Migration20240322AddBowledOnDateToSeries.self,
 			Migration20240329ClearExtraRolledBalls.self,
+			Migration20241021CreateTeam.self,
 		]
 	}
 }
