@@ -96,6 +96,8 @@ let package = Package(
 		.library(name: "DatabaseServiceInterface", targets: ["DatabaseServiceInterface"]),
 		.library(name: "EmailService", targets: ["EmailService"]),
 		.library(name: "EmailServiceInterface", targets: ["EmailServiceInterface"]),
+		.library(name: "HUDService", targets: ["HUDService"]),
+		.library(name: "HUDServiceInterface", targets: ["HUDServiceInterface"]),
 		.library(name: "ImportExportService", targets: ["ImportExportService"]),
 		.library(name: "ImportExportServiceInterface", targets: ["ImportExportServiceInterface"]),
 		.library(name: "LaunchService", targets: ["LaunchService"]),
@@ -526,6 +528,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "SwiftUIExtensionsPackageLibrary", package: "swift-utilities"),
 				"ErrorsFeature",
+				"HUDServiceInterface",
 				"ImportExportServiceInterface",
 				"PreferenceServiceInterface",
 			]
@@ -1328,6 +1331,26 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"EmailService",
+			]
+		),
+		.target(
+			name: "HUDService",
+			dependencies: [
+				"HUDServiceInterface",
+			]
+		),
+		.target(
+			name: "HUDServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "DependenciesMacros", package: "swift-dependencies"),
+			]
+		),
+		.testTarget(
+			name: "HUDServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"HUDService",
 			]
 		),
 		.target(

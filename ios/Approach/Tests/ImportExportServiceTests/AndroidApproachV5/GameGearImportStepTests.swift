@@ -70,7 +70,7 @@ struct GameGearImportStepTests {
 			try $0.execute(
 				sql: """
 				INSERT INTO
-					leagues(id, bowler_id, name, recurrence, number_of_games, additional_pin_fall, 
+					leagues(id, bowler_id, name, recurrence, number_of_games, additional_pin_fall,
 									additional_games, exclude_from_statistics, archived_on)
 				VALUES
 					('\(leagueId)', '\(bowlerId)', 'Majors 23-24', 'REPEATING', 3, 1000, 4, 'INCLUDE', 123000);

@@ -10,6 +10,7 @@ import ErrorReportingClientPackageLibrary
 import ErrorsFeature
 import FeatureActionLibrary
 import Foundation
+import HUDServiceInterface
 import ImportExportServiceInterface
 import PasteboardPackageServiceInterface
 import PreferenceServiceInterface
@@ -100,9 +101,14 @@ public struct Import: Reducer, Sendable {
 		case failedToFetchBackup
 	}
 
+	enum HUD: Hashable, Sendable {
+		case importing
+	}
+
 	public init() {}
 
 	@Dependency(EmailService.self) var email
+	@Dependency(HUDService.self) var hud
 	@Dependency(ImportService.self) var importService
 	@Dependency(\.openURL) var openURL
 	@Dependency(\.pasteboard) var pasteboard
@@ -170,7 +176,6 @@ public struct Import: Reducer, Sendable {
 
 				case .didTapRestoreButton:
 					guard let lastBackupDate = state.lastBackupAt else { return .none }
-					state.progress = .restoring
 					state.destination = .alert(Import.restore(toDate: lastBackupDate))
 					return .none
 
@@ -243,6 +248,7 @@ public struct Import: Reducer, Sendable {
 				case let .destination(.presented(.alert(alertAction))):
 					switch alertAction {
 					case .didTapRestoreButton:
+						state.progress = .restoring
 						return .run { send in
 							await send(.internal(.didRestoreBackup(Result {
 								try await importService.restoreBackup()
@@ -265,6 +271,16 @@ public struct Import: Reducer, Sendable {
 		}
 		.ifLet(\.$destination, action: \.internal.destination)
 		.ifLet(\.$toast, action: \.internal.toast) {}
+		.onChange(of: \.progress) { _, progress in
+			Reduce<State, Action> { _, _ in
+				switch progress {
+				case .importing, .restoring:
+					return .run { _ in await hud.requestHUD(HUD.importing, style: .loading) }
+				case .failed, .importComplete, .notStarted, .restoreComplete, .pickingFile:
+					return .run { _ in await hud.dismissHUD(HUD.importing) }
+				}
+			}
+		}
 
 		BreadcrumbReducer<State, Action> { _, action in
 			switch action {
