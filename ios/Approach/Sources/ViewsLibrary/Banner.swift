@@ -1,6 +1,23 @@
 import AssetsLibrary
 import SwiftUI
 
+public struct BannerSection: View {
+	let content: Banner.Content
+	let style: Banner.Style
+
+	public init(_ content: Banner.Content, style: Banner.Style) {
+		self.content = content
+		self.style = style
+	}
+
+	public var body: some View {
+		Section {
+			Banner(content, style: style)
+		}
+		.listRowInsets(EdgeInsets())
+	}
+}
+
 public struct Banner: View {
 	let content: Content
 	let style: Style
@@ -26,6 +43,7 @@ public struct Banner: View {
 		}
 		.padding()
 		.frame(maxWidth: .infinity)
+		.foregroundStyle(style.foregroundColor)
 		.background(style.backgroundColor)
 		.cornerRadius(.standardRadius)
 	}
