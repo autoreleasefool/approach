@@ -15,7 +15,7 @@ extension FeatureFlag {
 	public static let highestScorePossible = Self(name: "highestScorePossible", introduced: "2024-08-14", stage: .development)
 	public static let badges = Self(name: "badges", introduced: "2024-10-03", stage: .development)
 	public static let automaticBackups = Self(name: "automaticBackups", introduced: "2024-10-05", stage: .development)
-	public static let crossPlatformImports = Self(name: "crossPlatformImports", introduced: "2024-10-17", stage: .development)
+	public static let crossPlatformImports = Self(name: "crossPlatformImports", introduced: "2024-10-17", stage: .release)
 
 	public static let allFlags: [Self] = [
 		.alleyAndGearAverages,
