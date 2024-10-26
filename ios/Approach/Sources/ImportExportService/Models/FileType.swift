@@ -2,6 +2,7 @@ import Foundation
 
 enum FileType: String, CaseIterable {
 	case sqlite = "53514C69"
+	case zip = "504B0304"
 
 	init?(signature: String) {
 		if let type = FileType.allCases.first(where: { $0.rawValue == signature.uppercased() }) {
@@ -12,6 +13,12 @@ enum FileType: String, CaseIterable {
 	}
 
 	static func of(url: URL) throws -> FileType? {
+		switch url.pathExtension {
+		case "sqlite": return .sqlite
+		case "zip": return .zip
+		default: break
+		}
+
 		let fileHandle = try FileHandle(forReadingFrom: url)
 		defer { try? fileHandle.close() }
 

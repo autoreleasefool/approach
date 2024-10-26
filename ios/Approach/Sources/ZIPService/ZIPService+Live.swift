@@ -17,6 +17,15 @@ extension ZIPService: DependencyKey {
 				}
 
 				return archivePath
+			},
+			unZipContents: { source in
+				@Dependency(\.fileManager) var fileManager
+				@Dependency(\.uuid) var uuid
+
+				let dest = try fileManager.getTemporaryDirectory().appending(path: "\(uuid())")
+				try fileManager.createDirectory(dest)
+				try FileManager.default.unzipItem(at: source, to: dest)
+				return dest
 			}
 		)
 	}

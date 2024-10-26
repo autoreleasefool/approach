@@ -189,6 +189,7 @@ extension BackupsService: DependencyKey {
 				switch try FileType.of(url: temporaryImportUrl) {
 				case .sqlite:
 					try fileManager.copyItem(at: temporaryImportUrl, to: database.dbUrl())
+				case .zip: break
 				case .none: break
 				}
 			},

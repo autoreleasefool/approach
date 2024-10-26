@@ -5,6 +5,7 @@ import FileManagerPackageServiceInterface
 import Foundation
 import GRDB
 import ImportExportServiceInterface
+import ZIPServiceInterface
 
 extension ImportService: DependencyKey {
 	public static var liveValue: Self {
@@ -57,9 +58,56 @@ extension ImportService: DependencyKey {
 			latestBackupUrl.setValue(backupFile)
 		}
 
-		@Sendable func importDatabase(fromUrl: URL, performBackup: Bool) async throws -> ImportResult {
+		@Sendable func importSQLiteDatabase(fromUrl: URL) async throws -> ImportResult {
 			@Dependency(\.database) var database
 			@Dependency(\.fileManager) var fileManager
+
+			// Close existing DB and re-initialize when finished import
+			try database.close()
+			defer { database.initialize() }
+
+			let importedDbUrl = try fileManager
+				.getTemporaryDirectory()
+				.appending(path: "importedDb.tmp")
+			defer { try? fileManager.removeIfExists(importedDbUrl) }
+
+			let dbType = try await DatabaseFormat.of(url: fromUrl)
+			guard let importer = dbType?.getImporter() else { return .unrecognized }
+			let result = try await importer.startImport(of: fromUrl, to: importedDbUrl)
+
+			let dbUrls = database.dbUrl().relativeSQLiteFileUrls
+
+			// Once the imported database is ready, replace the existing DB
+			for dbUrlItem in dbUrls {
+				try fileManager.removeIfExists(dbUrlItem)
+			}
+
+			for (importedDbUrlItem, dbUrlItem) in zip(importedDbUrl.relativeSQLiteFileUrls, dbUrls) {
+				let importedItemExists = try fileManager.exists(importedDbUrlItem)
+				if importedItemExists {
+					try fileManager.copyItem(at: importedDbUrlItem, to: dbUrlItem)
+				}
+			}
+
+			return result
+		}
+
+		@Sendable func findPrimaryDbUrl(in url: URL) throws -> URL? {
+			@Dependency(\.fileManager) var fileManager
+			for item in try fileManager.contentsOfDirectory(at: url) {
+				let fileType = try FileType.of(url: item)
+				switch fileType {
+				case .sqlite: return item
+				default: continue
+				}
+			}
+
+			return nil
+		}
+
+		@Sendable func importDatabase(fromUrl: URL, performBackup: Bool) async throws -> ImportResult {
+			@Dependency(\.fileManager) var fileManager
+			@Dependency(ZIPService.self) var zip
 
 			if performBackup {
 				try await backupExistingDatabase()
@@ -74,31 +122,18 @@ extension ImportService: DependencyKey {
 			try fileManager.removeIfExists(temporaryImportUrl)
 			try fileManager.copyItem(at: fromUrl, to: temporaryImportUrl)
 
-			let importedDbUrl = try fileManager
-				.getTemporaryDirectory()
-				.appending(path: "importedDb.tmp")
-			defer { try? fileManager.removeIfExists(importedDbUrl) }
-
 			let result: ImportResult
 			let fileType = try FileType.of(url: temporaryImportUrl)
-			 switch fileType {
+			switch fileType {
 			case .sqlite:
-				let dbType = try await DatabaseFormat.of(url: temporaryImportUrl)
-				guard let importer = dbType?.getImporter() else { return .unrecognized }
-				result = try await importer.startImport(of: temporaryImportUrl, to: importedDbUrl)
+				result = try await importSQLiteDatabase(fromUrl: temporaryImportUrl)
+			case .zip:
+				let unzipDir = try zip.unZipContents(of: temporaryImportUrl)
+				guard let unzippedDbUrl = try findPrimaryDbUrl(in: unzipDir) else { return .unrecognized }
+				result = try await importSQLiteDatabase(fromUrl: unzippedDbUrl)
 			case .none:
 				return .unrecognized
 			}
-
-			// Delete existing DB
-			try database.close()
-			defer { database.initialize() }
-
-			// Once the imported database is ready, replace the existing DB
-			for dbUrlItem in database.dbUrl().relativeSQLiteFileUrls {
-				try fileManager.removeIfExists(dbUrlItem)
-			}
-			try fileManager.copyItem(at: importedDbUrl, to: database.dbUrl())
 
 			return result
 		}
