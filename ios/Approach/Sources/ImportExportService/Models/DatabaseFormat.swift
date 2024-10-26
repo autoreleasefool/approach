@@ -23,6 +23,7 @@ enum DatabaseFormat {
 
 	static func of(url: URL) async throws -> DatabaseFormat? {
 		let dbQueue = try DatabaseQueue(path: url.path())
+		defer { try? dbQueue.close() }
 
 		return try await dbQueue.read {
 			let iosMigrationsTableExists = try Row.fetchCursor(
