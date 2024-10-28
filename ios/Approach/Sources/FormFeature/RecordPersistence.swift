@@ -1,4 +1,5 @@
 import Dependencies
+import ErrorReportingClientPackageLibrary
 
 public struct RecordPersistence: Sendable {
 	public var create: (@Sendable (Any) async throws -> Void)?
@@ -26,23 +27,35 @@ public struct RecordPersistence: Sendable {
 	) where New.ID == Existing.ID {
 		self.init(
 			create: { record in
-				// FIXME: assert model casts correctly
-				guard let mapped = record as? New else { return }
+				guard let mapped = record as? New else {
+					@Dependency(\.errors) var errors
+					errors.captureMessage("\(Self.self).create: \(record) is not a \(New.self)")
+					return
+				}
 				try await create(mapped)
 			},
 			update: { record in
-				// FIXME: assert model casts correctly
-				guard let mapped = record as? Existing else { return }
+				guard let mapped = record as? Existing else {
+					@Dependency(\.errors) var errors
+					errors.captureMessage("\(Self.self).update: \(record) is not a \(Existing.self)")
+					return
+				}
 				try await update(mapped)
 			},
 			delete: { id in
-				// FIXME: assert model casts correctly
-				guard let mapped = id as? New.ID else { return }
+				guard let mapped = id as? New.ID else {
+					@Dependency(\.errors) var errors
+					errors.captureMessage("\(Self.self).delete: \(id) is not a \(New.ID.self)")
+					return
+				}
 				try await delete(mapped)
 			},
 			archive: { id in
-				// FIXME: assert model casts correctly
-				guard let mapped = id as? New.ID else { return }
+				guard let mapped = id as? New.ID else {
+					@Dependency(\.errors) var errors
+					errors.captureMessage("\(Self.self).archive: \(id) is not a \(New.ID.self)")
+					return
+				}
 				try await archive(mapped)
 			}
 		)
