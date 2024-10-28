@@ -1121,6 +1121,7 @@ let package = Package(
 			name: "StatisticsRepository",
 			dependencies: [
 				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
+				"CodableServiceInterface",
 				"DatabaseServiceInterface",
 				"FeatureFlagsLibrary",
 				"PreferenceServiceInterface",

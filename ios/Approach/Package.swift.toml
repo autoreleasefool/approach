@@ -222,7 +222,7 @@ repositories = [ "Frames", "Games" ]
 [repositories.Series.interface]
 
 [repositories.Statistics]
-services = [ "Preference", "RecentlyUsed" ]
+services = [ "Codable", "Preference", "RecentlyUsed" ]
 libraries = [ "FeatureFlags", "StatisticsModels" ]
 dependencies = [ "UserDefaultsPackageServiceInterface" ]
 [repositories.Statistics.interface]

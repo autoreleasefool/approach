@@ -1,3 +1,4 @@
+import CodableServiceInterface
 import Collections
 import DatabaseModelsLibrary
 import DatabaseServiceInterface
@@ -191,9 +192,9 @@ extension StatisticsRepository: DependencyKey {
 			loadSources: loadSources(source:),
 			loadDefaultSources: {
 				@Dependency(DatabaseService.self) var database
+				@Dependency(DecoderService.self) var decoder
 				@Dependency(\.preferences) var preferences
 
-				let decoder = JSONDecoder()
 				if let lastUsedSource = preferences.string(forKey: .statisticsLastUsedTrackableFilterSource),
 					 let data = lastUsedSource.data(using: .utf8),
 					 let source = try? decoder.decode(TrackableFilter.Source.self, from: data) {
@@ -215,9 +216,9 @@ extension StatisticsRepository: DependencyKey {
 				}
 			},
 			saveLastUsedSource: { source in
+				@Dependency(EncoderService.self) var encoder
 				@Dependency(\.preferences) var preferences
 
-				let encoder = JSONEncoder()
 				guard let data = try? encoder.encode(source) else {
 					return
 				}
