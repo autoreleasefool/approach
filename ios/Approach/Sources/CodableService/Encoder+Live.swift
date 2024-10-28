@@ -1,8 +1,8 @@
+import CodableServiceInterface
 import Dependencies
 import Foundation
-import RecentlyUsedServiceInterface
 
-extension JSONEncoderService: DependencyKey {
+extension EncoderService: DependencyKey {
 	public static var liveValue: Self {
 		Self(JSONEncoder())
 	}

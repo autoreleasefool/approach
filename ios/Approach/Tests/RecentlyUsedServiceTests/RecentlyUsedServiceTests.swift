@@ -1,3 +1,4 @@
+import CodableServiceInterface
 import Dependencies
 @testable import RecentlyUsedService
 import RecentlyUsedServiceInterface
@@ -13,6 +14,8 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		return encoder
 	}()
 
+	static let decoder = JSONDecoder()
+
 	func testDidRecentlyUseResource_UpdatesEntries() {
 		let cache = LockIsolated<String?>(nil)
 		let now = Date(timeIntervalSince1970: 1_672_519_204)
@@ -20,7 +23,8 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		withDependencies {
 			$0[RecentlyUsedService.self] = .liveValue
 			$0.date = .constant(now)
-			$0[JSONEncoderService.self] = .init(Self.encoder)
+			$0[EncoderService.self] = .init(Self.encoder)
+			$0[DecoderService.self] = .init(Self.decoder)
 
 			$0.userDefaults.string = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
@@ -45,7 +49,8 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		withDependencies {
 			$0[RecentlyUsedService.self] = .liveValue
 			$0.date = .constant(now)
-			$0[JSONEncoderService.self] = .init(Self.encoder)
+			$0[EncoderService.self] = .init(Self.encoder)
+			$0[DecoderService.self] = .init(Self.decoder)
 
 			$0.userDefaults.string = { @Sendable _ in
 				cache.value
@@ -77,7 +82,8 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		withDependencies {
 			$0[RecentlyUsedService.self] = .liveValue
 			$0.date = .constant(now)
-			$0[JSONEncoderService.self] = .init(Self.encoder)
+			$0[EncoderService.self] = .init(Self.encoder)
+			$0[DecoderService.self] = .init(Self.decoder)
 
 			$0.userDefaults.string = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
@@ -117,7 +123,8 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 		await withDependencies {
 			$0[RecentlyUsedService.self] = .liveValue
-			$0[JSONEncoderService.self] = .init(Self.encoder)
+			$0[EncoderService.self] = .init(Self.encoder)
+			$0[DecoderService.self] = .init(Self.decoder)
 
 			$0.userDefaults.string = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
@@ -156,7 +163,8 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 		await withDependencies {
 			$0[RecentlyUsedService.self] = .liveValue
-			$0[JSONEncoderService.self] = .init(Self.encoder)
+			$0[EncoderService.self] = .init(Self.encoder)
+			$0[DecoderService.self] = .init(Self.decoder)
 
 			$0.userDefaults.string = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
@@ -175,7 +183,8 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		withDependencies {
 			$0[RecentlyUsedService.self] = .liveValue
 			$0.date = .constant(now)
-			$0[JSONEncoderService.self] = .init(Self.encoder)
+			$0[EncoderService.self] = .init(Self.encoder)
+			$0[DecoderService.self] = .init(Self.decoder)
 
 			$0.userDefaults.string = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.alleys", key)
@@ -197,7 +206,8 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		await withDependencies {
 			$0[RecentlyUsedService.self] = .liveValue
 			$0.date = .constant(now)
-			$0[JSONEncoderService.self] = .init(Self.encoder)
+			$0[EncoderService.self] = .init(Self.encoder)
+			$0[DecoderService.self] = .init(Self.decoder)
 
 			$0.userDefaults.string = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)

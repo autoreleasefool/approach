@@ -1,7 +1,7 @@
 import Dependencies
 import Foundation
 
-public struct JSONEncoderService: Sendable {
+public struct EncoderService: Sendable {
 	public var encode: @Sendable (any Encodable) throws -> Data
 
 	public init(encode: @escaping @Sendable (Encodable) throws -> Data) {
@@ -15,7 +15,7 @@ public struct JSONEncoderService: Sendable {
 	}
 }
 
-extension JSONEncoderService: TestDependencyKey {
+extension EncoderService: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
 			encode: { _ in unimplemented("\(Self.self).encode", placeholder: Data()) }

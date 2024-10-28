@@ -1,4 +1,5 @@
 import Algorithms
+import CodableServiceInterface
 @preconcurrency import Combine
 import Dependencies
 import Foundation
@@ -16,9 +17,6 @@ extension RecentlyUsedService: DependencyKey {
 	public static var maximumEntries: Int { 20 }
 
 	public static var liveValue: Self {
-		// FIXME: Replace with a @Dependency
-		let decoder = JSONDecoder()
-
 		@Sendable
 		func key(forCategory category: Resource) -> String {
 			"RecentlyUsed.\(category.rawValue)"
@@ -26,6 +24,7 @@ extension RecentlyUsedService: DependencyKey {
 
 		@Sendable
 		func entries(forCategory category: Resource) -> [Entry] {
+			@Dependency(DecoderService.self) var decoder
 			@Dependency(\.userDefaults) var userDefaults
 
 			let categoryKey = key(forCategory: category)
@@ -51,7 +50,7 @@ extension RecentlyUsedService: DependencyKey {
 				recentlyUsed = Array(recentlyUsed.prefix(maximumEntries - 1))
 				recentlyUsed.insert(entry, at: 0)
 
-				@Dependency(JSONEncoderService.self) var encoder
+				@Dependency(EncoderService.self) var encoder
 				guard let recentlyUsedData = try? encoder.encode(recentlyUsed) else {
 					return
 				}
@@ -118,11 +117,9 @@ extension RecentlyUsedTrackableFilterService: DependencyKey {
 	private static let userDefaultsKey = "RecentlyUsedTrackableFilter.TrackableFilter"
 
 	public static var liveValue: Self {
-		// FIXME: Replace with a @Dependency
-		let decoder = JSONDecoder()
-
 		@Sendable
 		func entries() -> [TrackableFilter] {
+			@Dependency(DecoderService.self) var decoder
 			@Dependency(\.userDefaults) var userDefaults
 
 			let string = userDefaults.string(forKey: Self.userDefaultsKey) ?? "[]"
@@ -141,7 +138,7 @@ extension RecentlyUsedTrackableFilterService: DependencyKey {
 					.prefix(RecentlyUsedService.maximumEntries - 1)
 					.uniqued()
 
-				@Dependency(JSONEncoderService.self) var encoder
+				@Dependency(EncoderService.self) var encoder
 				guard let recentlyUsedData = try? encoder.encode(Array(recentlyUsed)) else {
 					return
 				}

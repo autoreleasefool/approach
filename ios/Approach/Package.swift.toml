@@ -263,6 +263,8 @@ libraries = [ "FeatureFlags" ]
 libraries = [ "Badges" ]
 dependencies = [ "DependenciesMacros" ]
 
+[services.Codable]
+
 [services.Database]
 libraries = [ "DatabaseMigrations" ]
 dependencies = [ "FileManagerPackageServiceInterface" ]
@@ -280,7 +282,7 @@ skip_tests = true
 dependencies = [ "DependenciesMacros" ]
 
 [services.ImportExport]
-services = [ "Database", "Preference" ]
+services = [ "Database", "Preference", "ZIP" ]
 libraries = [ "DatabaseMigrations", "DatabaseModels", "DateTime", "FeatureFlags", "Statistics" ]
 dependencies = [ "FileManagerPackageServiceInterface" ]
 [services.ImportExport.interface]
@@ -313,10 +315,13 @@ dependencies = [ "BundlePackageServiceInterface" ]
 libraries = [ "Products" ]
 
 [services.RecentlyUsed]
+services = [ "Codable" ]
 dependencies = [ "Algorithms", "UserDefaultsPackageServiceInterface" ]
 [services.RecentlyUsed.interface]
 libraries = [ "Statistics" ]
 dependencies = [ "ComposableArchitecture" ]
+[services.RecentlyUsed.tests]
+dependencies = [ "DependenciesTestSupport" ]
 
 [services.Tips]
 dependencies = [ "UserDefaultsPackageServiceInterface" ]

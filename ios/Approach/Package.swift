@@ -90,6 +90,8 @@ let package = Package(
 		.library(name: "AvatarServiceInterface", targets: ["AvatarServiceInterface"]),
 		.library(name: "BadgesService", targets: ["BadgesService"]),
 		.library(name: "BadgesServiceInterface", targets: ["BadgesServiceInterface"]),
+		.library(name: "CodableService", targets: ["CodableService"]),
+		.library(name: "CodableServiceInterface", targets: ["CodableServiceInterface"]),
 		.library(name: "DatabaseMockingService", targets: ["DatabaseMockingService"]),
 		.library(name: "DatabaseMockingServiceInterface", targets: ["DatabaseMockingServiceInterface"]),
 		.library(name: "DatabaseService", targets: ["DatabaseService"]),
@@ -1279,6 +1281,25 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "CodableService",
+			dependencies: [
+				"CodableServiceInterface",
+			]
+		),
+		.target(
+			name: "CodableServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+			]
+		),
+		.testTarget(
+			name: "CodableServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"CodableService",
+			]
+		),
+		.target(
 			name: "DatabaseMockingService",
 			dependencies: [
 				"DatabaseMockingServiceInterface",
@@ -1365,6 +1386,7 @@ let package = Package(
 				"ImportExportServiceInterface",
 				"PreferenceServiceInterface",
 				"StatisticsLibrary",
+				"ZIPServiceInterface",
 			]
 		),
 		.target(
@@ -1500,6 +1522,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "Algorithms", package: "swift-algorithms"),
 				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
+				"CodableServiceInterface",
 				"RecentlyUsedServiceInterface",
 			]
 		),
@@ -1514,6 +1537,7 @@ let package = Package(
 		.testTarget(
 			name: "RecentlyUsedServiceTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"RecentlyUsedService",
 			]
