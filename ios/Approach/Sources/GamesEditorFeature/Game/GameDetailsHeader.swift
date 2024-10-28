@@ -158,18 +158,16 @@ public struct GameDetailsHeaderView: View {
 }
 
 #if DEBUG
-struct GameDetailsHeaderPreview: PreviewProvider {
-	static var previews: some View {
-		GameDetailsHeaderView(
-			store: .init(
-				initialState: GameDetailsHeader.State(
-					currentBowlerName: "Joseph Roque",
-					currentLeagueName: "Majors",
-					nextElement: .bowler(name: "Sarah", id: .init(0))
-				),
-				reducer: GameDetailsHeader.init
-			)
+#Preview {
+	GameDetailsHeaderView(
+		store: .init(
+			initialState: GameDetailsHeader.State(
+				currentBowlerName: "Joseph Roque",
+				currentLeagueName: "Majors",
+				nextElement: .bowler(name: "Sarah", id: .init(0))
+			),
+			reducer: GameDetailsHeader.init
 		)
-	}
+	)
 }
 #endif

@@ -30,12 +30,10 @@ public struct ShortTipView: View {
 }
 
 #if DEBUG
-struct ShortTipViewPreview: PreviewProvider {
-	static var previews: some View {
-		List {
-			Section {
-				ShortTipView(tip: .init(title: "This is a short and sweet tip")) { }
-			}
+#Preview {
+	List {
+		Section {
+			ShortTipView(tip: .init(title: "This is a short and sweet tip")) { }
 		}
 	}
 }

@@ -70,13 +70,11 @@ extension Game.ScoringMethod: CustomStringConvertible {
 }
 
 #if DEBUG
-struct ScoringSummarySectionPreview: PreviewProvider {
-	static var previews: some View {
-		Form {
-			ScoringSummarySection(scoringMethod: .byFrame, score: 120) {}
+#Preview {
+	Form {
+		ScoringSummarySection(scoringMethod: .byFrame, score: 120) {}
 
-			ScoringSummarySection(scoringMethod: .manual, score: 260) {}
-		}
+		ScoringSummarySection(scoringMethod: .manual, score: 260) {}
 	}
 }
 #endif

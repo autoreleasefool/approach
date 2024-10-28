@@ -359,32 +359,30 @@ public enum StatisticsWidgetLayoutError: LocalizedError {
 private struct ContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 
 #if DEBUG
-struct StatisticsWidgetLayoutPreview: PreviewProvider {
-	static var previews: some View {
-		List {
-			Section {
-				StatisticsWidgetLayoutView(store: .init(
-					initialState: {
-						var state = StatisticsWidgetLayout.State(context: "", newWidgetSource: .bowler(UUID()))
-						state.widgets = [
-							.init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
-							.init(id: UUID(1), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
-							.init(id: UUID(2), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
-						]
-						state.widgetData = [
-							UUID(0): .averaging(AveragingChart.Data.bowlerAverageIncrementingMock),
-							UUID(1): .chartUnavailable(statistic: ""),
-							UUID(2): .dataMissing(statistic: ""),
-						]
-						return state
-					}(),
-					reducer: StatisticsWidgetLayout.init
-				))
-			}
-			.listRowSeparator(.hidden)
-			.listRowInsets(EdgeInsets())
-			.listRowBackground(Color.clear)
+#Preview {
+	List {
+		Section {
+			StatisticsWidgetLayoutView(store: .init(
+				initialState: {
+					var state = StatisticsWidgetLayout.State(context: "", newWidgetSource: .bowler(UUID()))
+					state.widgets = [
+						.init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
+						.init(id: UUID(1), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
+						.init(id: UUID(2), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
+					]
+					state.widgetData = [
+						UUID(0): .averaging(AveragingChart.Data.bowlerAverageIncrementingMock),
+						UUID(1): .chartUnavailable(statistic: ""),
+						UUID(2): .dataMissing(statistic: ""),
+					]
+					return state
+				}(),
+				reducer: StatisticsWidgetLayout.init
+			))
 		}
+		.listRowSeparator(.hidden)
+		.listRowInsets(EdgeInsets())
+		.listRowBackground(Color.clear)
 	}
 }
 #endif

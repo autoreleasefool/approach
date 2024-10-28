@@ -1,4 +1,3 @@
-// swiftlint:disable file_length
 import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture

@@ -25,13 +25,12 @@ extension ToggleStyle where Self == CheckboxToggleStyle {
 }
 
 #if DEBUG
-struct CheckboxToggleStylePreview: PreviewProvider {
-	@State static var isOn = true
-	static var previews: some View {
-		Form {
-			Toggle("Label", isOn: $isOn)
-				.toggleStyle(CheckboxToggleStyle())
-		}
+#Preview {
+	@Previewable @State var isOn = true
+
+	Form {
+		Toggle("Label", isOn: $isOn)
+			.toggleStyle(CheckboxToggleStyle())
 	}
 }
 #endif

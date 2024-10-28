@@ -266,19 +266,17 @@ enum ErrorReportMockError: Error {
 	case mockError
 }
 
-struct ErrorReportPreview: PreviewProvider {
-	static var previews: some View {
-		ErrorReportView(
-			store: .init(
-				initialState: .init(
-					thrownError: ErrorReportMockError.mockError,
-					additionalErrors: [],
-					logDataUrl: URL(string: "https://example.com"),
-					canSendEmail: true
-				),
-				reducer: ErrorReport.init
-			)
+#Preview {
+	ErrorReportView(
+		store: .init(
+			initialState: .init(
+				thrownError: ErrorReportMockError.mockError,
+				additionalErrors: [],
+				logDataUrl: URL(string: "https://example.com"),
+				canSendEmail: true
+			),
+			reducer: ErrorReport.init
 		)
-	}
+	)
 }
 #endif

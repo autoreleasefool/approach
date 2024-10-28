@@ -78,17 +78,15 @@ public struct StatisticsOverviewView: View {
 }
 
 #if DEBUG
-struct StatisticsOverviewPreviews: PreviewProvider {
-	static var previews: some View {
-		NavigationStack {
-			StatisticsOverviewView(
-				store: .init(initialState: .init()) {
-					StatisticsOverview()
-				} withDependencies: {
-					$0.preferences.bool = { @Sendable _ in false }
-				}
-			)
-		}
+#Preview {
+	NavigationStack {
+		StatisticsOverviewView(
+			store: .init(initialState: .init()) {
+				StatisticsOverview()
+			} withDependencies: {
+				$0.preferences.bool = { @Sendable _ in false }
+			}
+		)
 	}
 }
 #endif

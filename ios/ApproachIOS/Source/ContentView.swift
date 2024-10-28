@@ -39,9 +39,7 @@ public struct ContentView: View {
 }
 
 #if DEBUG
-struct ContentViewPreviews: PreviewProvider {
-	static var previews: some View {
-		ContentView()
-	}
+#Preview {
+	ContentView()
 }
 #endif

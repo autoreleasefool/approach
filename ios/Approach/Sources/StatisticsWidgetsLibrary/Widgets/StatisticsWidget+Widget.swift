@@ -211,37 +211,35 @@ extension PercentageChart.Data {
 }
 
 #if DEBUG
-struct StatisticsWidgetPreview: PreviewProvider {
-	static var previews: some View {
-		LazyVGrid(
-			columns: [.init(spacing: .standardSpacing), .init(spacing: .standardSpacing)],
-			spacing: .standardSpacing
-		) {
-			StatisticsWidget.Widget(
-				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
-				chartContent: .averaging(AveragingChart.Data.bowlerAverageDecrementingMock)
-			)
-			StatisticsWidget.Widget(
-				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Middle Hits"),
-				chartContent: .counting(CountingChart.Data.bowlerHeadPinsMock)
-			)
-			StatisticsWidget.Widget(
-				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Middle Hits"),
-				chartContent: .percentage(PercentageChart.Data.bowlerMiddleHitsMock)
-			)
-			StatisticsWidget.Widget(
-				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
-				chartContent: .dataMissing(statistic: "Average")
-			)
-			StatisticsWidget.Widget(
-				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
-				chartContent: nil
-			)
-			StatisticsWidget.Widget(
-				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
-				chartContent: .chartUnavailable(statistic: "Average")
-			)
-		}
+#Preview {
+	LazyVGrid(
+		columns: [.init(spacing: .standardSpacing), .init(spacing: .standardSpacing)],
+		spacing: .standardSpacing
+	) {
+		StatisticsWidget.Widget(
+			configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
+			chartContent: .averaging(AveragingChart.Data.bowlerAverageDecrementingMock)
+		)
+		StatisticsWidget.Widget(
+			configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Middle Hits"),
+			chartContent: .counting(CountingChart.Data.bowlerHeadPinsMock)
+		)
+		StatisticsWidget.Widget(
+			configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Middle Hits"),
+			chartContent: .percentage(PercentageChart.Data.bowlerMiddleHitsMock)
+		)
+		StatisticsWidget.Widget(
+			configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
+			chartContent: .dataMissing(statistic: "Average")
+		)
+		StatisticsWidget.Widget(
+			configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
+			chartContent: nil
+		)
+		StatisticsWidget.Widget(
+			configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
+			chartContent: .chartUnavailable(statistic: "Average")
+		)
 	}
 }
 #endif

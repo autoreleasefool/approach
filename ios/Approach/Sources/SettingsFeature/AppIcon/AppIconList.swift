@@ -232,19 +232,17 @@ extension AppIcon {
 // MARK: - Previews
 
 #if DEBUG
-struct AppIconListViewPreviews: PreviewProvider {
-	static var previews: some View {
-		NavigationStack {
-			AppIconListView(
-				store: .init(
-					initialState: .init(),
-					reducer: { AppIconList() },
-					withDependencies: {
-						$0[AppIconService.self].getAppIconName = { @Sendable in nil }
-					}
-				)
+#Preview {
+	NavigationStack {
+		AppIconListView(
+			store: .init(
+				initialState: .init(),
+				reducer: { AppIconList() },
+				withDependencies: {
+					$0[AppIconService.self].getAppIconName = { @Sendable in nil }
+				}
 			)
-		}
+		)
 	}
 }
 #endif

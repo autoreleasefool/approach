@@ -47,18 +47,16 @@ extension AveragingChart.Data {
 // MARK: - Previews
 
 #if DEBUG
-struct AveragingChartMockPreview: PreviewProvider {
-	static var previews: some View {
-		VStack {
-			AveragingChart.Compact(
-				AveragingChart.Data.bowlerAverageIncrementingMock,
-				style: .init()
-			)
-			.layoutPriority(0.5)
+#Preview {
+	VStack {
+		AveragingChart.Compact(
+			AveragingChart.Data.bowlerAverageIncrementingMock,
+			style: .init()
+		)
+		.layoutPriority(0.5)
 
-			Spacer().layoutPriority(0.5)
-		}
-		.padding()
+		Spacer().layoutPriority(0.5)
 	}
+	.padding()
 }
 #endif

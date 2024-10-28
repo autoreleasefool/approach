@@ -50,32 +50,30 @@ public struct BasicTipView: View {
 
 // swiftlint:disable line_length
 #if DEBUG
-struct BasicTipViewPreview: PreviewProvider {
-	static var previews: some View {
-		List {
-			Section {
-				BasicTipView(tip: .init(title: "Title", message: "Message")) { }
-			}
+#Preview {
+	List {
+		Section {
+			BasicTipView(tip: .init(title: "Title", message: "Message")) { }
+		}
 
-			Section {
-				BasicTipView(tip: .init(title: "Title", message: "Message"), isDismissable: false) { }
-			}
+		Section {
+			BasicTipView(tip: .init(title: "Title", message: "Message"), isDismissable: false) { }
+		}
 
-			Section {
-				BasicTipView(tip: .init(title: "This is a title", message: "And this is a message.")) { }
-			}
+		Section {
+			BasicTipView(tip: .init(title: "This is a title", message: "And this is a message.")) { }
+		}
 
-			Section {
-				BasicTipView(tip: .init(title: "This is a title", message: "And this is a message."), isDismissable: false) { }
-			}
+		Section {
+			BasicTipView(tip: .init(title: "This is a title", message: "And this is a message."), isDismissable: false) { }
+		}
 
-			Section {
-				BasicTipView(tip: .init(title: "Extremely long title that makes it all the way over to the close icon and extends onto many lines", message: "Even longer message that could go on for as many as three or four or five or size or seven lines oh nevermind only four")) { }
-			}
+		Section {
+			BasicTipView(tip: .init(title: "Extremely long title that makes it all the way over to the close icon and extends onto many lines", message: "Even longer message that could go on for as many as three or four or five or size or seven lines oh nevermind only four")) { }
+		}
 
-			Section {
-				BasicTipView(tip: .init(title: "Extremely long title that makes it all the way over to the close icon and extends onto many lines", message: "Even longer message that could go on for as many as three or four or five or size or seven lines oh nevermind only four"), isDismissable: false) { }
-			}
+		Section {
+			BasicTipView(tip: .init(title: "Extremely long title that makes it all the way over to the close icon and extends onto many lines", message: "Even longer message that could go on for as many as three or four or five or size or seven lines oh nevermind only four"), isDismissable: false) { }
 		}
 	}
 }

@@ -68,35 +68,33 @@ extension MatchPlay.Result {
 }
 
 #if DEBUG
-struct MatchPlaySummaryPreview: PreviewProvider {
-	static var previews: some View {
-		Form {
-			MatchPlaySummarySection(matchPlay: .init(
-				gameId: UUID(0),
-				id: UUID(0),
-				opponent: .init(id: UUID(0), name: "Joseph"),
-				opponentScore: 123,
-				result: .lost
-			)) {}
+#Preview {
+	Form {
+		MatchPlaySummarySection(matchPlay: .init(
+			gameId: UUID(0),
+			id: UUID(0),
+			opponent: .init(id: UUID(0), name: "Joseph"),
+			opponentScore: 123,
+			result: .lost
+		)) {}
 
-			MatchPlaySummarySection(matchPlay: .init(
-				gameId: UUID(0),
-				id: UUID(0),
-				opponent: .init(id: UUID(0), name: "Joseph"),
-				opponentScore: 123,
-				result: .won
-			)) {}
+		MatchPlaySummarySection(matchPlay: .init(
+			gameId: UUID(0),
+			id: UUID(0),
+			opponent: .init(id: UUID(0), name: "Joseph"),
+			opponentScore: 123,
+			result: .won
+		)) {}
 
-			MatchPlaySummarySection(matchPlay: .init(
-				gameId: UUID(0),
-				id: UUID(0),
-				opponent: .init(id: UUID(0), name: "Joseph"),
-				opponentScore: 123,
-				result: .tied
-			)) {}
+		MatchPlaySummarySection(matchPlay: .init(
+			gameId: UUID(0),
+			id: UUID(0),
+			opponent: .init(id: UUID(0), name: "Joseph"),
+			opponentScore: 123,
+			result: .tied
+		)) {}
 
-			MatchPlaySummarySection(matchPlay: nil) {}
-		}
+		MatchPlaySummarySection(matchPlay: nil) {}
 	}
 }
 #endif

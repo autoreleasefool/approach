@@ -36,14 +36,12 @@ extension Lane {
 }
 
 #if DEBUG
-struct LaneViewPreview: PreviewProvider {
-	static var previews: some View {
-		List {
-			Lane.View(label: "1", position: .leftWall)
-			Lane.View(label: "2", position: .noWall)
-			Lane.View(label: "3", position: .noWall)
-			Lane.View(label: "4", position: .rightWall)
-		}
+#Preview {
+	List {
+		Lane.View(label: "1", position: .leftWall)
+		Lane.View(label: "2", position: .noWall)
+		Lane.View(label: "3", position: .noWall)
+		Lane.View(label: "4", position: .rightWall)
 	}
 }
 #endif

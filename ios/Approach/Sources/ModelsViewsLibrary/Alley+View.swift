@@ -132,26 +132,24 @@ extension Alley.PinBase {
 }
 
 #if DEBUG
-struct AlleyViewPreview: PreviewProvider {
-	static var previews: some View {
-		List {
-			Alley.View(
-				name: "Skyview Lanes",
-				locationName: nil,
-				material: nil,
-				pinFall: nil,
-				mechanism: nil,
-				pinBase: nil
-			)
-			Alley.View(
-				name: "Grandview Lanes",
-				locationName: "Vancouver, BC",
-				material: .synthetic,
-				pinFall: .freefall,
-				mechanism: .dedicated,
-				pinBase: .black
-			)
-		}
+#Preview {
+	List {
+		Alley.View(
+			name: "Skyview Lanes",
+			locationName: nil,
+			material: nil,
+			pinFall: nil,
+			mechanism: nil,
+			pinBase: nil
+		)
+		Alley.View(
+			name: "Grandview Lanes",
+			locationName: "Vancouver, BC",
+			material: .synthetic,
+			pinFall: .freefall,
+			mechanism: .dedicated,
+			pinBase: .black
+		)
 	}
 }
 #endif

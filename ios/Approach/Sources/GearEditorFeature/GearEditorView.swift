@@ -101,19 +101,17 @@ extension Gear.Kind: CustomStringConvertible {
 }
 
 #if DEBUG
-struct GearEditorViewPreviews: PreviewProvider {
-	static var previews: some View {
-		NavigationStack {
-			GearEditorView(
-				store: .init(
-					initialState: .init(value: .create(.default(
-						withId: UUID(),
-						avatar: .init(id: UUID(), value: .text("", .default))
-					))),
-					reducer: GearEditor.init
-				)
+#Preview {
+	NavigationStack {
+		GearEditorView(
+			store: .init(
+				initialState: .init(value: .create(.default(
+					withId: UUID(),
+					avatar: .init(id: UUID(), value: .text("", .default))
+				))),
+				reducer: GearEditor.init
 			)
-		}
+		)
 	}
 }
 #endif

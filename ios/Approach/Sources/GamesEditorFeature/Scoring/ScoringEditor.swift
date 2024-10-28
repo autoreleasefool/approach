@@ -124,12 +124,10 @@ public struct ScoringEditorView: View {
 }
 
 #if DEBUG
-struct ScoringEditorPreview: PreviewProvider {
-	static var previews: some View {
-		ScoringEditorView(store: .init(
-			initialState: .init(scoringMethod: .byFrame, score: 120),
-			reducer: ScoringEditor.init
-		))
-	}
+#Preview {
+	ScoringEditorView(store: .init(
+		initialState: .init(scoringMethod: .byFrame, score: 120),
+		reducer: ScoringEditor.init
+	))
 }
 #endif

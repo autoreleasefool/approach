@@ -45,13 +45,11 @@ extension Bowler.Kind {
 }
 
 #if DEBUG
-struct BowlerViewPreview: PreviewProvider {
-	static var previews: some View {
-		List {
-			Bowler.View(name: "Joseph", kind: .opponent)
-			Bowler.View(name: "Joseph", kind: .playable)
-			Bowler.View(name: "Joseph", kind: nil)
-		}
+#Preview {
+	List {
+		Bowler.View(name: "Joseph", kind: .opponent)
+		Bowler.View(name: "Joseph", kind: .playable)
+		Bowler.View(name: "Joseph", kind: nil)
 	}
 }
 #endif

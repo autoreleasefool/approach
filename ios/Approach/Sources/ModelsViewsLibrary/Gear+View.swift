@@ -51,14 +51,12 @@ extension Gear.Kind {
 }
 
 #if DEBUG
-struct GearViewPreview: PreviewProvider {
-	static var previews: some View {
-		List {
-			Gear.View(name: "Blue", kind: .bowlingBall, ownerName: "Joseph", avatar: .text("", .default))
-			Gear.View(name: "Reebok", kind: .shoes, ownerName: nil, avatar: .text("", .default))
-			Gear.View(name: "Towel", kind: .towel, ownerName: nil, avatar: .text("", .default))
-			Gear.View(name: "Favourite Shirt", kind: .other, ownerName: "Sarah", avatar: .text("", .default))
-		}
+#Preview {
+	List {
+		Gear.View(name: "Blue", kind: .bowlingBall, ownerName: "Joseph", avatar: .text("", .default))
+		Gear.View(name: "Reebok", kind: .shoes, ownerName: nil, avatar: .text("", .default))
+		Gear.View(name: "Towel", kind: .towel, ownerName: nil, avatar: .text("", .default))
+		Gear.View(name: "Favourite Shirt", kind: .other, ownerName: "Sarah", avatar: .text("", .default))
 	}
 }
 #endif

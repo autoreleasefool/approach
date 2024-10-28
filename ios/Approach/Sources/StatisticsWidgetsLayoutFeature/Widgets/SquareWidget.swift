@@ -37,27 +37,25 @@ public struct RectangleWidget: View {
 }
 
 #if DEBUG
-struct SquareWidgetPreview: PreviewProvider {
-	static var previews: some View {
-		VStack(spacing: .standardSpacing) {
-			LazyVGrid(
-				columns: [.init(spacing: .standardSpacing), .init(spacing: .standardSpacing)],
-				spacing: .standardSpacing
-			) {
-				SquareWidget(
-					configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
-					chartContent: .averaging(AveragingChart.Data.bowlerAverageIncrementingMock)
-				) {}
-				SquareWidget(
-					configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
-					chartContent: .averaging(AveragingChart.Data.bowlerAverageIncrementingMock)
-				) {}
-			}
-			RectangleWidget(
+#Preview {
+	VStack(spacing: .standardSpacing) {
+		LazyVGrid(
+			columns: [.init(spacing: .standardSpacing), .init(spacing: .standardSpacing)],
+			spacing: .standardSpacing
+		) {
+			SquareWidget(
+				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
+				chartContent: .averaging(AveragingChart.Data.bowlerAverageIncrementingMock)
+			) {}
+			SquareWidget(
 				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
 				chartContent: .averaging(AveragingChart.Data.bowlerAverageIncrementingMock)
 			) {}
 		}
+		RectangleWidget(
+			configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
+			chartContent: .averaging(AveragingChart.Data.bowlerAverageIncrementingMock)
+		) {}
 	}
 }
 #endif

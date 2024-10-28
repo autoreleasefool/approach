@@ -219,14 +219,12 @@ public struct ExportView: View {
 }
 
 #if DEBUG
-struct ExportPreview: PreviewProvider {
-	static var previews: some View {
-		NavigationStack {
-			ExportView(store: .init(
-				initialState: Export.State(),
-				reducer: Export.init
-			))
-		}
+#Preview {
+	NavigationStack {
+		ExportView(store: .init(
+			initialState: Export.State(),
+			reducer: Export.init
+		))
 	}
 }
 #endif

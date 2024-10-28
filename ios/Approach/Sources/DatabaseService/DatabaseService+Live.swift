@@ -26,7 +26,6 @@ extension DatabaseService: DependencyKey {
 
 			dbUrl = folderUrl.appending(path: "db.sqlite")
 		} catch {
-			// FIXME: should notify user of failure to open DB
 			fatalError("Unable to access database path: \(error)")
 		}
 
@@ -40,7 +39,6 @@ extension DatabaseService: DependencyKey {
 						eraseDatabaseOnSchemaChange: eraseDatabaseSchemaOnChange
 					)
 				} catch {
-					// FIXME: should notify user of failure to open DB
 					fatalError("Unable to initialize database: \(error)")
 				}
 			},

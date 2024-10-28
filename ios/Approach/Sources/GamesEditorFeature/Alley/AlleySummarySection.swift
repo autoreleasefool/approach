@@ -44,18 +44,16 @@ public struct AlleySummarySection: View {
 }
 
 #if DEBUG
-struct AlleySummarySectionPreview: PreviewProvider {
-	static var previews: some View {
-		List {
-			AlleySummarySection(alleyInfo: nil, lanes: []) { }
+#Preview {
+	List {
+		AlleySummarySection(alleyInfo: nil, lanes: []) { }
 
-			AlleySummarySection(alleyInfo: .init(id: UUID(0), name: "Skyview Lanes"), lanes: []) { }
+		AlleySummarySection(alleyInfo: .init(id: UUID(0), name: "Skyview Lanes"), lanes: []) { }
 
-			AlleySummarySection(alleyInfo: .init(id: UUID(0), name: "Skyview Lanes"), lanes: [
-				.init(id: UUID(0), label: "1", position: .leftWall),
-				.init(id: UUID(1), label: "2", position: .noWall),
-			]) { }
-		}
+		AlleySummarySection(alleyInfo: .init(id: UUID(0), name: "Skyview Lanes"), lanes: [
+			.init(id: UUID(0), label: "1", position: .leftWall),
+			.init(id: UUID(1), label: "2", position: .noWall),
+		]) { }
 	}
 }
 #endif

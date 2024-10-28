@@ -73,11 +73,9 @@ struct Label: View {
 }
 
 #if DEBUG
-struct StatisticsSummarySectionPreview: PreviewProvider {
-	static var previews: some View {
-		Form {
-			StatisticsSummarySection(currentGameIndex: 0, onTapSeries: {}, onTapGame: {})
-		}
+#Preview {
+	Form {
+		StatisticsSummarySection(currentGameIndex: 0, onTapSeries: {}, onTapGame: {})
 	}
 }
 #endif

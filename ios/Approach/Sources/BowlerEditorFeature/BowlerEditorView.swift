@@ -30,16 +30,14 @@ public struct BowlerEditorView: View {
 }
 
 #if DEBUG
-struct BowlerEditorViewPreviews: PreviewProvider {
-	static var previews: some View {
-		NavigationStack {
-			BowlerEditorView(
-				store: .init(
-					initialState: .init(value: .create(.defaultBowler(withId: UUID()))),
-					reducer: BowlerEditor.init
-				)
+#Preview {
+	NavigationStack {
+		BowlerEditorView(
+			store: .init(
+				initialState: .init(value: .create(.defaultBowler(withId: UUID()))),
+				reducer: BowlerEditor.init
 			)
-		}
+		)
 	}
 }
 #endif

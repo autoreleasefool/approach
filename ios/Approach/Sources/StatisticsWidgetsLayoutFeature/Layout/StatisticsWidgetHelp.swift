@@ -106,20 +106,18 @@ public struct StatisticsWidgetHelpView: View {
 }
 
 #if DEBUG
-struct StatisticsWidgetHelpPreview: PreviewProvider {
-	static var previews: some View {
-		NavigationStack {
-			StatisticsWidgetHelpView(store: .init(
-				initialState: .init(missingStatistic: .init(
-					id: UUID(0),
-					bowlerId: UUID(0),
-					leagueId: nil,
-					timeline: .allTime,
-					statistic: "Average"
-				)),
-				reducer: StatisticsWidgetHelp.init
-			))
-		}
+#Preview {
+	NavigationStack {
+		StatisticsWidgetHelpView(store: .init(
+			initialState: .init(missingStatistic: .init(
+				id: UUID(0),
+				bowlerId: UUID(0),
+				leagueId: nil,
+				timeline: .allTime,
+				statistic: "Average"
+			)),
+			reducer: StatisticsWidgetHelp.init
+		))
 	}
 }
 #endif

@@ -174,82 +174,80 @@ private struct ContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 // MARK: - Preview
 
 #if DEBUG
-struct GamesListHeaderViewPreview: PreviewProvider {
-	static var previews: some View {
-		List {
-			GamesListHeaderView(
-				id: UUID(),
-				scores: [
-					.init(index: 0, score: 0),
-					.init(index: 1, score: 0),
-					.init(index: 2, score: 0),
-				]
-			)
+#Preview {
+	List {
+		GamesListHeaderView(
+			id: UUID(),
+			scores: [
+				.init(index: 0, score: 0),
+				.init(index: 1, score: 0),
+				.init(index: 2, score: 0),
+			]
+		)
 
-			GamesListHeaderView(
-				id: UUID(),
-				scores: [
-					.init(index: 0, score: 5),
-					.init(index: 1, score: 445),
-				]
-			)
+		GamesListHeaderView(
+			id: UUID(),
+			scores: [
+				.init(index: 0, score: 5),
+				.init(index: 1, score: 445),
+			]
+		)
 
-			GamesListHeaderView(
-				id: UUID(),
-				scores: [
-					.init(index: 0, score: 233),
-					.init(index: 1, score: 198),
-					.init(index: 2, score: 204),
-					.init(index: 3, score: 238),
-					.init(index: 4, score: 221),
-					.init(index: 5, score: 253),
-					.init(index: 6, score: 304),
-					.init(index: 7, score: 208),
-					.init(index: 8, score: 210),
-					.init(index: 9, score: 193),
-					.init(index: 10, score: 357),
-					.init(index: 11, score: 368),
-				]
-			)
+		GamesListHeaderView(
+			id: UUID(),
+			scores: [
+				.init(index: 0, score: 233),
+				.init(index: 1, score: 198),
+				.init(index: 2, score: 204),
+				.init(index: 3, score: 238),
+				.init(index: 4, score: 221),
+				.init(index: 5, score: 253),
+				.init(index: 6, score: 304),
+				.init(index: 7, score: 208),
+				.init(index: 8, score: 210),
+				.init(index: 9, score: 193),
+				.init(index: 10, score: 357),
+				.init(index: 11, score: 368),
+			]
+		)
 
-			GamesListHeaderView(
-				id: UUID(),
-				scores: [
-					.init(index: 0, score: 233),
-					.init(index: 1, score: 198),
-					.init(index: 2, score: 204),
-					.init(index: 3, score: 238),
-					.init(index: 4, score: 221),
-					.init(index: 5, score: 253),
-					.init(index: 6, score: 304),
-					.init(index: 7, score: 208),
-					.init(index: 8, score: 210),
-					.init(index: 9, score: 193),
-					.init(index: 10, score: 357),
-					.init(index: 11, score: 368),
-				]
-			)
+		GamesListHeaderView(
+			id: UUID(),
+			scores: [
+				.init(index: 0, score: 233),
+				.init(index: 1, score: 198),
+				.init(index: 2, score: 204),
+				.init(index: 3, score: 238),
+				.init(index: 4, score: 221),
+				.init(index: 5, score: 253),
+				.init(index: 6, score: 304),
+				.init(index: 7, score: 208),
+				.init(index: 8, score: 210),
+				.init(index: 9, score: 193),
+				.init(index: 10, score: 357),
+				.init(index: 11, score: 368),
+			]
+		)
 
-			GamesListHeaderView(
-				id: UUID(),
-				scores: [
-					.init(index: 0, score: 233),
-				]
-			)
+		GamesListHeaderView(
+			id: UUID(),
+			scores: [
+				.init(index: 0, score: 233),
+			]
+		)
 
-			GamesListHeaderView(
-				id: UUID(),
-				scores: []
-			)
+		GamesListHeaderView(
+			id: UUID(),
+			scores: []
+		)
 
-			GamesListHeaderView(
-				id: UUID(),
-				scores: [
-					.init(index: 0, score: 445),
-					.init(index: 1, score: 5),
-				]
-			)
-		}
+		GamesListHeaderView(
+			id: UUID(),
+			scores: [
+				.init(index: 0, score: 445),
+				.init(index: 1, score: 5),
+			]
+		)
 	}
 }
 #endif

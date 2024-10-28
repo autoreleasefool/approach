@@ -93,7 +93,6 @@ public struct AlleyLanesEditor: Reducer, Sendable {
 					return .none
 
 				case .didTapAddLaneButton:
-					// FIXME: is it possible to focus on this lane's input when it appears
 					return didFinishAddingLanes(&state, count: 1)
 
 				case .didTapAddMultipleLanesButton:
