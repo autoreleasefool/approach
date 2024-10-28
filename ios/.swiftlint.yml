@@ -1,4 +1,4 @@
-# Inclusions
+# File Configuration
 
 included:
   - Approach/Sources
@@ -34,4 +34,42 @@ disabled_rules:
   - nesting
 
 opt_in_rules:
+  - array_init
   - attributes
+  - closure_end_indentation
+  - closure_spacing
+  - collection_alignment
+  - comma_inheritance
+  - contains_over_filter_count
+  - contains_over_filter_is_empty
+  - contains_over_first_not_nil
+  - contains_over_range_nil_comparison
+  - convenience_type
+  - discarded_notification_center_observer
+  - discouraged_none_name
+  - empty_collection_literal
+  - empty_count
+  - empty_string
+  - explicit_init
+  - file_name_no_space
+  - first_where
+  - implicit_return
+  - is_disjoint
+  - joined_default_parameter
+  - last_where
+  - multiline_arguments
+  - multiline_arguments_brackets
+  - multiline_function_chains
+  - number_separator
+  - redundant_self_in_closure
+  - self_binding
+  - sorted_first_last
+  - sorted_imports
+  - unhandled_throwing_task
+  - unneeded_parentheses_in_closure_argument
+  - unowned_variable_capture
+  - unused_parameter
+  - vertical_parameter_alignment_on_call
+  - vertical_whitespace_closing_braces
+  - weak_delegate
+  - yoda_condition

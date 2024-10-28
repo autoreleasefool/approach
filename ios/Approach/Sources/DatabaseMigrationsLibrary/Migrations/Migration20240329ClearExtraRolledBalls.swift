@@ -8,7 +8,8 @@ struct Migration20240329ClearExtraRolledBalls: Migration {
 	// swiftlint:disable:next function_body_length
 	static func migrate(_ db: Database) throws {
 		do {
-			try db.execute(sql:
+			try db.execute(
+				sql:
 """
 WITH intRoll AS (
 	SELECT
@@ -45,7 +46,8 @@ WHERE (frame.gameId, frame.'index') IN (
 """
 			)
 
-			try db.execute(sql:
+			try db.execute(
+				sql:
 """
 WITH intRoll AS (
 	SELECT

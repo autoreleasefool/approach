@@ -32,7 +32,7 @@ extension Statistics {
 		public mutating func adjust(
 			bySecondRoll: Frame.OrderedRoll,
 			afterFirstRoll: Frame.OrderedRoll,
-			configuration: TrackablePerFrameConfiguration
+			configuration _: TrackablePerFrameConfiguration
 		) {
 			let firstRoll = afterFirstRoll.roll.pinsDowned
 

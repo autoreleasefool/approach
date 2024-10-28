@@ -100,10 +100,10 @@ extension Set where Element == Pin {
 			default: outcome = .cleared
 			}
 		} else {
-			outcome = .none
+			outcome = .miss
 		}
 
-		if outcome == .none {
+		if outcome == .miss {
 			let value = self.value
 			return value == 0 ? outcome.rawValue : String(value)
 		} else {
@@ -124,7 +124,7 @@ public enum RollOutcome: String {
 	case headPin = "HP"
 	case headPin2 = "H2"
 	case cleared = "15"
-	case none = "-"
+	case miss = "-"
 
 	public var numeral: String {
 		switch self {
@@ -136,7 +136,7 @@ public enum RollOutcome: String {
 		case .split: return "8"
 		case .headPin2: return "7"
 		case .headPin: return "5"
-		case .none: return "-"
+		case .miss: return "-"
 		}
 	}
 }

@@ -17,7 +17,7 @@ extension Statistics {
 		public init() {}
 		init(matchesPlayed: Int) { self.matchesPlayed = matchesPlayed }
 
-		public mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration) {
+		public mutating func adjust(byGame: Game.TrackableEntry, configuration _: TrackablePerGameConfiguration) {
 			if byGame.matchPlay != nil {
 				matchesPlayed += 1
 			}

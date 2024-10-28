@@ -21,7 +21,7 @@ extension PercentageStatistic {
 	}
 
 	public var percentage: Double {
-		return denominator > 0 ? Double(numerator) / Double(denominator) : 0
+		denominator > 0 ? Double(numerator) / Double(denominator) : 0
 	}
 
 	public mutating func aggregate(with: Statistic) {
@@ -35,7 +35,7 @@ extension PercentageStatistic {
 	}
 
 	public var formattedValueDescription: String? {
-		return Self.includeNumeratorInFormattedValue && numerator > 0
+		Self.includeNumeratorInFormattedValue && numerator > 0
 			? "\(numerator)/\(denominator)"
 			: nil
 	}

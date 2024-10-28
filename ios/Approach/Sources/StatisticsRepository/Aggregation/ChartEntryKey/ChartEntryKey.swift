@@ -27,7 +27,7 @@ extension Dictionary where Key: ChartEntryKey, Value == Statistic {
 }
 
 extension Array {
-	func compactMap<Key, Value, T>(as: T.Type) -> [(Key, T)] where Element == Dictionary<Key, Value>.Element {
+	func compactMap<Key, Value, T>(as _: T.Type) -> [(Key, T)] where Element == Dictionary<Key, Value>.Element {
 		self.compactMap { id, statistic in
 			guard let t = statistic as? T else { return nil }
 			return (id, t)

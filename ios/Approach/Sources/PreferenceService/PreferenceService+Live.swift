@@ -6,7 +6,7 @@ import UserDefaultsPackageServiceInterface
 
 extension PreferenceService: DependencyKey {
 	public static var liveValue: Self {
-		return Self(
+		Self(
 			bool: { key in
 				@Dependency(\.userDefaults) var userDefaults
 				return userDefaults.bool(forKey: key.rawValue)

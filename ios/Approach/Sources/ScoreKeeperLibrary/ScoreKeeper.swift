@@ -16,7 +16,7 @@ public class ScoreKeeper {
 
 	private func padFrames(_ frames: [ScoredFrame]) -> [ScoredFrame] {
 		frames + Game.frameIndices(after: frames.endIndex - 1)
-			.map { .init(index: $0, rolls: padRolls([], displayValue: nil), score: nil)}
+			.map { .init(index: $0, rolls: padRolls([], displayValue: nil), score: nil) }
 	}
 
 	public func calculateHighestScorePossible(from frames: [[Roll]]) -> Int {

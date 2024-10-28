@@ -28,6 +28,8 @@ extension CountingStatistic {
 	}
 
 	public var isEmpty: Bool {
+		// `count` is defined on `CountingStatistic` and we are defining `isEmpty` here, so we can't _use_ `isEmpty`
+		// swiftlint:disable:next empty_count
 		count == 0
 	}
 }

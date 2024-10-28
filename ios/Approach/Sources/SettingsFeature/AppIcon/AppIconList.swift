@@ -68,7 +68,7 @@ public struct AppIconList: Reducer, Sendable {
 				case .didFirstAppear:
 					return .merge(
 						fetchCurrentAppIcon(),
-						.run { _ in await self.badges.sendEvent(EarnableBadges.Iconista.Events.AppIconsViewed()) }
+						.run { _ in await badges.sendEvent(EarnableBadges.Iconista.Events.AppIconsViewed()) }
 					)
 
 				case let .didTapIcon(icon):
@@ -235,14 +235,14 @@ extension AppIcon {
 struct AppIconListViewPreviews: PreviewProvider {
 	static var previews: some View {
 		NavigationStack {
-			AppIconListView(store:
-					.init(
-						initialState: .init(),
-						reducer: { AppIconList() },
-						withDependencies: {
-							$0[AppIconService.self].getAppIconName = { @Sendable in nil }
-						}
-					)
+			AppIconListView(
+				store: .init(
+					initialState: .init(),
+					reducer: { AppIconList() },
+					withDependencies: {
+						$0[AppIconService.self].getAppIconName = { @Sendable in nil }
+					}
+				)
 			)
 		}
 	}

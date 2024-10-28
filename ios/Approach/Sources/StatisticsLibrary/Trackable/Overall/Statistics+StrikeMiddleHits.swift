@@ -31,7 +31,7 @@ extension Statistics {
 			self.strikes = strikes
 		}
 
-		public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {
+		public mutating func adjust(byFrame: Frame.TrackableEntry, configuration _: TrackablePerFrameConfiguration) {
 			for roll in byFrame.firstRolls where roll.roll.pinsDowned.isMiddleHit {
 				denominator += 1
 

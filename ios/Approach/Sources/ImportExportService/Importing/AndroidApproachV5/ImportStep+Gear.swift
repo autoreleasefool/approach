@@ -57,7 +57,6 @@ extension AndroidApproachV5SQLiteImporter {
 					)
 				)
 			)
-
 		}
 
 		private func parseRGB(from str: String) -> (red: CGFloat, green: CGFloat, blue: CGFloat)? {

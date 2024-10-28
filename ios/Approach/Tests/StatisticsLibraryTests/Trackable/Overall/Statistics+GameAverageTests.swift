@@ -6,7 +6,7 @@ import XCTest
 final class GameAverageTests: XCTestCase {
 	func testAdjustByGame() {
 		let statistic = create(statistic: Statistics.GameAverage.self, adjustedByGames: Game.TrackableEntry.mocks)
-		AssertAveraging(statistic, hasTotal: 3213, withDivisor: 18, formattedAs: "178.5")
+		AssertAveraging(statistic, hasTotal: 3_213, withDivisor: 18, formattedAs: "178.5")
 	}
 
 	func testAdjustBySeries_DoesNothing() {

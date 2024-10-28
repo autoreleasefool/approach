@@ -98,7 +98,7 @@ public struct StatisticsOverview: Reducer, Sendable {
 
 				case .didTapDismissOverviewTip:
 					state.isShowingOverviewTip = false
-					return .run { _ in await tips.hide(tipFor: .statisticsOverview)}
+					return .run { _ in await tips.hide(tipFor: .statisticsOverview) }
 
 				case .didTapViewDetailedStatistics:
 					state.destination = .sourcePicker(.init(source: nil))

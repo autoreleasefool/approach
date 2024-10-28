@@ -74,7 +74,8 @@ public struct ScoringEditor: Reducer, Sendable {
 				return .run { [score = state.score] send in
 					try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
 					await send(.delegate(.didSetManualScore(score)))
-				}.cancellable(id: CancelID.manualScore)
+				}
+				.cancellable(id: CancelID.manualScore)
 
 			case .delegate, .binding:
 				return .none

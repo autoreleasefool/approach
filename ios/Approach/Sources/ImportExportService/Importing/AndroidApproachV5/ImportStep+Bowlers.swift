@@ -20,7 +20,7 @@ extension AndroidApproachV5SQLiteImporter {
 				let bowler = Bowler.Database(
 					id: id,
 					name: name,
-					kind: Bowler.Kind.init(rawValue: kind.snakeCaseToCamelCase) ?? .playable,
+					kind: Bowler.Kind(rawValue: kind.snakeCaseToCamelCase) ?? .playable,
 					archivedOn: archivedOn?.instantToDate
 				)
 

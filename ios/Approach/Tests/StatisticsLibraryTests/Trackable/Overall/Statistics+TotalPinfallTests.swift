@@ -6,7 +6,7 @@ import XCTest
 final class TotalPinfallTests: XCTestCase {
 	func testAdjustByGame() {
 		let statistic = create(statistic: Statistics.TotalPinfall.self, adjustedByGames: Game.TrackableEntry.mocks)
-		AssertCounting(statistic, equals: 3213)
+		AssertCounting(statistic, equals: 3_213)
 	}
 
 	func testAdjustBySeries_DoesNothing() {

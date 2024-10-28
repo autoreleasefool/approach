@@ -89,8 +89,8 @@ public struct TrackablePerFrameConfiguration {
 
 public protocol TrackablePerFrame: Statistic {}
 extension TrackablePerFrame {
-	public mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration) {}
-	public mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration) {}
+	public mutating func adjust(byGame _: Game.TrackableEntry, configuration _: TrackablePerGameConfiguration) {}
+	public mutating func adjust(bySeries _: Series.TrackableEntry, configuration _: TrackablePerSeriesConfiguration) {}
 }
 
 // MARK: Trackable Per First Roll
@@ -133,8 +133,8 @@ public struct TrackablePerGameConfiguration {
 
 public protocol TrackablePerGame: Statistic {}
 extension TrackablePerGame {
-	public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {}
-	public mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration) {}
+	public mutating func adjust(byFrame _: Frame.TrackableEntry, configuration _: TrackablePerFrameConfiguration) {}
+	public mutating func adjust(bySeries _: Series.TrackableEntry, configuration _: TrackablePerSeriesConfiguration) {}
 }
 
 // MARK: - Trackable Per Series
@@ -145,6 +145,6 @@ public struct TrackablePerSeriesConfiguration {
 
 public protocol TrackablePerSeries: Statistic {}
 extension TrackablePerSeries {
-	public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {}
-	public mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration) {}
+	public mutating func adjust(byFrame _: Frame.TrackableEntry, configuration _: TrackablePerFrameConfiguration) {}
+	public mutating func adjust(byGame _: Game.TrackableEntry, configuration _: TrackablePerGameConfiguration) {}
 }

@@ -15,12 +15,13 @@ extension GameDetails {
 	}
 
 	func createMatchPlay(_ matchPlay: MatchPlay.Edit) -> Effect<Action> {
-		return .run { send in
+		.run { send in
 			await send(.delegate(.didEditMatchPlay(Result {
 				try await matchPlays.create(matchPlay)
 				return matchPlay
 			})))
-		}.cancellable(id: CancelID.saveMatchPlay)
+		}
+		.cancellable(id: CancelID.saveMatchPlay)
 	}
 
 	func deleteMatchPlay(state: inout State) -> Effect<Action> {

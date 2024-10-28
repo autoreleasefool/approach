@@ -151,9 +151,9 @@ public struct BackupsList: Reducer, Sendable {
 						.enqueue(.failedToDelete, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
 						.map { .internal(.errors($0)) }
 
-				case let .didLoadRecentBackups(.success(backups)):
-					state.daysSinceLastBackup = self.backups.lastSuccessfulBackupDate()?.daysSince(date()) ?? .never
-					state.backups = IdentifiedArrayOf(uniqueElements: backups)
+				case let .didLoadRecentBackups(.success(recentBackups)):
+					state.daysSinceLastBackup = backups.lastSuccessfulBackupDate()?.daysSince(date()) ?? .never
+					state.backups = IdentifiedArrayOf(uniqueElements: recentBackups)
 					return .none
 
 				case .didCreateBackup(.success(.some)):
@@ -251,7 +251,7 @@ public struct BackupsList: Reducer, Sendable {
 	private func refreshBackups() -> Effect<Action> {
 		.run { send in
 			await send(.internal(.didLoadRecentBackups(Result {
-				try await self.backups.listBackups()
+				try await backups.listBackups()
 			})), animation: .default)
 		}
 	}

@@ -115,13 +115,13 @@ public struct ArchiveList: Reducer, Sendable {
 						await send(.internal(.unarchived(Result {
 							switch item.id {
 							case let .bowler(bowlerId):
-								try await self.bowlers.unarchive(bowlerId)
+								try await bowlers.unarchive(bowlerId)
 							case let .league(leagueId):
-								try await self.leagues.unarchive(leagueId)
+								try await leagues.unarchive(leagueId)
 							case let .series(seriesId):
-								try await self.series.unarchive(seriesId)
+								try await series.unarchive(seriesId)
 							case let .game(gameId):
-								try await self.games.unarchive(gameId)
+								try await games.unarchive(gameId)
 							}
 							return item
 						})))
@@ -234,8 +234,8 @@ public struct ArchiveList: Reducer, Sendable {
 
 	private func observeBowlers() -> Effect<Action> {
 		.run { send in
-			for try await bowlers in self.bowlers.archived() {
-				await send(.internal(.bowlersResponse(.success(bowlers))))
+			for try await archived in bowlers.archived() {
+				await send(.internal(.bowlersResponse(.success(archived))))
 			}
 		} catch: { error, send in
 			await send(.internal(.bowlersResponse(.failure(error))))
@@ -244,8 +244,8 @@ public struct ArchiveList: Reducer, Sendable {
 
 	private func observeLeagues() -> Effect<Action> {
 		.run { send in
-			for try await leagues in self.leagues.archived() {
-				await send(.internal(.leaguesResponse(.success(leagues))))
+			for try await archived in leagues.archived() {
+				await send(.internal(.leaguesResponse(.success(archived))))
 			}
 		} catch: { error, send in
 			await send(.internal(.leaguesResponse(.failure(error))))
@@ -254,8 +254,8 @@ public struct ArchiveList: Reducer, Sendable {
 
 	private func observeSeries() -> Effect<Action> {
 		.run { send in
-			for try await series in self.series.archived() {
-				await send(.internal(.seriesResponse(.success(series))))
+			for try await archived in series.archived() {
+				await send(.internal(.seriesResponse(.success(archived))))
 			}
 		} catch: { error, send in
 			await send(.internal(.seriesResponse(.failure(error))))
@@ -264,8 +264,8 @@ public struct ArchiveList: Reducer, Sendable {
 
 	private func observeGames() -> Effect<Action> {
 		.run { send in
-			for try await games in self.games.archived() {
-				await send(.internal(.gamesResponse(.success(games))))
+			for try await archived in games.archived() {
+				await send(.internal(.gamesResponse(.success(archived))))
 			}
 		} catch: { error, send in
 			await send(.internal(.gamesResponse(.failure(error))))

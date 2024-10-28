@@ -11,55 +11,63 @@ extension ArchiveList.State {
 	}
 
 	func archivedBowlersToItems() -> [ArchiveItem] {
-		archivedBowlers.map { .init(
-			id: .bowler($0.id),
-			title: $0.name,
-			subtitle: Strings.Archive.List.Bowler.description(
-				$0.totalNumberOfLeagues,
-				$0.totalNumberOfSeries,
-				$0.totalNumberOfGames
-			),
-			archivedOn: $0.archivedOn
-		)}
+		archivedBowlers.map {
+			ArchiveItem(
+				id: .bowler($0.id),
+				title: $0.name,
+				subtitle: Strings.Archive.List.Bowler.description(
+					$0.totalNumberOfLeagues,
+					$0.totalNumberOfSeries,
+					$0.totalNumberOfGames
+				),
+				archivedOn: $0.archivedOn
+			)
+		}
 	}
 
 	func archivedLeaguesToItems() -> [ArchiveItem] {
-		archivedLeagues.map { .init(
-			id: .league($0.id),
-			title: $0.name,
-			subtitle: Strings.Archive.List.League.description(
-				$0.bowlerName,
-				$0.totalNumberOfSeries,
-				$0.totalNumberOfGames
-			),
-			archivedOn: $0.archivedOn
-		)}
+		archivedLeagues.map {
+			ArchiveItem(
+				id: .league($0.id),
+				title: $0.name,
+				subtitle: Strings.Archive.List.League.description(
+					$0.bowlerName,
+					$0.totalNumberOfSeries,
+					$0.totalNumberOfGames
+				),
+				archivedOn: $0.archivedOn
+			)
+		}
 	}
 
 	func archivedSeriesToItems() -> [ArchiveItem] {
-		archivedSeries.map { .init(
-			id: .series($0.id),
-			title: $0.date.longFormat,
-			subtitle: Strings.Archive.List.Series.description(
-				$0.bowlerName,
-				$0.leagueName,
-				$0.totalNumberOfGames
-			),
-			archivedOn: $0.archivedOn
-		)}
+		archivedSeries.map {
+			ArchiveItem(
+				id: .series($0.id),
+				title: $0.date.longFormat,
+				subtitle: Strings.Archive.List.Series.description(
+					$0.bowlerName,
+					$0.leagueName,
+					$0.totalNumberOfGames
+				),
+				archivedOn: $0.archivedOn
+			)
+		}
 	}
 
 	func archivedGamesToItems() -> [ArchiveItem] {
-		archivedGames.map { .init(
-			id: .game($0.id),
-			title: Strings.Archive.List.Game.title($0.scoringMethod, $0.score),
-			subtitle: Strings.Archive.List.Game.description(
-				$0.bowlerName,
-				$0.leagueName,
-				$0.seriesDate.longFormat
-			),
-			archivedOn: $0.archivedOn
-		)}
+		archivedGames.map {
+			ArchiveItem(
+				id: .game($0.id),
+				title: Strings.Archive.List.Game.title($0.scoringMethod, $0.score),
+				subtitle: Strings.Archive.List.Game.description(
+					$0.bowlerName,
+					$0.leagueName,
+					$0.seriesDate.longFormat
+				),
+				archivedOn: $0.archivedOn
+			)
+		}
 	}
 
 	private func archiveItemSort() -> ((ArchiveItem, ArchiveItem) -> Bool) {

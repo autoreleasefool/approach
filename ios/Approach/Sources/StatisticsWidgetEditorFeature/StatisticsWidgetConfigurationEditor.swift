@@ -255,7 +255,7 @@ public struct StatisticsWidgetConfigurationEditor: Reducer, Sendable {
 		}
 		.onChange(of: \.configuration) { _, configuration in
 			Reduce<State, Action> { _, _ in
-				return .send(.delegate(.didChangeConfiguration(configuration)))
+				.send(.delegate(.didChangeConfiguration(configuration)))
 			}
 		}
 	}

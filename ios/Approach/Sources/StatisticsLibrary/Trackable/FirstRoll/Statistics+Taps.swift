@@ -17,7 +17,7 @@ extension Statistics {
 		public init() {}
 		init(taps: Int) { self.taps = taps }
 
-		public mutating func adjust(byFirstRoll roll: Frame.OrderedRoll, configuration: TrackablePerFrameConfiguration) {
+		public mutating func adjust(byFirstRoll roll: Frame.OrderedRoll, configuration _: TrackablePerFrameConfiguration) {
 			if roll.roll.pinsDowned.isTapped {
 				taps += 1
 			}

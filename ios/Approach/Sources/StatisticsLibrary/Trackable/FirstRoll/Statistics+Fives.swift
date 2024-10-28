@@ -17,7 +17,7 @@ extension Statistics {
 		public init() {}
 		init(fives: Int) { self.fives = fives }
 
-		public mutating func adjust(byFirstRoll roll: Frame.OrderedRoll, configuration: TrackablePerFrameConfiguration) {
+		public mutating func adjust(byFirstRoll roll: Frame.OrderedRoll, configuration _: TrackablePerFrameConfiguration) {
 			if roll.roll.pinsDowned.isFive {
 				fives += 1
 			}

@@ -17,7 +17,7 @@ extension Statistics {
 		public init() {}
 		init(aces: Int) { self.aces = aces }
 
-		public mutating func adjust(byFirstRoll roll: Frame.OrderedRoll, configuration: TrackablePerFrameConfiguration) {
+		public mutating func adjust(byFirstRoll roll: Frame.OrderedRoll, configuration _: TrackablePerFrameConfiguration) {
 			if roll.roll.pinsDowned.isAce {
 				aces += 1
 			}

@@ -100,8 +100,8 @@ struct SeriesImportStepTests {
 
 		#expect(series.id == seriesId)
 		#expect(series.leagueId == leagueId)
-		#expect(series.date == Date(timeIntervalSince1970: 1729580400))
-		#expect(series.appliedDate == Date(timeIntervalSince1970: 1730185200))
+		#expect(series.date == Date(timeIntervalSince1970: 1_729_580_400))
+		#expect(series.appliedDate == Date(timeIntervalSince1970: 1_730_185_200))
 		#expect(series.preBowl == .regular)
 		#expect(series.excludeFromStatistics == .include)
 		#expect(series.alleyId == alleyId)
@@ -139,7 +139,7 @@ struct SeriesImportStepTests {
 
 	@Test(
 		"Imports applied date",
-		arguments: zip([nil, "2024-10-23"], [nil, Date(timeIntervalSince1970: 1729666800)])
+		arguments: zip([nil, "2024-10-23"], [nil, Date(timeIntervalSince1970: 1_729_666_800)])
 	)
 	func importsAppliedDate(from: String?, to: Date?) throws {
 		try androidDb.write {

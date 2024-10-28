@@ -46,6 +46,6 @@ extension GameDetailsHeader.State {
 
 extension GameDetailsHeader.State {
 	func shouldStartShimmering() -> Effect<GameDetailsHeader.Action> {
-		return .send(.internal(.startShimmering))
+		.send(.internal(.startShimmering))
 	}
 }

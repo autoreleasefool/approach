@@ -111,11 +111,11 @@ public struct StatisticsWidgetLayoutBuilder: Reducer, Sendable {
 				case .task:
 					return .merge(
 						.run { send in
-							try await self.clock.sleep(for: .milliseconds(300))
+							try await clock.sleep(for: .milliseconds(300))
 							await send(.internal(.startAnimatingWidgets), animation: .easeInOut)
 						},
 						.run { [context = state.context] send in
-							for try await widgets in self.statisticsWidgets.fetchAll(forContext: context) {
+							for try await widgets in statisticsWidgets.fetchAll(forContext: context) {
 								await send(.internal(.widgetsResponse(.success(widgets))))
 							}
 						} catch: { error, send in
@@ -143,7 +143,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer, Sendable {
 					state.widgets.remove(id: id)
 					state.widgetData.removeValue(forKey: id)
 					return .run { _ in
-						try await self.statisticsWidgets.delete(id)
+						try await statisticsWidgets.delete(id)
 					} catch: { error, send in
 						await send(.internal(.didDeleteWidget(.failure(error))))
 					}
@@ -177,7 +177,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer, Sendable {
 					let chartTasks: [Effect<Action>] = state.widgets.map { widget in
 						.run { send in
 							await send(.internal(.didLoadChartContent(id: widget.id, Result {
-								try await self.statisticsWidgets.chart(widget)
+								try await statisticsWidgets.chart(widget)
 							})))
 						}
 					}
@@ -228,7 +228,8 @@ public struct StatisticsWidgetLayoutBuilder: Reducer, Sendable {
 							} catch {
 								await send(.internal(.didUpdatePriorities(.failure(error))))
 							}
-						}.cancellable(id: CancelID.updatePriorities, cancelInFlight: true)
+						}
+						.cancellable(id: CancelID.updatePriorities, cancelInFlight: true)
 					}
 
 				case .editor(.dismiss),

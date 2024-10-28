@@ -144,7 +144,7 @@ public struct GamesList: Reducer, Sendable {
 				case .didTapEditButton:
 					return .run { [id = state.series.id] send in
 						await send(.internal(.didLoadEditableSeries(Result {
-							try await self.series.edit(id)
+							try await series.edit(id)
 						})))
 					}
 

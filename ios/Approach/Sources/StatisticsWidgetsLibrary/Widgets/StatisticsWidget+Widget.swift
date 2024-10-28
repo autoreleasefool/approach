@@ -140,7 +140,7 @@ extension StatisticsWidget {
 			}
 		}
 
-		private func chartLoading(_ statistic: String) -> some View {
+		private func chartLoading(_: String) -> some View {
 			centered {
 				ProgressView()
 			}
@@ -241,7 +241,6 @@ struct StatisticsWidgetPreview: PreviewProvider {
 				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
 				chartContent: .chartUnavailable(statistic: "Average")
 			)
-
 		}
 	}
 }

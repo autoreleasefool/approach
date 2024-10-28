@@ -146,7 +146,7 @@ public struct StatisticsWidgetEditor: Reducer, Sendable {
 					}
 					return .run { send in
 						await send(.internal(.didFinishSavingConfiguration(Result {
-							try await self.statisticsWidgets.create(widget)
+							try await statisticsWidgets.create(widget)
 							return configuration
 						})))
 					}
@@ -232,7 +232,7 @@ public struct StatisticsWidgetEditor: Reducer, Sendable {
 
 	private func refreshChart(
 		withConfiguration configuration: StatisticsWidget.Configuration?,
-		state: inout State
+		state _: inout State
 	) -> Effect<Action> {
 		guard let configuration else {
 			return .send(.internal(.hideChart), animation: .easeInOut)
@@ -247,7 +247,7 @@ public struct StatisticsWidgetEditor: Reducer, Sendable {
 
 				let timeSpent = date().timeIntervalSince(startTime)
 				if timeSpent < Self.chartLoadingAnimationTime {
-					try await clock.sleep(for: .milliseconds((Self.chartLoadingAnimationTime - timeSpent) * 1000))
+					try await clock.sleep(for: .milliseconds((Self.chartLoadingAnimationTime - timeSpent) * 1_000))
 				}
 
 				await send(.internal(.didLoadChartContent(result)), animation: .easeInOut)

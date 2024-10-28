@@ -22,7 +22,7 @@ extension Statistics {
 			self.totalRolls = totalRolls
 		}
 
-		public mutating func tracks(firstRoll: Frame.OrderedRoll, configuration: TrackablePerFrameConfiguration) -> Bool {
+		public mutating func tracks(firstRoll: Frame.OrderedRoll, configuration _: TrackablePerFrameConfiguration) -> Bool {
 			firstRoll.roll.pinsDowned.isMiddleHit
 		}
 

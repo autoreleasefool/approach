@@ -152,7 +152,7 @@ struct SeriesListItemPreview: PreviewProvider {
 				.init(index: 10, score: 357),
 				.init(index: 11, score: 368),
 			],
-			total: 1651,
+			total: 1_651,
 			preBowl: .regular
 		),
 		.init(
@@ -173,7 +173,7 @@ struct SeriesListItemPreview: PreviewProvider {
 				.init(index: 10, score: 357),
 				.init(index: 11, score: 368),
 			],
-			total: 1651,
+			total: 1_651,
 			preBowl: .regular
 		),
 		.init(

@@ -91,7 +91,7 @@ private final class Delegate: NSObject, MKLocalSearchCompleterDelegate, Sendable
 		)
 	}
 
-	func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
+	func completer(_: MKLocalSearchCompleter, didFailWithError error: Error) {
 		self.continuation.finish(throwing: error)
 	}
 }

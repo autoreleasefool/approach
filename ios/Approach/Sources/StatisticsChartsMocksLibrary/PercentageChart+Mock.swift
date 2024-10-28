@@ -32,7 +32,7 @@ extension PercentageChart.Data {
 						id: UUID(uuidString: "00000000-0000-0000-0000-0000000000\(index + 10)")!,
 						numerator: value.0,
 						denominator: value.1,
-						xAxis: .date(Date(timeIntervalSince1970: Double(index) * 604800.0), 604800)
+						xAxis: .date(Date(timeIntervalSince1970: Double(index) * 604_800.0), 604_800)
 					)
 				},
 			isAccumulating: isAccumulating,

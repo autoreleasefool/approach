@@ -94,7 +94,7 @@ private actor Cache {
 	}()
 
 	func fetch(_ avatar: Avatar.Value) async -> UIImage? {
-		return imageCache.object(forKey: NSString(string: String(describing: avatar)))
+		imageCache.object(forKey: NSString(string: String(describing: avatar)))
 	}
 
 	func store(_ avatar: Avatar.Value, image: UIImage) async {

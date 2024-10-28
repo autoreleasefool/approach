@@ -350,7 +350,7 @@ public struct Settings: Reducer, Sendable {
 	}
 
 	private func refreshAppIcon() -> Effect<Action> {
-		return .run { send in
+		.run { send in
 			await send(.internal(.didFetchIcon(Result {
 				AppIcon(rawValue: await appIcon.getAppIconName() ?? "")
 			})))

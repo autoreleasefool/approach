@@ -3,7 +3,7 @@ import StringsLibrary
 
 extension ResourceList {
 	func fetchResources(query: Q) -> AsyncThrowingStream<[SectionResourceList<R, Q>.Section], Swift.Error> {
-		return .init { continuation in
+		AsyncThrowingStream { continuation in
 			let task = Task {
 				do {
 					for try await resources in self.fetchResources(query) {

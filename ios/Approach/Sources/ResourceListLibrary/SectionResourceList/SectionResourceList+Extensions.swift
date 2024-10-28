@@ -2,7 +2,7 @@ import ComposableArchitecture
 
 extension SectionResourceList {
 	func beginObservation(query: Q) -> Effect<Action> {
-		return .run { send in
+		.run { send in
 			for try await sections in fetchSections(query) {
 				await send(.internal(.sectionsResponse(.success(sections))))
 			}

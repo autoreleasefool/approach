@@ -31,7 +31,7 @@ public struct EmailView: UIViewControllerRepresentable {
 		}
 
 		public func mailComposeController(
-			_ controller: MFMailComposeViewController,
+			_: MFMailComposeViewController,
 			didFinishWith result: MFMailComposeResult,
 			error: Error?
 		) {
@@ -74,8 +74,8 @@ public struct EmailView: UIViewControllerRepresentable {
 	}
 
 	public func updateUIViewController(
-		_ uiViewController: MFMailComposeViewController,
-		context: UIViewControllerRepresentableContext<EmailView>
+		_: MFMailComposeViewController,
+		context _: UIViewControllerRepresentableContext<EmailView>
 	) {
 	}
 }

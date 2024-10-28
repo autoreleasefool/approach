@@ -2,7 +2,7 @@ import Foundation
 
 extension Double {
 	private static let SECONDS_PER_DAY = 86_400
-	private static let SECONDS_PER_HOUR = 3600
+	private static let SECONDS_PER_HOUR = 3_600
 	private static let SECONDS_PER_MINUTE = 60
 
 	public var durationFormat: String {

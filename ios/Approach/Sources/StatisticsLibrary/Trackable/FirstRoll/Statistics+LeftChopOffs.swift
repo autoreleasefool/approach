@@ -17,7 +17,7 @@ extension Statistics {
 		public init() {}
 		init(leftChopOffs: Int) { self.leftChopOffs = leftChopOffs }
 
-		public mutating func adjust(byFirstRoll roll: Frame.OrderedRoll, configuration: TrackablePerFrameConfiguration) {
+		public mutating func adjust(byFirstRoll roll: Frame.OrderedRoll, configuration _: TrackablePerFrameConfiguration) {
 			if roll.roll.pinsDowned.isLeftChopOff {
 				leftChopOffs += 1
 			}

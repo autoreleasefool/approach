@@ -17,7 +17,7 @@ extension Statistics {
 		public init() {}
 		init(highSeries: Int) { self.highSeries = highSeries }
 
-		public mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration) {
+		public mutating func adjust(bySeries: Series.TrackableEntry, configuration _: TrackablePerSeriesConfiguration) {
 			guard bySeries.numberOfGames == 3 else { return }
 			highSeries = max(highSeries, bySeries.total)
 		}

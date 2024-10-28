@@ -96,7 +96,7 @@ struct TeamSeriesImportStepTests {
 
 		#expect(teamSeries.id == teamSeriesId)
 		#expect(teamSeries.teamId == teamId)
-		#expect(teamSeries.date == Date(timeIntervalSince1970: 1729666800))
+		#expect(teamSeries.date == Date(timeIntervalSince1970: 1_729_666_800))
 		#expect(teamSeries.archivedOn == Date(timeIntervalSince1970: 123))
 	}
 }

@@ -17,7 +17,7 @@ extension Statistics {
 		public init() {}
 		init(totalPinsLeftOnDeck: Int) { self.totalPinsLeftOnDeck = totalPinsLeftOnDeck }
 
-		public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {
+		public mutating func adjust(byFrame: Frame.TrackableEntry, configuration _: TrackablePerFrameConfiguration) {
 			guard !byFrame.rolls.isEmpty else { return }
 			totalPinsLeftOnDeck += byFrame.pinsLeftOnDeck.value
 		}

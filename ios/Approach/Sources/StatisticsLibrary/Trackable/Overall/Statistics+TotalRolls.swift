@@ -17,7 +17,7 @@ extension Statistics {
 		public init() {}
 		init(totalRolls: Int) { self.totalRolls = totalRolls }
 
-		public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {
+		public mutating func adjust(byFrame: Frame.TrackableEntry, configuration _: TrackablePerFrameConfiguration) {
 			totalRolls += byFrame.totalRolls
 		}
 

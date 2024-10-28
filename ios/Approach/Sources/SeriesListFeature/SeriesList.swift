@@ -351,25 +351,25 @@ public struct SeriesList: Reducer, Sendable {
 	private func fetchResources(
 		query: Series.List.FetchRequest
 	) -> AsyncThrowingStream<[SectionResourceList<Series.List, Series.List.FetchRequest>.Section], Swift.Error> {
-		return .init { continuation in
+		AsyncThrowingStream { continuation in
 			let task = Task {
 				do {
-					for try await series in self.series.list(bowledIn: query.league, orderedBy: query.ordering) {
+					for try await allSeries in series.list(bowledIn: query.league, orderedBy: query.ordering) {
 						let preBowlSeries: IdentifiedArrayOf<Series.List>
 						let regularSeries: IdentifiedArrayOf<Series.List>
 						switch query.ordering {
 						case .newestFirst:
-							preBowlSeries = .init(uniqueElements: series.filter {
+							preBowlSeries = .init(uniqueElements: allSeries.filter {
 								switch $0.preBowl {
 								case .preBowl: return $0.appliedDate == nil
 								case .regular: return false
 								}
 							})
 
-							regularSeries = .init(uniqueElements: series.filter { !preBowlSeries.ids.contains($0.id) })
+							regularSeries = .init(uniqueElements: allSeries.filter { !preBowlSeries.ids.contains($0.id) })
 						case .oldestFirst, .highestToLowest, .lowestToHighest:
 							preBowlSeries = []
-							regularSeries = .init(uniqueElements: series)
+							regularSeries = .init(uniqueElements: allSeries)
 						}
 
 						continuation.yield([

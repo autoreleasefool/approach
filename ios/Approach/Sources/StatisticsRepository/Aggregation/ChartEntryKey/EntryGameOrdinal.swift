@@ -14,15 +14,15 @@ struct EntryGameOrdinal: ChartEntryKey {
 		.game(ordinal: ordinal)
 	}
 
-	func toCountingChartXAxis(withTimeInterval: TimeInterval) -> CountingChart.Data.XAxis {
+	func toCountingChartXAxis(withTimeInterval _: TimeInterval) -> CountingChart.Data.XAxis {
 		.game(ordinal: ordinal)
 	}
 
-	func toPercentageChartXAxis(withTimeInterval: TimeInterval) -> PercentageChart.Data.XAxis {
+	func toPercentageChartXAxis(withTimeInterval _: TimeInterval) -> PercentageChart.Data.XAxis {
 		.game(ordinal: ordinal)
 	}
 
-	static func extractKey(from series: Series.TrackableEntry) -> EntryGameOrdinal? {
+	static func extractKey(from _: Series.TrackableEntry) -> EntryGameOrdinal? {
 		nil
 	}
 

@@ -27,7 +27,7 @@ extension Statistics {
 			self.gamesPlayed = gamesPlayed
 		}
 
-		public mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration) {
+		public mutating func adjust(byGame: Game.TrackableEntry, configuration _: TrackablePerGameConfiguration) {
 			guard byGame.score > 0 else { return }
 			totalPinFall += byGame.score
 			gamesPlayed += 1

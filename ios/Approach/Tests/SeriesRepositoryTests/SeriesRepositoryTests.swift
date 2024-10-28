@@ -551,7 +551,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	func testShareable_WhenSeriesExists_ReturnsSeries() async throws {
 		// Given a database with series and games
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123))
-		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 1234))
+		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 1_234))
 		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 225)
 		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, score: 300)
 		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, score: 225)

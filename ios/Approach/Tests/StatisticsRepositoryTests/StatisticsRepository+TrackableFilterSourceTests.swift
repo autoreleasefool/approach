@@ -198,8 +198,8 @@ final class TrackableFilterSourceTests: XCTestCase {
 				source: .bowler(UUID(0)),
 				leagueFilter: .init(recurrence: .repeating),
 				seriesFilter: .init(
-					startDate: Date(timeIntervalSince1970: 1662512400),
-					endDate: Date(timeIntervalSince1970: 1672189200), // 16 weeks
+					startDate: Date(timeIntervalSince1970: 1_662_512_400),
+					endDate: Date(timeIntervalSince1970: 1_672_189_200), // 16 weeks
 					alley: .alley(.init(id: UUID(1), name: "Skyview"))
 				),
 				gameFilter: .init(
@@ -231,8 +231,8 @@ final class TrackableFilterSourceTests: XCTestCase {
 			try await self.statistics.load(for: .init(
 				source: .league(UUID(0)),
 				seriesFilter: .init(
-					startDate: Date(timeIntervalSince1970: 1662512400),
-					endDate: Date(timeIntervalSince1970: 1672189200), // 16 weeks
+					startDate: Date(timeIntervalSince1970: 1_662_512_400),
+					endDate: Date(timeIntervalSince1970: 1_672_189_200), // 16 weeks
 					alley: .alley(.init(id: UUID(1), name: "Skyview"))
 				),
 				gameFilter: .init(

@@ -20,7 +20,7 @@ extension AvatarService: TestDependencyKey {
 	public static var testValue: Self {
 		Self(
 			render: { _ in unimplemented("\(Self.self).render", placeholder: nil) },
-			preRender: { _ in unimplemented("\(Self.self).preRender")}
+			preRender: { _ in unimplemented("\(Self.self).preRender") }
 		)
 	}
 }

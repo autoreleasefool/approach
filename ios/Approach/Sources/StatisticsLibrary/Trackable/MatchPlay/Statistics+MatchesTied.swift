@@ -31,7 +31,7 @@ extension Statistics {
 			self.matchesTied = matchesTied
 		}
 
-		public mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration) {
+		public mutating func adjust(byGame: Game.TrackableEntry, configuration _: TrackablePerGameConfiguration) {
 			guard let matchPlay = byGame.matchPlay else { return }
 			matchesPlayed += 1
 			switch matchPlay.result {

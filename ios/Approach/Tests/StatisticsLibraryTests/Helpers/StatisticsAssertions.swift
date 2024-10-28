@@ -10,6 +10,8 @@ func AssertCounting<T>(
 ) where T: Statistic & CountingStatistic {
 	XCTAssertEqual(statistic.count, count, file: file, line: line)
 	XCTAssertEqual(statistic.formattedValue, String(count), file: file, line: line)
+	// We want to assert `isEmpty` to be when `count` is zero, so we can't use `isEmpty` here as that's under test
+	// swiftlint:disable:next empty_count
 	XCTAssertEqual(statistic.isEmpty, count == 0, file: file, line: line)
 }
 

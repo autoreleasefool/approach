@@ -17,7 +17,7 @@ extension Statistics {
 		public init() {}
 		init(leftTwelves: Int) { self.leftTwelves = leftTwelves }
 
-		public mutating func adjust(byFirstRoll roll: Frame.OrderedRoll, configuration: TrackablePerFrameConfiguration) {
+		public mutating func adjust(byFirstRoll roll: Frame.OrderedRoll, configuration _: TrackablePerFrameConfiguration) {
 			if roll.roll.pinsDowned.isLeftTwelve {
 				leftTwelves += 1
 			}

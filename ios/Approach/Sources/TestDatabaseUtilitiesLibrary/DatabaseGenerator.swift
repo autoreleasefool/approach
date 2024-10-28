@@ -60,17 +60,17 @@ public func generatePopulatedDatabase(db: (any DatabaseWriter)? = nil) throws ->
 	]
 	let leagues: [League.Database] = [
 		.init(bowlerId: UUID(0), id: UUID(0), name: "Majors, 2022-23", recurrence: .repeating, defaultNumberOfGames: 4, additionalPinfall: nil, additionalGames: nil, excludeFromStatistics: .include, archivedOn: nil),
-		.init(bowlerId: UUID(0), id: UUID(1), name: "Beer League, 2022-23", recurrence: .repeating, defaultNumberOfGames: 3, additionalPinfall: 1000, additionalGames: 4, excludeFromStatistics: .include, archivedOn: nil),
+		.init(bowlerId: UUID(0), id: UUID(1), name: "Beer League, 2022-23", recurrence: .repeating, defaultNumberOfGames: 3, additionalPinfall: 1_000, additionalGames: 4, excludeFromStatistics: .include, archivedOn: nil),
 		.init(bowlerId: UUID(0), id: UUID(2), name: "Practice", recurrence: .repeating, defaultNumberOfGames: nil, additionalPinfall: nil, additionalGames: nil, excludeFromStatistics: .exclude, archivedOn: nil),
 		.init(bowlerId: UUID(0), id: UUID(3), name: "The Open, 2023", recurrence: .once, defaultNumberOfGames: 20, additionalPinfall: nil, additionalGames: nil, excludeFromStatistics: .include, archivedOn: nil),
 		.init(bowlerId: UUID(1), id: UUID(4), name: "Majors, 2023-24", recurrence: .repeating, defaultNumberOfGames: 4, additionalPinfall: nil, additionalGames: nil, excludeFromStatistics: .include, archivedOn: nil),
 	]
 	let series = [
-		generateSeries(startDate: Date(timeIntervalSince1970: 1662512400 /* September 6, 2022 */), numberOfSeries: 32, numberOfGames: 4, firstId: 0, league: UUID(0), alley: UUID(1)),
-		generateSeries(startDate: Date(timeIntervalSince1970: 1694221200 /* September 8, 2023 */), numberOfSeries: 32, numberOfGames: 3, firstId: 32, league: UUID(1), alley: UUID(1)),
-		generateSeries(startDate: Date(timeIntervalSince1970: 1694221200 /* September 8 ,2023 */), numberOfSeries: 32, numberOfGames: nil, firstId: 64, league: UUID(2), alley: nil),
-		generateSeries(startDate: Date(timeIntervalSince1970: 1685643496 /* June 1, 2023 */), numberOfSeries: 1, numberOfGames: 20, firstId: 96, league: UUID(3), alley: UUID(0)),
-		generateSeries(startDate: Date(timeIntervalSince1970: 1662512400 /* September 6, 2022 */), numberOfSeries: 32, numberOfGames: 4, firstId: 97, league: UUID(4), alley: UUID(1)),
+		generateSeries(startDate: Date(timeIntervalSince1970: 1_662_512_400 /* September 6, 2022 */), numberOfSeries: 32, numberOfGames: 4, firstId: 0, league: UUID(0), alley: UUID(1)),
+		generateSeries(startDate: Date(timeIntervalSince1970: 1_694_221_200 /* September 8, 2023 */), numberOfSeries: 32, numberOfGames: 3, firstId: 32, league: UUID(1), alley: UUID(1)),
+		generateSeries(startDate: Date(timeIntervalSince1970: 1_694_221_200 /* September 8 ,2023 */), numberOfSeries: 32, numberOfGames: nil, firstId: 64, league: UUID(2), alley: nil),
+		generateSeries(startDate: Date(timeIntervalSince1970: 1_685_643_496 /* June 1, 2023 */), numberOfSeries: 1, numberOfGames: 20, firstId: 96, league: UUID(3), alley: UUID(0)),
+		generateSeries(startDate: Date(timeIntervalSince1970: 1_662_512_400 /* September 6, 2022 */), numberOfSeries: 32, numberOfGames: 4, firstId: 97, league: UUID(4), alley: UUID(1)),
 	].flatMap { $0 }
 	let (games, gameLanes) = generateGames(forSeries: series)
 	let frames = generateFrames(forGames: games)
@@ -120,7 +120,7 @@ private func generateSeries(
 			),
 			numberOfGames: numberOfGames ?? series.count % 4 + 1
 		))
-		date.addTimeInterval(604800)
+		date.addTimeInterval(604_800)
 	}
 	return series
 }

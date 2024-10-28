@@ -17,7 +17,7 @@ extension Statistics {
 		public init() {}
 		init(leftThrees: Int) { self.leftThrees = leftThrees }
 
-		public mutating func adjust(byFirstRoll roll: Frame.OrderedRoll, configuration: TrackablePerFrameConfiguration) {
+		public mutating func adjust(byFirstRoll roll: Frame.OrderedRoll, configuration _: TrackablePerFrameConfiguration) {
 			if roll.roll.pinsDowned.isLeftThree {
 				leftThrees += 1
 			}

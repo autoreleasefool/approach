@@ -4,6 +4,6 @@ import StatisticsRepositoryInterface
 
 extension StatisticsDetailsList.State {
 	func scrollTo(id: Statistics.ListEntry.ID?) -> Effect<StatisticsDetailsList.Action> {
-		return .send(.internal(.scrollToEntry(id: id)), animation: .easeInOut)
+		.send(.internal(.scrollToEntry(id: id)), animation: .easeInOut)
 	}
 }

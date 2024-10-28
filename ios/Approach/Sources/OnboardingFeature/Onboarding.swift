@@ -123,7 +123,7 @@ public struct Onboarding: Reducer, Sendable {
 					bowler.name = state.bowlerName.trimmingCharacters(in: .whitespaces)
 					return .run { [bowler = bowler] send in
 						do {
-							try await self.bowlers.create(bowler)
+							try await bowlers.create(bowler)
 							await send(.delegate(.didFinishOnboarding))
 						} catch {
 							await send(.internal(.didCreateBowler(.failure(error))))

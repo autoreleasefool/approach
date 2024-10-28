@@ -146,7 +146,7 @@ public struct StatisticsWidgetSharing: Reducer, Sendable {
 		}
 		.onChange(of: \.configuration) { _, configuration in
 			Reduce<State, Action> { _, _ in
-				return .run { @MainActor send in
+				.run { @MainActor send in
 					guard let configuration else { return }
 					let imageRenderer = ImageRenderer(
 						content: ShareableStatisticsImage(
@@ -181,7 +181,7 @@ public struct StatisticsWidgetSharing: Reducer, Sendable {
 
 	private func refreshChart(
 		withConfiguration configuration: StatisticsWidget.Configuration?,
-		state: inout State
+		state _: inout State
 	) -> Effect<Action> {
 		guard let configuration else {
 			return .merge(
@@ -194,7 +194,8 @@ public struct StatisticsWidgetSharing: Reducer, Sendable {
 			await send(.internal(.didLoadChartContent(Result {
 				try await statisticsWidgets.chart(configuration)
 			})))
-		}.cancellable(id: CancelID.loadingPreview, cancelInFlight: true)
+		}
+		.cancellable(id: CancelID.loadingPreview, cancelInFlight: true)
 	}
 }
 

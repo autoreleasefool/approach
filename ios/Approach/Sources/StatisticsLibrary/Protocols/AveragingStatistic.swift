@@ -17,7 +17,7 @@ extension AveragingStatistic {
 	}
 
 	public var average: Double {
-		return divisor > 0 ? Double(total) / Double(divisor) : 0
+		divisor > 0 ? Double(total) / Double(divisor) : 0
 	}
 
 	public mutating func aggregate(with: Statistic) {

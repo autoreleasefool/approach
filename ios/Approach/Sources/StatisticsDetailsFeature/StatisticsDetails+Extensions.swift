@@ -29,7 +29,7 @@ extension StatisticsDetails {
 
 				let timeSpent = date().timeIntervalSince(startTime)
 				if timeSpent < Self.chartLoadingAnimationTime {
-					try await clock.sleep(for: .milliseconds((Self.chartLoadingAnimationTime - timeSpent) * 1000))
+					try await clock.sleep(for: .milliseconds((Self.chartLoadingAnimationTime - timeSpent) * 1_000))
 				}
 
 				await send(.internal(.didLoadChartContent(result)), animation: .easeInOut)

@@ -77,7 +77,6 @@ public struct AccessoriesOverviewView: View {
 							}
 						}
 					}
-
 				}
 				.listRowInsets(EdgeInsets())
 			} header: {

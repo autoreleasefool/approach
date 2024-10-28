@@ -130,7 +130,7 @@ public struct AccessoriesOverview: Reducer, Sendable {
 					case let .alley(alley):
 						return .run { send in
 							await send(.internal(.didLoadEditableAlley(Result {
-								try await self.alleys.edit(alley.id)
+								try await alleys.edit(alley.id)
 							})))
 						}
 					case let .gear(gear):
@@ -219,7 +219,7 @@ public struct AccessoriesOverview: Reducer, Sendable {
 					case let .alley(alley):
 						return .run { send in
 							await send(.internal(.didFinishDeletingItem(Result {
-								try await self.alleys.delete(alley.id)
+								try await alleys.delete(alley.id)
 								return .alley(alley)
 							})))
 						}
@@ -287,8 +287,8 @@ public struct AccessoriesOverview: Reducer, Sendable {
 
 	private func observeAlleys() -> Effect<Action> {
 		.run { send in
-			for try await alleys in self.alleys.mostRecent(limit: Self.recentAlleysLimit) {
-				await send(.internal(.itemsResponse(.success(alleys.map { .alley($0) }))))
+			for try await recentlyUsed in alleys.mostRecent(limit: Self.recentAlleysLimit) {
+				await send(.internal(.itemsResponse(.success(recentlyUsed.map { .alley($0) }))))
 			}
 		} catch: { error, send in
 			await send(.internal(.itemsResponse(.failure(error))))
@@ -298,8 +298,8 @@ public struct AccessoriesOverview: Reducer, Sendable {
 
 	private func observeGear() -> Effect<Action> {
 		.run { send in
-			for try await gear in self.gear.mostRecentlyUsed(limit: Self.recentGearLimit) {
-				await send(.internal(.itemsResponse(.success(gear.map { .gear($0) }))))
+			for try await recentlyUsed in gear.mostRecentlyUsed(limit: Self.recentGearLimit) {
+				await send(.internal(.itemsResponse(.success(recentlyUsed.map { .gear($0) }))))
 			}
 		} catch: { error, send in
 			await send(.internal(.itemsResponse(.failure(error))))

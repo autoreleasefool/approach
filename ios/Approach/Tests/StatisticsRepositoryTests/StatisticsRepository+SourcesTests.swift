@@ -138,7 +138,7 @@ final class StatisticsRepositorySourcesTests: XCTestCase {
 		XCTAssertEqual(sources, .init(
 			bowler: .init(id: UUID(0), name: "Joseph"),
 			league: .init(id: UUID(0), name: "Majors, 2022-23"),
-			series: .init(id: UUID(0), date: .init(timeIntervalSince1970: 1662512400)),
+			series: .init(id: UUID(0), date: .init(timeIntervalSince1970: 1_662_512_400)),
 			game: nil
 		))
 	}
@@ -157,7 +157,7 @@ final class StatisticsRepositorySourcesTests: XCTestCase {
 		XCTAssertEqual(sources, .init(
 			bowler: .init(id: UUID(0), name: "Joseph"),
 			league: .init(id: UUID(0), name: "Majors, 2022-23"),
-			series: .init(id: UUID(0), date: .init(timeIntervalSince1970: 1662512400)),
+			series: .init(id: UUID(0), date: .init(timeIntervalSince1970: 1_662_512_400)),
 			game: .init(id: UUID(0), index: 0, score: 192)
 		))
 	}

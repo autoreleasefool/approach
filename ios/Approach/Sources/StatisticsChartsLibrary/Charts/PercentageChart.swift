@@ -139,7 +139,7 @@ extension PercentageChart.Data {
 			}
 		}
 
-		func denominatorAreaMark(withTitle title: String) -> AreaMark {
+		func denominatorAreaMark(withTitle _: String) -> AreaMark {
 			switch xAxis {
 			case let .date(date, _):
 				return AreaMark(
@@ -231,7 +231,7 @@ struct PercentageChartPreview: PreviewProvider {
 								id: UUID(uuidString: "00000000-0000-0000-0000-0000000000\(index + 10)")!,
 								numerator: value.0,
 								denominator: value.1,
-								xAxis: .date(Date(timeIntervalSince1970: Double(index) * 604800.0), 604800.0)
+								xAxis: .date(Date(timeIntervalSince1970: Double(index) * 604_800.0), 604_800.0)
 							)
 					},
 					isAccumulating: false,
@@ -247,7 +247,7 @@ struct PercentageChartPreview: PreviewProvider {
 								id: UUID(uuidString: "00000000-0000-0000-0000-0000000000\(index + 10)")!,
 								numerator: value.0,
 								denominator: value.1,
-								xAxis: .date(Date(timeIntervalSince1970: Double(index) * 604800.0), 604800.0)
+								xAxis: .date(Date(timeIntervalSince1970: Double(index) * 604_800.0), 604_800.0)
 							)
 					},
 					isAccumulating: true,

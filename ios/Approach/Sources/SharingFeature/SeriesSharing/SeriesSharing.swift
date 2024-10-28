@@ -153,7 +153,7 @@ public struct SeriesSharing: Reducer, Sendable {
 		}
 		.onChange(of: \.configuration) { _, configuration in
 			Reduce<State, Action> { _, _ in
-				return .run { @MainActor send in
+				.run { @MainActor send in
 					guard let configuration else { return }
 					let imageRenderer = ImageRenderer(
 						content: ShareableSeriesImage(configuration: configuration)

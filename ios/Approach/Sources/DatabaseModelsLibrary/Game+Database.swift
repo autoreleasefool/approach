@@ -62,7 +62,7 @@ extension Game.Database {
 
 extension DerivableRequest<Game.Database> {
 	public func orderByIndex() -> Self {
-		return order(Game.Database.Columns.index)
+		order(Game.Database.Columns.index)
 	}
 
 	public func filter(bySeries: Series.ID) -> Self {

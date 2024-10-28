@@ -48,6 +48,8 @@ extension GearRepository: DependencyKey {
 				return try await database.reader().read {
 					try Gear.Database
 						.having(
+							// GRDB does not expose a `contains` predicate for us in this case
+							// swiftlint:disable:next contains_over_filter_is_empty
 							Gear.Database.bowlerPreferredGear
 								.filter(BowlerPreferredGear.Database.Columns.bowlerId == bowler).isEmpty == false
 						)

@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AnimationUtils {
+enum AnimationUtils {
 	static func wiggleAnimation(interval: TimeInterval, variance: Double) -> Animation {
 		Animation
 			.easeInOut(duration: randomize(interval: interval, withVariance: variance))
@@ -35,7 +35,7 @@ struct WiggleBounceModifier: GeometryEffect {
 		set { amount = newValue }
 	}
 
-	func effectValue(size: CGSize) -> ProjectionTransform {
+	func effectValue(size _: CGSize) -> ProjectionTransform {
 		let bounce = sin(.pi * 2 * animatableData) * bounceAmount
 		let translationEffect = CGAffineTransform(translationX: 0, y: CGFloat(bounce))
 		return ProjectionTransform(translationEffect)

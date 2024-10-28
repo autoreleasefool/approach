@@ -17,7 +17,7 @@ extension Statistics {
 		public init() {}
 		init(totalPinfall: Int) { self.totalPinfall = totalPinfall }
 
-		public mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration) {
+		public mutating func adjust(byGame: Game.TrackableEntry, configuration _: TrackablePerGameConfiguration) {
 			totalPinfall += byGame.score
 		}
 

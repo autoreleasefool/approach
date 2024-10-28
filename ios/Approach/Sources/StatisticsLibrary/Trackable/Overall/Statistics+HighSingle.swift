@@ -17,7 +17,7 @@ extension Statistics {
 		public init() {}
 		init(highSingle: Int) { self.highSingle = highSingle }
 
-		public mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration) {
+		public mutating func adjust(byGame: Game.TrackableEntry, configuration _: TrackablePerGameConfiguration) {
 			highSingle = max(highSingle, byGame.score)
 		}
 

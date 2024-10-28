@@ -20,7 +20,8 @@ extension SeriesRepository: DependencyKey {
 						.annotated(
 							with: Series.Database.games
 								.isNotArchived()
-								.sum(Game.Database.Columns.score).forKey("total") ?? 0
+								.sum(Game.Database.Columns.score)
+								.forKey("total") ?? 0
 						)
 						.including(
 							all: Series.Database.games
@@ -112,7 +113,8 @@ extension SeriesRepository: DependencyKey {
 						.annotated(
 							with: Series.Database.games
 								.isNotArchived()
-								.sum(Game.Database.Columns.score).forKey("total") ?? 0
+								.sum(Game.Database.Columns.score)
+								.forKey("total") ?? 0
 						)
 						.including(
 							all: Series.Database.games
@@ -144,7 +146,7 @@ extension SeriesRepository: DependencyKey {
 				@Dependency(DatabaseService.self) var database
 
 				return try await database.reader().read {
-					return try Series.Database
+					try Series.Database
 						.filter(id: id)
 						.including(
 							optional: Series.Database
@@ -181,6 +183,8 @@ extension SeriesRepository: DependencyKey {
 				try await withEscapedDependencies { dependencies in
 					try await database.writer().write { db in
 						let bowler = try Bowler.Database
+							// GRDB does not expose a `contains` predicate for us in this case
+							// swiftlint:disable:next contains_over_filter_is_empty
 							.having(Bowler.Database.leagues.filter(League.Database.Columns.id == series.leagueId).isEmpty == false)
 							.fetchOneGuaranteed(db)
 						let preferredGear = try bowler
@@ -236,6 +240,8 @@ extension SeriesRepository: DependencyKey {
 							.asRequest(of: Series.HighestIndex.self)
 							.fetchOneGuaranteed(db)
 						let bowler = try Bowler.Database
+							// GRDB does not expose a `contains` predicate for us in this case
+							// swiftlint:disable:next contains_over_filter_is_empty
 							.having(Bowler.Database.leagues.filter(League.Database.Columns.id == series.leagueId).isEmpty == false)
 							.fetchOneGuaranteed(db)
 						let preferredGear = try bowler

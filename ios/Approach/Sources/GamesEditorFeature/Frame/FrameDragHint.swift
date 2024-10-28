@@ -69,17 +69,18 @@ struct FrameDragHint: View {
 			.frame(maxWidth: .infinity, alignment: .leading)
 			.background(
 				Rectangle()
-					.fill(.linearGradient(
-						.init(stops: [
-							.init(color: .black.opacity(0.0), location: 0.0),
-							.init(color: .black.opacity(0.6), location: 0.05),
-							.init(color: .black.opacity(0.6), location: 0.95),
-							.init(color: .black.opacity(0.0), location: 1.0),
-						]),
-						startPoint: .top,
-						endPoint: .bottom
+					.fill(
+							.linearGradient(
+							.init(stops: [
+								.init(color: .black.opacity(0.0), location: 0.0),
+								.init(color: .black.opacity(0.6), location: 0.05),
+								.init(color: .black.opacity(0.6), location: 0.95),
+								.init(color: .black.opacity(0.0), location: 1.0),
+							]),
+							startPoint: .top,
+							endPoint: .bottom
+						)
 					)
-				)
 			)
 		}
 	}

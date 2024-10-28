@@ -196,8 +196,8 @@ public struct LeaguesList: Reducer, Sendable {
 						switch seriesHost.recurrence {
 						case .once:
 							await send(.internal(.didLoadEventSeries(Result {
-								let series = try await self.series.eventSeries(seriesHost.id)
-								return EventSeries(host: seriesHost, series: series)
+								let eventSeries = try await series.eventSeries(seriesHost.id)
+								return EventSeries(host: seriesHost, series: eventSeries)
 							})))
 						case .repeating:
 							await send(.internal(.didLoadSeriesLeague(.success(seriesHost))))
@@ -377,19 +377,19 @@ public struct LeaguesList: Reducer, Sendable {
 	private func fetchResources(
 		query: League.List.FetchRequest
 	) -> AsyncThrowingStream<[SectionList.Section], Error> {
-		return AsyncThrowingStream { continuation in
+		AsyncThrowingStream { continuation in
 			let task = Task {
 				do {
-					for try await leagues in self.leagues.list(
+					for try await allLeagues in leagues.list(
 						bowledBy: query.filter.bowler,
 						withRecurrence: query.filter.recurrence,
 						ordering: query.ordering
 					) {
 						let repeating = IdentifiedArrayOf<League.List>(
-							uniqueElements: leagues.filter { $0.recurrence == .repeating }
+							uniqueElements: allLeagues.filter { $0.recurrence == .repeating }
 						)
 						let oneOffs = IdentifiedArrayOf<League.List>(
-							uniqueElements: leagues.filter { $0.recurrence == .once }
+							uniqueElements: allLeagues.filter { $0.recurrence == .once }
 						)
 
 						continuation.yield([

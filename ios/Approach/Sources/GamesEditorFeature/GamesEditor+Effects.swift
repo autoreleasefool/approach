@@ -65,7 +65,8 @@ extension GamesEditor {
 			} catch {
 				await send(.internal(.didUpdateFrame(.failure(error))))
 			}
-		}.cancellable(id: frame.id, cancelInFlight: true)
+		}
+		.cancellable(id: frame.id, cancelInFlight: true)
 	}
 
 	func save(game: Game.Edit?, in state: GamesEditor.State) -> Effect<Action> {
@@ -81,7 +82,8 @@ extension GamesEditor {
 			} catch {
 				await send(.internal(.didUpdateGame(.failure(error))))
 			}
-		}.cancellable(id: game.id, cancelInFlight: true)
+		}
+		.cancellable(id: game.id, cancelInFlight: true)
 	}
 
 	func save(matchPlay: MatchPlay.Edit?) -> Effect<Action> {
@@ -94,7 +96,8 @@ extension GamesEditor {
 			} catch {
 				await send(.internal(.didUpdateMatchPlay(.failure(error))))
 			}
-		}.cancellable(id: matchPlay.id, cancelInFlight: true)
+		}
+		.cancellable(id: matchPlay.id, cancelInFlight: true)
 	}
 }
 

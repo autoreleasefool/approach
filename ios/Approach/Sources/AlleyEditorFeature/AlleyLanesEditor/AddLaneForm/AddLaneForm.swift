@@ -31,7 +31,6 @@ public struct AddLaneForm: Reducer, Sendable {
 		case delegate(Delegate)
 		case `internal`(Internal)
 		case binding(BindingAction<State>)
-
 	}
 
 	public init() {}

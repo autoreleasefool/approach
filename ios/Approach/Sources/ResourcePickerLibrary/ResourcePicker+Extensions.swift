@@ -2,7 +2,7 @@ import ComposableArchitecture
 
 extension ResourcePicker {
 	func beginObservation(query: Query) -> Effect<Action> {
-		return .run { send in
+		.run { send in
 			for try await resources in observeResources(query) {
 				await send(.internal(.didLoadResources(.success(resources))))
 			}

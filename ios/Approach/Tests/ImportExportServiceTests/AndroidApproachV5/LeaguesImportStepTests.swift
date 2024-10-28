@@ -79,7 +79,7 @@ struct LeaguesImportStepTests {
 		#expect(league.name == "Majors 23-24")
 		#expect(league.recurrence == .repeating)
 		#expect(league.defaultNumberOfGames == 3)
-		#expect(league.additionalPinfall == 1000)
+		#expect(league.additionalPinfall == 1_000)
 		#expect(league.additionalGames == 4)
 		#expect(league.excludeFromStatistics == .include)
 		#expect(league.archivedOn == Date(timeIntervalSince1970: 123))
@@ -144,7 +144,7 @@ struct LeaguesImportStepTests {
 
 	@Test(
 		"Imports additional pinfall",
-		arguments: [nil, 0, 123, 99999], [nil, 0, 123, 99999])
+		arguments: [nil, 0, 123, 99_999], [nil, 0, 123, 99_999])
 	func importsAdditionalPinfall(additionalPinfall: Int?, additionalGames: Int?) throws {
 		try androidDb.write {
 			try $0.execute(
@@ -174,7 +174,7 @@ struct LeaguesImportStepTests {
 
 	@Test(
 		"Imports number of games",
-		arguments: [nil, 0, 123, 99999])
+		arguments: [nil, 0, 123, 99_999])
 	func importsNumberOfGames(numberOfGames: Int?) throws {
 		try androidDb.write {
 			try $0.execute(

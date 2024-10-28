@@ -89,7 +89,7 @@ public struct PhotoAvatarEditor: Reducer, Sendable {
 		BindingReducer()
 			.onChange(of: \.photosPickerItem) { _, item in
 				Reduce<State, Action> { _, _ in
-					return .run { @MainActor send in
+					.run { @MainActor send in
 						guard let item else {
 							send(.internal(.didLoadPhoto(.success(nil))))
 							return

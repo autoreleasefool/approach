@@ -19,7 +19,7 @@ enum GamesEditorError: LocalizedError {
 
 extension GamesEditor {
 	func reduce(
-		into state: inout State,
+		into _: inout State,
 		errorsAction: Errors<ErrorID>.Action
 	) -> Effect<Action> {
 		switch errorsAction {

@@ -89,7 +89,7 @@ public struct StatisticsWidgetLayout: Reducer, Sendable {
 				switch viewAction {
 				case .task:
 					return .run { [context = state.context] send in
-						for try await widgets in self.statisticsWidgets.fetchAll(forContext: context) {
+						for try await widgets in statisticsWidgets.fetchAll(forContext: context) {
 							await send(.internal(.widgetsResponse(.success(widgets))))
 						}
 					} catch: { error, send in
@@ -121,7 +121,7 @@ public struct StatisticsWidgetLayout: Reducer, Sendable {
 					let chartTasks: [Effect<Action>]? = state.widgets?.map { widget in
 						.run { send in
 							await send(.internal(.didLoadChartContent(id: widget.id, Result {
-								try await self.statisticsWidgets.chart(widget)
+								try await statisticsWidgets.chart(widget)
 							})))
 						}
 					}

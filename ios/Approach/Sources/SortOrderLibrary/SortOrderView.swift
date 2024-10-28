@@ -32,7 +32,6 @@ public struct SortOrderView<Ordering: Orderable>: View {
 					}
 					.buttonStyle(TappableElement())
 				}
-
 			}
 		}
 	}

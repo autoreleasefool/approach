@@ -59,7 +59,7 @@ public struct AutomaticBackups: Reducer, Sendable {
 				switch viewAction {
 				case .didStartTask:
 					return .run { send in
-						guard self.backups.isEnabled() else { return }
+						guard backups.isEnabled() else { return }
 
 						await send(.internal(.didCreateBackup(Result {
 							try await backups.createBackup(skipIfWithinMinimumTime: true)

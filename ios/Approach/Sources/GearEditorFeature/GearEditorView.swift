@@ -104,8 +104,8 @@ extension Gear.Kind: CustomStringConvertible {
 struct GearEditorViewPreviews: PreviewProvider {
 	static var previews: some View {
 		NavigationStack {
-			GearEditorView(store:
-				.init(
+			GearEditorView(
+				store: .init(
 					initialState: .init(value: .create(.default(
 						withId: UUID(),
 						avatar: .init(id: UUID(), value: .text("", .default))

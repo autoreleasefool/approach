@@ -34,7 +34,7 @@ public struct ScoreSheet: View {
 		var isLast: Bool { Frame.isLast(frameIndex) }
 		var frameId: FrameID { .init(frameIndex: frameIndex) }
 
-		public static let none: Self = .init(frameIndex: -1, rollIndex: -1)
+		public static let unselected: Self = .init(frameIndex: -1, rollIndex: -1)
 	}
 
 	struct FrameID: Hashable {

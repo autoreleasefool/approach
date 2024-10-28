@@ -44,7 +44,7 @@ extension AndroidApproachV5SQLiteImporter {
 					scoringMethod: Game.ScoringMethod(rawValue: scoringMethod.snakeCaseToCamelCase) ?? .byFrame,
 					excludeFromStatistics:
 						Game.ExcludeFromStatistics(rawValue: excludeFromStatistics.snakeCaseToCamelCase) ?? .include,
-					duration: durationMillis / 1000.0,
+					duration: durationMillis / 1_000.0,
 					archivedOn: archivedOn?.instantToDate
 				)
 

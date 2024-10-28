@@ -31,8 +31,7 @@ extension ImportService: DependencyKey {
 			@Dependency(\.fileManager) var fileManager
 			return try fileManager
 				.contentsOfDirectory(at: getBackupDirectory())
-				.sorted { $0.path() < $1.path() }
-				.last
+				.max { $0.path() < $1.path() }
 		}
 
 		@Sendable

@@ -15,7 +15,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 	func testDidRecentlyUseResource_UpdatesEntries() {
 		let cache = LockIsolated<String?>(nil)
-		let now = Date(timeIntervalSince1970: 1672519204)
+		let now = Date(timeIntervalSince1970: 1_672_519_204)
 
 		withDependencies {
 			$0[RecentlyUsedService.self] = .liveValue
@@ -40,7 +40,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 	func testDidRecentlyUseResource_RemovesOldEntries() {
 		let cache = LockIsolated<String?>(nil)
-		let now = Date(timeIntervalSince1970: 1672519204)
+		let now = Date(timeIntervalSince1970: 1_672_519_204)
 
 		withDependencies {
 			$0[RecentlyUsedService.self] = .liveValue
@@ -48,13 +48,12 @@ final class RecentlyUsedServiceTests: XCTestCase {
 			$0[JSONEncoderService.self] = .init(Self.encoder)
 
 			$0.userDefaults.string = { @Sendable _ in
-				return cache.value
+				cache.value
 			}
 
 			$0.userDefaults.setString = { @Sendable _, value in
 				cache.setValue(value)
 			}
-
 		} operation: {
 			for i in 0...RecentlyUsedService.maximumEntries * 2 {
 				self.recentlyUsed.didRecentlyUseResource(.bowlers, UUID(i))
@@ -73,7 +72,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 	func testReplacesRecentlyUsedResourceIfExists() {
 		let cache = LockIsolated<String?>(Self.entriesString(ids: [UUID(0), UUID(1)]))
-		let now = Date(timeIntervalSince1970: 1672519204)
+		let now = Date(timeIntervalSince1970: 1_672_519_204)
 
 		withDependencies {
 			$0[RecentlyUsedService.self] = .liveValue
@@ -114,7 +113,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 	func testObserve_ReceivesChanges() async {
 		let cache = LockIsolated<String?>(Self.entriesString(ids: [UUID(0)]))
-		let now = Date(timeIntervalSince1970: 1672519204)
+		let now = Date(timeIntervalSince1970: 1_672_519_204)
 
 		await withDependencies {
 			$0[RecentlyUsedService.self] = .liveValue
@@ -150,7 +149,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 	func testObserve_DoesNotReceiveUnrelatedChanges() async {
 		let cache = LockIsolated<String?>(Self.entriesString(ids: [UUID(0)]))
-		let now = Date(timeIntervalSince1970: 1672519204)
+		let now = Date(timeIntervalSince1970: 1_672_519_204)
 
 		var recentlyUsed: AsyncStream<[RecentlyUsedService.Entry]>?
 		var recentlyUsedIterator: AsyncStream<[RecentlyUsedService.Entry]>.Iterator?
@@ -220,7 +219,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		XCTAssertEqual(Self.entriesString(ids: [UUID(2)]), cache.value)
 	}
 
-	static func entriesString(ids: [UUID], date: Date = Date(timeIntervalSince1970: 1672519204)) -> String {
+	static func entriesString(ids: [UUID], date: Date = Date(timeIntervalSince1970: 1_672_519_204)) -> String {
 		guard let entries = try? encoder.encode(ids.map { RecentlyUsedService.Entry(id: $0, lastUsedAt: date) }) else {
 			XCTFail("Failed to encode entries")
 			return ""

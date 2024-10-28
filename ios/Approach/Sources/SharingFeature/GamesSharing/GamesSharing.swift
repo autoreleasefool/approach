@@ -159,7 +159,7 @@ public struct GamesSharing: Reducer, Sendable {
 						return .merge(
 							games.map { game in
 									.run { send in
-										for try await score in self.scores.observeScore(for: game.id) {
+										for try await score in scores.observeScore(for: game.id) {
 											await send(.internal(.loadScoreResponse(.success(score))))
 										}
 									} catch: { error, send in
@@ -195,7 +195,7 @@ public struct GamesSharing: Reducer, Sendable {
 		}
 		.onChange(of: \.configuration) { _, configuration in
 			Reduce<State, Action> { _, _ in
-				return .run { @MainActor send in
+				.run { @MainActor send in
 					guard let configuration else {  return }
 					let imageRenderer = ImageRenderer(
 						content: ShareableGamesImage(configuration: configuration)

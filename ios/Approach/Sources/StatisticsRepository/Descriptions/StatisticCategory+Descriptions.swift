@@ -67,6 +67,6 @@ extension StatisticCategory {
 
 extension Array where Element == ImageAsset {
 	func asListEntryImages() -> [Statistics.ListEntryGroup.Image] {
-		self.enumerated().map { .init(id: $0.offset, image: $0.element.image)}
+		self.enumerated().map { .init(id: $0.offset, image: $0.element.image) }
 	}
 }

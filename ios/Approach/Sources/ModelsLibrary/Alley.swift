@@ -5,7 +5,7 @@ public enum Alley {}
 extension Alley {
 	public typealias ID = UUID
 
-	public static let NUMBER_OF_LANES_RANGE = 0...1000
+	public static let NUMBER_OF_LANES_RANGE = 0...1_000
 }
 
 extension Alley {

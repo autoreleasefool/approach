@@ -4,6 +4,6 @@ import Sentry
 
 extension CrashGenerator: DependencyKey {
 	public static var liveValue: Self {
-		return Self { SentrySDK.crash() }
+		Self { SentrySDK.crash() }
 	}
 }

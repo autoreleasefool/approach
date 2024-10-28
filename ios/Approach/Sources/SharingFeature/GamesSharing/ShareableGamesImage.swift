@@ -75,7 +75,7 @@ public struct ShareableGamesImage: View {
 							game: game,
 							configuration: scoreSheetConfiguration,
 							contentSize: CGSize(width: 360, height: 100),
-							selection: .constant(.none)
+							selection: .constant(.unselected)
 						)
 						.matchHeight(byKey: GridItemHeightKey.self, to: $gridItemHeight)
 						.border(
@@ -387,7 +387,7 @@ private struct GridItemHeightKey: PreferenceKey, MatchDimensionPreferenceKey {}
 		bowlerName: "Joseph",
 		leagueName: "Majors, 2023-24",
 		date: Date(),
-		total: 1410,
+		total: 1_410,
 		style: .grayscale,
 		displayScale: .zero,
 		colorScheme: .light

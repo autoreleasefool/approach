@@ -27,7 +27,7 @@ extension Statistics {
 			self.totalFirstRolls = totalFirstRolls
 		}
 
-		public mutating func adjust(byFirstRoll: Frame.OrderedRoll, configuration: TrackablePerFrameConfiguration) {
+		public mutating func adjust(byFirstRoll: Frame.OrderedRoll, configuration _: TrackablePerFrameConfiguration) {
 			totalFirstRollPinfall += byFirstRoll.roll.pinsDowned.value
 			totalFirstRolls += 1
 		}

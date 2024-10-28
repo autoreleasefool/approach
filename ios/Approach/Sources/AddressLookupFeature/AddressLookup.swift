@@ -34,7 +34,6 @@ public struct AddressLookup: Reducer, Sendable {
 			case didChangeQuery(String)
 			case didChangeQueryDebounced
 			case didTapResult(AddressLookupResult.ID)
-
 		}
 		@CasePathable
 		public enum Delegate { case doNothing }

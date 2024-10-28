@@ -23,7 +23,7 @@ public struct GamesListHeaderView: View {
 
 	public var body: some View {
 		Section {
-			if scores.count == 0 {
+			if scores.isEmpty {
 				Text(Strings.Game.List.Header.numberOfGames(scores.count))
 					.font(.subheadline)
 					.bold()

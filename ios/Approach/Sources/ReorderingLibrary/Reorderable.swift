@@ -102,7 +102,7 @@ struct ReorderingDelegate<Item: Identifiable & Equatable>: DropDelegate {
 	var onMove: (IndexSet, Int) -> Void
 	var onDrop: () -> Void
 
-	func dropEntered(info: DropInfo) {
+	func dropEntered(info _: DropInfo) {
 		guard item != itemBeingDragged, let itemBeingDragged else { return }
 		guard let from = items.firstIndex(of: itemBeingDragged), let to = items.firstIndex(of: item) else { return }
 
@@ -113,11 +113,11 @@ struct ReorderingDelegate<Item: Identifiable & Equatable>: DropDelegate {
 		}
 	}
 
-	func dropUpdated(info: DropInfo) -> DropProposal? {
+	func dropUpdated(info _: DropInfo) -> DropProposal? {
 		DropProposal(operation: .move)
 	}
 
-	func performDrop(info: DropInfo) -> Bool {
+	func performDrop(info _: DropInfo) -> Bool {
 		draggedItemHasMoved = false
 		itemBeingDragged = nil
 		onDrop()

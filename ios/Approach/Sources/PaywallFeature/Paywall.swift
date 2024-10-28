@@ -80,7 +80,7 @@ public struct Paywall: Reducer, Sendable {
 
 				case .didStartTask:
 					return .run { [product = state.product] send in
-						for try await isPurchased in self.products.observe(product) {
+						for try await isPurchased in products.observe(product) {
 							await send(.internal(.setProductAvailability(isPurchased)))
 						}
 					}

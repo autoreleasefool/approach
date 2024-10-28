@@ -5,8 +5,8 @@ import StatisticsLibrary
 
 struct EntryDate: ChartEntryKey {
 	static let maxTimePeriods: Double = 20
-	static let weekTimeInterval: TimeInterval = 604800
-	static let dayTimeInterval: TimeInterval = 86400
+	static let weekTimeInterval: TimeInterval = 604_800
+	static let dayTimeInterval: TimeInterval = 86_400
 
 	let date: Date
 

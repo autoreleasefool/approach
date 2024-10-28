@@ -46,7 +46,6 @@ public struct GamesEditorView: View {
 					.padding()
 
 					Spacer()
-
 				} else {
 					VStack {
 						Spacer()
