@@ -36,11 +36,14 @@ public struct App: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didFirstAppear
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case onboarding(Onboarding.Action)
 			case content(TabbedContent.Action)
 		}

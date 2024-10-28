@@ -7,7 +7,9 @@ extension HUDService: DependencyKey {
 		let huds = LockIsolated<[AnyHashableSendable: HUDStyle]>([:])
 		let observers = LockIsolated<[UUID: AsyncStream<HUDStatus>.Continuation]>([:])
 
-		@MainActor @Sendable func refreshObservers() async {
+		@MainActor
+		@Sendable
+		func refreshObservers() async {
 			let styles = Set(huds.values)
 			let status: HUDStatus = styles.isEmpty ? .hide : .show(styles)
 			for observer in observers.values {

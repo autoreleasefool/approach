@@ -69,7 +69,7 @@ public struct SectionResourceListView<
 			.task { await store.send(.view(.task)).finish() }
 	}
 
-	@MainActor @ViewBuilder private var listContent: some View {
+	@ViewBuilder private var listContent: some View {
 		switch store.listContent {
 		case .notLoaded:
 			List {
@@ -144,7 +144,8 @@ public struct SectionResourceListView<
 		}
 	}
 
-	@MainActor @ViewBuilder private func buildRow(
+	@ViewBuilder
+	private func buildRow(
 		forElement element: R,
 		inSection section: SectionList.Section
 	) -> some View {

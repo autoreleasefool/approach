@@ -5,7 +5,8 @@ import Testing
 
 struct EditButtonTests {
 	@Test("Edit button snapshots", .tags(.snapshot))
-	@MainActor func snapshotEditButton() {
+	@MainActor
+	func snapshotEditButton() {
 		let editButton = EditButton { }
 		assertSnapshot(of: editButton, as: .image)
 	}

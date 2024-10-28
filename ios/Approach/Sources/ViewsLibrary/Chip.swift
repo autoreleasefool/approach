@@ -8,7 +8,7 @@ public struct Chip: View {
 	public let size: Sizing
 	public let style: Style
 
-	@MainActor public init(
+	public init(
 		title: String,
 		icon: SFSymbol? = nil,
 		accessory: Accessory? = nil,
@@ -77,14 +77,14 @@ extension Chip {
 		public let radius: CGFloat
 		public let font: Font
 
-		@MainActor public static let standard = Self(
+		public static let standard = Self(
 			padding: .standardSpacing,
 			icon: .tinyIcon,
 			radius: .largeRadius,
 			font: .body
 		)
 
-		@MainActor public static let compact = Self(
+		public static let compact = Self(
 			padding: .smallSpacing,
 			icon: .extraTinyIcon,
 			radius: .standardRadius,
@@ -103,17 +103,17 @@ extension Chip {
 			self.background = background
 		}
 
-		@MainActor public static let plain = Self(
+		public static let plain = Self(
 			foreground: Asset.Colors.Chip.plainForeground,
 			background: Asset.Colors.Chip.plainBackground
 		)
 
-		@MainActor public static let info = Self(
+		public static let info = Self(
 			foreground: Asset.Colors.Chip.infoForeground,
 			background: Asset.Colors.Chip.infoBackground
 		)
 
-		@MainActor public static let primary = Self(
+		public static let primary = Self(
 			foreground: Asset.Colors.Chip.primaryForeground,
 			background: Asset.Colors.Chip.primaryBackground
 		)

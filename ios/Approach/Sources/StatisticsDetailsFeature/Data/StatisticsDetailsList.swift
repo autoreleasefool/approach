@@ -38,15 +38,18 @@ public struct StatisticsDetailsList: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didTapEntry(id: String)
 			case didTapDismissDescriptionsTip
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case didRequestEntryDetails(id: String)
 			case listRequiresReload
 		}
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case scrollToEntry(id: Statistics.ListEntry.ID?)
 		}
 

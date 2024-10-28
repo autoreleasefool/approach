@@ -27,17 +27,20 @@ public struct FrameEditor: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didStartDragging
 			case didDragOverPin(Pin)
 			case didStopDragging
 			case didTapPin(Pin)
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case didProvokeLock
 			case didEditFrame
 		}
-		@CasePathable public enum Internal { case doNothing }
+		@CasePathable
+		public enum Internal { case doNothing }
 
 		case view(View)
 		case delegate(Delegate)

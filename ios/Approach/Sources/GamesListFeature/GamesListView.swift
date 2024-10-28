@@ -71,7 +71,7 @@ public struct GamesListView: View {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func sharing(_ store: Binding<StoreOf<Sharing>?>) -> some View {
 		sheet(item: store) { store in
 			NavigationStack {

@@ -82,7 +82,7 @@ public struct StatisticsDetailsView: View {
 		}
 	}
 
-	@MainActor private var measuredBackdropSize: CGSize {
+	private var measuredBackdropSize: CGSize {
 		let sheetContentSize = store.ignoreSheetSizeForBackdrop ? .zero : self.sheetContentSize
 		return .init(
 			width: windowContentSize.width,
@@ -94,7 +94,7 @@ public struct StatisticsDetailsView: View {
 private struct SheetContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct WindowContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 
-@MainActor extension View {
+extension View {
 	fileprivate func trackShouldAdjustChartSize(
 		willAdjustLaneLayoutAt: Date,
 		sheetContentSize: CGSize,

@@ -18,11 +18,14 @@ public struct StatisticsDetailsCharts: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, BindableAction {
-		@CasePathable public enum View { case doNothing }
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum View { case doNothing }
+		@CasePathable
+		public enum Delegate {
 			case didChangeAggregation(TrackableFilter.Aggregation)
 		}
-		@CasePathable public enum Internal { case doNothing }
+		@CasePathable
+		public enum Internal { case doNothing }
 
 		case view(View)
 		case delegate(Delegate)

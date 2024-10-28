@@ -1,3 +1,5 @@
+# Inclusions
+
 included:
   - Approach/Sources
   - Approach/Tests
@@ -7,12 +9,23 @@ excluded:
   - Approach/Package.swift
   - Approach/Sources/StringsLibrary
 
+# Rule Configuration
+
+attributes:
+  always_on_same_line: ["@Dependency", "@Environment"]
+  attributes_with_arguments_always_on_line_above: false
+
 trailing_comma:
   mandatory_comma: true
 
 type_name:
   excluded:
     - ID
+
+type_body_length:
+  error: 999
+
+# Rules Opt-In
 
 disabled_rules:
   - cyclomatic_complexity
@@ -21,4 +34,4 @@ disabled_rules:
   - nesting
 
 opt_in_rules:
-  - sorted_imports
+  - attributes

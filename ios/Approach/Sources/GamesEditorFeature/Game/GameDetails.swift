@@ -21,7 +21,6 @@ import SwiftUI
 import ViewsLibrary
 
 @Reducer
-// swiftlint:disable:next type_body_length
 public struct GameDetails: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
@@ -62,7 +61,8 @@ public struct GameDetails: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case task
 			case onAppear
 			case didFirstAppear
@@ -78,7 +78,8 @@ public struct GameDetails: Reducer, Sendable {
 			case didMeasureMinimumSheetContentSize(CGSize)
 			case didMeasureSectionHeaderContentSize(CGSize)
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case didSelectLanes
 			case didProceed(to: GameDetailsHeader.State.NextElement)
 			case didEditMatchPlay(Result<MatchPlay.Edit?, Error>)
@@ -89,7 +90,8 @@ public struct GameDetails: Reducer, Sendable {
 			case didMeasureSectionHeaderContentSize(CGSize)
 			case didTapStrikeOut
 		}
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case refreshObservation
 			case didLoadGame(Result<Game.Edit?, Error>)
 			case gameDetailsHeader(GameDetailsHeader.Action)

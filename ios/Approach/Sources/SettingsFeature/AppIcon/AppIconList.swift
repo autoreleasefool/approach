@@ -32,14 +32,17 @@ public struct AppIconList: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didFirstAppear
 			case didTapIcon(AppIcon)
 			case didTapReset
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case didUpdateIcon(Result<Never, Error>)
 			case didFetchIcon(Result<AppIcon?, Error>)
 			case alert(PresentationAction<Alert>)

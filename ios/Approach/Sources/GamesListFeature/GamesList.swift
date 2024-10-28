@@ -56,7 +56,8 @@ public struct GamesList: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didTapGame(Game.ID)
 			case didTapShareButton
@@ -64,8 +65,10 @@ public struct GamesList: Reducer, Sendable {
 			case didTapAddButton
 			case didTapArchiveTipDismissButton
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case didLoadEditableSeries(Result<Series.Edit, Error>)
 			case didReorderGames(Result<Never, Error>)
 			case didAddGameToSeries(Result<Never, Error>)

@@ -13,15 +13,19 @@ public struct AddLaneForm: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didTapSaveButton
 			case didTapCancelButton
-
 		}
-		@CasePathable public enum Delegate {
+
+		@CasePathable
+		public enum Delegate {
 			case didFinishAddingLanes(Int?)
 		}
-		@CasePathable public enum Internal { case doNothing }
+
+		@CasePathable
+		public enum Internal { case doNothing }
 
 		case view(View)
 		case delegate(Delegate)

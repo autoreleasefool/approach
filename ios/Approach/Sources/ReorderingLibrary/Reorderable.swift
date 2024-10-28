@@ -16,15 +16,18 @@ public struct Reorderable<Content: View, Item: Identifiable & Equatable>: Reduce
 	}
 
 	public enum Action: FeatureAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didMoveItem(from: IndexSet, to: Int)
 			case didFinishReordering
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case itemDidMove(from: IndexSet, to: Int)
 			case didFinishReordering
 		}
-		@CasePathable public enum Internal { case doNothing }
+		@CasePathable
+		public enum Internal { case doNothing }
 
 		case view(View)
 		case delegate(Delegate)

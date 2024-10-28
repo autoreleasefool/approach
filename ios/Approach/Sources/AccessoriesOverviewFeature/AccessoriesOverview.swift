@@ -31,7 +31,8 @@ public struct AccessoriesOverview: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case task
 			case onAppear
 			case didTapViewAllAlleys
@@ -41,8 +42,12 @@ public struct AccessoriesOverview: Reducer, Sendable {
 			case didTapAddGear
 			case didSwipe(SwipeAction, Item)
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+
+		@CasePathable
+		public enum Delegate { case doNothing }
+
+		@CasePathable
+		public enum Internal {
 			case itemsResponse(Result<[Item], Error>)
 			case didFinishDeletingItem(Result<Item, Error>)
 			case didLoadEditableAlley(Result<Alley.EditWithLanes, Error>)

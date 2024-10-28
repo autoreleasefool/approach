@@ -16,11 +16,14 @@ public struct SortOrder<Ordering: Orderable>: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didTapOption(Ordering)
 		}
-		@CasePathable public enum Internal { case doNothing }
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Internal { case doNothing }
+		@CasePathable
+		public enum Delegate {
 			case didTapOption(Ordering)
 		}
 

@@ -160,7 +160,7 @@ public struct GamesEditorView: View {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func ballPicker(
 		_ store: Binding<StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>?>,
 		onDismiss: @escaping () -> Void

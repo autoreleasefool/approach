@@ -11,7 +11,8 @@ public typealias GearStream = AsyncThrowingStream<[Gear.Summary], Error>
 
 extension GearRepository: DependencyKey {
 	public static var liveValue: Self {
-		@Sendable func sortGear(
+		@Sendable
+		func sortGear(
 			_ gear: GearStream,
 			_ ordering: Gear.Ordering
 		) -> GearStream {

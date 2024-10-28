@@ -42,7 +42,8 @@ public struct Import: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didAppear
 			case didFirstAppear
 			case didTapImportButton
@@ -52,8 +53,10 @@ public struct Import: Reducer, Sendable {
 			case didTapCopyEmailButton
 			case didImportFiles(Result<[URL], Error>)
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case didFetchLatestBackupDate(Result<Date?, Error>)
 			case didRestoreBackup(Result<Void, Error>)
 			case didImportBackup(Result<ImportResult, Error>)

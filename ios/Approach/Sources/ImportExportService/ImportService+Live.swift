@@ -11,7 +11,8 @@ extension ImportService: DependencyKey {
 	public static var liveValue: Self {
 		let latestBackupUrl = LockIsolated<URL?>(nil)
 
-		@Sendable func getBackupDirectory() throws -> URL {
+		@Sendable
+		func getBackupDirectory() throws -> URL {
 			@Dependency(\.fileManager) var fileManager
 			let backupDirectory = try fileManager
 				.getUserDirectory()
@@ -25,7 +26,8 @@ extension ImportService: DependencyKey {
 			return backupDirectory
 		}
 
-		@Sendable func getLatestBackup() throws -> URL? {
+		@Sendable
+		func getLatestBackup() throws -> URL? {
 			@Dependency(\.fileManager) var fileManager
 			return try fileManager
 				.contentsOfDirectory(at: getBackupDirectory())
@@ -33,7 +35,8 @@ extension ImportService: DependencyKey {
 				.last
 		}
 
-		@Sendable func backupExistingDatabase() async throws {
+		@Sendable
+		func backupExistingDatabase() async throws {
 			@Dependency(\.fileManager) var fileManager
 			@Dependency(ExportService.self) var export
 
@@ -58,7 +61,8 @@ extension ImportService: DependencyKey {
 			latestBackupUrl.setValue(backupFile)
 		}
 
-		@Sendable func importSQLiteDatabase(fromUrl: URL) async throws -> ImportResult {
+		@Sendable
+		func importSQLiteDatabase(fromUrl: URL) async throws -> ImportResult {
 			@Dependency(\.database) var database
 			@Dependency(\.fileManager) var fileManager
 
@@ -92,7 +96,8 @@ extension ImportService: DependencyKey {
 			return result
 		}
 
-		@Sendable func findPrimaryDbUrl(in url: URL) throws -> URL? {
+		@Sendable
+		func findPrimaryDbUrl(in url: URL) throws -> URL? {
 			@Dependency(\.fileManager) var fileManager
 			for item in try fileManager.contentsOfDirectory(at: url) {
 				let fileType = try FileType.of(url: item)
@@ -105,7 +110,8 @@ extension ImportService: DependencyKey {
 			return nil
 		}
 
-		@Sendable func importDatabase(fromUrl: URL, performBackup: Bool) async throws -> ImportResult {
+		@Sendable
+		func importDatabase(fromUrl: URL, performBackup: Bool) async throws -> ImportResult {
 			@Dependency(\.fileManager) var fileManager
 			@Dependency(ZIPService.self) var zip
 

@@ -13,7 +13,6 @@ import StringsLibrary
 import SwiftUI
 
 @Reducer
-// swiftlint:disable:next type_body_length
 public struct StatisticsDetails: Reducer, Sendable {
 	static let chartLoadingAnimationTime: TimeInterval = 0.5
 	static let defaultSheetDetent: PresentationDetent = .fraction(0.25)
@@ -73,15 +72,18 @@ public struct StatisticsDetails: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didFirstAppear
 			case didTapSourcePicker
 			case didTapShareButton
 			case didAdjustChartSize(backdropSize: CGSize, filtersSize: StatisticsFilterView.Size)
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case destination(PresentationAction<Destination.Action>)
 			case charts(StatisticsDetailsCharts.Action)
 			case errors(Errors<ErrorID>.Action)

@@ -27,7 +27,7 @@ public struct AvatarView: View {
 			}
 	}
 
-	@MainActor @ViewBuilder private var avatarImage: some View {
+	@ViewBuilder private var avatarImage: some View {
 		if let image {
 			Image(uiImage: image)
 				.resizable()

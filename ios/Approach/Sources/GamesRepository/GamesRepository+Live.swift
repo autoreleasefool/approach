@@ -11,7 +11,8 @@ import RepositoryLibrary
 
 extension GamesRepository: DependencyKey {
 	public static var liveValue: Self {
-		@Sendable func requestList(forSeries: Series.ID, ordering: Game.Ordering) -> QueryInterfaceRequest<Game.Database> {
+		@Sendable
+		func requestList(forSeries: Series.ID, ordering: Game.Ordering) -> QueryInterfaceRequest<Game.Database> {
 			switch ordering {
 			case .byIndex:
 				return Game.Database
@@ -22,7 +23,8 @@ extension GamesRepository: DependencyKey {
 			}
 		}
 
-		@Sendable func share(request: QueryInterfaceRequest<Game.Database>) -> QueryInterfaceRequest<Game.Shareable> {
+		@Sendable
+		func share(request: QueryInterfaceRequest<Game.Database>) -> QueryInterfaceRequest<Game.Shareable> {
 			request
 				.including(required: Game.Database.bowler)
 				.including(required: Game.Database.league)
@@ -54,7 +56,8 @@ extension GamesRepository: DependencyKey {
 				.asRequest(of: Game.Shareable.self)
 		}
 
-		@Sendable func reorderGames(series: Series.ID, games: [Game.ID], db: Database) throws {
+		@Sendable
+		func reorderGames(series: Series.ID, games: [Game.ID], db: Database) throws {
 			let gameIds = Set(games)
 			let gamesForSeries =
 				try Set(

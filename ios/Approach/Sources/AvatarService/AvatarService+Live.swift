@@ -9,7 +9,8 @@ extension AvatarService: DependencyKey {
 	public static var liveValue: Self {
 		let cache = Cache()
 
-		@Sendable func render(text: String, background: Avatar.Background) -> UIImage {
+		@Sendable
+		func render(text: String, background: Avatar.Background) -> UIImage {
 			let imageSize: CGFloat = 256
 			let renderer = UIGraphicsImageRenderer(size: CGSize(width: imageSize, height: imageSize))
 			return renderer.image { ctx in
@@ -51,7 +52,8 @@ extension AvatarService: DependencyKey {
 			}
 		}
 
-		@Sendable func render(_ avatar: Avatar.Value) async -> UIImage? {
+		@Sendable
+		func render(_ avatar: Avatar.Value) async -> UIImage? {
 			if let image = await cache.fetch(avatar) {
 				return image
 			}

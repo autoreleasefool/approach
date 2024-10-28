@@ -5,7 +5,8 @@ import Testing
 
 struct BadgeViewTests {
 	@Test("Badge snapshots", .tags(.snapshot))
-	@MainActor func snapshotBadges() {
+	@MainActor
+	func snapshotBadges() {
 		let badges = VStack {
 			BadgeView("Badge", style: .plain)
 			BadgeView("Badge", style: .success)

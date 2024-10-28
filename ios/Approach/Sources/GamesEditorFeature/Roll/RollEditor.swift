@@ -30,16 +30,19 @@ public struct RollEditor: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didStartTask
 			case didTapBall(Gear.ID)
 			case didTapOtherButton
 			case didToggleFoul
 		}
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case didLoadGear(Result<[Gear.Summary], Error>)
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case didEditRoll
 			case didRequestBallPicker
 			case didChangeBall(Gear.Summary?)

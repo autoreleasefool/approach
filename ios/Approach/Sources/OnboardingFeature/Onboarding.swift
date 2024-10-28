@@ -19,16 +19,19 @@ public struct Onboarding: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, BindableAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didFirstAppear
 			case didTapGetStarted
 			case didTapAddBowler
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case didFinishOnboarding
 		}
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case nextStep
 			case didCreateBowler(Result<Never, Error>)
 		}

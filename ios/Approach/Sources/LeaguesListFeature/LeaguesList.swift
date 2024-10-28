@@ -31,7 +31,6 @@ extension League.Ordering: CustomStringConvertible {
 }
 
 @Reducer
-// swiftlint:disable:next type_body_length
 public struct LeaguesList: Reducer, Sendable {
 	public typealias SectionList = SectionResourceList<League.List, League.List.FetchRequest>
 
@@ -85,7 +84,8 @@ public struct LeaguesList: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didStartTask
 			case didTapLeague(id: League.ID)
@@ -93,9 +93,11 @@ public struct LeaguesList: Reducer, Sendable {
 			case didTapSortOrderButton
 		}
 
-		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Delegate { case doNothing }
 
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case didLoadEditableLeague(Result<League.Edit, Error>)
 			case didArchiveLeague(Result<League.List, Error>)
 			case didLoadSeriesLeague(Result<League.SeriesHost, Error>)

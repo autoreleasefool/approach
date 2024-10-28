@@ -23,15 +23,12 @@ import SwiftUI
 import ToastLibrary
 
 @Reducer
-// swiftlint:disable file_length
-// swiftlint:disable:next type_body_length
 public struct GamesEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 
 		// Sizing
 		public var sheetDetent: PresentationDetent = .height(40)
-//		public var backdropSize: CGSize = .zero
 		public var gameDetailsHeaderSize: CGSize = .zero
 		public var gameDetailsMinimumContentSize: CGSize = .zero
 
@@ -147,7 +144,8 @@ public struct GamesEditor: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didFirstAppear
 			case didChangeSafeAreaInsets(EdgeInsets)
@@ -156,8 +154,10 @@ public struct GamesEditor: Reducer, Sendable {
 			case didRequestReview
 			case didDismissFrameDragHint
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case bowlersResponse(Result<[Bowler.Summary], Error>)
 			case framesResponse(Result<[Frame.Edit], Error>)
 			case gameResponse(Result<Game.Edit?, Error>)

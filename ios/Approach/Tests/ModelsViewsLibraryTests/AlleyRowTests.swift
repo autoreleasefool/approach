@@ -6,7 +6,8 @@ import Testing
 
 struct AlleyRowTests {
 	@Test("Alley row snapshots", .tags(.snapshot))
-	@MainActor func snapshotAlleyRows() {
+	@MainActor
+	func snapshotAlleyRows() {
 		let rows = VStack {
 			Section {
 				Alley.View(.init(

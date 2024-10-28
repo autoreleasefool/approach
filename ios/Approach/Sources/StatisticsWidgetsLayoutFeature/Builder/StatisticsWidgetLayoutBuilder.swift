@@ -41,7 +41,8 @@ public struct StatisticsWidgetLayoutBuilder: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case task
 			case didTapAddNew
@@ -51,8 +52,10 @@ public struct StatisticsWidgetLayoutBuilder: Reducer, Sendable {
 			case didTapDeleteWidget(id: StatisticsWidget.ID)
 			case didFinishDismissingEditor
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case widgetsResponse(Result<[StatisticsWidget.Configuration], Error>)
 			case didLoadChartContent(id: StatisticsWidget.ID, Result<Statistics.ChartContent, Error>)
 			case didUpdatePriorities(Result<Never, Error>)

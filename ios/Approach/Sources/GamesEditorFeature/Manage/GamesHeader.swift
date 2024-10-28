@@ -24,19 +24,22 @@ public struct GamesHeader: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didStartTask
 			case didTapCloseButton
 			case didTapSettingsButton
 			case didTapShareButton
 			case didStartShimmering
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case didCloseEditor
 			case didOpenSettings
 			case didShareGame
 		}
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case setShimmerColor(Color?)
 			case setFlashEditorChangesEnabled(Bool)
 		}

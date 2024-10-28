@@ -59,15 +59,18 @@ public struct SeriesSharing: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case task
 			case didUpdateDisplayScale(CGFloat)
 			case didUpdateColorScheme(ColorScheme)
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case imageRendered(UIImage)
 		}
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case loadSeriesResponse(Result<Series.Shareable, Error>)
 			case errors(Errors<ErrorID>.Action)
 		}

@@ -18,7 +18,6 @@ import SwiftUI
 public typealias SeriesForm = FormFeature.Form<Series.Create, Series.Edit>
 
 @Reducer
-// swiftlint:disable:next type_body_length
 public struct SeriesEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
@@ -104,16 +103,19 @@ public struct SeriesEditor: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didTapAlley
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case didFinishCreating(Series.Create)
 			case didFinishArchiving(Series.Edit)
 			case didFinishUpdating(Series.Edit)
 		}
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case form(SeriesForm.Action)
 			case alleyPicker(PresentationAction<ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.Action>)
 			case manualSeriesGame(IdentifiedActionOf<ManualSeriesGameEditor>)

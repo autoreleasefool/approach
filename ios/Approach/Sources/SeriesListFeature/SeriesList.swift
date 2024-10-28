@@ -35,7 +35,6 @@ extension Series.List: ResourceListItem {
 }
 
 @Reducer
-// swiftlint:disable:next type_body_length
 public struct SeriesList: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
@@ -75,7 +74,8 @@ public struct SeriesList: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didTapEditButton
 			case didTapSortOrderButton
@@ -83,7 +83,8 @@ public struct SeriesList: Reducer, Sendable {
 			case didTapSeries(Series.ID)
 		}
 
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case didArchiveSeries(Result<Series.List, Error>)
 			case didLoadEditableSeries(Result<Series.Edit, Error>)
 			case didLoadEditableLeague(Result<League.Edit, Error>)
@@ -95,7 +96,8 @@ public struct SeriesList: Reducer, Sendable {
 				.FetchRequest>.Action)
 		}
 
-		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Delegate { case doNothing }
 
 		case view(View)
 		case `internal`(Internal)

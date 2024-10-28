@@ -53,7 +53,7 @@ public struct OpponentsListView: View {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func opponentDetails(_ store: Binding<StoreOf<OpponentDetails>?>) -> some View {
 		navigationDestination(item: store) {
 			OpponentDetailsView(store: $0)

@@ -54,7 +54,8 @@ public struct StatisticsSourcePicker: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didFirstAppear
 			case didTapBowler
 			case didTapLeague
@@ -62,10 +63,12 @@ public struct StatisticsSourcePicker: Reducer, Sendable {
 			case didTapGame
 			case didTapConfirmButton
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case didChangeSource(TrackableFilter.Source)
 		}
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case didLoadSources(Result<TrackableFilter.Sources?, Error>)
 			case destination(PresentationAction<Destination.Action>)
 			case errors(Errors<ErrorID>.Action)
@@ -343,7 +346,7 @@ public struct StatisticsSourcePickerView: View {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func bowlerPicker(
 		_ store: Binding<StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>?>
 	) -> some View {

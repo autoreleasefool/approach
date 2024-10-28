@@ -60,13 +60,16 @@ public struct OpponentsList: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didTapSortOrderButton
 			case didTapOpponent(Bowler.ID)
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case didLoadEditableOpponent(Result<Bowler.Edit, Error>)
 			case didArchiveOpponent(Result<Bowler.Opponent, Error>)
 

@@ -97,13 +97,16 @@ public struct AlleyEditor: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didTapAddressField
 			case didTapManageLanes
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case didCreateLanes(Result<Alley.Create, Error>)
 			case didUpdateLanes(Result<Alley.Edit, Error>)
 			case form(AlleyForm.Action)

@@ -159,7 +159,8 @@ public struct Form<
 	}
 
 	public enum Action: FeatureAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didTapSaveButton
 			case didTapDiscardButton
 			case didTapDeleteButton
@@ -167,11 +168,13 @@ public struct Form<
 			case alert(PresentationAction<AlertAction>)
 		}
 
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case errors(Errors<ErrorID>.Action)
 		}
 
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case didCreate(Result<New, Error>)
 			case didUpdate(Result<Existing, Error>)
 			case didDelete(Result<Existing, Error>)

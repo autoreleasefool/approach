@@ -5,13 +5,15 @@ import Testing
 
 struct SortButtonTests {
 	@Test("Active sort button snapshot", .tags(.snapshot))
-	@MainActor func snapshotActiveSortButton() {
+	@MainActor
+	func snapshotActiveSortButton() {
 		let sortButton = SortButton(isActive: true) { }
 		assertSnapshot(of: sortButton, as: .image)
 	}
 
 	@Test("Inactive sort button snapshot", .tags(.snapshot))
-	@MainActor func snapshotInactiveSortButton() {
+	@MainActor
+	func snapshotInactiveSortButton() {
 		let sortButton = SortButton(isActive: false) { }
 		assertSnapshot(of: sortButton, as: .image)
 	}

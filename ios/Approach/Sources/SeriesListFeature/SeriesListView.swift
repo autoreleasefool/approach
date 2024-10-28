@@ -64,7 +64,7 @@ public struct SeriesListView: View {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func seriesEditor(_ store: Binding<StoreOf<SeriesEditor>?>) -> some View {
 		sheet(item: store) { (store: StoreOf<SeriesEditor>) in
 			NavigationStack {

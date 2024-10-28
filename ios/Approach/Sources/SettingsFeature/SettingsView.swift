@@ -83,7 +83,7 @@ public struct SettingsView: View {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func destinations(_ store: Bindable<StoreOf<Settings>>) -> some View {
 		self
 			.archive(store.scope(state: \.destination?.archive, action: \.internal.destination.archive))

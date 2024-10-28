@@ -47,7 +47,8 @@ public struct Sharing: Reducer, Sendable {
 	}
 
 	public enum Action: BindableAction, FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didTapSaveButton
 			case didTapShareButton
@@ -55,8 +56,10 @@ public struct Sharing: Reducer, Sendable {
 			case didTapPreviewImage
 			case didTapBackdrop
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case seriesSharing(SeriesSharing.Action)
 			case statisticsSharing(StatisticsWidgetSharing.Action)
 			case gamesSharing(GamesSharing.Action)
@@ -273,29 +276,25 @@ public struct SharingView: View {
 		}
 	}
 
-	@ViewBuilder
-	private var seriesSharing: some View {
+	@ViewBuilder private var seriesSharing: some View {
 		if let store = store.scope(state: \.seriesSharing, action: \.internal.seriesSharing) {
 			SeriesSharingView(store: store)
 		}
 	}
 
-	@ViewBuilder
-	private var statisticsSharing: some View {
+	@ViewBuilder private var statisticsSharing: some View {
 		if let store = store.scope(state: \.statisticsSharing, action: \.internal.statisticsSharing) {
 			StatisticsWidgetSharingView(store: store)
 		}
 	}
 
-	@ViewBuilder
-	private var gamesSharing: some View {
+	@ViewBuilder private var gamesSharing: some View {
 		if let store = store.scope(state: \.gamesSharing, action: \.internal.gamesSharing) {
 			GamesSharingView(store: store)
 		}
 	}
 
-	@ViewBuilder
-	private var previewImage: some View {
+	@ViewBuilder private var previewImage: some View {
 		if let preview = store.preview?.image {
 			preview
 				.resizable()
@@ -306,8 +305,7 @@ public struct SharingView: View {
 		}
 	}
 
-	@ViewBuilder
-	private var shareButton: some View {
+	@ViewBuilder private var shareButton: some View {
 		if let image = store.preview?.image {
 			ShareLink(item: image, preview: SharePreview(Strings.App.name, image: image)) {
 				ShareImageButton()

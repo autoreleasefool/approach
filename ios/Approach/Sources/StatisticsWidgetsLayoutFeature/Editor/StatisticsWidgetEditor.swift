@@ -51,16 +51,19 @@ public struct StatisticsWidgetEditor: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didTapSaveButton
 			case didTapWidget
 			case didTapDismissTapThroughTip
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case didCreateConfiguration(StatisticsWidget.Configuration)
 		}
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case editor(StatisticsWidgetConfigurationEditor.Action)
 			case destination(PresentationAction<Destination.Action>)
 			case errors(Errors<ErrorID>.Action)

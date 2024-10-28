@@ -12,12 +12,15 @@ public struct Halloween2024Announcement: Reducer, Sendable {
 	public struct State: Equatable {}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didTapOpenIconSettingsButton
 			case didTapDismissButton
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal { case doNothing }
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal { case doNothing }
 
 		case view(View)
 		case delegate(Delegate)

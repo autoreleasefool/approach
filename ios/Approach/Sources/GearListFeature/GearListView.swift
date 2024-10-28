@@ -46,7 +46,7 @@ public struct GearListView: View {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func gearEditor(_ store: Binding<StoreOf<GearEditor>?>) -> some View {
 		sheet(item: store) { store in
 			NavigationStack {

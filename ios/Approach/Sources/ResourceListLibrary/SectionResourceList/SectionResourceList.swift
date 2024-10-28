@@ -82,7 +82,8 @@ public struct SectionResourceList<
 	}
 
 	public enum Action: FeatureAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case task
 			case onAppear
 			case didTapAddButton
@@ -93,7 +94,8 @@ public struct SectionResourceList<
 			case alert(PresentationAction<AlertAction>)
 		}
 
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case didDelete(R)
 			case didArchive(R)
 			case didEdit(R)
@@ -103,7 +105,8 @@ public struct SectionResourceList<
 			case didTapEmptyStateButton
 		}
 
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case refreshObservation
 			case sectionsResponse(Result<[Section], Error>)
 			case empty(ResourceListEmpty.Action)

@@ -19,16 +19,19 @@ public struct AutomaticBackups: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didStartTask
 		}
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case didCreateBackup(Result<BackupFile?, Error>)
 
 			case backupFailure(PresentationAction<BackupFailure.Action>)
 			case toast(PresentationAction<ToastAction>)
 		}
-		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Delegate { case doNothing }
 
 		case view(View)
 		case delegate(Delegate)
@@ -140,7 +143,7 @@ public struct AutomaticBackupsViewModifier: ViewModifier {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func backupFailure(_ store: Binding<StoreOf<BackupFailure>?>) -> some View {
 		sheet(item: store) { (store: StoreOf<BackupFailure>) in
 			BackupFailureView(store: store)

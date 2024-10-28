@@ -17,7 +17,7 @@ public struct AppView: View {
 			.onFirstAppear { send(.didFirstAppear) }
 	}
 
-	@MainActor @ViewBuilder private var content: some View {
+	@ViewBuilder private var content: some View {
 		switch store.state {
 		case .content:
 			if let store = store.scope(state: \.content, action: \.internal.content) {

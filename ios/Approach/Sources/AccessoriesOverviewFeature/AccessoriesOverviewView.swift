@@ -130,7 +130,7 @@ public struct AccessoriesOverviewView: View {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func gearList(_ store: Binding<StoreOf<GearList>?>) -> some View {
 		navigationDestination(item: store) { (store: StoreOf<GearList>) in
 			GearListView(store: store)

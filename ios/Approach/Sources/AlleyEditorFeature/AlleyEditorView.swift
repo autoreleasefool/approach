@@ -158,7 +158,7 @@ public struct AlleyEditorView: View {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func alleyLanes(_ store: Binding<StoreOf<AlleyLanesEditor>?>) -> some View {
 		navigationDestination(item: store) { (store: StoreOf<AlleyLanesEditor>) in
 			AlleyLanesEditorView(store: store)

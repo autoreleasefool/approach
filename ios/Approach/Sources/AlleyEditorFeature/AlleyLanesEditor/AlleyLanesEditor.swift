@@ -32,15 +32,18 @@ public struct AlleyLanesEditor: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didTapAddLaneButton
 			case didTapAddMultipleLanesButton
 		}
 
-		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Delegate { case doNothing }
 
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case didDeleteLane(Result<Lane.ID, Error>)
 
 			case errors(Errors<ErrorID>.Action)

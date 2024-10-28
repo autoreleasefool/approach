@@ -15,15 +15,18 @@ public struct PhotoCrop: Reducer, Sendable {
 	}
 
 	public enum Action: ViewAction, FeatureAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didTapDone
 		}
 
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case didFinishCropping(UIImage)
 		}
 
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case doNothing
 		}
 

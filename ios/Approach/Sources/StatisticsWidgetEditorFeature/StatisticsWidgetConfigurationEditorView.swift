@@ -112,7 +112,7 @@ public struct StatisticsWidgetConfigurationEditorView<Header: View, Footer: View
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func bowlerPicker(
 		_ store: Binding<StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>?>
 	) -> some View {

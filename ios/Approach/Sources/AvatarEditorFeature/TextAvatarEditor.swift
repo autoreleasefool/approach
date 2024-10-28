@@ -48,12 +48,15 @@ public struct TextAvatarEditor: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didTapRandomColorButton
 			case didTapSwapColorsButton
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal { case doNothing }
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal { case doNothing }
 
 		case view(View)
 		case delegate(Delegate)

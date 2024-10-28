@@ -5,7 +5,8 @@ import Testing
 
 struct ChipTests {
 	@Test("Chip snapshots", .tags(.snapshot))
-	@MainActor func snapshotChips() {
+	@MainActor
+	func snapshotChips() {
 		let chips = VStack {
 			Chip(title: "Chip", style: .primary)
 			Chip(title: "Chip", icon: .person, style: .primary)

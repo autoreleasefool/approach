@@ -22,7 +22,6 @@ import PreferenceServiceInterface
 import StringsLibrary
 
 @Reducer
-// swiftlint:disable:next type_body_length
 public struct Settings: Reducer, Sendable {
 
 	@ObservableState
@@ -77,7 +76,8 @@ public struct Settings: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didFirstAppear
 			case didTapPopulateDatabase
@@ -98,8 +98,10 @@ public struct Settings: Reducer, Sendable {
 			case didTapBackupsButton
 			case didTapForceCrashButton
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case didFetchIcon(Result<AppIcon?, Error>)
 			case didCopyToClipboard
 

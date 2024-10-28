@@ -45,15 +45,18 @@ public struct ArchiveList: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case observeData
 			case didSwipe(ArchiveItem)
 			case alert(PresentationAction<AlertAction>)
 		}
 
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case bowlersResponse(Result<[Bowler.Archived], Error>)
 			case leaguesResponse(Result<[League.Archived], Error>)
 			case seriesResponse(Result<[Series.Archived], Error>)

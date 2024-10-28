@@ -52,7 +52,8 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable & Send
 	}
 
 	public enum Action: FeatureAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case task
 			case onAppear
 			case didTapCancelButton
@@ -60,10 +61,12 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable & Send
 			case didTapResource(Resource)
 			case didTapDeselectAllButton
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case didChangeSelection([Resource])
 		}
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case refreshObservation
 			case didLoadResources(Result<[Resource], Error>)
 		}

@@ -37,13 +37,16 @@ public struct MidGameStatisticsDetails: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case task
 			case onAppear
 			case didFirstAppear
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case didLoadListEntries(Result<[Statistics.ListEntryGroup], Error>)
 
 			case list(StatisticsDetailsList.Action)

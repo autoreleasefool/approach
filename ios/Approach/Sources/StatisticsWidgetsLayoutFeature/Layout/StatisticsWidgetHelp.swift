@@ -23,11 +23,14 @@ public struct StatisticsWidgetHelp: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didTapDoneButton
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal { case doNothing }
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal { case doNothing }
 
 		case view(View)
 		case delegate(Delegate)

@@ -26,12 +26,15 @@ public struct OpponentDetails: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didFirstAppear
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case didLoadDetails(Result<Bowler.OpponentDetails, Error>)
 			case errors(Errors<ErrorID>.Action)
 		}

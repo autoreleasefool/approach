@@ -39,14 +39,17 @@ public struct LeaguesSection: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didStartTask
 			case didTapLeague(id: League.ID)
 		}
 
-		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Delegate { case doNothing }
 
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case didLoadLeagues(Result<[League.List], Error>)
 			case didLoadLeagueForEdits(Result<League.Edit, Error>)
 			case didLoadLeagueToView(Result<League.SeriesHost, Error>)
@@ -194,7 +197,7 @@ public struct LeaguesSectionView: View {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func editor(_ store: Binding<StoreOf<LeagueEditor>?>) -> some View {
 		sheet(item: store) { (store: StoreOf<LeagueEditor>) in
 			NavigationStack {

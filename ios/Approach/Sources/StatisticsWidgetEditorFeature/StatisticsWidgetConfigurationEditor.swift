@@ -69,16 +69,19 @@ public struct StatisticsWidgetConfigurationEditor: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didFirstAppear
 			case didTapBowler
 			case didTapLeague
 			case didTapStatistic
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case didChangeConfiguration(StatisticsWidget.Configuration?)
 		}
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case didLoadSources(Result<StatisticsWidget.Sources, Error>)
 			case didLoadDefaultSources(Result<StatisticsWidget.Sources?, Error>)
 

@@ -122,7 +122,8 @@ extension ToastState.Content: Equatable where Action: Equatable {}
 extension SnackContent: Equatable where Action: Equatable {}
 
 extension View {
-	@ViewBuilder public func toast<Action>(
+	@ViewBuilder
+	public func toast<Action>(
 		_ item: Binding<Store<ToastState<Action>, Action>?>
 	) -> some View where Action: Equatable {
 		let store = item.wrappedValue

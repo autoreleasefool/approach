@@ -30,7 +30,8 @@ public struct StatisticsOverview: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case task
 			case didTapDismissOverviewTip
@@ -39,8 +40,10 @@ public struct StatisticsOverview: Reducer, Sendable {
 			case sourcePickerDidDismiss
 			case didTapFilter(TrackableFilter)
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case didLoadRecentlyUsedFilters(Result<OrderedDictionary<TrackableFilter, TrackableFilter.Sources>, Error>)
 
 			case destination(PresentationAction<Destination.Action>)

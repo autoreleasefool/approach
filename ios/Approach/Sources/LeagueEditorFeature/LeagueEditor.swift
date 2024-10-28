@@ -119,16 +119,19 @@ public struct LeagueEditor: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didTapAlley
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case didFinishCreating(League.Create)
 			case didFinishUpdating(League.Edit)
 			case didFinishArchiving(League.Edit)
 		}
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case setLocationSection(isShown: Bool)
 			case form(LeagueForm.Action)
 			case alleyPicker(PresentationAction<ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.Action>)

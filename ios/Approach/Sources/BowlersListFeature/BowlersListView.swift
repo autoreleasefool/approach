@@ -54,7 +54,7 @@ public struct BowlersListView: View {
 		.destinations($store)
 	}
 
-	@MainActor @ViewBuilder private var quickLaunch: some View {
+	@ViewBuilder private var quickLaunch: some View {
 		if let quickLaunch = store.quickLaunch {
 			Section {
 				Button { send(.didTapQuickLaunchButton, animation: .default) } label: {
@@ -95,7 +95,7 @@ public struct BowlersListView: View {
 		}
 	}
 
-	@MainActor @ViewBuilder private var widgets: some View {
+	@ViewBuilder private var widgets: some View {
 		if store.isShowingWidgets {
 			Section {
 				StatisticsWidgetLayoutView(store: store.scope(state: \.widgets, action: \.internal.widgets))
@@ -108,7 +108,7 @@ public struct BowlersListView: View {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func destinations(_ store: Bindable<StoreOf<BowlersList>>) -> some View {
 		self
 			.details(store.scope(state: \.destination?.details, action: \.internal.destination.details))

@@ -40,9 +40,12 @@ public struct PhotoAvatarEditor: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View { case doNothing }
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum View { case doNothing }
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case didStartLoadingPhoto
 			case didLoadPhoto(Result<PhotoData?, Error>)
 			case photoCrop(PresentationAction<PhotoCrop.Action>)

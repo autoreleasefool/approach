@@ -16,13 +16,15 @@ import UserDefaultsPackageServiceInterface
 
 extension StatisticsRepository: DependencyKey {
 	public static var liveValue: Self {
-		@Sendable func isSeenKey(forStatistic: Statistic.Type) -> String {
+		@Sendable
+		func isSeenKey(forStatistic: Statistic.Type) -> String {
 			"Statistic.IsSeen.\(forStatistic.title)"
 		}
 
 		// MARK: - Per Series
 
-		@Sendable func adjust(statistics: inout [Statistic], bySeries: RecordCursor<Series.TrackableEntry>?) throws {
+		@Sendable
+		func adjust(statistics: inout [Statistic], bySeries: RecordCursor<Series.TrackableEntry>?) throws {
 			@Dependency(\.preferences) var preferences
 
 			let perSeriesConfiguration = preferences.perSeriesConfiguration()
@@ -33,7 +35,8 @@ extension StatisticsRepository: DependencyKey {
 			}
 		}
 
-		@Sendable func accumulate<Key: ChartEntryKey>(
+		@Sendable
+		func accumulate<Key: ChartEntryKey>(
 			statistic: Statistic.Type,
 			bySeries: RecordCursor<Series.TrackableEntry>?
 		) throws -> [Key: Statistic] {
@@ -54,7 +57,8 @@ extension StatisticsRepository: DependencyKey {
 
 		// MARK: - Per Game
 
-		@Sendable func adjust(statistics: inout [Statistic], byGames: RecordCursor<Game.TrackableEntry>?) throws {
+		@Sendable
+		func adjust(statistics: inout [Statistic], byGames: RecordCursor<Game.TrackableEntry>?) throws {
 			@Dependency(\.preferences) var preferences
 
 			let perGameConfiguration = preferences.perGameConfiguration()
@@ -65,7 +69,8 @@ extension StatisticsRepository: DependencyKey {
 			}
 		}
 
-		@Sendable func accumulate<Key: ChartEntryKey>(
+		@Sendable
+		func accumulate<Key: ChartEntryKey>(
 			statistic: Statistic.Type,
 			byGames: RecordCursor<Game.TrackableEntry>?
 		) throws -> [Key: Statistic] {
@@ -86,7 +91,8 @@ extension StatisticsRepository: DependencyKey {
 
 		// MARK: - Per Frame
 
-		@Sendable func adjust(statistics: inout [Statistic], byFrames: RecordCursor<Frame.TrackableEntry>?) throws {
+		@Sendable
+		func adjust(statistics: inout [Statistic], byFrames: RecordCursor<Frame.TrackableEntry>?) throws {
 			@Dependency(\.preferences) var preferences
 
 			let perFrameConfiguration = preferences.perFrameConfiguration()
@@ -97,7 +103,8 @@ extension StatisticsRepository: DependencyKey {
 			}
 		}
 
-		@Sendable func accumulate<Key: ChartEntryKey>(
+		@Sendable
+		func accumulate<Key: ChartEntryKey>(
 			statistic: Statistic.Type,
 			byFrames: RecordCursor<Frame.TrackableEntry>?
 		) throws -> [Key: Statistic] {
@@ -116,7 +123,8 @@ extension StatisticsRepository: DependencyKey {
 			return allEntries
 		}
 
-		@Sendable func buildEntries<Key: ChartEntryKey>(
+		@Sendable
+		func buildEntries<Key: ChartEntryKey>(
 			forStatistic statistic: Statistic.Type,
 			filter: TrackableFilter,
 			db: Database
@@ -138,7 +146,8 @@ extension StatisticsRepository: DependencyKey {
 			return nil
 		}
 
-		@Sendable func loadSources(source: TrackableFilter.Source) async throws -> TrackableFilter.Sources {
+		@Sendable
+		func loadSources(source: TrackableFilter.Source) async throws -> TrackableFilter.Sources {
 			@Dependency(DatabaseService.self) var database
 
 			return try await database.reader().read {
@@ -300,11 +309,13 @@ extension StatisticsRepository: DependencyKey {
 				@Dependency(DatabaseService.self) var database
 				@Dependency(\.uuid) var uuid
 
-				@Sendable func unavailable() -> Statistics.ChartContent {
+				@Sendable
+				func unavailable() -> Statistics.ChartContent {
 					.chartUnavailable(statistic: statistic.title)
 				}
 
-				@Sendable func dataMissing() -> Statistics.ChartContent {
+				@Sendable
+				func dataMissing() -> Statistics.ChartContent {
 					.dataMissing(statistic: statistic.title)
 				}
 
@@ -384,11 +395,13 @@ extension StatisticsRepository: DependencyKey {
 				@Dependency(DatabaseService.self) var database
 				@Dependency(\.uuid) var uuid
 
-				@Sendable func unavailable() -> Statistics.ChartContent {
+				@Sendable
+				func unavailable() -> Statistics.ChartContent {
 					.chartUnavailable(statistic: configuration.statistic)
 				}
 
-				@Sendable func dataMissing() -> Statistics.ChartContent {
+				@Sendable
+				func dataMissing() -> Statistics.ChartContent {
 					.dataMissing(statistic: configuration.statistic)
 				}
 

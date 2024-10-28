@@ -6,7 +6,8 @@ import Testing
 
 struct ListContentTests {
 	@Test("List empty content snapshot", .tags(.snapshot))
-	@MainActor func snapshotEmptyContent() {
+	@MainActor
+	func snapshotEmptyContent() {
 		let emptyContent = ListEmptyContent(
 			Asset.Media.EmptyState.bowlers,
 			title: "A Relevant Title",
@@ -21,7 +22,8 @@ struct ListContentTests {
 	}
 
 	@Test("List error content snapshot", .tags(.snapshot))
-	@MainActor func snapshotErrorContent() {
+	@MainActor
+	func snapshotErrorContent() {
 		let errorContent = ListEmptyContent(
 			Asset.Media.Error.notFound,
 			title: "A Relevant Title",

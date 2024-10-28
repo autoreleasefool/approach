@@ -60,13 +60,16 @@ public struct GearList: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didTapFilterButton
 			case didTapSortOrderButton
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case didLoadEditableGear(Result<Gear.Edit, Error>)
 			case didDeleteGear(Result<Gear.Summary, Error>)
 

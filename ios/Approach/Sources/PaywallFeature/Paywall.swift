@@ -33,13 +33,16 @@ public struct Paywall: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didStartTask
 			case didTapRestorePurchasesButton
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case setProductAvailability(Bool)
 			case didFinishRestoringPurchases(Result<Bool, Error>)
 

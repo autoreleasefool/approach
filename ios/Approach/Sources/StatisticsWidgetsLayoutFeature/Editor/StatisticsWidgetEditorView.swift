@@ -53,7 +53,7 @@ public struct StatisticsWidgetEditorView: View {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func help(_ store: Binding<StoreOf<StatisticsWidgetHelp>?>) -> some View {
 		sheet(item: store) { (store: StoreOf<StatisticsWidgetHelp>) in
 			NavigationStack {

@@ -8,7 +8,8 @@ import PreferenceServiceInterface
 
 extension BackupsService: DependencyKey {
 	public static var liveValue: Self {
-		@Sendable func isEnabled() -> Bool {
+		@Sendable
+		func isEnabled() -> Bool {
 			@Dependency(\.featureFlags) var featureFlags
 			@Dependency(\.fileManager) var fileManager
 			@Dependency(\.preferences) var preferences
@@ -18,18 +19,21 @@ extension BackupsService: DependencyKey {
 				(preferences.bool(forKey: .dataICloudBackupEnabled) ?? true)
 		}
 
-		@Sendable func lastSuccessfulBackupDate() -> Date? {
+		@Sendable
+		func lastSuccessfulBackupDate() -> Date? {
 			@Dependency(\.preferences) var preferences
 			guard let lastBackupDate = preferences.double(forKey: .dataLastBackupDate) else { return nil }
 			return Date(timeIntervalSince1970: lastBackupDate)
 		}
 
-		@Sendable func getNewCoordinatorId() -> FileCoordinatorID {
+		@Sendable
+		func getNewCoordinatorId() -> FileCoordinatorID {
 			@Dependency(\.fileCoordinator) var fileCoordinator
 			return fileCoordinator.createCoordinator()
 		}
 
-		@Sendable func getBackupDirectory() async throws -> URL? {
+		@Sendable
+		func getBackupDirectory() async throws -> URL? {
 			@Dependency(\.fileManager) var fileManager
 			@Dependency(\.fileCoordinator) var fileCoordinator
 
@@ -51,13 +55,15 @@ extension BackupsService: DependencyKey {
 			return directory
 		}
 
-		@Sendable func getBackupFile(for url: URL) throws -> BackupFile? {
+		@Sendable
+		func getBackupFile(for url: URL) throws -> BackupFile? {
 			let resourceValues = try url.resourceValues(forKeys: [.creationDateKey, .fileSizeKey])
 			guard let dateCreated = resourceValues.creationDate, let fileSize = resourceValues.fileSize else { return nil }
 			return BackupFile(url: url, dateCreated: dateCreated, fileSizeBytes: fileSize)
 		}
 
-		@Sendable func getTemporaryImportUrl() throws -> URL {
+		@Sendable
+		func getTemporaryImportUrl() throws -> URL {
 			@Dependency(\.fileManager) var fileManager
 			return try fileManager
 				.getTemporaryDirectory()

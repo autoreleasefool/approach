@@ -59,11 +59,14 @@ public struct ResourceListEmpty: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didTapActionButton
 		}
-		@CasePathable public enum Internal { case doNothing }
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Internal { case doNothing }
+		@CasePathable
+		public enum Delegate {
 			case didTapActionButton
 		}
 

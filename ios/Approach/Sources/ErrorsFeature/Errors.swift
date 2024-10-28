@@ -62,11 +62,14 @@ public struct Errors<ErrorID: Hashable>: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didFinishDismissingReport
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case didReceiveReport(AlwaysEqual<Report>)
 			case showNextToast
 			case destination(PresentationAction<Destination.Action>)

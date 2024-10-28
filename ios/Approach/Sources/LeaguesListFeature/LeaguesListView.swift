@@ -66,7 +66,7 @@ public struct LeaguesListView: View {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func leagueEditor(_ store: Binding<StoreOf<LeagueEditor>?>) -> some View {
 		sheet(item: store) { (store: StoreOf<LeagueEditor>) in
 			NavigationStack {

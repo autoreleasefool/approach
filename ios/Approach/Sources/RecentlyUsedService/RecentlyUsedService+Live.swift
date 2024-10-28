@@ -19,11 +19,13 @@ extension RecentlyUsedService: DependencyKey {
 		// FIXME: Replace with a @Dependency
 		let decoder = JSONDecoder()
 
-		@Sendable func key(forCategory category: Resource) -> String {
+		@Sendable
+		func key(forCategory category: Resource) -> String {
 			"RecentlyUsed.\(category.rawValue)"
 		}
 
-		@Sendable func entries(forCategory category: Resource) -> [Entry] {
+		@Sendable
+		func entries(forCategory category: Resource) -> [Entry] {
 			@Dependency(\.userDefaults) var userDefaults
 
 			let categoryKey = key(forCategory: category)
@@ -119,7 +121,8 @@ extension RecentlyUsedTrackableFilterService: DependencyKey {
 		// FIXME: Replace with a @Dependency
 		let decoder = JSONDecoder()
 
-		@Sendable func entries() -> [TrackableFilter] {
+		@Sendable
+		func entries() -> [TrackableFilter] {
 			@Dependency(\.userDefaults) var userDefaults
 
 			let string = userDefaults.string(forKey: Self.userDefaultsKey) ?? "[]"

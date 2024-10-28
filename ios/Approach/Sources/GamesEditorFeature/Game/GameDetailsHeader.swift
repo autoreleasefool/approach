@@ -30,16 +30,19 @@ public struct GameDetailsHeader: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didStartTask
 			case didTapNext(State.NextElement)
 		}
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case startShimmering
 			case setShimmerColor(Color?)
 			case setFlashEditorChangesEnabled(Bool)
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case didProceed(to: State.NextElement)
 		}
 

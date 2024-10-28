@@ -18,15 +18,18 @@ public struct BowlerDetailsHeader: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didStartTask
 			case didTapOverflowMenuButton
 			case didTapEditButton
 		}
 
-		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Delegate { case doNothing }
 
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -92,7 +95,7 @@ public struct BowlerDetailsHeaderView: View {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func editor(_ store: Binding<StoreOf<BowlerEditor>?>) -> some View {
 		sheet(item: store) { (store: StoreOf<BowlerEditor>) in
 			NavigationStack {

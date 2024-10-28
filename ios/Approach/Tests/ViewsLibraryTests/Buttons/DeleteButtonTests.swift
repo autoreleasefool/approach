@@ -5,7 +5,8 @@ import Testing
 
 struct DeleteButtonTests {
 	@Test("Delete button snapshots", .tags(.snapshot))
-	@MainActor func snapshotDeleteButton() {
+	@MainActor
+	func snapshotDeleteButton() {
 		let deleteButton = DeleteButton { }
 		assertSnapshot(of: deleteButton, as: .image)
 	}

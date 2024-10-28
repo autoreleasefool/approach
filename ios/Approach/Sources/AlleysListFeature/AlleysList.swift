@@ -54,14 +54,17 @@ public struct AlleysList: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didTapFiltersButton
 			case didTapBowler
 		}
 
-		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Delegate { case doNothing }
 
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case didLoadEditableAlley(Result<Alley.EditWithLanes, Error>)
 			case didDeleteAlley(Result<Alley.List, Error>)
 

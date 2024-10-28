@@ -22,15 +22,18 @@ public struct PreferredGear: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didFirstAppear
 			case didTapManageButton
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case errorLoadingGear(Result<Never, Error>)
 			case errorUpdatingPreferredGear(Result<Never, Error>)
 		}
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case didLoadGear(Result<[Gear.Summary], Error>)
 			case didUpdatePreferredGear(Result<[Gear.Summary], Error>)
 			case gearPicker(PresentationAction<ResourcePicker<Gear.Summary, Bowler.ID>.Action>)
@@ -156,7 +159,7 @@ public struct PreferredGearView: View {
 		}
 	}
 
-	@MainActor @ViewBuilder private var gearList: some View {
+	@ViewBuilder private var gearList: some View {
 		if store.gear.isEmpty {
 			Text(Strings.Bowler.List.PreferredGear.footer)
 		} else {

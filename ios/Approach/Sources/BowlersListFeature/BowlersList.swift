@@ -36,7 +36,6 @@ extension Bowler.Ordering: CustomStringConvertible {
 }
 
 @Reducer
-// swiftlint:disable:next type_body_length
 public struct BowlersList: Reducer, Sendable {
 	public static let widgetContext = "bowlersList"
 
@@ -81,7 +80,8 @@ public struct BowlersList: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didFirstAppear
 			case didStartTask
@@ -90,9 +90,11 @@ public struct BowlersList: Reducer, Sendable {
 			case didTapQuickLaunchButton
 		}
 
-		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Delegate { case doNothing }
 
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case didLoadEditableBowler(Result<Bowler.Edit, Error>)
 			case didLoadQuickLaunch(Result<QuickLaunchSource?, Error>)
 			case didArchiveBowler(Result<Bowler.List, Error>)

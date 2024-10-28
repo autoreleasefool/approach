@@ -27,9 +27,12 @@ public struct BowlerDetails: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View { case doNothing }
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum View { case doNothing }
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case header(BowlerDetailsHeader.Action)
 			case leagues(LeaguesSection.Action)
 		}

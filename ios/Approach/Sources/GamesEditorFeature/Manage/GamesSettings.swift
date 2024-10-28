@@ -36,19 +36,22 @@ public struct GamesSettings: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didTapDone
 			case didSwitchGame(to: Int)
 			case didSwitchBowler(to: Bowler.ID)
 			case didMoveBowlers(source: IndexSet, destination: Int)
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case movedBowlers(source: IndexSet, destination: Int)
 			case switchedGame(to: Int)
 			case switchedBowler(to: Bowler.ID)
 		}
-		@CasePathable public enum Internal { case doNothing }
+		@CasePathable
+		public enum Internal { case doNothing }
 
 		case view(View)
 		case delegate(Delegate)

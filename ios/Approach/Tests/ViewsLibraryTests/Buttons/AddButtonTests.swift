@@ -5,7 +5,8 @@ import Testing
 
 struct AddButtonTests {
 	@Test("Add button snapshots", .tags(.snapshot))
-	@MainActor func snapshotAddButton() {
+	@MainActor
+	func snapshotAddButton() {
 		let addButton = AddButton { }
 		assertSnapshot(of: addButton, as: .image)
 	}

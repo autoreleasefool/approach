@@ -66,15 +66,18 @@ public struct AvatarEditor: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case onAppear
 			case didTapCancel
 			case didTapDone
 		}
-		@CasePathable public enum Delegate {
+		@CasePathable
+		public enum Delegate {
 			case didFinishEditing(Avatar.Summary?)
 		}
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case text(TextAvatarEditor.Action)
 			case photo(PhotoAvatarEditor.Action)
 		}
@@ -219,7 +222,7 @@ public struct AvatarEditorView: View {
 		.onAppear { send(.onAppear) }
 	}
 
-	@MainActor @ViewBuilder private var editorTabs: some View {
+	@ViewBuilder private var editorTabs: some View {
 		Picker(
 			Strings.Avatar.Editor.Kind.title,
 			selection: $store.avatarKind.animation()
@@ -263,7 +266,7 @@ public struct AvatarEditorView: View {
 		.ignoresSafeArea(.container, edges: .bottom)
 	}
 
-	@MainActor @ViewBuilder private var textEditor: some View {
+	@ViewBuilder private var textEditor: some View {
 		List {
 			Section {
 				AvatarView(store.avatar, size: .extraExtraLargeIcon)

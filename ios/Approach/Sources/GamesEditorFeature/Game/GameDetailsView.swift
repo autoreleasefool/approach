@@ -111,7 +111,8 @@ public struct GameDetailsView: View {
 		}
 	}
 
-	@ViewBuilder private func excludeFromStatisticsHelp(
+	@ViewBuilder
+	private func excludeFromStatisticsHelp(
 		excludeLeagueFromStatistics: League.ExcludeFromStatistics,
 		seriesPreBowl: Series.PreBowl,
 		excludeSeriesFromStatistics: Series.ExcludeFromStatistics
@@ -138,7 +139,7 @@ public struct GameDetailsView: View {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func gearPicker(
 		_ store: Binding<StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>?>
 	) -> some View {

@@ -24,11 +24,14 @@ public struct BadgesObserver: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didStartTask
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case showNextBadge
 			case didEarnBadge(ToastState<BadgeAction>)
 			case badgeToast(PresentationAction<BadgeAction>)

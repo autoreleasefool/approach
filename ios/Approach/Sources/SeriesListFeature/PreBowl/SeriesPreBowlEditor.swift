@@ -37,13 +37,16 @@ public struct SeriesPreBowlEditor: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didTapSeries
 			case didTapSaveButton
 			case didTapCancelButton
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case didUpdateSeries(Result<Void, Error>)
 
 			case destination(PresentationAction<Destination.Action>)
@@ -224,7 +227,7 @@ public struct SeriesPreBowlEditorView: View {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func seriesPicker(_ store: Binding<StoreOf<ResourcePicker<Series.Summary, League.ID>>?>) -> some View {
 		navigationDestination(item: store) { (store: StoreOf<ResourcePicker<Series.Summary, League.ID>>) in
 			ResourcePickerView(store: store) { series in

@@ -17,15 +17,18 @@ public struct FeatureFlagsList: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didStartObservingFlags
 			case didTapResetOverridesButton
 			case didTapMatchReleaseButton
 			case didTapMatchDevelopmentButton
 			case didTapMatchTestButton
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case didLoadFlags([FeatureFlagItem])
 			case featureFlagToggle(IdentifiedActionOf<FeatureFlagToggle>)
 		}

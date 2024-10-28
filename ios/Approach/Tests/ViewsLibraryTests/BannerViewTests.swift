@@ -5,7 +5,8 @@ import Testing
 
 struct BannerViewTests {
 	@Test("Banner snapshots", .tags(.snapshot))
-	@MainActor func snapshotBanners() {
+	@MainActor
+	func snapshotBanners() {
 		let badges = VStack {
 			VStack(alignment: .leading) {
 				Banner(.title("Banner"), style: .plain)

@@ -35,7 +35,8 @@ public struct BackupsList: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case didFirstAppear
 			case didStartTask
 			case didTapManualSyncButton
@@ -43,7 +44,8 @@ public struct BackupsList: Reducer, Sendable {
 			case didSwipe(BackupFile.ID, SwipeAction)
 		}
 
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Internal {
 			case didLoadRecentBackups(Result<[BackupFile], Error>)
 			case didCreateBackup(Result<BackupFile?, Error>)
 			case didRestoreBackup(Result<Void, Error>)
@@ -53,7 +55,8 @@ public struct BackupsList: Reducer, Sendable {
 			case toast(PresentationAction<ToastAction>)
 			case destination(PresentationAction<Destination.Action>)
 		}
-		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Delegate { case doNothing }
 
 		case view(View)
 		case delegate(Delegate)

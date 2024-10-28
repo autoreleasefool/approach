@@ -37,13 +37,16 @@ public struct StatisticsWidgetLayout: Reducer, Sendable {
 	}
 
 	public enum Action: FeatureAction, ViewAction {
-		@CasePathable public enum View {
+		@CasePathable
+		public enum View {
 			case task
 			case didTapConfigureStatisticsButton
 			case didTapWidget(id: StatisticsWidget.ID)
 		}
-		@CasePathable public enum Delegate { case doNothing }
-		@CasePathable public enum Internal {
+		@CasePathable
+		public enum Delegate { case doNothing }
+		@CasePathable
+		public enum Internal {
 			case widgetsResponse(Result<[StatisticsWidget.Configuration], Error>)
 			case didLoadChartContent(id: StatisticsWidget.ID, Result<Statistics.ChartContent, Error>)
 
@@ -217,7 +220,7 @@ public struct StatisticsWidgetLayoutView: View {
 			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 	}
 
-	@MainActor @ViewBuilder private var widgetRows: some View {
+	 @ViewBuilder private var widgetRows: some View {
 		if let widgets = widgetRows(forScreenWidth: contentSize.width, inSizeClass: horizontalSizeClass) {
 			let leftoverWidget = leftoverWidget(forScreenWidth: contentSize.width, inSizeClass: horizontalSizeClass)
 			let numberOfWidgetsPerRow = numberOfWidgetsPerRow(
@@ -317,7 +320,7 @@ public struct StatisticsWidgetLayoutView: View {
 	}
 }
 
-@MainActor extension View {
+extension View {
 	fileprivate func details(_ store: Binding<StoreOf<StatisticsDetails>?>) -> some View {
 		navigationDestination(item: store) { (store: StoreOf<StatisticsDetails>) in
 			StatisticsDetailsView(store: store)
