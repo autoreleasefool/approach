@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890DD28F87FF2003C1EE9 /* AppFeature */; };
+		CA28CC972CD066EF00731AB1 /* CodableService in Frameworks */ = {isa = PBXBuildFile; productRef = CA28CC962CD066EF00731AB1 /* CodableService */; };
 		CA2B781F2AABC9E10044487E /* ScoresRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA2B781E2AABC9E10044487E /* ScoresRepository */; };
 		CA2B78212AABC9EC0044487E /* ScoresRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA2B78202AABC9EC0044487E /* ScoresRepository */; };
 		CA2FA1552A2559C3008341A5 /* NotificationsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA2FA1542A2559C3008341A5 /* NotificationsService */; };
@@ -128,6 +129,7 @@
 				CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */,
 				CAC458A32AB838C500898C16 /* ImportExportService in Frameworks */,
 				CA439E5429E3796A00B09020 /* SeriesRepository in Frameworks */,
+				CA28CC972CD066EF00731AB1 /* CodableService in Frameworks */,
 				CA8847382A587D1D001AA48F /* AppIconService in Frameworks */,
 				CA626E292A821B9A002BCC13 /* ProductsService in Frameworks */,
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
@@ -363,6 +365,7 @@
 				CAC7A9F72BFA61FE00F35921 /* ZIPService */,
 				CABED8AD2CAFBD8300B2D1CE /* BadgesService */,
 				CA7ED36D2CC9B68700A7828C /* HUDService */,
+				CA28CC962CD066EF00731AB1 /* CodableService */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -628,6 +631,10 @@
 		CA2890DD28F87FF2003C1EE9 /* AppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppFeature;
+		};
+		CA28CC962CD066EF00731AB1 /* CodableService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CodableService;
 		};
 		CA2B781E2AABC9E10044487E /* ScoresRepository */ = {
 			isa = XCSwiftPackageProductDependency;
