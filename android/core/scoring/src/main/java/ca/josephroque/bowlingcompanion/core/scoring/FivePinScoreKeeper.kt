@@ -240,7 +240,7 @@ class FivePinScoreKeeper @Inject constructor(
 					),
 				)
 
-				if (Roll.isLastRoll(roll.rollIndex)) {
+				if (roll == lastFrameRolls.last()) {
 					stepScore += pinsDown.pinCount()
 				}
 			}

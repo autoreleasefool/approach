@@ -369,8 +369,8 @@ class GamesEditorViewModel @Inject constructor(
 		scoresJob?.cancel()
 		scoresJob = viewModelScope.launch(ioDispatcher) {
 			isShowingTeamScores
-				.onEach {
-					if (!it) {
+				.onEach { isShowingTeamScores ->
+					if (!isShowingTeamScores) {
 						gameDetailsState.update {
 							it.copy(
 								scoresList = null,
