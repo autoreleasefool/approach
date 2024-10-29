@@ -51,11 +51,11 @@ extension RecentlyUsedService: DependencyKey {
 				recentlyUsed.insert(entry, at: 0)
 
 				@Dependency(EncoderService.self) var encoder
-				guard let recentlyUsedData = try? encoder.encode(recentlyUsed) else {
+				guard let recentlyUsedData = try? encoder.encode(recentlyUsed),
+							let recentlyUsedString = String(bytes: recentlyUsedData, encoding: .utf8) else {
 					return
 				}
 
-				let recentlyUsedString = String(decoding: recentlyUsedData, as: UTF8.self)
 				userDefaults.setString(forKey: categoryKey, to: recentlyUsedString)
 				NotificationCenter.default.post(name: .RecentlyUsed.didChange, object: categoryKey)
 			},
@@ -139,11 +139,11 @@ extension RecentlyUsedTrackableFilterService: DependencyKey {
 					.uniqued()
 
 				@Dependency(EncoderService.self) var encoder
-				guard let recentlyUsedData = try? encoder.encode(Array(recentlyUsed)) else {
+				guard let recentlyUsedData = try? encoder.encode(Array(recentlyUsed)),
+							let recentlyUsedString = String(bytes: recentlyUsedData, encoding: .utf8) else {
 					return
 				}
 
-				let recentlyUsedString = String(decoding: recentlyUsedData, as: UTF8.self)
 				userDefaults.setString(forKey: Self.userDefaultsKey, to: recentlyUsedString)
 				NotificationCenter.default.post(name: .RecentlyUsed.didChange, object: Self.userDefaultsKey)
 			},

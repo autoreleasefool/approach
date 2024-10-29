@@ -230,11 +230,12 @@ final class RecentlyUsedServiceTests: XCTestCase {
 	}
 
 	static func entriesString(ids: [UUID], date: Date = Date(timeIntervalSince1970: 1_672_519_204)) -> String {
-		guard let entries = try? encoder.encode(ids.map { RecentlyUsedService.Entry(id: $0, lastUsedAt: date) }) else {
+		guard let entries = try? encoder.encode(ids.map { RecentlyUsedService.Entry(id: $0, lastUsedAt: date) }),
+					let decodedEntries = String(bytes: entries, encoding: .utf8) else {
 			XCTFail("Failed to encode entries")
 			return ""
 		}
 
-		return String(decoding: entries, as: UTF8.self)
+		return decodedEntries
 	}
 }

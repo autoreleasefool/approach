@@ -1,5 +1,5 @@
-@testable import CodableServiceInterface
 @testable import CodableService
+@testable import CodableServiceInterface
 import Dependencies
 import Foundation
 import Testing

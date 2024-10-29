@@ -219,11 +219,11 @@ extension StatisticsRepository: DependencyKey {
 				@Dependency(EncoderService.self) var encoder
 				@Dependency(\.preferences) var preferences
 
-				guard let data = try? encoder.encode(source) else {
+				guard let data = try? encoder.encode(source),
+							let lastUsed = String(bytes: data, encoding: .utf8) else {
 					return
 				}
 
-				let lastUsed = String(decoding: data, as: UTF8.self)
 				preferences.setString(forKey: .statisticsLastUsedTrackableFilterSource, to: lastUsed)
 			},
 			observeRecentlyUsedFilters: {
