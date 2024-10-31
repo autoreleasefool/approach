@@ -7,10 +7,10 @@
 - Fix: Chart rendering has been improved in Series List
 ```
 
-## Android 4.3.5b334
+## Android 4.3.6b335
 
 ```
-- Fix: New series can be saved without needing to change any settings
+- Fix: 10th frame now records score correctly without needing 3 rolls
 ```
 
 ---
@@ -222,6 +222,12 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.3.5b334
+
+```
+- Fix: New series can be saved without needing to change any settings
+```
 
 ## Android 4.3.4b333
 
