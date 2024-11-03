@@ -26,7 +26,7 @@ abstract class TrackableSequence<Entity : Any, Model : Any> {
 		val whereArgIndices = whereArgs.keys
 			.associateWithTo(mutableMapOf()) { index -> unorderedWhereQuery.indexOf(index) }
 
-		val query = unorderedWhereQuery.replace("\\?\\w+".toRegex(), "?")
+		val query = unorderedWhereQuery.replace("\\?[A-Za-z.]+".toRegex(), "?")
 		val orderedWhereArgs = whereArgs.keys
 			.filter { whereArgIndices[it] != -1 }
 			.sortedBy { whereArgIndices[it] }
