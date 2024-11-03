@@ -6,6 +6,8 @@ import android.util.Log
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.di.ApplicationScope
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
+import com.telemetrydeck.sdk.EnvironmentMetadataProvider
+import com.telemetrydeck.sdk.SessionProvider
 import com.telemetrydeck.sdk.TelemetryManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.UUID
@@ -58,6 +60,12 @@ class TelemetryDeckAnalyticsClient @Inject constructor(
 		val builder = TelemetryManager.Builder()
 			.appID(appId)
 			.showDebugLogs(BuildConfig.DEBUG)
+			.providers(
+				listOf(
+					SessionProvider(),
+					EnvironmentMetadataProvider(),
+				),
+			)
 
 		TelemetryManager.start(application, builder)
 	}
@@ -84,7 +92,8 @@ class TelemetryDeckAnalyticsClient @Inject constructor(
 			if (event is GameSessionTrackableEvent) {
 				if (recordedEvents.contains(
 						event.name,
-					) && recordedEvents[event.name]!!.contains(event.eventId)
+					) &&
+					recordedEvents[event.name]!!.contains(event.eventId)
 				) {
 					return@launch
 				} else {
