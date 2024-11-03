@@ -7,10 +7,11 @@
 - Fix: Chart rendering has been improved in Series List
 ```
 
-## Android 4.3.6b335
+## Android 4.3.7b336
 
 ```
-- Fix: 10th frame now records score correctly without needing 3 rolls
+- Fix: Widgets now correctly show statistics if there is a start date
+- Chore: Send less lifecycle events
 ```
 
 ---
@@ -222,6 +223,12 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.3.6b335
+
+```
+- Fix: 10th frame now records score correctly without needing 3 rolls
+```
 
 ## Android 4.3.5b334
 
