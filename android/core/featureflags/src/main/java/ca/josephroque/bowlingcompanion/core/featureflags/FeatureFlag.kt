@@ -28,6 +28,8 @@ enum class FeatureFlag(
 	MANUAL_SERIES_FORM("ManualSeriesForm", "2024-03-28", RolloutStage.RELEASE),
 	MANUAL_TEAM_SERIES_FORM("ManualTeamSeriesForm", "2024-08-30", RolloutStage.DEVELOPMENT),
 	PRE_BOWL_FORM("PreBowlForm", "2024-03-24", RolloutStage.RELEASE),
+	SHARING_GAMES("SharingGames", "2024-11-03", RolloutStage.DEVELOPMENT),
+	SHARING_SERIES("SharingSeries", "2024-11-03", RolloutStage.DEVELOPMENT),
 	TEAMS("Teams", "2024-08-16", RolloutStage.RELEASE),
 }
 
