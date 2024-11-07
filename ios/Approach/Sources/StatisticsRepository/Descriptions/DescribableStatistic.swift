@@ -15,8 +15,40 @@ extension Statistics.GameAverage: DescribableStatistic {
 	static var pinDescription: String { Strings.Statistics.Description.gameAverage }
 }
 
+extension Statistics.HighSeriesOf2: DescribableStatistic {
+	static var pinDescription: String { Strings.Statistics.Description.highSeriesOf2 }
+}
+
 extension Statistics.HighSeriesOf3: DescribableStatistic {
 	static var pinDescription: String { Strings.Statistics.Description.highSeriesOf3 }
+}
+
+extension Statistics.HighSeriesOf4: DescribableStatistic {
+	static var pinDescription: String { Strings.Statistics.Description.highSeriesOf4 }
+}
+
+extension Statistics.HighSeriesOf5: DescribableStatistic {
+	static var pinDescription: String { Strings.Statistics.Description.highSeriesOf5 }
+}
+
+extension Statistics.HighSeriesOf8: DescribableStatistic {
+	static var pinDescription: String { Strings.Statistics.Description.highSeriesOf8 }
+}
+
+extension Statistics.HighSeriesOf10: DescribableStatistic {
+	static var pinDescription: String { Strings.Statistics.Description.highSeriesOf10 }
+}
+
+extension Statistics.HighSeriesOf12: DescribableStatistic {
+	static var pinDescription: String { Strings.Statistics.Description.highSeriesOf12 }
+}
+
+extension Statistics.HighSeriesOf15: DescribableStatistic {
+	static var pinDescription: String { Strings.Statistics.Description.highSeriesOf15 }
+}
+
+extension Statistics.HighSeriesOf20: DescribableStatistic {
+	static var pinDescription: String { Strings.Statistics.Description.highSeriesOf20 }
 }
 
 extension Statistics.HighSingle: DescribableStatistic {

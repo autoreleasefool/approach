@@ -1863,8 +1863,24 @@ public enum Strings {
       public static let fouls = Strings.tr("Localizable", "statistics.description.fouls", fallback: "Number of times you marked a roll as a foul")
       /// Average score across all counted games
       public static let gameAverage = Strings.tr("Localizable", "statistics.description.gameAverage", fallback: "Average score across all counted games")
+      /// Highest total for series of 10 games
+      public static let highSeriesOf10 = Strings.tr("Localizable", "statistics.description.highSeriesOf10", fallback: "Highest total for series of 10 games")
+      /// Highest total for series of 12 games
+      public static let highSeriesOf12 = Strings.tr("Localizable", "statistics.description.highSeriesOf12", fallback: "Highest total for series of 12 games")
+      /// Highest total for series of 15 games
+      public static let highSeriesOf15 = Strings.tr("Localizable", "statistics.description.highSeriesOf15", fallback: "Highest total for series of 15 games")
+      /// Highest total for series of 2 games
+      public static let highSeriesOf2 = Strings.tr("Localizable", "statistics.description.highSeriesOf2", fallback: "Highest total for series of 2 games")
+      /// Highest total for series of 20 games
+      public static let highSeriesOf20 = Strings.tr("Localizable", "statistics.description.highSeriesOf20", fallback: "Highest total for series of 20 games")
       /// Highest total for series of 3 games
       public static let highSeriesOf3 = Strings.tr("Localizable", "statistics.description.highSeriesOf3", fallback: "Highest total for series of 3 games")
+      /// Highest total for series of 4 games
+      public static let highSeriesOf4 = Strings.tr("Localizable", "statistics.description.highSeriesOf4", fallback: "Highest total for series of 4 games")
+      /// Highest total for series of 5 games
+      public static let highSeriesOf5 = Strings.tr("Localizable", "statistics.description.highSeriesOf5", fallback: "Highest total for series of 5 games")
+      /// Highest total for series of 8 games
+      public static let highSeriesOf8 = Strings.tr("Localizable", "statistics.description.highSeriesOf8", fallback: "Highest total for series of 8 games")
       /// Highest score across all counted games
       public static let highSingle = Strings.tr("Localizable", "statistics.description.highSingle", fallback: "Highest score across all counted games")
       /// Number of match plays you've marked as a 'Loss'
@@ -2083,8 +2099,24 @@ public enum Strings {
       public static let headPins = Strings.tr("Localizable", "statistics.title.headPins", fallback: "Head Pins")
       /// Head Pins Spared
       public static let headPinsSpared = Strings.tr("Localizable", "statistics.title.headPinsSpared", fallback: "Head Pins Spared")
+      /// High Series of 10
+      public static let highSeriesOf10 = Strings.tr("Localizable", "statistics.title.highSeriesOf10", fallback: "High Series of 10")
+      /// High Series of 12
+      public static let highSeriesOf12 = Strings.tr("Localizable", "statistics.title.highSeriesOf12", fallback: "High Series of 12")
+      /// High Series of 15
+      public static let highSeriesOf15 = Strings.tr("Localizable", "statistics.title.highSeriesOf15", fallback: "High Series of 15")
+      /// High Series of 2
+      public static let highSeriesOf2 = Strings.tr("Localizable", "statistics.title.highSeriesOf2", fallback: "High Series of 2")
+      /// High Series of 20
+      public static let highSeriesOf20 = Strings.tr("Localizable", "statistics.title.highSeriesOf20", fallback: "High Series of 20")
       /// High Series of 3
       public static let highSeriesOf3 = Strings.tr("Localizable", "statistics.title.highSeriesOf3", fallback: "High Series of 3")
+      /// High Series of 4
+      public static let highSeriesOf4 = Strings.tr("Localizable", "statistics.title.highSeriesOf4", fallback: "High Series of 4")
+      /// High Series of 5
+      public static let highSeriesOf5 = Strings.tr("Localizable", "statistics.title.highSeriesOf5", fallback: "High Series of 5")
+      /// High Series of 8
+      public static let highSeriesOf8 = Strings.tr("Localizable", "statistics.title.highSeriesOf8", fallback: "High Series of 8")
       /// High Single
       public static let highSingle = Strings.tr("Localizable", "statistics.title.highSingle", fallback: "High Single")
       /// Left Chop Offs

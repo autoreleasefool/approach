@@ -3,30 +3,30 @@ import ModelsLibrary
 @testable import StatisticsLibrary
 import XCTest
 
-final class HighSeriesOf3Tests: XCTestCase {
-	func testAdjustBy_SeriesWith3Games_Adjusts() {
+final class HighSeriesOf10Tests: XCTestCase {
+	func testAdjustBy_SeriesWith10Games_Adjusts() {
 		let statistic = create(
-			statistic: Statistics.HighSeriesOf3.self,
+			statistic: Statistics.HighSeriesOf10.self,
 			adjustedBySeries: [
-				Series.TrackableEntry(id: UUID(0), numberOfGames: 3, total: 222, date: Date()),
-				Series.TrackableEntry(id: UUID(1), numberOfGames: 3, total: 456, date: Date()),
+				Series.TrackableEntry(id: UUID(0), numberOfGames: 10, total: 222, date: Date()),
+				Series.TrackableEntry(id: UUID(1), numberOfGames: 10, total: 456, date: Date()),
 			]
 		)
 		AssertHighestOf(statistic, equals: 456)
 	}
 
-	func testAdjustBy_SeriesNotWith3Games_DoesNotAdjust() {
+	func testAdjustBy_SeriesNotWith10Games_DoesNotAdjust() {
 		let statistic = create(
-			statistic: Statistics.HighSeriesOf3.self,
+			statistic: Statistics.HighSeriesOf10.self,
 			adjustedBySeries: [
 				Series.TrackableEntry(id: UUID(0), numberOfGames: 2, total: 222, date: Date()),
+				Series.TrackableEntry(id: UUID(1), numberOfGames: 3, total: 333, date: Date()),
 				Series.TrackableEntry(id: UUID(2), numberOfGames: 4, total: 444, date: Date()),
 				Series.TrackableEntry(id: UUID(3), numberOfGames: 5, total: 555, date: Date()),
 				Series.TrackableEntry(id: UUID(4), numberOfGames: 6, total: 666, date: Date()),
 				Series.TrackableEntry(id: UUID(5), numberOfGames: 7, total: 777, date: Date()),
 				Series.TrackableEntry(id: UUID(6), numberOfGames: 8, total: 888, date: Date()),
 				Series.TrackableEntry(id: UUID(7), numberOfGames: 9, total: 999, date: Date()),
-				Series.TrackableEntry(id: UUID(8), numberOfGames: 10, total: 1_010, date: Date()),
 				Series.TrackableEntry(id: UUID(9), numberOfGames: 11, total: 1_111, date: Date()),
 				Series.TrackableEntry(id: UUID(10), numberOfGames: 12, total: 1_212, date: Date()),
 				Series.TrackableEntry(id: UUID(11), numberOfGames: 13, total: 1_313, date: Date()),
@@ -45,12 +45,12 @@ final class HighSeriesOf3Tests: XCTestCase {
 	}
 
 	func testAdjustByGame_DoesNothing() {
-		let statistic = create(statistic: Statistics.HighSeriesOf3.self, adjustedByGames: Game.TrackableEntry.mocks)
+		let statistic = create(statistic: Statistics.HighSeriesOf10.self, adjustedByGames: Game.TrackableEntry.mocks)
 		AssertHighestOf(statistic, equals: 0)
 	}
 
 	func testAdjustByFrame_DoesNothing() {
-		let statistic = create(statistic: Statistics.HighSeriesOf3.self, adjustedByFrames: Frame.TrackableEntry.mocks)
+		let statistic = create(statistic: Statistics.HighSeriesOf10.self, adjustedByFrames: Frame.TrackableEntry.mocks)
 		AssertHighestOf(statistic, equals: 0)
 	}
 }

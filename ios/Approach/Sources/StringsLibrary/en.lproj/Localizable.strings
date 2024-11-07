@@ -391,7 +391,15 @@
 "statistics.title.rightChopOffsSpared" = "Right Chop Offs Spared";
 "statistics.title.fouls" = "Fouls";
 "statistics.title.gameAverage" = "Average";
+"statistics.title.highSeriesOf2" = "High Series of 2";
 "statistics.title.highSeriesOf3" = "High Series of 3";
+"statistics.title.highSeriesOf4" = "High Series of 4";
+"statistics.title.highSeriesOf5" = "High Series of 5";
+"statistics.title.highSeriesOf8" = "High Series of 8";
+"statistics.title.highSeriesOf10" = "High Series of 10";
+"statistics.title.highSeriesOf12" = "High Series of 12";
+"statistics.title.highSeriesOf15" = "High Series of 15";
+"statistics.title.highSeriesOf20" = "High Series of 20";
 "statistics.title.highSingle" = "High Single";
 "statistics.title.headPins" = "Head Pins";
 "statistics.title.headPinsSpared" = "Head Pins Spared";
@@ -445,7 +453,15 @@
 
 "statistics.description.fouls" = "Number of times you marked a roll as a foul";
 "statistics.description.gameAverage" = "Average score across all counted games";
+"statistics.description.highSeriesOf2" = "Highest total for series of 2 games";
 "statistics.description.highSeriesOf3" = "Highest total for series of 3 games";
+"statistics.description.highSeriesOf4" = "Highest total for series of 4 games";
+"statistics.description.highSeriesOf5" = "Highest total for series of 5 games";
+"statistics.description.highSeriesOf8" = "Highest total for series of 8 games";
+"statistics.description.highSeriesOf10" = "Highest total for series of 10 games";
+"statistics.description.highSeriesOf12" = "Highest total for series of 12 games";
+"statistics.description.highSeriesOf15" = "Highest total for series of 15 games";
+"statistics.description.highSeriesOf20" = "Highest total for series of 20 games";
 "statistics.description.highSingle" = "Highest score across all counted games";
 "statistics.description.matchesPlayed" = "Number of match plays you've recorded";
 "statistics.description.matchesWon" = "Number of match plays you've marked as a 'Win'";

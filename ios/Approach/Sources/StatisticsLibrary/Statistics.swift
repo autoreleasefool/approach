@@ -90,7 +90,15 @@ extension Statistics {
 		Statistics.MatchesTied.self,
 
 		// Series
+		Statistics.HighSeriesOf2.self,
 		Statistics.HighSeriesOf3.self,
+		Statistics.HighSeriesOf4.self,
+		Statistics.HighSeriesOf5.self,
+		Statistics.HighSeriesOf8.self,
+		Statistics.HighSeriesOf10.self,
+		Statistics.HighSeriesOf12.self,
+		Statistics.HighSeriesOf15.self,
+		Statistics.HighSeriesOf20.self,
 	]
 
 	public static func all(forSource trackableSource: TrackableFilter.Source) -> [Statistic.Type] {

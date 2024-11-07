@@ -2,31 +2,13 @@ import ModelsLibrary
 import StringsLibrary
 
 extension Statistics {
-	public struct HighSeriesOf3: Statistic, TrackablePerSeries, HighestOfStatistic {
+	public struct HighSeriesOf3: HighSeriesStatistic {
 		public static var title: String { Strings.Statistics.Title.highSeriesOf3 }
-		public static var category: StatisticCategory { .series }
-		public static var isEligibleForNewLabel: Bool { false }
-		public static var preferredTrendDirection: StatisticTrendDirection? { .upwards }
+		public static var seriesSize: Int { 3 }
 
-		private var highSeries = 0
-		public var highest: Int {
-			get { highSeries }
-			set { highSeries = newValue }
-		}
+		public var highSeries: Int = 0
 
 		public init() {}
 		init(highSeries: Int) { self.highSeries = highSeries }
-
-		public mutating func adjust(bySeries: Series.TrackableEntry, configuration _: TrackablePerSeriesConfiguration) {
-			guard bySeries.numberOfGames == 3 else { return }
-			highSeries = max(highSeries, bySeries.total)
-		}
-
-		public static func supports(trackableSource: TrackableFilter.Source) -> Bool {
-			switch trackableSource {
-			case .bowler, .league: return true
-			case .series, .game: return false
-			}
-		}
 	}
 }
