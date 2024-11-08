@@ -5,11 +5,10 @@ import android.os.Build
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class LiveSystemInfoService @Inject constructor(
-	@ApplicationContext private val context: Context,
-) : SystemInfoService {
+class LiveSystemInfoService @Inject constructor(@ApplicationContext private val context: Context) :
+	SystemInfoService {
 	override val versionName: String
-		get() = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+		get() = context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: ""
 
 	override val versionCode: String
 		get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
