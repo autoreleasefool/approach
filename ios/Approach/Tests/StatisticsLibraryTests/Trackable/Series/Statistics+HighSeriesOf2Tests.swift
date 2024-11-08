@@ -37,7 +37,7 @@ final class HighSeriesOf2Tests: XCTestCase {
 				Series.TrackableEntry(id: UUID(16), numberOfGames: 18, total: 1_818, date: Date()),
 				Series.TrackableEntry(id: UUID(17), numberOfGames: 19, total: 1_919, date: Date()),
 				Series.TrackableEntry(id: UUID(18), numberOfGames: 20, total: 2_020, date: Date()),
-				Series.TrackableEntry(id: UUID(19), numberOfGames: 21, total: 2_121,, date: Date()),
+				Series.TrackableEntry(id: UUID(19), numberOfGames: 21, total: 2_121, date: Date()),
 			]
 		)
 
