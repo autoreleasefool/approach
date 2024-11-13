@@ -263,9 +263,34 @@ enum class StatisticID {
 	AVERAGE_FIRST_ROLL {
 		override val titleResourceId = R.string.statistic_title_average_first_roll
 	},
+	HIGH_SERIES_OF_2 {
+		override val titleResourceId = R.string.statistic_title_high_series_of_2
+	},
 	HIGH_SERIES_OF_3 {
 		override val titleResourceId = R.string.statistic_title_high_series_of_3
-	}, ;
+	},
+	HIGH_SERIES_OF_4 {
+		override val titleResourceId = R.string.statistic_title_high_series_of_4
+	},
+	HIGH_SERIES_OF_5 {
+		override val titleResourceId = R.string.statistic_title_high_series_of_5
+	},
+	HIGH_SERIES_OF_8 {
+		override val titleResourceId = R.string.statistic_title_high_series_of_8
+	},
+	HIGH_SERIES_OF_10 {
+		override val titleResourceId = R.string.statistic_title_high_series_of_10
+	},
+	HIGH_SERIES_OF_12 {
+		override val titleResourceId = R.string.statistic_title_high_series_of_12
+	},
+	HIGH_SERIES_OF_15 {
+		override val titleResourceId = R.string.statistic_title_high_series_of_15
+	},
+	HIGH_SERIES_OF_20 {
+		override val titleResourceId = R.string.statistic_title_high_series_of_20
+	},
+	;
 
 	abstract val titleResourceId: Int
 }

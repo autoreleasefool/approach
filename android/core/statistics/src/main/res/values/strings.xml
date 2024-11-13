@@ -75,7 +75,15 @@
 	<string name="statistic_title_match_play_losses">Match Play Losses</string>
 	<string name="statistic_title_match_play_ties">Match Play Ties</string>
 
+	<string name="statistic_title_high_series_of_2">High Series of 2</string>
 	<string name="statistic_title_high_series_of_3">High Series of 3</string>
+	<string name="statistic_title_high_series_of_4">High Series of 4</string>
+	<string name="statistic_title_high_series_of_5">High Series of 5</string>
+	<string name="statistic_title_high_series_of_8">High Series of 8</string>
+	<string name="statistic_title_high_series_of_10">High Series of 10</string>
+	<string name="statistic_title_high_series_of_12">High Series of 12</string>
+	<string name="statistic_title_high_series_of_15">High Series of 15</string>
+	<string name="statistic_title_high_series_of_20">High Series of 20</string>
 
 	<string name="statistic_category_overall">Overall</string>
 	<string name="statistic_category_middle_hits">Middle Hits</string>

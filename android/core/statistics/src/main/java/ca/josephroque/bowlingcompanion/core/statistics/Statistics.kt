@@ -61,7 +61,15 @@ import ca.josephroque.bowlingcompanion.core.statistics.trackable.overall.TotalPi
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.overall.TotalRollsStatistic
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.pinsleft.AveragePinsLeftOnDeckStatistic
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.pinsleft.TotalPinsLeftOnDeckStatistic
+import ca.josephroque.bowlingcompanion.core.statistics.trackable.series.HighSeriesOf10Statistic
+import ca.josephroque.bowlingcompanion.core.statistics.trackable.series.HighSeriesOf12Statistic
+import ca.josephroque.bowlingcompanion.core.statistics.trackable.series.HighSeriesOf15Statistic
+import ca.josephroque.bowlingcompanion.core.statistics.trackable.series.HighSeriesOf20Statistic
+import ca.josephroque.bowlingcompanion.core.statistics.trackable.series.HighSeriesOf2Statistic
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.series.HighSeriesOf3Statistic
+import ca.josephroque.bowlingcompanion.core.statistics.trackable.series.HighSeriesOf4Statistic
+import ca.josephroque.bowlingcompanion.core.statistics.trackable.series.HighSeriesOf5Statistic
+import ca.josephroque.bowlingcompanion.core.statistics.trackable.series.HighSeriesOf8Statistic
 
 fun allStatistics(
 	source: TrackableFilter.Source? = null,
@@ -157,7 +165,15 @@ fun allStatistics(
 	MatchesTiedStatistic(),
 
 	// Series
+	HighSeriesOf2Statistic(),
 	HighSeriesOf3Statistic(),
+	HighSeriesOf4Statistic(),
+	HighSeriesOf5Statistic(),
+	HighSeriesOf8Statistic(),
+	HighSeriesOf10Statistic(),
+	HighSeriesOf12Statistic(),
+	HighSeriesOf15Statistic(),
+	HighSeriesOf20Statistic(),
 ).filter {
 	source == null || it.supportsSource(source)
 }.filter {
