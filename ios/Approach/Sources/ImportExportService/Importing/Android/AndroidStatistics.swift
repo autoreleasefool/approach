@@ -75,7 +75,15 @@ enum AndroidStatistic: String, CaseIterable {
 	case MATCHES_LOST
 	case MATCHES_TIED
 
+	case HIGH_SERIES_OF_2
 	case HIGH_SERIES_OF_3
+	case HIGH_SERIES_OF_4
+	case HIGH_SERIES_OF_5
+	case HIGH_SERIES_OF_8
+	case HIGH_SERIES_OF_10
+	case HIGH_SERIES_OF_12
+	case HIGH_SERIES_OF_15
+	case HIGH_SERIES_OF_20
 
 	var statistic: Statistic.Type {
 		switch self {
@@ -138,7 +146,15 @@ enum AndroidStatistic: String, CaseIterable {
 		case .AVERAGE_PINS_LEFT_ON_DECK: Statistics.AveragePinsLeftOnDeck.self
 		case .TOTAL_PINS_LEFT_ON_DECK: Statistics.TotalPinsLeftOnDeck.self
 		case .AVERAGE_FIRST_ROLL: Statistics.FirstRollAverage.self
+		case .HIGH_SERIES_OF_2: Statistics.HighSeriesOf2.self
 		case .HIGH_SERIES_OF_3: Statistics.HighSeriesOf3.self
+		case .HIGH_SERIES_OF_4: Statistics.HighSeriesOf4.self
+		case .HIGH_SERIES_OF_5: Statistics.HighSeriesOf5.self
+		case .HIGH_SERIES_OF_8: Statistics.HighSeriesOf8.self
+		case .HIGH_SERIES_OF_10: Statistics.HighSeriesOf10.self
+		case .HIGH_SERIES_OF_12: Statistics.HighSeriesOf12.self
+		case .HIGH_SERIES_OF_15: Statistics.HighSeriesOf15.self
+		case .HIGH_SERIES_OF_20: Statistics.HighSeriesOf20.self
 		}
 	}
 }
