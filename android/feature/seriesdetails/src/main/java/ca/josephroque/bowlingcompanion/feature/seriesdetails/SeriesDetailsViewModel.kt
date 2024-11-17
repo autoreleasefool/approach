@@ -6,12 +6,16 @@ import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
+import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
+import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gameslist.ui.GamesListUiAction
 import ca.josephroque.bowlingcompanion.feature.gameslist.ui.GamesListUiState
+import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsTopBarUiAction
+import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsUiState
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
@@ -25,6 +29,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -34,6 +39,7 @@ class SeriesDetailsViewModel @Inject constructor(
 	private val seriesRepository: SeriesRepository,
 	private val gamesRepository: GamesRepository,
 	private val analyticsClient: AnalyticsClient,
+	private val featureFlags: FeatureFlagsClient,
 ) : ApproachViewModel<SeriesDetailsScreenEvent>() {
 	private val seriesId = MutableStateFlow(Route.SeriesDetails.getSeries(savedStateHandle))
 	private val eventId = Route.EventDetails.getEvent(savedStateHandle)
@@ -50,7 +56,15 @@ class SeriesDetailsViewModel @Inject constructor(
 		.filterNotNull()
 		.flatMapLatest { gamesRepository.getGamesList(it) }
 
-	val uiState: StateFlow<SeriesDetailsScreenUiState> = combine(
+	private val topBarState = seriesDetails
+		.mapNotNull {
+			SeriesDetailsTopBarUiState(
+				seriesDate = it.properties.appliedDate ?: it.properties.date,
+				isSharingButtonVisible = featureFlags.isEnabled(FeatureFlag.SHARING_SERIES),
+			)
+		}
+
+	private val seriesDetailsState = combine(
 		gameToArchive,
 		seriesDetails,
 		gamesList,
@@ -71,18 +85,26 @@ class SeriesDetailsViewModel @Inject constructor(
 			},
 		).await()
 
-		SeriesDetailsScreenUiState.Loaded(
-			seriesDetails = SeriesDetailsUiState(
-				details = seriesDetails.properties,
-				scores = chartModelProducer,
-				seriesLow = seriesDetails.scores.minOrNull(),
-				seriesHigh = seriesDetails.scores.maxOrNull(),
-				isShowingPlaceholder = isShowingPlaceholder,
-				gamesList = GamesListUiState(
-					list = games,
-					gameToArchive = gameToArchive,
-				),
+		SeriesDetailsUiState(
+			details = seriesDetails.properties,
+			scores = chartModelProducer,
+			seriesLow = seriesDetails.scores.minOrNull(),
+			seriesHigh = seriesDetails.scores.maxOrNull(),
+			isShowingPlaceholder = isShowingPlaceholder,
+			gamesList = GamesListUiState(
+				list = games,
+				gameToArchive = gameToArchive,
 			),
+		)
+	}
+
+	val uiState: StateFlow<SeriesDetailsScreenUiState> = combine(
+		topBarState,
+		seriesDetailsState,
+	) { topBarState, seriesDetailsState ->
+		SeriesDetailsScreenUiState.Loaded(
+			topBar = topBarState,
+			seriesDetails = seriesDetailsState,
 		)
 	}.stateIn(
 		scope = viewModelScope,
@@ -102,13 +124,20 @@ class SeriesDetailsViewModel @Inject constructor(
 	fun handleAction(action: SeriesDetailsScreenUiAction) {
 		when (action) {
 			is SeriesDetailsScreenUiAction.SeriesDetails -> handleSeriesDetailsAction(action.action)
+			is SeriesDetailsScreenUiAction.TopBar -> handleTopBarAction(action.action)
+		}
+	}
+
+	private fun handleTopBarAction(action: SeriesDetailsTopBarUiAction) {
+		when (action) {
+			is SeriesDetailsTopBarUiAction.BackClicked -> sendEvent(SeriesDetailsScreenEvent.Dismissed)
+			is SeriesDetailsTopBarUiAction.AddGameClicked -> addGameToSeries()
+			SeriesDetailsTopBarUiAction.ShareClicked -> shareSeries()
 		}
 	}
 
 	private fun handleSeriesDetailsAction(action: SeriesDetailsUiAction) {
 		when (action) {
-			is SeriesDetailsUiAction.BackClicked -> sendEvent(SeriesDetailsScreenEvent.Dismissed)
-			is SeriesDetailsUiAction.AddGameClicked -> addGameToSeries()
 			is SeriesDetailsUiAction.GamesList -> handleGamesListAction(action.action)
 		}
 	}
@@ -126,6 +155,11 @@ class SeriesDetailsViewModel @Inject constructor(
 	private fun editGame(id: GameID) {
 		sendEvent(SeriesDetailsScreenEvent.EditGame(EditGameArgs(seriesId.value!!, id)))
 		analyticsClient.startNewGameSession()
+	}
+
+	private fun shareSeries() {
+		val seriesId = seriesId.value ?: return
+		sendEvent(SeriesDetailsScreenEvent.ShareSeries(ShareSeriesArgs(seriesId)))
 	}
 
 	private fun addGameToSeries() {

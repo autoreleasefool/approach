@@ -180,6 +180,7 @@ fun NavGraphBuilder.overviewGraph(
 	)
 	seriesDetailsScreen(
 		onBackPressed = navController::popBackStack,
+		onShareSeries = {},
 		onEditGame = {
 			navController.navigateToGamesEditor(seriesIds = listOf(it.seriesId), initialGameId = it.gameId)
 		},

@@ -19,14 +19,17 @@ import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetails
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsTopBar
+import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsTopBarUiState
 import kotlinx.coroutines.launch
 
+data class ShareSeriesArgs(val seriesId: SeriesID)
 data class EditGameArgs(val seriesId: SeriesID, val gameId: GameID)
 
 @Composable
 internal fun SeriesDetailsRoute(
 	onBackPressed: () -> Unit,
 	onEditGame: (EditGameArgs) -> Unit,
+	onShareSeries: (ShareSeriesArgs) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: SeriesDetailsViewModel = hiltViewModel(),
 ) {
@@ -41,6 +44,7 @@ internal fun SeriesDetailsRoute(
 					when (it) {
 						SeriesDetailsScreenEvent.Dismissed -> onBackPressed()
 						is SeriesDetailsScreenEvent.EditGame -> onEditGame(it.args)
+						is SeriesDetailsScreenEvent.ShareSeries -> onShareSeries(it.args)
 					}
 				}
 		}
@@ -65,13 +69,11 @@ internal fun SeriesDetailsScreen(
 	Scaffold(
 		topBar = {
 			SeriesDetailsTopBar(
-				seriesDate = when (state) {
-					SeriesDetailsScreenUiState.Loading -> null
-					is SeriesDetailsScreenUiState.Loaded ->
-						state.seriesDetails.details.appliedDate
-							?: state.seriesDetails.details.date
+				state = when (state) {
+					SeriesDetailsScreenUiState.Loading -> SeriesDetailsTopBarUiState()
+					is SeriesDetailsScreenUiState.Loaded -> state.topBar
 				},
-				onAction = { onAction(SeriesDetailsScreenUiAction.SeriesDetails(it)) },
+				onAction = { onAction(SeriesDetailsScreenUiAction.TopBar(it)) },
 				scrollBehavior = scrollBehavior,
 			)
 		},

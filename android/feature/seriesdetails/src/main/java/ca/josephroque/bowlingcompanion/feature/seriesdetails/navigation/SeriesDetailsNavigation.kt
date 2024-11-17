@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.EditGameArgs
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.SeriesDetailsRoute
+import ca.josephroque.bowlingcompanion.feature.seriesdetails.ShareSeriesArgs
 
 fun NavController.navigateToEvent(leagueId: LeagueID, navOptions: NavOptions? = null) {
 	this.navigate(Route.EventDetails.createRoute(leagueId), navOptions)
@@ -23,6 +24,7 @@ fun NavController.navigateToSeriesDetails(seriesId: SeriesID, navOptions: NavOpt
 fun NavGraphBuilder.seriesDetailsScreen(
 	onBackPressed: () -> Unit,
 	onEditGame: (EditGameArgs) -> Unit,
+	onShareSeries: (ShareSeriesArgs) -> Unit,
 ) {
 	composable(
 		route = Route.SeriesDetails.route,
@@ -33,6 +35,7 @@ fun NavGraphBuilder.seriesDetailsScreen(
 		SeriesDetailsRoute(
 			onBackPressed = onBackPressed,
 			onEditGame = onEditGame,
+			onShareSeries = onShareSeries,
 		)
 	}
 	composable(
@@ -44,6 +47,7 @@ fun NavGraphBuilder.seriesDetailsScreen(
 		SeriesDetailsRoute(
 			onBackPressed = onBackPressed,
 			onEditGame = onEditGame,
+			onShareSeries = onShareSeries,
 		)
 	}
 }

@@ -8,6 +8,7 @@ android {
 }
 
 dependencies {
+	implementation(projects.core.featureflags)
 	implementation(projects.feature.gameslist.ui)
 	implementation(projects.feature.seriesdetails.ui)
 
