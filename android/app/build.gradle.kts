@@ -87,6 +87,7 @@ dependencies {
 	implementation(projects.feature.seriesdetails)
 	implementation(projects.feature.seriesform)
 	implementation(projects.feature.settings)
+	implementation(projects.feature.sharing)
 	implementation(projects.feature.statisticsdetails)
 	implementation(projects.feature.statisticsoverview)
 	implementation(projects.feature.statisticswidget)

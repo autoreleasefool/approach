@@ -314,6 +314,17 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	data object AnalyticsSettings : Route("analytics_settings")
 	data object DeveloperSettings : Route("developer_settings")
 
+	// Sharing
+	data object SharingSeries : Route(
+		"sharing_series/{series}",
+		isBottomBarVisible = false,
+	) {
+		const val ARG_SERIES = "series"
+		fun createRoute(series: SeriesID): String = "sharing_series/${Uri.encode(series.toString())}"
+		fun getSeries(savedStateHandle: SavedStateHandle): SeriesID? =
+			savedStateHandle.get<String>("series")?.let { SeriesID.fromString(it) }
+	}
+
 	// Statistics
 	data object StatisticsOverview : Route("statistics_overview")
 	data object StatisticsSourcePicker : Route("statistics_source_picker")

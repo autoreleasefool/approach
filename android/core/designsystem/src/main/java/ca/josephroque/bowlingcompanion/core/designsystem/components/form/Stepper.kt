@@ -24,8 +24,15 @@ fun Stepper(
 	title: String,
 	value: Int,
 	onValueChanged: (Int) -> Unit,
+	step: Int = 1,
+	range: IntRange? = null,
 	modifier: Modifier = Modifier,
 ) {
+	val changeValue = { newValue: Int ->
+		val coercedValue = (value + newValue).coerceIn(range ?: Int.MIN_VALUE..Int.MAX_VALUE)
+		onValueChanged(coercedValue)
+	}
+
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -35,17 +42,14 @@ fun Stepper(
 	) {
 		OutlinedTextField(
 			value = value.toString(),
-			onValueChange = {
-				val intValue = it.toIntOrNull() ?: 1
-				onValueChanged(intValue)
-			},
+			onValueChange = { changeValue(it.toIntOrNull() ?: 1) },
 			label = { Text(title) },
 			singleLine = true,
 			keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
 			modifier = Modifier.weight(1f),
 		)
 
-		IconButton(onClick = { onValueChanged(value - 1) }) {
+		IconButton(onClick = { changeValue(value - step) }) {
 			Icon(
 				painter = painterResource(R.drawable.ic_minus_circle),
 				contentDescription = stringResource(R.string.cd_decrement),
@@ -53,7 +57,7 @@ fun Stepper(
 			)
 		}
 
-		IconButton(onClick = { onValueChanged(value + 1) }) {
+		IconButton(onClick = { changeValue(value + step) }) {
 			Icon(
 				painter = painterResource(R.drawable.ic_add_circle),
 				contentDescription = stringResource(R.string.cd_increment),

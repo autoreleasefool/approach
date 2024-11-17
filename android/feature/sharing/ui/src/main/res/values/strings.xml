@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="sharing_title">Share</string>
+
+	<string name="sharing_series_modifier_section_overlay">Overlay</string>
+	<string name="sharing_series_modifier_section_scores">Scores</string>
+	<string name="sharing_series_modifier_date">Date</string>
+	<string name="sharing_series_modifier_summary">Summary</string>
+	<string name="sharing_series_modifier_bowler">Bowler</string>
+	<string name="sharing_series_modifier_league">League</string>
+	<string name="sharing_series_modifier_high_score">High</string>
+	<string name="sharing_series_modifier_low_score">Low</string>
+
+	<string name="sharing_series_chart_range">Chart Range</string>
+	<string name="sharing_series_chart_range_x_to_y">%1$d to %2$d</string>
+
+	<string name="sharing_appearance">Appearance</string>
+	<string name="sharing_appearance_dark">Dark</string>
+	<string name="sharing_appearance_light">Light</string>
+</resources>
