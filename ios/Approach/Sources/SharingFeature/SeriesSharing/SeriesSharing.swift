@@ -246,13 +246,13 @@ public struct SeriesSharingView: View {
 
 				GridRow {
 					ChipButton(
-						icon: .personFill,
+						icon: .plusForwardslashMinus,
 						title: Strings.Sharing.Series.Details.highScore,
 						isOn: $store.isLabellingHighestScore.animation(.easeInOut(duration: 0.2))
 					)
 
 					ChipButton(
-						icon: .repeat,
+						icon: .plusForwardslashMinus,
 						title: Strings.Sharing.Series.Details.lowScore,
 						isOn: $store.isLabellingLowestScore.animation(.easeInOut(duration: 0.2))
 					)

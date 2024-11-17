@@ -15,7 +15,7 @@ extension HighSeriesStatistic {
 		set { highSeries = newValue }
 	}
 
-	public mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration) {
+	public mutating func adjust(bySeries: Series.TrackableEntry, configuration _: TrackablePerSeriesConfiguration) {
 		guard bySeries.numberOfGames == Self.seriesSize else { return }
 		highest = max(highest, bySeries.total)
 	}

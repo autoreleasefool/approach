@@ -112,7 +112,7 @@ public struct StatisticsOverview: Reducer, Sendable {
 					return .none
 
 				case .didLoadRecentlyUsedFilters(.failure):
-					// TODO: Handle errors
+					// Ignore errors
 					return .none
 
 				case let .destination(.presented(.sourcePicker(.delegate(delegateAction)))):
@@ -152,6 +152,15 @@ public struct StatisticsOverview: Reducer, Sendable {
 			switch action {
 			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
 			default: return nil
+			}
+		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didLoadRecentlyUsedFilters(.failure(error))):
+				return error
+			default:
+				return nil
 			}
 		}
 	}
