@@ -13,7 +13,7 @@ excluded:
 
 attributes:
   always_on_same_line: ["@Dependency", "@Environment"]
-  attributes_with_arguments_always_on_line_above: false
+  attributes_with_arguments_always_on_line_above: true
 
 trailing_comma:
   mandatory_comma: true
