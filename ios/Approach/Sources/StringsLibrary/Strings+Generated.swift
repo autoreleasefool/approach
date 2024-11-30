@@ -754,6 +754,8 @@ public enum Strings {
       public enum Locked {
         /// This game is locked and cannot be edited.
         public static let message = Strings.tr("Localizable", "game.editor.locked.message", fallback: "This game is locked and cannot be edited.")
+        /// Unlock
+        public static let unlock = Strings.tr("Localizable", "game.editor.locked.unlock", fallback: "Unlock")
       }
       public enum Picker {
         /// Switch game

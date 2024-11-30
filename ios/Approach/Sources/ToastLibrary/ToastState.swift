@@ -81,18 +81,22 @@ extension ToastStyle {
 extension ToastState {
 	public enum Content {
 		case toast(SnackContent<Action>)
-		case hud(HUDContent)
+		case hud(HUDContent<Action>)
 		case badge(BadgeContent)
 	}
 }
 
-public struct HUDContent: Equatable {
-	public let message: String
+public struct HUDContent<Action: ToastableAction> {
+	public let title: String
+	public let message: String?
 	public let icon: SFSymbol?
+	public let button: ToastState<Action>.Button?
 
-	public init(message: String, icon: SFSymbol?) {
+	public init(title: String, message: String? = nil, icon: SFSymbol?, button: ToastState<Action>.Button? = nil) {
+		self.title = title
 		self.message = message
 		self.icon = icon
+		self.button = button
 	}
 }
 
@@ -120,6 +124,7 @@ extension ToastState: Equatable where Action: Equatable {}
 extension ToastState.Button: Equatable where Action: Equatable {}
 extension ToastState.Content: Equatable where Action: Equatable {}
 extension SnackContent: Equatable where Action: Equatable {}
+extension HUDContent: Equatable where Action: Equatable {}
 
 extension View {
 	@ViewBuilder
@@ -150,10 +155,15 @@ extension View {
 					}
 				case let .hud(content):
 					HUDView(
-						title: content.message,
+						title: content.title,
+						message: content.message,
+						action: content.button?.title,
 						icon: content.icon,
 						style: toastState?.style ?? .primary
 					) {
+						guard let action = content.button?.action else { return }
+						store?.send(action)
+					} onDismiss: {
 						store?.send(.didDismiss)
 					}
 				case let .badge(content):

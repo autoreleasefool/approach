@@ -232,6 +232,7 @@
 "game.properties.excludeFromStatistics.include" = "Include in statistics";
 "game.properties.excludeFromStatistics.exclude" = "Exclude from statistics";
 "game.editor.locked" = "Locked";
+"game.editor.locked.unlock" = "Unlock";
 "game.editor.locked.message" = "This game is locked and cannot be edited.";
 "game.editor.fields.excludeFromStatistics.title" = "Statistics";
 "game.editor.fields.excludeFromStatistics.label" = "Exclude from statistics?";

@@ -4,6 +4,7 @@ import ToastLibrary
 
 extension GamesEditor {
 	public enum ToastAction: Equatable, ToastableAction {
+		case unlockGame
 		case didDismiss
 		case didFinishDismissing
 	}
@@ -13,6 +14,11 @@ extension GamesEditor {
 		toastAction: ToastAction
 	) -> Effect<Action> {
 		switch toastAction {
+		case .unlockGame:
+			state.game?.locked.toNext()
+			state.toast = nil
+			return save(game: state.game, in: state)
+
 		case .didDismiss:
 			state.toast = nil
 			return .none
@@ -27,7 +33,17 @@ extension GamesEditor {
 extension ToastState where Action == GamesEditor.ToastAction {
 	static var locked: Self {
 		ToastState(
-			content: .hud(HUDContent(message: Strings.Game.Editor.locked, icon: .lock)),
+			content: .hud(
+				HUDContent(
+					title: Strings.Game.Editor.locked,
+					message: Strings.Game.Editor.Locked.message,
+					icon: .lock,
+					button: .init(
+						title: Strings.Game.Editor.Locked.unlock,
+						action: .unlockGame
+					)
+				)
+			),
 			style: .error
 		)
 	}
