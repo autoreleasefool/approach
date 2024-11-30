@@ -1,10 +1,10 @@
 # Most recent version
 
-## iOS 1.9.0b31
+## iOS 1.10.0b32
 
 ```
-- Feat: Support importing from Android Approach app
-- Fix: Chart rendering has been improved in Series List
+- Feat: High Series for 2-20 games
+- Chore: More distinct icons in sharing menu
 ```
 
 ## Android 4.4.0b337
@@ -17,6 +17,13 @@
 ---
 
 # Legacy iOS Versions
+
+## iOS 1.9.0b31
+
+```
+- Feat: Support importing from Android Approach app
+- Fix: Chart rendering has been improved in Series List
+```
 
 ## iOS 1.8.0b30
 
