@@ -14,7 +14,6 @@
 			tools:targetApi="31">
 
 		<meta-data android:name="io.sentry.dsn" android:value="${sentryAppDsn}" />
-		<meta-data android:name="com.telemetrydeck.sdk.appID" android:value="${telemetryDeckAppId}" />
 
 		<activity
 				android:name=".MainActivity"
@@ -26,7 +25,7 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		
+
 		<provider
 				android:name="androidx.core.content.FileProvider"
 				android:authorities="ca.josephroque.bowlingcompanion.fileprovider"
