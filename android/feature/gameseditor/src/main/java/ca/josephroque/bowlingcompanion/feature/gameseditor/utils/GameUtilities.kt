@@ -160,7 +160,10 @@ fun GameDetailsUiState.updateHeader(
 		val numberOfBowlers = bowlers.size
 		val numberOfGames = seriesGameIds.size
 
-		if (numberOfBowlers == 1 || numberOfBowlers == 0) {
+		if (numberOfBowlers == 0) {
+			// If there are no bowlers, show nothing until at least one has loaded
+			null
+		} else if (numberOfBowlers == 1) {
 			if (nextGameIndex < numberOfGames) {
 				NextGameEditableElement.Game(nextGameIndex, seriesGameIds[nextGameIndex])
 			} else {
@@ -198,8 +201,11 @@ fun GameDetailsUiState.updateHeader(
 			val numberOfBowlers = bowlers.size
 			val numberOfGames = seriesGameIds.size
 
-			// If there's only one bowler, we only need to show either the next frame or next game
-			if (numberOfBowlers == 1) {
+			if (numberOfBowlers == 0) {
+				// If there are no bowlers, show nothing until at least one has loaded
+				null
+			} else if (numberOfBowlers == 1) {
+				// If there's only one bowler, we only need to show either the next frame or next game
 				if (Frame.isLastFrame(selection.frameIndex)) {
 					// If the frame is the last, show the next game if there is one
 					if (nextGameIndex < numberOfGames) {
