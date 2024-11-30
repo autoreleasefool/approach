@@ -227,6 +227,7 @@ internal fun GamesEditorScreen(
 	}
 
 	val snackBarLockedMessage = stringResource(R.string.game_editor_locked)
+	val snackBarUnlockAction = stringResource(R.string.game_editor_locked_unlock)
 	val isGameLockSnackBarVisible = state is GamesEditorScreenUiState.Loaded &&
 		state.isGameLockSnackBarVisible
 	LaunchedEffect(isGameLockSnackBarVisible) {
@@ -234,11 +235,12 @@ internal fun GamesEditorScreen(
 			val result = scaffoldState.snackbarHostState.showSnackbar(
 				message = snackBarLockedMessage,
 				duration = SnackbarDuration.Short,
+				actionLabel = snackBarUnlockAction,
 			)
 
 			when (result) {
 				SnackbarResult.Dismissed -> onAction(GamesEditorScreenUiAction.GameLockSnackBarDismissed)
-				SnackbarResult.ActionPerformed -> onAction(GamesEditorScreenUiAction.GameLockSnackBarDismissed)
+				SnackbarResult.ActionPerformed -> onAction(GamesEditorScreenUiAction.GameLockSnackBarUnlocked)
 			}
 		}
 	}

@@ -36,6 +36,7 @@ sealed interface GamesEditorScreenUiAction {
 	data object DidAppear : GamesEditorScreenUiAction
 	data object DidDisappear : GamesEditorScreenUiAction
 	data object GameLockSnackBarDismissed : GamesEditorScreenUiAction
+	data object GameLockSnackBarUnlocked : GamesEditorScreenUiAction
 	data object HighestPossibleScoreSnackBarDismissed : GamesEditorScreenUiAction
 
 	data class GearUpdated(val gearIds: Set<GearID>) : GamesEditorScreenUiAction

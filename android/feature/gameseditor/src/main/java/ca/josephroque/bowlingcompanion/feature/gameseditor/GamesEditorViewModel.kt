@@ -232,6 +232,10 @@ class GamesEditorViewModel @Inject constructor(
 			GamesEditorScreenUiAction.DidAppear -> loadInitialData()
 			GamesEditorScreenUiAction.DidDisappear -> dismissLatestGameInEditor()
 			GamesEditorScreenUiAction.GameLockSnackBarDismissed -> dismissGameLockSnackBar()
+			GamesEditorScreenUiAction.GameLockSnackBarUnlocked -> {
+				dismissGameLockSnackBar()
+				toggleGameLocked(isLocked = false)
+			}
 			GamesEditorScreenUiAction.HighestPossibleScoreSnackBarDismissed ->
 				dismissHighestPossibleScoreSnackBar()
 			is GamesEditorScreenUiAction.GamesEditor -> handleGamesEditorAction(action.action)

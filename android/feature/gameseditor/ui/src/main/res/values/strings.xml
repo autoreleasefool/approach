@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="game_editor_locked">Locked! Unlock your game first</string>
+	<string name="game_editor_locked_unlock">Unlock</string>
 
 	<string name="game_editor_foul">Foul?</string>
 
