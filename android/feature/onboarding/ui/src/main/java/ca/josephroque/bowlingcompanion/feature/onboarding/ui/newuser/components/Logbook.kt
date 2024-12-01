@@ -106,10 +106,7 @@ fun Logbook(
 				.fillMaxWidth()
 				.padding(top = 16.dp, bottom = 32.dp, start = 16.dp, end = 16.dp),
 		) {
-			Text(
-				text = stringResource(R.string.onboarding_new_user_add_bowler),
-				style = MaterialTheme.typography.titleLarge,
-			)
+			Text(text = stringResource(R.string.onboarding_new_user_add_bowler))
 		}
 	}
 }
