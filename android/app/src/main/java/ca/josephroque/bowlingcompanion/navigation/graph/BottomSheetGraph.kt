@@ -4,7 +4,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
-import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.accessoriesOnboardingSheet
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.gamesSettingsScreen
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToGamesEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.scoreEditorScreen
@@ -30,9 +29,6 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 	resourcePickerSheet(
 		navController = navController,
 		onDismiss = navController::popBackStack,
-	)
-	accessoriesOnboardingSheet(
-		onBackPressed = navController::popBackStack,
 	)
 	quickPlay(
 		onBackPressed = navController::popBackStack,

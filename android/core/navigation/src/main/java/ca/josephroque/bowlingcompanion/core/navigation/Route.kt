@@ -25,7 +25,6 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 
 	// Accessories
 	data object AccessoriesOverview : Route("accessories_overview")
-	data object AccessoriesOnboarding : Route("accessories_onboarding", isBottomBarVisible = false)
 
 	// Acknowledgements
 	data object Acknowledgements : Route("acknowledgements")

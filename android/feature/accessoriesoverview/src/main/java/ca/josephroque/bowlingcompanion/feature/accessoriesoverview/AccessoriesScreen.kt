@@ -29,7 +29,6 @@ internal fun AccessoriesRoute(
 	onViewAllGear: () -> Unit,
 	onShowAlleyDetails: (AlleyID) -> Unit,
 	onShowGearDetails: (GearID) -> Unit,
-	onShowAccessoriesOnboarding: () -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: AccessoriesViewModel = hiltViewModel(),
 ) {
@@ -48,7 +47,6 @@ internal fun AccessoriesRoute(
 						AccessoriesScreenUiEvent.ViewAllGear -> onViewAllGear()
 						is AccessoriesScreenUiEvent.ShowAlleyDetails -> onShowAlleyDetails(it.alleyId)
 						is AccessoriesScreenUiEvent.ShowGearDetails -> onShowGearDetails(it.gearId)
-						AccessoriesScreenUiEvent.ShowAccessoriesOnboarding -> onShowAccessoriesOnboarding()
 					}
 				}
 		}

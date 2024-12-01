@@ -14,7 +14,6 @@ fun NavGraphBuilder.accessoriesScreen(
 	onViewAllGear: () -> Unit,
 	onShowAlleyDetails: (AlleyID) -> Unit,
 	onShowGearDetails: (GearID) -> Unit,
-	onShowAccessoriesOnboarding: () -> Unit,
 ) {
 	composable(
 		route = Route.AccessoriesOverview.route,
@@ -26,7 +25,6 @@ fun NavGraphBuilder.accessoriesScreen(
 			onViewAllGear = onViewAllGear,
 			onShowAlleyDetails = onShowAlleyDetails,
 			onShowGearDetails = onShowGearDetails,
-			onShowAccessoriesOnboarding = onShowAccessoriesOnboarding,
 		)
 	}
 }

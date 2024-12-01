@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.accessoriesoverview
 
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.di.ApplicationScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
@@ -9,10 +10,12 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.AccessoriesUiAction
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.AccessoriesUiState
+import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.onboarding.AccessoriesOnboardingUiAction
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListUiState
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,8 +33,10 @@ class AccessoriesViewModel @Inject constructor(
 	alleysRepository: AlleysRepository,
 	gearRepository: GearRepository,
 	private val userDataRepository: UserDataRepository,
+	@ApplicationScope private val externalScope: CoroutineScope,
 ) : ApproachViewModel<AccessoriesScreenUiEvent>() {
 	private val isAccessoryMenuExpanded = MutableStateFlow(false)
+	private val isShowingOnboarding = MutableStateFlow(false)
 	private val alleyToDelete: MutableStateFlow<AlleyListItem?> = MutableStateFlow(null)
 	private val gearToDelete: MutableStateFlow<GearListItem?> = MutableStateFlow(null)
 
@@ -51,12 +56,14 @@ class AccessoriesViewModel @Inject constructor(
 
 	val uiState: StateFlow<AccessoriesScreenUiState> = combine(
 		isAccessoryMenuExpanded,
+		isShowingOnboarding,
 		alleysListState,
 		gearListState,
-	) { isAccessoryMenuExpanded, alleysList, gearList ->
+	) { isAccessoryMenuExpanded, isShowingOnboarding, alleysList, gearList ->
 		AccessoriesScreenUiState.Loaded(
 			accessories = AccessoriesUiState(
 				isAccessoryMenuExpanded = isAccessoryMenuExpanded,
+				isShowingOnboarding = isShowingOnboarding,
 				alleysList = alleysList,
 				gearList = gearList,
 				alleysItemLimit = ALLEYS_LIST_ITEM_LIMIT,
@@ -86,16 +93,27 @@ class AccessoriesViewModel @Inject constructor(
 				setAccessoryMenu(isExpanded = false)
 				sendEvent(AccessoriesScreenUiEvent.AddAlley)
 			}
+
 			AccessoriesUiAction.AddGearClicked -> {
 				setAccessoryMenu(isExpanded = false)
 				sendEvent(AccessoriesScreenUiEvent.AddGear)
 			}
+
+			is AccessoriesUiAction.Onboarding -> handleOnboardingAction(action.action)
 			is AccessoriesUiAction.AlleyClicked -> sendEvent(
 				AccessoriesScreenUiEvent.ShowAlleyDetails(action.alley.alleyId),
 			)
+
 			is AccessoriesUiAction.GearClicked -> sendEvent(
 				AccessoriesScreenUiEvent.ShowGearDetails(action.gear.gearId),
 			)
+		}
+	}
+
+	private fun handleOnboardingAction(action: AccessoriesOnboardingUiAction) {
+		when (action) {
+			AccessoriesOnboardingUiAction.GetStartedClicked -> dismissOnboarding()
+			AccessoriesOnboardingUiAction.SheetDismissed -> dismissOnboarding()
 		}
 	}
 
@@ -107,8 +125,15 @@ class AccessoriesViewModel @Inject constructor(
 		viewModelScope.launch {
 			val userData = userDataRepository.userData.first()
 			if (!userData.hasOpenedAccessoriesTab) {
-				sendEvent(AccessoriesScreenUiEvent.ShowAccessoriesOnboarding)
+				isShowingOnboarding.value = true
 			}
+		}
+	}
+
+	private fun dismissOnboarding() {
+		isShowingOnboarding.value = false
+		externalScope.launch {
+			userDataRepository.didOpenAccessoriesTab()
 		}
 	}
 }

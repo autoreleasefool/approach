@@ -21,7 +21,6 @@ sealed interface AccessoriesScreenUiEvent {
 	data object AddGear : AccessoriesScreenUiEvent
 	data object ViewAllAlleys : AccessoriesScreenUiEvent
 	data object ViewAllGear : AccessoriesScreenUiEvent
-	data object ShowAccessoriesOnboarding : AccessoriesScreenUiEvent
 
 	data class ShowAlleyDetails(val alleyId: AlleyID) : AccessoriesScreenUiEvent
 	data class ShowGearDetails(val gearId: GearID) : AccessoriesScreenUiEvent

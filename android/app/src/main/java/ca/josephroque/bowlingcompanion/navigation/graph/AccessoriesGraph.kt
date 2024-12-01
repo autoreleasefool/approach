@@ -4,7 +4,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.accessoriesScreen
-import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.navigateToAccessoriesOnboarding
 import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.alleyFormScreen
 import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.navigateToAlleyForm
 import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.navigateToNewAlleyForm
@@ -28,7 +27,6 @@ fun NavGraphBuilder.accessoriesGraph(navController: NavController) {
 		onViewAllGear = navController::navigateToGearList,
 		onShowAlleyDetails = { /* FIXME: onShowAlleyDetails */ },
 		onShowGearDetails = { /* FIXME: onShowGearDetails */ },
-		onShowAccessoriesOnboarding = navController::navigateToAccessoriesOnboarding,
 	)
 	alleysListScreen(
 		onBackPressed = navController::popBackStack,
