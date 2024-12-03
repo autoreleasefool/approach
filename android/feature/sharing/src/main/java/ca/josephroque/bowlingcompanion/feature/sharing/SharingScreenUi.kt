@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.sharing
 
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingSource
-import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingTopBarUiAction
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingUiAction
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingUiState
 
@@ -13,7 +12,6 @@ sealed interface SharingScreenUiState {
 
 sealed interface SharingScreenUiAction {
 	data class DidStartSharing(val source: SharingSource) : SharingScreenUiAction
-	data class TopBarAction(val action: SharingTopBarUiAction) : SharingScreenUiAction
 	data class SeriesSharingAction(val action: SeriesSharingUiAction) : SharingScreenUiAction
 }
 

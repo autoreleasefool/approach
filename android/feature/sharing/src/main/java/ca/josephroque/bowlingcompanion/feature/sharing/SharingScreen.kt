@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.feature.sharing
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
@@ -14,8 +13,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingSource
-import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingTopBar
-import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharing
 import kotlinx.coroutines.launch
 
@@ -63,19 +60,12 @@ private fun SharingScreen(
 	onAction: (SharingScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	Column {
-		SharingTopBar(
-			state = SharingTopBarUiState,
-			onAction = { onAction(SharingScreenUiAction.TopBarAction(it)) },
+	when (state) {
+		is SharingScreenUiState.Loading -> Unit
+		is SharingScreenUiState.SharingSeries -> SeriesSharing(
+			state = state.seriesSharing,
+			onAction = { onAction(SharingScreenUiAction.SeriesSharingAction(it)) },
+			modifier = modifier,
 		)
-
-		when (state) {
-			is SharingScreenUiState.Loading -> Unit
-			is SharingScreenUiState.SharingSeries -> SeriesSharing(
-				state = state.seriesSharing,
-				onAction = { onAction(SharingScreenUiAction.SeriesSharingAction(it)) },
-				modifier = modifier,
-			)
-		}
 	}
 }

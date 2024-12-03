@@ -3,7 +3,6 @@ package ca.josephroque.bowlingcompanion.feature.sharing
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingSource
-import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingTopBarUiAction
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingUiAction
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingUiState
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SharingAppearance
@@ -39,13 +38,6 @@ class SharingViewModel @Inject constructor(
 		when (action) {
 			is SharingScreenUiAction.DidStartSharing -> loadSource(action.source)
 			is SharingScreenUiAction.SeriesSharingAction -> handleSeriesSharingAction(action.action)
-			is SharingScreenUiAction.TopBarAction -> handleTopBarAction(action.action)
-		}
-	}
-
-	private fun handleTopBarAction(action: SharingTopBarUiAction) {
-		when (action) {
-			is SharingTopBarUiAction.BackClicked -> sendEvent(SharingScreenEvent.Dismissed)
 		}
 	}
 
