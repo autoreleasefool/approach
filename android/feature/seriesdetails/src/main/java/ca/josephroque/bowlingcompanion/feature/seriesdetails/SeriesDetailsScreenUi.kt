@@ -15,6 +15,7 @@ sealed interface SeriesDetailsScreenUiState {
 }
 
 sealed interface SeriesDetailsScreenUiAction {
+	data object SharingDismissed : SeriesDetailsScreenUiAction
 	data class SeriesDetails(val action: SeriesDetailsUiAction) : SeriesDetailsScreenUiAction
 	data class TopBar(val action: SeriesDetailsTopBarUiAction) : SeriesDetailsScreenUiAction
 }
@@ -23,5 +24,4 @@ sealed interface SeriesDetailsScreenEvent {
 	data object Dismissed : SeriesDetailsScreenEvent
 
 	data class EditGame(val args: EditGameArgs) : SeriesDetailsScreenEvent
-	data class ShareSeries(val args: ShareSeriesArgs) : SeriesDetailsScreenEvent
 }

@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.sharing
 
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingSource
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingTopBarUiAction
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingUiAction
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingUiState
@@ -36,6 +37,7 @@ class SharingViewModel @Inject constructor(
 
 	fun handleAction(action: SharingScreenUiAction) {
 		when (action) {
+			is SharingScreenUiAction.DidStartSharing -> loadSource(action.source)
 			is SharingScreenUiAction.SeriesSharingAction -> handleSeriesSharingAction(action.action)
 			is SharingScreenUiAction.TopBarAction -> handleTopBarAction(action.action)
 		}
@@ -68,6 +70,9 @@ class SharingViewModel @Inject constructor(
 			is SeriesSharingUiAction.AppearanceChanged ->
 				updateAppearance(appearance = action.appearance)
 		}
+	}
+
+	private fun loadSource(source: SharingSource) {
 	}
 
 	private fun toggleIsDateChecked(isDateChecked: Boolean) {

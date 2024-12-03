@@ -18,6 +18,7 @@ import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsTop
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsUiState
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingSource
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,6 +44,7 @@ class SeriesDetailsViewModel @Inject constructor(
 ) : ApproachViewModel<SeriesDetailsScreenEvent>() {
 	private val seriesId = MutableStateFlow(Route.SeriesDetails.getSeries(savedStateHandle))
 	private val eventId = Route.EventDetails.getEvent(savedStateHandle)
+	private val sharingSource = MutableStateFlow<SharingSource?>(null)
 
 	private val gameToArchive: MutableStateFlow<GameListItem?> = MutableStateFlow(null)
 
@@ -68,7 +70,8 @@ class SeriesDetailsViewModel @Inject constructor(
 		gameToArchive,
 		seriesDetails,
 		gamesList,
-	) { gameToArchive, seriesDetails, games ->
+		sharingSource,
+	) { gameToArchive, seriesDetails, games, sharingSource ->
 		val isShowingPlaceholder = seriesDetails.scores.all { it == 0 }
 		chartModelProducer.setEntriesSuspending(
 			if (isShowingPlaceholder) {
@@ -95,6 +98,7 @@ class SeriesDetailsViewModel @Inject constructor(
 				list = games,
 				gameToArchive = gameToArchive,
 			),
+			sharingSeries = sharingSource,
 		)
 	}
 
@@ -123,6 +127,7 @@ class SeriesDetailsViewModel @Inject constructor(
 
 	fun handleAction(action: SeriesDetailsScreenUiAction) {
 		when (action) {
+			SeriesDetailsScreenUiAction.SharingDismissed -> dismissSharing()
 			is SeriesDetailsScreenUiAction.SeriesDetails -> handleSeriesDetailsAction(action.action)
 			is SeriesDetailsScreenUiAction.TopBar -> handleTopBarAction(action.action)
 		}
@@ -159,7 +164,11 @@ class SeriesDetailsViewModel @Inject constructor(
 
 	private fun shareSeries() {
 		val seriesId = seriesId.value ?: return
-		sendEvent(SeriesDetailsScreenEvent.ShareSeries(ShareSeriesArgs(seriesId)))
+		sharingSource.value = SharingSource.Series(seriesId)
+	}
+
+	private fun dismissSharing() {
+		sharingSource.value = null
 	}
 
 	private fun addGameToSeries() {

@@ -1,27 +1,28 @@
 package ca.josephroque.bowlingcompanion.feature.sharing
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingSource
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingTopBar
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharing
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun SharingRoute(
+fun SharingSheet(
+	source: SharingSource,
 	onDismiss: () -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: SharingViewModel = hiltViewModel(),
@@ -41,37 +42,39 @@ internal fun SharingRoute(
 		}
 	}
 
-	SharingScreen(
-		state = sharingState,
-		onAction = viewModel::handleAction,
+	LaunchedEffect(source) {
+		viewModel.handleAction(SharingScreenUiAction.DidStartSharing(source))
+	}
+
+	ModalBottomSheet(
+		onDismissRequest = onDismiss,
 		modifier = modifier,
-	)
+	) {
+		SharingScreen(
+			state = sharingState,
+			onAction = viewModel::handleAction,
+		)
+	}
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SharingScreen(
 	state: SharingScreenUiState,
 	onAction: (SharingScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+	Column {
+		SharingTopBar(
+			state = SharingTopBarUiState,
+			onAction = { onAction(SharingScreenUiAction.TopBarAction(it)) },
+		)
 
-	Scaffold(
-		topBar = {
-			SharingTopBar(
-				state = SharingTopBarUiState,
-				onAction = { onAction(SharingScreenUiAction.TopBarAction(it)) },
-			)
-		},
-		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-	) { padding ->
 		when (state) {
 			is SharingScreenUiState.Loading -> Unit
 			is SharingScreenUiState.SharingSeries -> SeriesSharing(
 				state = state.seriesSharing,
 				onAction = { onAction(SharingScreenUiAction.SeriesSharingAction(it)) },
-				modifier = Modifier.padding(padding),
+				modifier = modifier,
 			)
 		}
 	}

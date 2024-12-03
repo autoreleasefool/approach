@@ -51,8 +51,6 @@ import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.navigateToS
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.seriesFormScreen
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.seriesPreBowlFormScreen
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.teamSeriesFormScreen
-import ca.josephroque.bowlingcompanion.feature.sharing.navigation.navigateToSharingSeries
-import ca.josephroque.bowlingcompanion.feature.sharing.navigation.seriesSharingScreen
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToMidGameStatisticsDetails
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetails
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetailsChart
@@ -182,9 +180,6 @@ fun NavGraphBuilder.overviewGraph(
 	)
 	seriesDetailsScreen(
 		onBackPressed = navController::popBackStack,
-		onShareSeries = {
-			navController.navigateToSharingSeries(it.seriesId)
-		},
 		onEditGame = {
 			navController.navigateToGamesEditor(seriesIds = listOf(it.seriesId), initialGameId = it.gameId)
 		},
@@ -322,8 +317,5 @@ fun NavGraphBuilder.overviewGraph(
 	teamSeriesDetailsScreen(
 		onBackPressed = navController::popBackStack,
 		onEditGame = navController::navigateToGamesEditor,
-	)
-	seriesSharingScreen(
-		onBackPressed = navController::popBackStack,
 	)
 }

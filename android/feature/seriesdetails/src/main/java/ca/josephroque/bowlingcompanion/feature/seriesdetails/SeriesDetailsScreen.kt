@@ -20,16 +20,15 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetails
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsTopBar
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsTopBarUiState
+import ca.josephroque.bowlingcompanion.feature.sharing.SharingSheet
 import kotlinx.coroutines.launch
 
-data class ShareSeriesArgs(val seriesId: SeriesID)
 data class EditGameArgs(val seriesId: SeriesID, val gameId: GameID)
 
 @Composable
 internal fun SeriesDetailsRoute(
 	onBackPressed: () -> Unit,
 	onEditGame: (EditGameArgs) -> Unit,
-	onShareSeries: (ShareSeriesArgs) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: SeriesDetailsViewModel = hiltViewModel(),
 ) {
@@ -44,7 +43,6 @@ internal fun SeriesDetailsRoute(
 					when (it) {
 						SeriesDetailsScreenEvent.Dismissed -> onBackPressed()
 						is SeriesDetailsScreenEvent.EditGame -> onEditGame(it.args)
-						is SeriesDetailsScreenEvent.ShareSeries -> onShareSeries(it.args)
 					}
 				}
 		}
@@ -81,11 +79,21 @@ internal fun SeriesDetailsScreen(
 	) { padding ->
 		when (state) {
 			SeriesDetailsScreenUiState.Loading -> Unit
-			is SeriesDetailsScreenUiState.Loaded -> SeriesDetails(
-				state = state.seriesDetails,
-				onAction = { onAction(SeriesDetailsScreenUiAction.SeriesDetails(it)) },
-				modifier = Modifier.padding(padding),
-			)
+			is SeriesDetailsScreenUiState.Loaded -> {
+				SeriesDetails(
+					state = state.seriesDetails,
+					onAction = { onAction(SeriesDetailsScreenUiAction.SeriesDetails(it)) },
+					modifier = Modifier.padding(padding),
+				)
+
+				val sharingSeries = state.seriesDetails.sharingSeries
+				if (sharingSeries != null) {
+					SharingSheet(
+						source = sharingSeries,
+						onDismiss = { onAction(SeriesDetailsScreenUiAction.SharingDismissed) },
+					)
+				}
+			}
 		}
 	}
 }
