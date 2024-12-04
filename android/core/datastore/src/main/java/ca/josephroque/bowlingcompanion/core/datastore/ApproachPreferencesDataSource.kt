@@ -26,6 +26,8 @@ class ApproachPreferencesDataSource @Inject constructor(
 				isOpponentMigrationComplete = it.isOpponentMigrationComplete,
 				isLegacyMigrationComplete = it.isLegacyMigrationComplete,
 				hasOpenedAccessoriesTab = it.hasOpenedAccessoriesTab,
+				userAnalyticsId =
+				if (it.userAnalyticsId.isNullOrBlank()) null else UUID.fromString(it.userAnalyticsId),
 				analyticsOptIn = when (it.analyticsOptIn) {
 					AnalyticsOptInProto.ANALYTICS_OPT_IN_OPTED_IN,
 					AnalyticsOptInProto.UNRECOGNIZED,
@@ -106,6 +108,12 @@ class ApproachPreferencesDataSource @Inject constructor(
 					SeriesItemSize.DEFAULT -> SeriesItemSizeProto.SERIES_ITEM_SIZE_DEFAULT
 				}
 			}
+		}
+	}
+
+	suspend fun setUserAnalyticsID(id: UUID) {
+		userPreferences.updateData {
+			it.copy { this.userAnalyticsId = id.toString() }
 		}
 	}
 

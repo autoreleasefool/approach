@@ -27,6 +27,7 @@ message UserPreferences {
   repeated string seen_statistics_ids = 29;
 
   // Analytics
+  string user_analytics_id = 40;
   AnalyticsOptInProto analytics_opt_in = 18;
 
   // Recently Used
@@ -54,5 +55,5 @@ message UserPreferences {
   optional string latest_game_in_editor = 33;
   optional string latest_team_series_in_editor = 38;
 
-  // Next ID: 40
+  // Next ID: 41
 }

@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.model
 
+import java.util.UUID
+
 data class UserData(
 	// Onboarding
 	val isOnboardingComplete: Boolean,
@@ -8,6 +10,7 @@ data class UserData(
 	val hasOpenedAccessoriesTab: Boolean,
 
 	// Analytics
+	val userAnalyticsId: UUID?,
 	val analyticsOptIn: AnalyticsOptInStatus,
 
 	// Statistics

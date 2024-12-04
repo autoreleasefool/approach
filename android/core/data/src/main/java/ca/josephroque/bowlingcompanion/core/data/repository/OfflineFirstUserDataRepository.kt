@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import java.util.UUID
 
 class OfflineFirstUserDataRepository @Inject constructor(
 	private val approachPreferencesDataSource: ApproachPreferencesDataSource,
@@ -33,6 +34,10 @@ class OfflineFirstUserDataRepository @Inject constructor(
 
 	override suspend fun didOpenAccessoriesTab() {
 		approachPreferencesDataSource.setHasOpenedAccessoriesTab(true)
+	}
+
+	override suspend fun setUserAnalyticsID(id: UUID) {
+		approachPreferencesDataSource.setUserAnalyticsID(id)
 	}
 
 	override suspend fun setAnalyticsOptInStatus(status: AnalyticsOptInStatus) {

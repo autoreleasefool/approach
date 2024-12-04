@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import kotlinx.coroutines.flow.Flow
+import java.util.UUID
 
 interface UserDataRepository {
 	val userData: Flow<UserData>
@@ -18,6 +19,7 @@ interface UserDataRepository {
 	suspend fun didCompleteLegacyMigration()
 	suspend fun didOpenAccessoriesTab()
 
+	suspend fun setUserAnalyticsID(id: UUID)
 	suspend fun setAnalyticsOptInStatus(status: AnalyticsOptInStatus)
 
 	suspend fun setSeriesItemSize(size: SeriesItemSize)

@@ -44,6 +44,12 @@ class TelemetryDeckAnalyticsClient @Inject constructor(
 			return
 		}
 
+		var userId = userDataRepository.userData.first().userAnalyticsId
+		if (userId == null) {
+			userId = UUID.randomUUID()
+			userDataRepository.setUserAnalyticsID(userId)
+		}
+
 		val application = context.applicationContext as? Application
 		val appId = BuildConfig.telemetryDeckAppId
 
@@ -59,6 +65,7 @@ class TelemetryDeckAnalyticsClient @Inject constructor(
 
 		val builder = TelemetryManager.Builder()
 			.appID(appId)
+			.defaultUser(userId.toString())
 			.showDebugLogs(BuildConfig.DEBUG)
 			.providers(
 				listOf(
