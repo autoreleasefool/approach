@@ -163,7 +163,7 @@ public struct FrameEditorView: View {
 			}
 			.frame(maxHeight: .infinity)
 		}
-		.onPreferenceChange(PinContainerPreferenceKey.self) { pinContainers = $0 }
+		.onPreferenceChange(PinContainerPreferenceKey.self) { [$pinContainers] in $pinContainers.wrappedValue = $0 }
 		.simultaneousGesture(
 			DragGesture()
 				.onChanged { drag in

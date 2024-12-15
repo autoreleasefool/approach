@@ -9,21 +9,21 @@ struct FrameDragHint: View {
 	let onDismiss: () -> Void
 
 	@State private var frameWidth: CGFloat = 0
-	@State private var tipContentSize: CGSize = .zero
+	@State private var tipContentHeight: CGFloat = 0
 
 	var body: some View {
-		GeometryReader { proxy in
-			VStack(alignment: .leading, spacing: 0) {
-				ViewThatFits {
-					Rectangle()
-						.fill(.clear)
-						.frame(height: tipContentSize.height)
+		VStack(alignment: .leading, spacing: 0) {
+			ViewThatFits {
+				Rectangle()
+					.fill(.clear)
+					.frame(height: tipContentHeight)
 
-					EmptyView()
-				}
+				EmptyView()
+			}
 
-				Spacer()
+			Spacer()
 
+			if frameWidth > 0 {
 				Image(systemSymbol: .handDrawFill)
 					.resizable()
 					.scaledToFit()
@@ -50,39 +50,44 @@ struct FrameDragHint: View {
 							LinearKeyframe(1.0, duration: 0.5, timingCurve: .linear)
 						}
 					}
-					.onChange(of: proxy.size.width, initial: true) { _, newValue in
-						guard newValue > 0 else { return }
-						frameWidth = newValue
-					}
-
-				Spacer()
-
-				ShortTipView(tip: .frameDragTip, onDismiss: onDismiss)
-					.padding()
-					.background(
-						RoundedRectangle(cornerRadius: .standardRadius)
-							.fill(Asset.Colors.Background.default.swiftUIColor)
-					)
-					.padding()
-					.measure(key: TipContentSizeKey.self, to: $tipContentSize)
 			}
-			.frame(maxWidth: .infinity, alignment: .leading)
-			.background(
-				Rectangle()
-					.fill(
-							.linearGradient(
-							.init(stops: [
-								.init(color: .black.opacity(0.0), location: 0.0),
-								.init(color: .black.opacity(0.6), location: 0.05),
-								.init(color: .black.opacity(0.6), location: 0.95),
-								.init(color: .black.opacity(0.0), location: 1.0),
-							]),
-							startPoint: .top,
-							endPoint: .bottom
-						)
-					)
-			)
+
+			Spacer()
+
+			ShortTipView(tip: .frameDragTip, onDismiss: onDismiss)
+				.padding()
+				.background(
+					RoundedRectangle(cornerRadius: .standardRadius)
+						.fill(Asset.Colors.Background.default.swiftUIColor)
+				)
+				.padding()
+				.onGeometryChange(
+					for: CGFloat.self,
+					of: { $0.size.height },
+					action: { tipContentHeight = $0 }
+				)
 		}
+		.frame(maxWidth: .infinity, alignment: .leading)
+		.background(
+			Rectangle()
+				.fill(
+						.linearGradient(
+						.init(stops: [
+							.init(color: .black.opacity(0.0), location: 0.0),
+							.init(color: .black.opacity(0.6), location: 0.05),
+							.init(color: .black.opacity(0.6), location: 0.95),
+							.init(color: .black.opacity(0.0), location: 1.0),
+						]),
+						startPoint: .top,
+						endPoint: .bottom
+					)
+				)
+		)
+		.onGeometryChange(
+			for: CGFloat.self,
+			of: { $0.size.width },
+			action: { frameWidth = $0 }
+		)
 	}
 }
 
@@ -95,5 +100,3 @@ private struct AnimationValues {
 extension Tip {
 	static let frameDragTip = Tip(title: Strings.Frame.Editor.DragHint.message)
 }
-
-private struct TipContentSizeKey: PreferenceKey, CGSizePreferenceKey {}

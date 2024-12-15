@@ -50,26 +50,12 @@ public struct AlleyLanesEditorView: View {
 		.sheet(item: $store.scope(state: \.destination?.addLaneForm, action: \.internal.destination.addLaneForm)) {
 			AddLaneFormView(store: $0)
 				.padding()
-				.overlay {
-					GeometryReader { proxy in
-						Color.clear
-							.preference(
-								key: HeightPreferenceKey.self,
-								value: proxy.size.height + safeAreaInsetsProvider.get().bottom
-							)
-					}
-				}
-				.onPreferenceChange(HeightPreferenceKey.self) { newHeight in
-					addLaneSheetHeight = newHeight
-				}
+				.onGeometryChange(
+					for: CGFloat.self,
+					of: { $0.size.height },
+					action: { addLaneSheetHeight = $0 }
+				)
 				.presentationDetents([.height(addLaneSheetHeight), .medium])
 		}
-	}
-}
-
-private struct HeightPreferenceKey: PreferenceKey {
-	static let defaultValue: CGFloat = .zero
-	static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-		value = nextValue()
 	}
 }

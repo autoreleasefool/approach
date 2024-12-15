@@ -26,6 +26,7 @@ public struct ShortTipView: View {
 			.buttonStyle(TappableElement())
 		}
 		.frame(maxWidth: .infinity)
+		.onTapGesture(perform: onDismiss)
 	}
 }
 
