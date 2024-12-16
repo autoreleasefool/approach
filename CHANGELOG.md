@@ -7,11 +7,11 @@
 - Chore: More distinct icons in sharing menu
 ```
 
-## Android 4.4.0b337
+## Android 4.4.1b338
 
 ```
-- Feat: High Series for 2-20 games
-- Chore: Send less lifecycle events
+- Fix: Statistics for items that are ignored are now correctly calculated when viewing stats for those items specifically
+- Fix: Statistic Picker sources can now be unselected
 ```
 
 ---
@@ -230,6 +230,13 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.4.0b337
+
+```
+- Feat: High Series for 2-20 games
+- Chore: Send less lifecycle events
+```
 
 ## Android 4.3.7b336
 
