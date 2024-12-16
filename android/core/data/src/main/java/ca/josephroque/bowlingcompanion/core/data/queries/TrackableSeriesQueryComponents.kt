@@ -1,16 +1,22 @@
 package ca.josephroque.bowlingcompanion.core.data.queries
 
 import ca.josephroque.bowlingcompanion.core.common.utils.mapOfNullableValues
+import ca.josephroque.bowlingcompanion.core.data.queries.TrackableFrameQueryComponents
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 
 data class TrackableSeriesQueryComponents(
-	val tableAlias: String = "series",
+	override val tableAlias: String = "series",
+	val source: TrackableFilter.Source,
 	val filter: TrackableFilter.SeriesFilter,
-) {
-	fun buildJoinClause(parentTable: String, parentColumn: String, childColumn: String): String =
+) : QueryComponent {
+	constructor(filter: TrackableFilter) : this(source = filter.source, filter = filter.series)
+
+	override fun buildFromClause(): String = "FROM series AS $tableAlias"
+
+	override fun buildJoinClause(parentTable: String, parentColumn: String, childColumn: String): String =
 		" JOIN series AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn"
 
-	fun buildWhereClause(): List<String> {
+	override fun buildWhereClauses(): List<String> {
 		val whereConditions = mutableListOf<String>()
 
 		// Filter excluded series
@@ -49,7 +55,7 @@ data class TrackableSeriesQueryComponents(
 		return whereConditions
 	}
 
-	fun whereClauseArgs(): Map<String, Any> = mapOfNullableValues(
+	override fun whereClauseArgs(): Map<String, Any> = mapOfNullableValues(
 		"$tableAlias.startDate" to filter.startDate.toString(),
 		"$tableAlias.endDate" to filter.endDate.toString(),
 		"$tableAlias.alleyId" to (filter.alleys as? TrackableFilter.AlleyFilter.Alley)?.id,
@@ -63,5 +69,5 @@ data class TrackableSeriesQueryComponents(
 			(filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.pinBase,
 	)
 
-	fun buildOrderClause(): List<String> = listOf("$tableAlias.date ASC")
+	override fun buildOrderClause(): List<String> = listOf("$tableAlias.date ASC")
 }

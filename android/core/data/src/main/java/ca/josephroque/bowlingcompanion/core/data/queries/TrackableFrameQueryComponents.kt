@@ -4,13 +4,18 @@ import ca.josephroque.bowlingcompanion.core.common.utils.mapOfNullableValues
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 
 data class TrackableFrameQueryComponents(
-	val tableAlias: String = "frames",
+	override val tableAlias: String = "frames",
+	val source: TrackableFilter.Source,
 	val filter: TrackableFilter.FrameFilter,
-) {
-	fun buildJoinClause(parentTable: String, parentColumn: String, childColumn: String): String =
+) : QueryComponent {
+	constructor(filter: TrackableFilter) : this(source = filter.source, filter = filter.frames)
+
+	override fun buildFromClause(): String = "FROM frames AS $tableAlias"
+
+	override fun buildJoinClause(parentTable: String, parentColumn: String, childColumn: String): String =
 		"JOIN frames AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn"
 
-	fun buildWhereClause(): List<String> {
+	override fun buildWhereClauses(): List<String> {
 		return emptyList()
 // 		val whereConditions = mutableListOf<String>()
 
@@ -20,7 +25,7 @@ data class TrackableFrameQueryComponents(
 // 		return whereConditions
 	}
 
-	fun whereClauseArgs(): Map<String, Any> = mapOfNullableValues()
+	override fun whereClauseArgs(): Map<String, Any> = mapOfNullableValues()
 
-	fun buildOrderClause(): List<String> = listOf("$tableAlias.`index` ASC")
+	override fun buildOrderClause(): List<String> = listOf("$tableAlias.`index` ASC")
 }

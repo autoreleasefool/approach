@@ -16,10 +16,10 @@ data class TrackableFramesSequence(
 	val filter: TrackableFilter,
 	val statisticsDao: StatisticsDao,
 ) : TrackableSequence<TrackableFrameEntity, TrackableFrame>() {
-	private val leaguesQuery = TrackableLeagueQueryComponents(filter = filter.leagues)
-	private val seriesQuery = TrackableSeriesQueryComponents(filter = filter.series)
-	private val gamesQuery = TrackableGameQueryComponents(filter = filter.games)
-	private val framesQuery = TrackableFrameQueryComponents(filter = filter.frames)
+	private val leaguesQuery = TrackableLeagueQueryComponents(filter = filter)
+	private val seriesQuery = TrackableSeriesQueryComponents(filter = filter)
+	private val gamesQuery = TrackableGameQueryComponents(filter = filter)
+	private val framesQuery = TrackableFrameQueryComponents(filter = filter)
 
 	override fun getPagingSource(
 		query: String,
@@ -48,9 +48,9 @@ data class TrackableFramesSequence(
 
 	override fun buildWhereStatement() = listOf(
 		leaguesQuery.buildWhereClauses(),
-		seriesQuery.buildWhereClause(),
-		gamesQuery.buildWhereClause(),
-		framesQuery.buildWhereClause(),
+		seriesQuery.buildWhereClauses(),
+		gamesQuery.buildWhereClauses(),
+		framesQuery.buildWhereClauses(),
 		filter.source.buildWhereClause(
 			leagueTableAlias = leaguesQuery.tableAlias,
 			seriesTableAlias = seriesQuery.tableAlias,

@@ -15,11 +15,11 @@ data class TrackableSeriesSequence(
 	val filter: TrackableFilter,
 	val statisticsDao: StatisticsDao,
 ) : TrackableSequence<TrackableSeriesEntity, TrackableSeries>() {
-	private val leaguesQuery = TrackableLeagueQueryComponents(filter = filter.leagues)
-	private val seriesQuery = TrackableSeriesQueryComponents(filter = filter.series)
+	private val leaguesQuery = TrackableLeagueQueryComponents(filter = filter)
+	private val seriesQuery = TrackableSeriesQueryComponents(filter = filter)
 
 	// Pass default filter because we want all un-excluded games for counting the total games/score
-	private val gamesQuery = TrackableGameQueryComponents(filter = TrackableFilter.GameFilter())
+	private val gamesQuery = TrackableGameQueryComponents(source = filter.source, filter = TrackableFilter.GameFilter())
 
 	override fun getPagingSource(
 		query: String,
@@ -43,8 +43,8 @@ data class TrackableSeriesSequence(
 
 	override fun buildWhereStatement() = listOf(
 		leaguesQuery.buildWhereClauses(),
-		seriesQuery.buildWhereClause(),
-		gamesQuery.buildWhereClause(),
+		seriesQuery.buildWhereClauses(),
+		gamesQuery.buildWhereClauses(),
 		filter.source.buildWhereClause(
 			leagueTableAlias = leaguesQuery.tableAlias,
 			seriesTableAlias = seriesQuery.tableAlias,

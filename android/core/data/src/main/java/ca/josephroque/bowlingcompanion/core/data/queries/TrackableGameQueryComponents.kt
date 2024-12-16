@@ -1,21 +1,27 @@
 package ca.josephroque.bowlingcompanion.core.data.queries
 
 import ca.josephroque.bowlingcompanion.core.common.utils.mapOfNullableValues
+import ca.josephroque.bowlingcompanion.core.data.queries.TrackableFrameQueryComponents
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 
 data class TrackableGameQueryComponents(
-	val tableAlias: String = "games",
+	override val tableAlias: String = "games",
+	val source: TrackableFilter.Source,
 	val filter: TrackableFilter.GameFilter,
-) {
+) : QueryComponent {
 	val matchPlayTableAlias = "${tableAlias}MatchPlays"
 
-	fun buildJoinClause(parentTable: String, parentColumn: String, childColumn: String): String =
+	constructor(filter: TrackableFilter) : this(source = filter.source, filter = filter.games)
+
+	override fun buildFromClause(): String = "FROM games AS $tableAlias"
+
+	override fun buildJoinClause(parentTable: String, parentColumn: String, childColumn: String): String =
 		listOf(
 			"JOIN games AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn",
 			"LEFT JOIN match_plays AS $matchPlayTableAlias ON $matchPlayTableAlias.game_id = $tableAlias.id",
 		).joinToString("\n")
 
-	fun buildWhereClause(): List<String> {
+	override fun buildWhereClauses(): List<String> {
 		val whereConditions = mutableListOf<String>()
 
 		// Filter excluded games
@@ -42,7 +48,7 @@ data class TrackableGameQueryComponents(
 		return whereConditions
 	}
 
-	fun whereClauseArgs(): Map<String, Any> = mapOfNullableValues()
+	override fun whereClauseArgs(): Map<String, Any> = mapOfNullableValues()
 
-	fun buildOrderClause(): List<String> = listOf("$tableAlias.`index` ASC")
+	override fun buildOrderClause(): List<String> = listOf("$tableAlias.`index` ASC")
 }
