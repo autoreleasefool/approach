@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.queries
 
 import ca.josephroque.bowlingcompanion.core.common.utils.mapOfNullableValues
-import ca.josephroque.bowlingcompanion.core.data.queries.TrackableFrameQueryComponents
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 
 data class TrackableSeriesQueryComponents(
@@ -9,7 +8,16 @@ data class TrackableSeriesQueryComponents(
 	val source: TrackableFilter.Source,
 	val filter: TrackableFilter.SeriesFilter,
 ) : QueryComponent {
-	constructor(filter: TrackableFilter) : this(source = filter.source, filter = filter.series)
+	constructor(filter: TrackableFilter) : this(
+		source = filter.source,
+		filter = when (filter.source) {
+			is TrackableFilter.Source.Team,
+			is TrackableFilter.Source.Bowler,
+			is TrackableFilter.Source.League -> filter.series
+			is TrackableFilter.Source.Series,
+			is TrackableFilter.Source.Game -> TrackableFilter.SeriesFilter()
+		}
+	)
 
 	override fun buildFromClause(): String = "FROM series AS $tableAlias"
 
@@ -17,6 +25,14 @@ data class TrackableSeriesQueryComponents(
 		" JOIN series AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn"
 
 	override fun buildWhereClauses(): List<String> {
+		when (source) {
+			is TrackableFilter.Source.Team,
+			is TrackableFilter.Source.Bowler,
+			is TrackableFilter.Source.League -> Unit
+			is TrackableFilter.Source.Series,
+			is TrackableFilter.Source.Game -> return emptyList()
+		}
+
 		val whereConditions = mutableListOf<String>()
 
 		// Filter excluded series

@@ -11,7 +11,16 @@ data class TrackableGameQueryComponents(
 ) : QueryComponent {
 	val matchPlayTableAlias = "${tableAlias}MatchPlays"
 
-	constructor(filter: TrackableFilter) : this(source = filter.source, filter = filter.games)
+	constructor(filter: TrackableFilter) : this(
+		source = filter.source,
+		filter = when (filter.source) {
+			is TrackableFilter.Source.Team,
+			is TrackableFilter.Source.Bowler,
+			is TrackableFilter.Source.League,
+			is TrackableFilter.Source.Series -> filter.games
+			is TrackableFilter.Source.Game -> TrackableFilter.GameFilter()
+		}
+	)
 
 	override fun buildFromClause(): String = "FROM games AS $tableAlias"
 
@@ -22,6 +31,14 @@ data class TrackableGameQueryComponents(
 		).joinToString("\n")
 
 	override fun buildWhereClauses(): List<String> {
+		when (source) {
+			is TrackableFilter.Source.Team,
+			is TrackableFilter.Source.Bowler,
+			is TrackableFilter.Source.League,
+			is TrackableFilter.Source.Series -> Unit
+			is TrackableFilter.Source.Game -> return emptyList()
+		}
+
 		val whereConditions = mutableListOf<String>()
 
 		// Filter excluded games

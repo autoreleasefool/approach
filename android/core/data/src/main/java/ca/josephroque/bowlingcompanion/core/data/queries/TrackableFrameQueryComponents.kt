@@ -8,7 +8,16 @@ data class TrackableFrameQueryComponents(
 	val source: TrackableFilter.Source,
 	val filter: TrackableFilter.FrameFilter,
 ) : QueryComponent {
-	constructor(filter: TrackableFilter) : this(source = filter.source, filter = filter.frames)
+	constructor(filter: TrackableFilter) : this(
+		source = filter.source,
+		filter = when (filter.source) {
+			is TrackableFilter.Source.Team,
+			is TrackableFilter.Source.Bowler,
+			is TrackableFilter.Source.League,
+			is TrackableFilter.Source.Series,
+			is TrackableFilter.Source.Game -> filter.frames
+		}
+	)
 
 	override fun buildFromClause(): String = "FROM frames AS $tableAlias"
 
