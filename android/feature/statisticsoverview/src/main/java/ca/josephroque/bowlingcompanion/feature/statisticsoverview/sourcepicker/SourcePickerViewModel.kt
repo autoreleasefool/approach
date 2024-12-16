@@ -93,32 +93,69 @@ class SourcePickerViewModel @Inject constructor(
 	}
 
 	private fun setFilterTeam(teamId: TeamID?) {
-		teamId?.let {
-			source.value = TrackableFilter.Source.Team(it)
-		}
+		source.value = teamId?.let { TrackableFilter.Source.Team(it) }
 	}
 
 	private fun setFilterBowler(bowlerId: BowlerID?) {
-		bowlerId?.let {
-			source.value = TrackableFilter.Source.Bowler(it)
-		}
+		source.value = bowlerId?.let { TrackableFilter.Source.Bowler(it) }
 	}
 
 	private fun setFilterLeague(leagueId: LeagueID?) {
-		leagueId?.let {
-			source.value = TrackableFilter.Source.League(it)
+		if (leagueId == null) {
+			viewModelScope.launch {
+				val summaries = sourceSummaries.first()
+				source.value = when (summaries) {
+					is TrackableFilter.SourceSummaries.Team -> TrackableFilter.Source.Team(summaries.team.id)
+					is TrackableFilter.SourceSummaries.Bowler -> TrackableFilter.Source.Bowler(summaries.bowler.id)
+					null -> null
+				}
+			}
+		} else {
+			source.value = TrackableFilter.Source.League(leagueId)
 		}
 	}
 
 	private fun setFilterSeries(seriesId: SeriesID?) {
-		seriesId?.let {
-			source.value = TrackableFilter.Source.Series(it)
+		if (seriesId == null) {
+			viewModelScope.launch {
+				val summaries = sourceSummaries.first()
+				when (summaries) {
+					is TrackableFilter.SourceSummaries.Team -> TrackableFilter.Source.Team(summaries.team.id)
+					is TrackableFilter.SourceSummaries.Bowler -> {
+						val leagueId = summaries.league?.id
+						when {
+							leagueId != null -> source.value = TrackableFilter.Source.League(leagueId)
+							else -> source.value = TrackableFilter.Source.Bowler(summaries.bowler.id)
+						}
+					}
+					null -> source.value = null
+				}
+			}
+		} else {
+			source.value = TrackableFilter.Source.Series(seriesId)
 		}
 	}
 
 	private fun setFilterGame(gameId: GameID?) {
-		gameId?.let {
-			source.value = TrackableFilter.Source.Game(it)
+		if (gameId == null) {
+			viewModelScope.launch {
+				val summaries = sourceSummaries.first()
+				when (summaries) {
+					is TrackableFilter.SourceSummaries.Team -> TrackableFilter.Source.Team(summaries.team.id)
+					is TrackableFilter.SourceSummaries.Bowler -> {
+						val seriesId = summaries.series?.id
+						val leagueId = summaries.league?.id
+						when {
+							seriesId != null -> source.value = TrackableFilter.Source.Series(seriesId)
+							leagueId != null -> source.value = TrackableFilter.Source.League(leagueId)
+							else -> source.value = TrackableFilter.Source.Bowler(summaries.bowler.id)
+						}
+					}
+					null -> source.value = null
+				}
+			}
+		} else {
+			source.value = TrackableFilter.Source.Game(gameId)
 		}
 	}
 
