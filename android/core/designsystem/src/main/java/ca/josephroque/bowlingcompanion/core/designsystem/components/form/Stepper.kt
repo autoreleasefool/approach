@@ -29,7 +29,7 @@ fun Stepper(
 	modifier: Modifier = Modifier,
 ) {
 	val changeValue = { newValue: Int ->
-		val coercedValue = (value + newValue).coerceIn(range ?: Int.MIN_VALUE..Int.MAX_VALUE)
+		val coercedValue = newValue.coerceIn(range ?: Int.MIN_VALUE..Int.MAX_VALUE)
 		onValueChanged(coercedValue)
 	}
 
@@ -42,7 +42,13 @@ fun Stepper(
 	) {
 		OutlinedTextField(
 			value = value.toString(),
-			onValueChange = { changeValue(it.toIntOrNull() ?: 1) },
+			onValueChange = {
+				if (value == 1 && it.matches(Regex("^\\d1$"))) {
+					changeValue(it.first().digitToIntOrNull() ?: 1)
+				} else {
+					changeValue(it.toIntOrNull() ?: 1)
+				}
+			},
 			label = { Text(title) },
 			singleLine = true,
 			keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
