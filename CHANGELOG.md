@@ -7,11 +7,10 @@
 - Chore: More distinct icons in sharing menu
 ```
 
-## Android 4.4.1b338
+## Android 4.4.2b339
 
 ```
-- Fix: Statistics for items that are ignored are now correctly calculated when viewing stats for those items specifically
-- Fix: Statistic Picker sources can now be unselected
+- Fix: Stepper correctly increments and decrements
 ```
 
 ---
@@ -230,6 +229,13 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.4.1b338
+
+```
+- Fix: Statistics for items that are ignored are now correctly calculated when viewing stats for those items specifically
+- Fix: Statistic Picker sources can now be unselected
+```
 
 ## Android 4.4.0b337
 
