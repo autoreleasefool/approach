@@ -9,6 +9,7 @@ import MapKit
 import ModelsLibrary
 import PickableModelsLibrary
 import ResourcePickerLibrary
+import Sharing
 import StringsLibrary
 import SwiftUI
 

@@ -114,6 +114,7 @@ dependencies = [ "SwiftUIExtensionsPackageLibrary" ]
 features = [ "Form" ]
 repositories = [ "Alleys", "Leagues" ]
 libraries = [ "ModelsViews", "PickableModels" ]
+dependencies = [ "Sharing" ]
 
 [features.LeaguesList]
 features = [ "SeriesList", "StatisticsWidgetsLayout" ]
@@ -480,6 +481,7 @@ GRDB = { url = "https://github.com/groue/GRDB.swift.git", from = "6.29.3" }
 IdentifiedCollections = { url = "https://github.com/pointfreeco/swift-identified-collections.git", from = "1.1.0" }
 Sentry = { url = "https://github.com/getsentry/sentry-cocoa.git", from = "8.41.0" }
 SFSafeSymbols = { url = "https://github.com/SFSafeSymbols/SFSafeSymbols.git", from = "5.3.0" }
+Sharing = { url = "https://github.com/pointfreeco/swift-sharing.git", from = "1.1.1" }
 SnapshotTesting = { url = "https://github.com/pointfreeco/swift-snapshot-testing.git", from = "1.17.6" }
 SwiftUtilities = { url = "https://github.com/autoreleasefool/swift-utilities.git", from = "2.7.1" }
 ToastUI = { url = "https://github.com/quanshousio/ToastUI.git", from = "4.0.0" }
@@ -556,6 +558,8 @@ dep_ref = "Sentry"
 dep_ref = "SwiftUtilities"
 [dependencies.SFSafeSymbols]
 dep_ref = "SFSafeSymbols"
+[dependencies.Sharing]
+dep_ref = "Sharing"
 [dependencies.SnapshotTesting]
 dep_ref = "SnapshotTesting"
 suitable_for_dependents_matching = "\\w+Tests$"
