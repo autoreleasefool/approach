@@ -74,58 +74,36 @@ fun LeagueForm(
 			)
 		}
 
-		state.recurrence?.let {
+		if (!state.isEditing) {
 			HorizontalDivider()
+
 			FormSection(Modifier.padding(top = 16.dp)) {
 				RecurrencePicker(
-					recurrence = it,
+					recurrence = state.recurrence,
 					onRecurrenceChanged = { onAction(LeagueFormUiAction.RecurrenceChanged(it)) },
 				)
 			}
 		}
 
-		if (state.recurrence != null || state.gamesPerSeries != null) {
-			HorizontalDivider()
+		when (state.recurrence) {
+			LeagueRecurrence.ONCE -> Unit
+			LeagueRecurrence.REPEATING -> {
+				HorizontalDivider()
 
-			when (state.recurrence) {
-				LeagueRecurrence.ONCE, null -> Unit
-				LeagueRecurrence.REPEATING -> state.gamesPerSeries?.let {
-					FormSection(Modifier.padding(top = 16.dp)) {
-						GamesPerSeriesPicker(
-							gamesPerSeries = it,
-							onGamesPerSeriesChanged = {
-								onAction(
-									LeagueFormUiAction.GamesPerSeriesChanged(
-										it,
-									),
-								)
-							},
-						)
-					}
-				}
-			}
-
-			when (state.gamesPerSeries) {
-				GamesPerSeries.DYNAMIC, null -> Unit
-				GamesPerSeries.STATIC -> state.numberOfGames?.let {
-					FormSection(
-						titleResourceId = when (state.recurrence) {
-							LeagueRecurrence.ONCE -> R.string.league_form_property_number_of_games
-							LeagueRecurrence.REPEATING, null -> null
+				FormSection(
+					titleResourceId = R.string.league_form_property_number_of_games,
+					footerResourceId = when (state.recurrence) {
+						LeagueRecurrence.ONCE -> null
+						LeagueRecurrence.REPEATING -> R.string.league_form_property_number_of_games_footer
+					},
+					modifier = Modifier.padding(vertical = 16.dp),
+				) {
+					NumberOfGamesSlider(
+						numberOfGames = state.numberOfGames,
+						onNumberOfGamesChanged = {
+							onAction(LeagueFormUiAction.NumberOfGamesChanged(it))
 						},
-						modifier = Modifier.padding(vertical = 16.dp),
-					) {
-						NumberOfGamesSlider(
-							numberOfGames = it,
-							onNumberOfGamesChanged = {
-								onAction(
-									LeagueFormUiAction.NumberOfGamesChanged(
-										it,
-									),
-								)
-							},
-						)
-					}
+					)
 				}
 			}
 		}
@@ -291,36 +269,6 @@ private fun ExcludeFromStatisticsPicker(
 }
 
 @Composable
-private fun GamesPerSeriesPicker(
-	gamesPerSeries: GamesPerSeries,
-	onGamesPerSeriesChanged: (GamesPerSeries) -> Unit,
-) {
-	FormRadioGroup(
-		title = stringResource(R.string.league_form_property_number_of_games),
-		subtitle = stringResource(
-			R.string.league_form_property_number_of_games_footer,
-			stringResource(R.string.league_form_property_number_of_games_constant),
-			stringResource(R.string.league_form_property_number_of_games_always_ask),
-		),
-		options = GamesPerSeries.entries.toTypedArray(),
-		selected = gamesPerSeries,
-		titleForOption = {
-			when (it) {
-				GamesPerSeries.STATIC -> stringResource(R.string.league_form_property_number_of_games_constant)
-				GamesPerSeries.DYNAMIC -> stringResource(
-					R.string.league_form_property_number_of_games_always_ask,
-				)
-				null -> ""
-			}
-		},
-		onOptionSelected = {
-			it ?: return@FormRadioGroup
-			onGamesPerSeriesChanged(it)
-		},
-	)
-}
-
-@Composable
 private fun NumberOfGamesSlider(numberOfGames: Int, onNumberOfGamesChanged: (Int) -> Unit) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
@@ -433,7 +381,7 @@ private fun LeagueFormPreview() {
 	Surface {
 		LeagueForm(
 			state = LeagueFormUiState(
-// 				includeAdditionalPinFall = IncludeAdditionalPinFall.INCLUDE
+				isEditing = true,
 			),
 			onAction = {},
 		)

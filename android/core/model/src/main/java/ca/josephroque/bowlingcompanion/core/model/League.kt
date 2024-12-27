@@ -71,6 +71,7 @@ data class LeagueUpdate(
 	val additionalPinFall: Int?,
 	val additionalGames: Int?,
 	val excludeFromStatistics: ExcludeFromStatistics,
+	val numberOfGames: Int?,
 )
 
 enum class LeagueRecurrence {

@@ -64,6 +64,7 @@ data class LeagueUpdateEntity(
 	@ColumnInfo(name = "additional_pin_fall") val additionalPinFall: Int?,
 	@ColumnInfo(name = "additional_games") val additionalGames: Int?,
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
+	@ColumnInfo(name = "number_of_games") val numberOfGames: Int?,
 )
 
 fun LeagueUpdate.asEntity(): LeagueUpdateEntity = LeagueUpdateEntity(
@@ -72,4 +73,5 @@ fun LeagueUpdate.asEntity(): LeagueUpdateEntity = LeagueUpdateEntity(
 	additionalPinFall = additionalPinFall,
 	additionalGames = additionalGames,
 	excludeFromStatistics = excludeFromStatistics,
+	numberOfGames = numberOfGames,
 )

@@ -9,26 +9,21 @@ enum class IncludeAdditionalPinFall {
 	NONE,
 }
 
-enum class GamesPerSeries {
-	STATIC,
-	DYNAMIC,
-}
-
 data class LeagueFormTopBarUiState(
 	val existingName: String? = null,
 	val isSaveButtonEnabled: Boolean = false,
 )
 
 data class LeagueFormUiState(
+	val isEditing: Boolean,
 	val name: String = "",
 	@StringRes val nameErrorId: Int? = null,
 	val excludeFromStatistics: ExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 	val includeAdditionalPinFall: IncludeAdditionalPinFall = IncludeAdditionalPinFall.NONE,
 	val additionalPinFall: Int = 0,
 	val additionalGames: Int = 0,
-	val recurrence: LeagueRecurrence? = LeagueRecurrence.REPEATING,
-	val numberOfGames: Int? = 4,
-	val gamesPerSeries: GamesPerSeries? = GamesPerSeries.DYNAMIC,
+	val recurrence: LeagueRecurrence = LeagueRecurrence.REPEATING,
+	val numberOfGames: Int = 4,
 	val isShowingArchiveDialog: Boolean = false,
 	val isArchiveButtonEnabled: Boolean = false,
 	val isShowingDiscardChangesDialog: Boolean = false,
@@ -53,7 +48,6 @@ sealed interface LeagueFormUiAction {
 		val includeAdditionalPinFall: IncludeAdditionalPinFall,
 	) : LeagueFormUiAction
 	data class NumberOfGamesChanged(val numberOfGames: Int) : LeagueFormUiAction
-	data class GamesPerSeriesChanged(val gamesPerSeries: GamesPerSeries) : LeagueFormUiAction
 	data class AdditionalPinFallChanged(val additionalPinFall: Int) : LeagueFormUiAction
 	data class AdditionalGamesChanged(val additionalGames: Int) : LeagueFormUiAction
 }

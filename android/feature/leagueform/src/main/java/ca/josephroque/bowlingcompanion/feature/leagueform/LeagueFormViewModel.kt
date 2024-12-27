@@ -15,8 +15,8 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueCreate
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueUpdate
+import ca.josephroque.bowlingcompanion.core.model.Series
 import ca.josephroque.bowlingcompanion.core.navigation.Route
-import ca.josephroque.bowlingcompanion.feature.leagueform.ui.GamesPerSeries
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.IncludeAdditionalPinFall
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormUiAction
@@ -67,7 +67,6 @@ class LeagueFormViewModel @Inject constructor(
 				action.excludeFromStatistics,
 			)
 			is LeagueFormUiAction.NumberOfGamesChanged -> updateNumberOfGames(action.numberOfGames)
-			is LeagueFormUiAction.GamesPerSeriesChanged -> updateGamesPerSeries(action.gamesPerSeries)
 			is LeagueFormUiAction.IncludeAdditionalPinFallChanged -> updateIncludeAdditionalPinFall(
 				action.includeAdditionalPinFall,
 			)
@@ -91,7 +90,9 @@ class LeagueFormViewModel @Inject constructor(
 					topBar = LeagueFormTopBarUiState(
 						existingName = null,
 					),
-					form = LeagueFormUiState(),
+					form = LeagueFormUiState(
+						isEditing = false,
+					),
 				)
 			} else {
 				val league = leaguesRepository.getLeagueDetails(leagueId)
@@ -102,6 +103,7 @@ class LeagueFormViewModel @Inject constructor(
 					additionalGames = league.additionalGames,
 					additionalPinFall = league.additionalPinFall,
 					excludeFromStatistics = league.excludeFromStatistics,
+					numberOfGames = league.numberOfGames,
 				)
 
 				val additionalGames = update.additionalGames
@@ -112,6 +114,7 @@ class LeagueFormViewModel @Inject constructor(
 						existingName = league.name,
 					),
 					form = LeagueFormUiState(
+						isEditing = true,
 						name = league.name,
 						nameErrorId = null,
 						excludeFromStatistics = league.excludeFromStatistics,
@@ -122,9 +125,8 @@ class LeagueFormViewModel @Inject constructor(
 						},
 						additionalPinFall = league.additionalPinFall ?: 0,
 						additionalGames = additionalGames ?: 0,
-						recurrence = null,
-						numberOfGames = null,
-						gamesPerSeries = null,
+						recurrence = league.recurrence,
+						numberOfGames = league.numberOfGames ?: Series.DEFAULT_NUMBER_OF_GAMES,
 						isShowingArchiveDialog = false,
 						isArchiveButtonEnabled = true,
 						isShowingDiscardChangesDialog = false,
@@ -153,10 +155,7 @@ class LeagueFormViewModel @Inject constructor(
 							id = leagueId ?: LeagueID.randomID(),
 							name = state.form.name,
 							recurrence = state.form.recurrence ?: LeagueRecurrence.REPEATING,
-							numberOfGames = when (state.form.gamesPerSeries) {
-								GamesPerSeries.DYNAMIC, null -> null
-								GamesPerSeries.STATIC -> state.form.numberOfGames
-							},
+							numberOfGames = state.form.numberOfGames,
 							additionalPinFall = when (state.form.includeAdditionalPinFall) {
 								IncludeAdditionalPinFall.INCLUDE -> additionalPinFall
 								IncludeAdditionalPinFall.NONE -> null
@@ -250,13 +249,7 @@ class LeagueFormViewModel @Inject constructor(
 
 	private fun updateRecurrence(recurrence: LeagueRecurrence) {
 		_uiState.updateForm {
-			it.copy(
-				recurrence = recurrence,
-				gamesPerSeries = when (recurrence) {
-					LeagueRecurrence.REPEATING -> it.gamesPerSeries
-					LeagueRecurrence.ONCE -> GamesPerSeries.STATIC
-				},
-			)
+			it.copy(recurrence = recurrence)
 		}
 	}
 
@@ -268,12 +261,6 @@ class LeagueFormViewModel @Inject constructor(
 					League.NumberOfGamesRange.first,
 				),
 			)
-		}
-	}
-
-	private fun updateGamesPerSeries(gamesPerSeries: GamesPerSeries) {
-		_uiState.updateForm {
-			it.copy(gamesPerSeries = gamesPerSeries)
 		}
 	}
 

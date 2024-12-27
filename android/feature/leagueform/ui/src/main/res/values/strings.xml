@@ -21,9 +21,7 @@
 	<string name="league_form_property_exclude_footer">This league and all of its games will not count towards any statistics. They will still appear in the app, but won\'t affect your overall average or other statistics.</string>
 
 	<string name="league_form_property_number_of_games">Number of games</string>
-	<string name="league_form_property_number_of_games_constant">Constant</string>
-	<string name="league_form_property_number_of_games_always_ask">Always ask me</string>
-	<string name="league_form_property_number_of_games_footer">Choose \'%1$s\' if you always play the same number of games each series, or \'%2$s\' to choose to number of games each time you bowl.</string>
+	<string name="league_form_property_number_of_games_footer">Set the default number of games you plan on bowling in this league or event. You can always add or remove games later.</string>
 
 	<string name="league_form_property_pinfall">Include additional pinfall?</string>
 	<string name="league_form_property_pinfall_footer">If you\'re starting recording partway through the season, you can add missing pinfall here to ensure your average in the app matches the average determined by your league.</string>

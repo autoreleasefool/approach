@@ -22,7 +22,7 @@ sealed interface LeagueFormScreenUiState {
 		LeagueFormScreenUiState {
 		override fun isSavable(): Boolean = form.name.isNotBlank()
 
-		override fun hasAnyChanges(): Boolean = form != LeagueFormUiState()
+		override fun hasAnyChanges(): Boolean = form != LeagueFormUiState(isEditing = form.isEditing)
 	}
 
 	data class Edit(
@@ -49,6 +49,7 @@ fun LeagueFormUiState.updatedModel(id: LeagueID): LeagueUpdate = LeagueUpdate(
 		IncludeAdditionalPinFall.NONE -> null
 	},
 	excludeFromStatistics = excludeFromStatistics,
+	numberOfGames = numberOfGames,
 )
 
 sealed interface LeagueFormScreenUiAction {
