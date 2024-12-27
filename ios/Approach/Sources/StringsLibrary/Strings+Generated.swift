@@ -1022,17 +1022,9 @@ public enum Strings {
           /// Statistics
           public static let title = Strings.tr("Localizable", "league.editor.fields.excludeFromStatistics.title", fallback: "Statistics")
         }
-        public enum GamesPerSeries {
-          /// Always ask me
-          public static let alwaysAskMe = Strings.tr("Localizable", "league.editor.fields.gamesPerSeries.alwaysAskMe", fallback: "Always ask me")
-          /// Constant
-          public static let constant = Strings.tr("Localizable", "league.editor.fields.gamesPerSeries.constant", fallback: "Constant")
-        }
         public enum NumberOfGames {
-          /// Choose '%@' if you always play the same number of games each series, or '%@' to choose the number of games each time you bowl.
-          public static func help(_ p1: Any, _ p2: Any) -> String {
-            return Strings.tr("Localizable", "league.editor.fields.numberOfGames.help", String(describing: p1), String(describing: p2), fallback: "Choose '%@' if you always play the same number of games each series, or '%@' to choose the number of games each time you bowl.")
-          }
+          /// Set the default number of games you plan on bowling in this league or event. You can always add or remove games later.
+          public static let help = Strings.tr("Localizable", "league.editor.fields.numberOfGames.help", fallback: "Set the default number of games you plan on bowling in this league or event. You can always add or remove games later.")
         }
         public enum Recurrence {
           /// Choose '%@' for leagues that happen semi-frequently, such as once a week, or choose '%@' for tournaments and one-off events.

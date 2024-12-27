@@ -148,12 +148,10 @@
 "league.properties.additionalGames" = "Additional Games";
 "league.properties.excludeFromStatistics.include" = "Include";
 "league.properties.excludeFromStatistics.exclude" = "Exclude";
-"league.editor.fields.gamesPerSeries.constant" = "Constant";
-"league.editor.fields.gamesPerSeries.alwaysAskMe" = "Always ask me";
 "league.editor.fields.alley.title" = "Alley";
 "league.editor.fields.alley.help" = "This is where you plan on bowling this league or event.";
 "league.editor.fields.recurrence.help" = "Choose '%@' for leagues that happen semi-frequently, such as once a week, or choose '%@' for tournaments and one-off events.";
-"league.editor.fields.numberOfGames.help" = "Choose '%@' if you always play the same number of games each series, or '%@' to choose the number of games each time you bowl.";
+"league.editor.fields.numberOfGames.help" = "Set the default number of games you plan on bowling in this league or event. You can always add or remove games later.";
 "league.editor.fields.additionalPinfall.title" = "Include additional pinfall?";
 "league.editor.fields.additionalPinfall.help" = "If you're starting recording partway through the season, you can add missing pinfall here to ensure your average in the app matches the average provided by your league.";
 "league.editor.fields.excludeFromStatistics.title" = "Statistics";

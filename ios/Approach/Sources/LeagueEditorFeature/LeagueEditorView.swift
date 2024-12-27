@@ -113,33 +113,16 @@ public struct LeagueEditorView: View {
 	}
 
 	@ViewBuilder private var gamesSection: some View {
-		if !store.isEditing {
-			Section {
-				Picker(
-					Strings.League.Properties.numberOfGames,
-					selection: $store.gamesPerSeries.animation()
-				) {
-					ForEach(LeagueEditor.GamesPerSeries.allCases) {
-						Text(String(describing: $0)).tag($0)
-					}
-				}
-				.disabled(store.recurrence == .once)
-
-				if store.gamesPerSeries == .static {
-					Stepper(
-						"\(store.defaultNumberOfGames)",
-						value: $store.defaultNumberOfGames,
-						in: League.NUMBER_OF_GAMES_RANGE
-					)
-				}
-			} footer: {
-				Text(
-					Strings.League.Editor.Fields.NumberOfGames.help(
-						LeagueEditor.GamesPerSeries.static,
-						LeagueEditor.GamesPerSeries.dynamic
-					)
-				)
-			}
+		Section {
+			Stepper(
+				"\(store.defaultNumberOfGames)",
+				value: $store.defaultNumberOfGames,
+				in: League.NUMBER_OF_GAMES_RANGE
+			)
+		} header: {
+			Text(Strings.League.Properties.numberOfGames)
+		} footer: {
+			Text(Strings.League.Editor.Fields.NumberOfGames.help)
 		}
 	}
 

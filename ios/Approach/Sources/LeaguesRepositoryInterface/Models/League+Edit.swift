@@ -4,9 +4,9 @@ extension League {
 	public struct Edit: Identifiable, Equatable, Codable, Sendable {
 		public let id: League.ID
 		public let recurrence: League.Recurrence
-		public let defaultNumberOfGames: Int?
 
 		public var name: String
+		public var defaultNumberOfGames: Int?
 		public var additionalPinfall: Int?
 		public var additionalGames: Int?
 		public var excludeFromStatistics: ExcludeFromStatistics
@@ -26,8 +26,8 @@ extension League {
 		public static let placeholder = Edit(
 			id: League.ID(),
 			recurrence: .repeating,
-			defaultNumberOfGames: nil,
 			name: "",
+			defaultNumberOfGames: nil,
 			excludeFromStatistics: .include
 		)
 	}

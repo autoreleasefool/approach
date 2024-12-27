@@ -28,7 +28,6 @@ public struct LeagueEditor: Reducer, Sendable {
 		public var mapPosition: MapCameraPosition
 		public var location: Alley.Summary?
 
-		public var gamesPerSeries: GamesPerSeries
 		public var hasAdditionalPinfall: Bool
 		public var shouldShowLocationSection: Bool
 
@@ -57,9 +56,8 @@ public struct LeagueEditor: Reducer, Sendable {
 				self.excludeFromStatistics = new.excludeFromStatistics
 				self.location = new.location
 				self.mapPosition = .automatic
-				defaultNumberOfGames = new.defaultNumberOfGames ?? 0
+				defaultNumberOfGames = new.defaultNumberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES
 				additionalGames = new.additionalGames ?? 0
-				self.gamesPerSeries = .dynamic
 				self.shouldShowLocationSection = new.recurrence.shouldShowLocationSection
 				self.initialValue = .create(new)
 			case let .edit(existing):
@@ -70,10 +68,9 @@ public struct LeagueEditor: Reducer, Sendable {
 				self.excludeFromStatistics = existing.excludeFromStatistics
 				self.location = existing.location
 				self.mapPosition = existing.location?.location?.coordinate.mapPosition ?? .automatic
-				defaultNumberOfGames = existing.defaultNumberOfGames ?? 0
+				defaultNumberOfGames = existing.defaultNumberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES
 				additionalGames = existing.additionalGames ?? 0
 				self.shouldShowLocationSection = existing.recurrence.shouldShowLocationSection
-				self.gamesPerSeries = defaultNumberOfGames == 0 ? .dynamic : .static
 				self.initialValue = .edit(existing)
 			}
 			self.form = .init(initialValue: self.initialValue)
@@ -87,7 +84,7 @@ public struct LeagueEditor: Reducer, Sendable {
 			case var .create(new):
 				new.name = name
 				new.recurrence = recurrence
-				new.defaultNumberOfGames = gamesPerSeries == .static ? max(1, Int(defaultNumberOfGames)) : nil
+				new.defaultNumberOfGames = defaultNumberOfGames
 				new.additionalGames = hasAdditionalPinfall ? Int(additionalGames) : nil
 				new.additionalPinfall = hasAdditionalPinfall && (new.additionalGames ?? 0) > 0 ? Int(additionalPinfall) : nil
 				new.excludeFromStatistics = excludeFromStatistics
@@ -99,24 +96,11 @@ public struct LeagueEditor: Reducer, Sendable {
 				existing.additionalPinfall =
 					hasAdditionalPinfall && (existing.additionalGames ?? 0) > 0 ? Int(additionalPinfall) : nil
 				existing.excludeFromStatistics = excludeFromStatistics
+				existing.defaultNumberOfGames = defaultNumberOfGames
 				existing.location = location
 				form.value = .edit(existing)
 			}
 		}
-	}
-
-	public enum GamesPerSeries: Int, Equatable, Identifiable, CaseIterable, CustomStringConvertible {
-		case `static`
-		case dynamic
-
-		public var description: String {
-			switch self {
-			case .static: return Strings.League.Editor.Fields.GamesPerSeries.constant
-			case .dynamic: return Strings.League.Editor.Fields.GamesPerSeries.alwaysAskMe
-			}
-		}
-
-		public var id: Int { rawValue }
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
@@ -242,7 +226,6 @@ public struct LeagueEditor: Reducer, Sendable {
 			case .binding(\.recurrence):
 				switch state.recurrence {
 				case .once:
-					state.gamesPerSeries = .static
 					state.syncFormSharedState()
 					return .run { send in await send(.internal(.setLocationSection(isShown: true)), animation: .easeInOut) }
 				case .repeating:
