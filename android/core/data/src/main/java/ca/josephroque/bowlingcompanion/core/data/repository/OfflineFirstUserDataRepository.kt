@@ -9,9 +9,9 @@ import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
+import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
 
 class OfflineFirstUserDataRepository @Inject constructor(
 	private val approachPreferencesDataSource: ApproachPreferencesDataSource,

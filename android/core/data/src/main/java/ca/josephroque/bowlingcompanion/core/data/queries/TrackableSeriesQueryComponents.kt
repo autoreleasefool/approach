@@ -13,24 +13,31 @@ data class TrackableSeriesQueryComponents(
 		filter = when (filter.source) {
 			is TrackableFilter.Source.Team,
 			is TrackableFilter.Source.Bowler,
-			is TrackableFilter.Source.League -> filter.series
+			is TrackableFilter.Source.League,
+			-> filter.series
 			is TrackableFilter.Source.Series,
-			is TrackableFilter.Source.Game -> TrackableFilter.SeriesFilter()
-		}
+			is TrackableFilter.Source.Game,
+			-> TrackableFilter.SeriesFilter()
+		},
 	)
 
 	override fun buildFromClause(): String = "FROM series AS $tableAlias"
 
-	override fun buildJoinClause(parentTable: String, parentColumn: String, childColumn: String): String =
-		" JOIN series AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn"
+	override fun buildJoinClause(
+		parentTable: String,
+		parentColumn: String,
+		childColumn: String,
+	): String = " JOIN series AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn"
 
 	override fun buildWhereClauses(): List<String> {
 		when (source) {
 			is TrackableFilter.Source.Team,
 			is TrackableFilter.Source.Bowler,
-			is TrackableFilter.Source.League -> Unit
+			is TrackableFilter.Source.League,
+			-> Unit
 			is TrackableFilter.Source.Series,
-			is TrackableFilter.Source.Game -> return emptyList()
+			is TrackableFilter.Source.Game,
+			-> return emptyList()
 		}
 
 		val whereConditions = mutableListOf<String>()

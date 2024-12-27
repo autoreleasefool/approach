@@ -8,8 +8,8 @@ import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
-import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlinx.coroutines.flow.Flow
 
 interface UserDataRepository {
 	val userData: Flow<UserData>

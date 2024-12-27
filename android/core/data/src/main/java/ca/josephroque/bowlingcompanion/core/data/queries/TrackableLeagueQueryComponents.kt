@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.queries
 
 import ca.josephroque.bowlingcompanion.core.common.utils.mapOfNullableValues
-import ca.josephroque.bowlingcompanion.core.data.queries.TrackableFrameQueryComponents
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 
 data class TrackableLeagueQueryComponents(
@@ -13,25 +12,32 @@ data class TrackableLeagueQueryComponents(
 		source = filter.source,
 		filter = when (filter.source) {
 			is TrackableFilter.Source.Team,
-			is TrackableFilter.Source.Bowler -> filter.leagues
+			is TrackableFilter.Source.Bowler,
+			-> filter.leagues
 			is TrackableFilter.Source.League,
 			is TrackableFilter.Source.Series,
-			is TrackableFilter.Source.Game -> TrackableFilter.LeagueFilter()
-		}
+			is TrackableFilter.Source.Game,
+			-> TrackableFilter.LeagueFilter()
+		},
 	)
 
 	override fun buildFromClause(): String = "FROM leagues AS $tableAlias"
 
-	override fun buildJoinClause(parentTable: String, parentColumn: String, childColumn: String): String =
-		"JOIN leagues AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn"
+	override fun buildJoinClause(
+		parentTable: String,
+		parentColumn: String,
+		childColumn: String,
+	): String = "JOIN leagues AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn"
 
 	override fun buildWhereClauses(): List<String> {
 		when (source) {
 			is TrackableFilter.Source.Team,
-			is TrackableFilter.Source.Bowler -> Unit
+			is TrackableFilter.Source.Bowler,
+			-> Unit
 			is TrackableFilter.Source.League,
 			is TrackableFilter.Source.Series,
-			is TrackableFilter.Source.Game -> return emptyList()
+			is TrackableFilter.Source.Game,
+			-> return emptyList()
 		}
 
 		val whereConditions = mutableListOf<String>()

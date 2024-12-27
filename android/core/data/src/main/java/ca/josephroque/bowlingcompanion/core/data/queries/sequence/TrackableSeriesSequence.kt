@@ -19,7 +19,8 @@ data class TrackableSeriesSequence(
 	private val seriesQuery = TrackableSeriesQueryComponents(filter = filter)
 
 	// Pass default filter because we want all un-excluded games for counting the total games/score
-	private val gamesQuery = TrackableGameQueryComponents(source = filter.source, filter = TrackableFilter.GameFilter())
+	private val gamesQuery =
+		TrackableGameQueryComponents(source = filter.source, filter = TrackableFilter.GameFilter())
 
 	override fun getPagingSource(
 		query: String,

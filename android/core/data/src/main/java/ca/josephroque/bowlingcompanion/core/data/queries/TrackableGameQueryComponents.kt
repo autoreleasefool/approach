@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.queries
 
 import ca.josephroque.bowlingcompanion.core.common.utils.mapOfNullableValues
-import ca.josephroque.bowlingcompanion.core.data.queries.TrackableFrameQueryComponents
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 
 data class TrackableGameQueryComponents(
@@ -17,25 +16,30 @@ data class TrackableGameQueryComponents(
 			is TrackableFilter.Source.Team,
 			is TrackableFilter.Source.Bowler,
 			is TrackableFilter.Source.League,
-			is TrackableFilter.Source.Series -> filter.games
+			is TrackableFilter.Source.Series,
+			-> filter.games
 			is TrackableFilter.Source.Game -> TrackableFilter.GameFilter()
-		}
+		},
 	)
 
 	override fun buildFromClause(): String = "FROM games AS $tableAlias"
 
-	override fun buildJoinClause(parentTable: String, parentColumn: String, childColumn: String): String =
-		listOf(
-			"JOIN games AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn",
-			"LEFT JOIN match_plays AS $matchPlayTableAlias ON $matchPlayTableAlias.game_id = $tableAlias.id",
-		).joinToString("\n")
+	override fun buildJoinClause(
+		parentTable: String,
+		parentColumn: String,
+		childColumn: String,
+	): String = listOf(
+		"JOIN games AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn",
+		"LEFT JOIN match_plays AS $matchPlayTableAlias ON $matchPlayTableAlias.game_id = $tableAlias.id",
+	).joinToString("\n")
 
 	override fun buildWhereClauses(): List<String> {
 		when (source) {
 			is TrackableFilter.Source.Team,
 			is TrackableFilter.Source.Bowler,
 			is TrackableFilter.Source.League,
-			is TrackableFilter.Source.Series -> Unit
+			is TrackableFilter.Source.Series,
+			-> Unit
 			is TrackableFilter.Source.Game -> return emptyList()
 		}
 
