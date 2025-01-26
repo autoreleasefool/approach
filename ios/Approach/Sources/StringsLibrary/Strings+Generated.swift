@@ -1250,6 +1250,12 @@ public enum Strings {
         public static let title = Strings.tr("Localizable", "quickLaunch.bowlersList.tip.title", fallback: "Quickly start a new series")
       }
     }
+    public enum Bowlerslist {
+      /// Start bowling
+      public static let subtitle = Strings.tr("Localizable", "quickLaunch.bowlerslist.subtitle", fallback: "Start bowling")
+      /// Quick Play
+      public static let title = Strings.tr("Localizable", "quickLaunch.bowlerslist.title", fallback: "Quick Play")
+    }
   }
   public enum Roll {
     /// Roll

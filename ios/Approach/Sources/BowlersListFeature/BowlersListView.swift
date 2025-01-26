@@ -58,22 +58,39 @@ public struct BowlersListView: View {
 		if let quickLaunch = store.quickLaunch {
 			Section {
 				Button { send(.didTapQuickLaunchButton, animation: .default) } label: {
-					HStack(spacing: .standardSpacing) {
-						Asset.Media.Icons.rocket.swiftUIImage
-							.resizable()
-							.scaledToFit()
-							.frame(width: .smallIcon, height: .smallIcon)
-							.foregroundColor(Asset.Colors.Text.onAction)
+					HStack(spacing: 0) {
+						HStack(spacing: .standardSpacing) {
+							Image(systemSymbol: .figureBowling)
+								.resizable()
+								.scaledToFit()
+								.frame(width: .smallIcon, height: .smallIcon)
+								.foregroundColor(Asset.Colors.Text.onAction)
 
-						VStack(alignment: .leading) {
-							Text(quickLaunch.bowler.name)
-								.font(.headline)
-								.frame(maxWidth: .infinity, alignment: .leading)
-							Text(quickLaunch.league.name)
-								.font(.subheadline)
-								.frame(maxWidth: .infinity, alignment: .leading)
+							VStack(alignment: .leading) {
+								Text(quickLaunch.bowler.name)
+									.font(.headline)
+									.frame(maxWidth: .infinity, alignment: .leading)
+								Text(quickLaunch.league.name)
+									.font(.subheadline)
+									.frame(maxWidth: .infinity, alignment: .leading)
+							}
+							.frame(maxWidth: .infinity)
 						}
-						.frame(maxWidth: .infinity)
+
+						Spacer(minLength: .standardSpacing)
+
+						HStack(spacing: .standardSpacing) {
+							VStack(alignment: .trailing) {
+								Text(Strings.QuickLaunch.Bowlerslist.title)
+									.font(.subheadline)
+
+								Text(Strings.QuickLaunch.Bowlerslist.subtitle)
+									.font(.caption)
+							}
+
+							Image(systemSymbol: .chevronRight)
+								.font(.caption2)
+						}
 					}
 					.contentShape(Rectangle())
 				}
