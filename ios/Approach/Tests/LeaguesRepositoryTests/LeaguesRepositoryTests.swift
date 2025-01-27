@@ -619,8 +619,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let existing = League.Edit(
 			id: UUID(0),
 			recurrence: .repeating,
-			defaultNumberOfGames: 4,
 			name: "Minors",
+			defaultNumberOfGames: 4,
 			additionalPinfall: 123,
 			additionalGames: 123,
 			excludeFromStatistics: league1.excludeFromStatistics
@@ -650,8 +650,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let existing = League.Edit(
 			id: UUID(0),
 			recurrence: .once,
-			defaultNumberOfGames: 1,
 			name: "Minors",
+			defaultNumberOfGames: 1,
 			additionalPinfall: 123,
 			additionalGames: 123,
 			excludeFromStatistics: .exclude
@@ -695,8 +695,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 			.init(
 				id: UUID(0),
 				recurrence: .repeating,
-				defaultNumberOfGames: 4,
 				name: "Majors",
+				defaultNumberOfGames: 4,
 				additionalPinfall: nil,
 				additionalGames: nil,
 				excludeFromStatistics: .include

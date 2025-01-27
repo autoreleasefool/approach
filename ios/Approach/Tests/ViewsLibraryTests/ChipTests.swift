@@ -3,6 +3,7 @@ import SwiftUI
 import Testing
 @testable import ViewsLibrary
 
+@Suite(.snapshots(record: .missing))
 struct ChipTests {
 	@Test("Chip snapshots", .tags(.snapshot))
 	@MainActor

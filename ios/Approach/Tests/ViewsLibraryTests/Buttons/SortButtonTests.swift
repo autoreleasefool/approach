@@ -3,6 +3,7 @@ import SwiftUI
 import Testing
 @testable import ViewsLibrary
 
+@Suite(.snapshots(record: .missing))
 struct SortButtonTests {
 	@Test("Active sort button snapshot", .tags(.snapshot))
 	@MainActor

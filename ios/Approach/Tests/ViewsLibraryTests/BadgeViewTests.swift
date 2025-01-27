@@ -3,6 +3,7 @@ import SwiftUI
 import Testing
 @testable import ViewsLibrary
 
+@Suite(.snapshots(record: .missing))
 struct BadgeViewTests {
 	@Test("Badge snapshots", .tags(.snapshot))
 	@MainActor

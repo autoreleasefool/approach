@@ -3,6 +3,7 @@ import SwiftUI
 import Testing
 @testable import ViewsLibrary
 
+@Suite(.snapshots(record: .missing))
 struct DeleteButtonTests {
 	@Test("Delete button snapshots", .tags(.snapshot))
 	@MainActor

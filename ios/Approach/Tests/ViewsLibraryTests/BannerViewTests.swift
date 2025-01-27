@@ -3,6 +3,7 @@ import SwiftUI
 import Testing
 @testable import ViewsLibrary
 
+@Suite(.snapshots(record: .missing))
 struct BannerViewTests {
 	@Test("Banner snapshots", .tags(.snapshot))
 	@MainActor

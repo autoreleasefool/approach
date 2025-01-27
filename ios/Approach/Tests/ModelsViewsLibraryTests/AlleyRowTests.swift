@@ -4,6 +4,7 @@ import SnapshotTesting
 import SwiftUI
 import Testing
 
+@Suite(.snapshots(record: .missing))
 struct AlleyRowTests {
 	@Test("Alley row snapshots", .tags(.snapshot))
 	@MainActor

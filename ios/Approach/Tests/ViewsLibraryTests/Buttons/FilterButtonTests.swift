@@ -3,6 +3,7 @@ import SwiftUI
 import Testing
 @testable import ViewsLibrary
 
+@Suite(.snapshots(record: .missing))
 struct FilterButtonTests {
 	@Test("Active filter button snapshot", .tags(.snapshot))
 	@MainActor
