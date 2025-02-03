@@ -34,7 +34,7 @@ fun FrameEditor(
 	modifier: Modifier = Modifier,
 ) {
 	var downedPins by remember(state.downedPins) { mutableStateOf(state.downedPins) }
-	var maxX by remember { mutableFloatStateOf(0f) }
+	var maxX by remember { mutableFloatStateOf(1.0f) }
 	var isDragging by remember { mutableStateOf(false) }
 	var isKnockingDownPins by remember { mutableStateOf(false) }
 	var toggledPins by remember { mutableStateOf(setOf<Pin>()) }
@@ -42,7 +42,7 @@ fun FrameEditor(
 	BoxWithConstraints(
 		modifier = modifier
 			.fillMaxWidth()
-			.onSizeChanged { maxX = it.width.toFloat() },
+			.onSizeChanged { maxX = it.width.toFloat().coerceAtLeast(1.0f) },
 	) {
 		val maxWidth = this.maxWidth
 		val maxHeight = this.maxHeight
