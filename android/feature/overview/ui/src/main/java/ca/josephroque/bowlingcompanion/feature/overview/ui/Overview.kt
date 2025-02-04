@@ -164,7 +164,11 @@ private fun SwipeHint(onAction: (OverviewUiAction) -> Unit) {
 		startActions = listOf(archiveAction),
 		endActions = listOf(archiveAction),
 	) {
-		Card(modifier = Modifier.padding(horizontal = 16.dp)) {
+		Card(modifier =
+			Modifier
+				.padding(horizontal = 16.dp)
+				.padding(bottom = 16.dp),
+		) {
 			Row(
 				verticalAlignment = Alignment.CenterVertically,
 				horizontalArrangement = Arrangement.spacedBy(16.dp),
