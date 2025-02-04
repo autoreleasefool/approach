@@ -37,7 +37,7 @@ android {
 			applicationIdSuffix = ApproachBuildType.DEBUG.applicationIdSuffix
 		}
 		release {
-			isMinifyEnabled = false
+			isMinifyEnabled = true
 			applicationIdSuffix = ApproachBuildType.RELEASE.applicationIdSuffix
 			proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
 		}
