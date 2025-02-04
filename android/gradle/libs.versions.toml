@@ -27,6 +27,7 @@ paging = "3.3.5"
 protobuf = "4.28.0"
 protobufPlugin = "0.9.4"
 room = "2.6.1"
+rulerGradlePlugin = "2.0.0-beta-3"
 secrets = "2.0.1"
 sentry = "7.16.0"
 swipe = "1.3.0"
@@ -63,6 +64,7 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
+ruler-gradle-plugin = { module = "com.spotify.ruler:ruler-gradle-plugin", version.ref = "rulerGradlePlugin" }
 sentry = { group = "io.sentry", name = "sentry-android", version.ref = "sentry" }
 sentry-compose = { group = "io.sentry", name = "sentry-compose-android", version.ref = "sentry" }
 swipe = { group = "me.saket.swipe", name = "swipe", version.ref = "swipe" }
