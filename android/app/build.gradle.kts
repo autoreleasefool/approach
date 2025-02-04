@@ -111,6 +111,10 @@ dependencies {
 	implementation(kotlin("reflect"))
 }
 
+configurations.configureEach {
+	exclude(group = "io.sentry", module = "sentry-android-ndk")
+}
+
 secrets {
 	defaultPropertiesFileName = "default.secrets.properties"
 	propertiesFileName = "secrets.properties"
