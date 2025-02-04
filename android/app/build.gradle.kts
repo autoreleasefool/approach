@@ -8,6 +8,7 @@ plugins {
 	id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 	alias(libs.plugins.gradle.versions)
 	alias(libs.plugins.ktlint)
+	id("com.spotify.ruler")
 }
 
 android {
@@ -123,4 +124,11 @@ kapt {
 ktlint {
 	android.set(true)
 	outputColorName.set("RED")
+}
+
+ruler {
+	abi.set("arm64-v8a")
+	locale.set("en")
+	screenDensity.set(480)
+	sdkVersion.set(34)
 }

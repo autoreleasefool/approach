@@ -4,6 +4,9 @@ buildscript {
 		google()
 		mavenCentral()
 	}
+	dependencies {
+		classpath(libs.ruler.gradle.plugin)
+	}
 }
 
 plugins {
