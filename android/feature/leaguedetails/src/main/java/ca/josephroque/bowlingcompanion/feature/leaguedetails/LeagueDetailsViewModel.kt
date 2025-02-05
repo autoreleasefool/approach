@@ -50,7 +50,7 @@ class LeagueDetailsViewModel @Inject constructor(
 	private val isSeriesSortOrderExpanded = MutableStateFlow(false)
 	private val seriesSortOrder = MutableStateFlow(SeriesSortOrder.NEWEST_TO_OLDEST)
 
-	private val seriesChartModelProducers = MutableStateFlow<Map<SeriesID, ChartEntryModelProducer>>(
+	private val seriesChartModelProducers = MutableStateFlow<Map<SeriesID, Pair<List<Int>, ChartEntryModelProducer>>>(
 		emptyMap(),
 	)
 
@@ -193,18 +193,23 @@ class LeagueDetailsViewModel @Inject constructor(
 	private fun buildSeriesListChartItem(item: SeriesListItem): SeriesListChartItem {
 		val seriesCharts = seriesChartModelProducers.updateAndGet {
 			it.toMutableMap().apply {
-				getOrPut(item.properties.id) {
+				val existingChart = get(item.properties.id)
+				val chartModelProducer = if (existingChart != null && existingChart.first == item.scores) {
+					existingChart.second
+				} else {
 					ChartEntryModelProducer(
 						item.scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) },
 					)
 				}
+
+				put(item.properties.id, item.scores to chartModelProducer)
 			}
 		}
 
 		return if (item.scores.all { it == 0 } || item.scores.size == 1) {
 			item.withoutChart()
 		} else {
-			item.withChart(seriesCharts[item.properties.id]!!)
+			item.withChart(seriesCharts[item.properties.id]!!.second)
 		}
 	}
 }
