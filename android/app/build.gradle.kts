@@ -107,8 +107,6 @@ dependencies {
 
 	implementation(libs.sentry)
 	implementation(libs.sentry.compose)
-
-	implementation(kotlin("reflect"))
 }
 
 configurations.configureEach {

@@ -18,10 +18,10 @@ import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import java.util.UUID
 
-sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
+sealed class Route(val route: String) {
 	// Sheets
-	data object QuickPlay : Route("quick_play", isBottomBarVisible = true)
-	data object QuickPlayOnboarding : Route("quick_play_onboarding", isBottomBarVisible = false)
+	data object QuickPlay : Route("quick_play")
+	data object QuickPlayOnboarding : Route("quick_play_onboarding?hide_bottom_bar=true")
 
 	// Accessories
 	data object AccessoriesOverview : Route("accessories_overview")
@@ -38,8 +38,8 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 
 	// Alleys
 	data object AlleysList : Route("alleys")
-	data object AddAlley : Route("add_alley", isBottomBarVisible = false)
-	data object EditAlley : Route("edit_alley/{alley}", isBottomBarVisible = false) {
+	data object AddAlley : Route("add_alley?hide_bottom_bar=true")
+	data object EditAlley : Route("edit_alley/{alley}?hide_bottom_bar=true") {
 		const val ARG_ALLEY = "alley"
 		fun createRoute(alley: AlleyID): String = "edit_alley/${Uri.encode(alley.toString())}"
 		fun getAlley(savedStateHandle: SavedStateHandle): AlleyID? =
@@ -50,7 +50,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	data object ArchivesList : Route("archives")
 
 	// Avatars
-	data object EditAvatar : Route("edit_avatar/{avatar}", isBottomBarVisible = false) {
+	data object EditAvatar : Route("edit_avatar/{avatar}?hide_bottom_bar=true") {
 		const val ARG_AVATAR = "avatar"
 		fun createRoute(avatar: String): String = "edit_avatar/${Uri.encode(avatar)}"
 		fun getAvatar(savedStateHandle: SavedStateHandle): String? =
@@ -64,13 +64,13 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		fun getBowler(savedStateHandle: SavedStateHandle): BowlerID? =
 			savedStateHandle.get<String>("bowler")?.let { BowlerID.fromString(it) }
 	}
-	data object EditBowler : Route("edit_bowler/{bowler}", isBottomBarVisible = false) {
+	data object EditBowler : Route("edit_bowler/{bowler}?hide_bottom_bar=true") {
 		const val ARG_BOWLER = "bowler"
 		fun createRoute(bowler: BowlerID): String = "edit_bowler/${Uri.encode(bowler.toString())}"
 		fun getBowler(savedStateHandle: SavedStateHandle): BowlerID? =
 			savedStateHandle.get<String>("bowler")?.let { BowlerID.fromString(it) }
 	}
-	data object AddBowler : Route("add_bowler/{kind}", isBottomBarVisible = false) {
+	data object AddBowler : Route("add_bowler/{kind}?hide_bottom_bar=true") {
 		const val ARG_KIND = "kind"
 		fun createRoute(kind: String): String = "add_bowler/${Uri.encode(kind)}"
 		fun getKind(savedStateHandle: SavedStateHandle): BowlerKind? =
@@ -78,16 +78,15 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	}
 
 	// Data Export
-	data object DataExport : Route("data_export", isBottomBarVisible = false)
-	data object DataImport : Route("data_import", isBottomBarVisible = false)
+	data object DataExport : Route("data_export?hide_bottom_bar=true")
+	data object DataImport : Route("data_import?hide_bottom_bar=true")
 
 	// Feature Flags
-	data object FeatureFlagsList : Route("feature_flags_list", isBottomBarVisible = false)
+	data object FeatureFlagsList : Route("feature_flags_list?hide_bottom_bar=true")
 
 	// Game
 	data object GameSettings : Route(
-		"games_settings/{teamSeries}/{series}/{current_game}",
-		isBottomBarVisible = false,
+		"games_settings/{teamSeries}/{series}/{current_game}?hide_bottom_bar=true",
 	) {
 		const val ARG_TEAM_SERIES = "teamSeries"
 		const val ARG_SERIES = "series"
@@ -108,7 +107,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		fun getCurrentGame(savedStateHandle: SavedStateHandle): GameID? =
 			savedStateHandle.get<String>("current_game")?.let { GameID.fromString(it) }
 	}
-	data object EditGame : Route("edit_game/{series}/{game}", isBottomBarVisible = false) {
+	data object EditGame : Route("edit_game/{series}/{game}?hide_bottom_bar=true") {
 		const val ARG_SERIES = "series"
 		const val ARG_GAME = "game"
 		fun createRoute(series: List<SeriesID>, game: GameID): String =
@@ -124,8 +123,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		}
 	}
 	data object EditTeamSeries : Route(
-		"edit_team_series/{teamSeries}/{game}",
-		isBottomBarVisible = false,
+		"edit_team_series/{teamSeries}/{game}?hide_bottom_bar=true",
 	) {
 		const val ARG_TEAM_SERIES = "teamSeries"
 		const val ARG_GAME = "game"
@@ -136,7 +134,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		fun getGame(savedStateHandle: SavedStateHandle): GameID? =
 			savedStateHandle.get<String>("game")?.let { GameID.fromString(it) }
 	}
-	data object ScoresList : Route("scores_list/{series}/{gameIndex}", isBottomBarVisible = false) {
+	data object ScoresList : Route("scores_list/{series}/{gameIndex}?hide_bottom_bar=true") {
 		const val ARG_SERIES = "series"
 		const val ARG_GAME_INDEX = "gameIndex"
 		fun createRoute(series: List<SeriesID>, gameIndex: Int): String =
@@ -148,7 +146,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		fun getGameIndex(savedStateHandle: SavedStateHandle): Int? =
 			savedStateHandle.get<Int>("gameIndex")
 	}
-	data object ScoreEditor : Route("edit_score/{scoringMethod}/{score}", isBottomBarVisible = false) {
+	data object ScoreEditor : Route("edit_score/{scoringMethod}/{score}?hide_bottom_bar=true") {
 		const val ARG_SCORING_METHOD = "scoringMethod"
 		const val ARG_SCORE = "score"
 		fun createRoute(scoringMethod: GameScoringMethod, score: Int): String =
@@ -160,16 +158,16 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 
 	// Gear
 	data object GearList : Route("gear")
-	data object EditGear : Route("edit_gear/{gear}", isBottomBarVisible = false) {
+	data object EditGear : Route("edit_gear/{gear}?hide_bottom_bar=true") {
 		const val ARG_GEAR = "gear"
 		fun createRoute(gear: GearID): String = "edit_gear/${Uri.encode(gear.toString())}"
 		fun getGear(savedStateHandle: SavedStateHandle): GearID? =
 			savedStateHandle.get<String>("gear")?.let { GearID.fromString(it) }
 	}
-	data object AddGear : Route("add_gear", isBottomBarVisible = false)
+	data object AddGear : Route("add_gear?hide_bottom_bar=true")
 
 	// Lanes
-	data object EditLanes : Route("edit_lanes/{lanes}", isBottomBarVisible = false) {
+	data object EditLanes : Route("edit_lanes/{lanes}?hide_bottom_bar=true") {
 		const val ARG_LANES = "lanes"
 		fun createRoute(lanes: List<String>): String = "edit_lanes/${lanes.encodeForRoute()}"
 		fun getLanes(savedStateHandle: SavedStateHandle): List<LaneID> =
@@ -185,13 +183,13 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		fun getLeague(savedStateHandle: SavedStateHandle): LeagueID? =
 			savedStateHandle.get<String>("league")?.let { LeagueID.fromString(it) }
 	}
-	data object AddLeague : Route("add_league/{bowler}", isBottomBarVisible = false) {
+	data object AddLeague : Route("add_league/{bowler}?hide_bottom_bar=true") {
 		const val ARG_BOWLER = "bowler"
 		fun createRoute(bowler: BowlerID): String = "add_league/${Uri.encode(bowler.toString())}"
 		fun getBowler(savedStateHandle: SavedStateHandle): BowlerID? =
 			savedStateHandle.get<String>("bowler")?.let { BowlerID.fromString(it) }
 	}
-	data object EditLeague : Route("edit_league/{league}", isBottomBarVisible = false) {
+	data object EditLeague : Route("edit_league/{league}?hide_bottom_bar=true") {
 		const val ARG_LEAGUE = "league"
 		fun createRoute(league: LeagueID): String = "edit_league/${Uri.encode(league.toString())}"
 		fun getLeague(savedStateHandle: SavedStateHandle): LeagueID? =
@@ -199,7 +197,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	}
 
 	// Match Plays
-	data object EditMatchPlay : Route("edit_match_play/{game}", isBottomBarVisible = false) {
+	data object EditMatchPlay : Route("edit_match_play/{game}?hide_bottom_bar=true") {
 		const val ARG_GAME = "game"
 		fun createRoute(game: GameID): String = "edit_match_play/${Uri.encode(game.toString())}"
 		fun getGame(savedStateHandle: SavedStateHandle): GameID? =
@@ -207,8 +205,8 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	}
 
 	// Onboarding
-	data object Onboarding : Route("onboarding", isBottomBarVisible = false)
-	data object OpponentMigration : Route("opponent_migration", isBottomBarVisible = false)
+	data object Onboarding : Route("onboarding?hide_bottom_bar=true")
+	data object OpponentMigration : Route("opponent_migration?hide_bottom_bar=true")
 
 	// Opponents
 	data object OpponentsList : Route("opponents")
@@ -218,8 +216,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 
 	// Resource Picker
 	data object ResourcePicker : Route(
-		"resource_picker/{result_key}/{type}/{filter}/{selected}/{hidden}/{limit}/{title}",
-		isBottomBarVisible = false,
+		"resource_picker/{result_key}/{type}/{filter}/{selected}/{hidden}/{limit}/{title}?hide_bottom_bar=true",
 	) {
 		const val RESULT_KEY = "result_key"
 		const val RESOURCE_TYPE = "type"
@@ -264,7 +261,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 	}
 
 	// Series
-	data object AddTeamSeries : Route("add_team_series/{team}/{leagues}", isBottomBarVisible = false) {
+	data object AddTeamSeries : Route("add_team_series/{team}/{leagues}?hide_bottom_bar=true") {
 		const val ARG_TEAM = "team"
 		const val ARG_LEAGUES = "leagues"
 		fun createRoute(team: TeamID, leagues: List<LeagueID>): String = "add_team_series/" +
@@ -277,13 +274,13 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 				LeagueID.fromString(it)
 			} ?: emptyList()
 	}
-	data object AddSeries : Route("add_series/{league}", isBottomBarVisible = false) {
+	data object AddSeries : Route("add_series/{league}?hide_bottom_bar=true") {
 		const val ARG_LEAGUE = "league"
 		fun createRoute(league: LeagueID): String = "add_series/${Uri.encode(league.toString())}"
 		fun getLeague(savedStateHandle: SavedStateHandle): LeagueID? =
 			savedStateHandle.get<String>("league")?.let { LeagueID.fromString(it) }
 	}
-	data object EditSeries : Route("edit_series/{series}", isBottomBarVisible = false) {
+	data object EditSeries : Route("edit_series/{series}?hide_bottom_bar=true") {
 		const val ARG_SERIES = "series"
 		fun createRoute(series: SeriesID): String = "edit_series/${Uri.encode(series.toString())}"
 		fun getSeries(savedStateHandle: SavedStateHandle): SeriesID? =
@@ -301,7 +298,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		fun getEvent(savedStateHandle: SavedStateHandle): LeagueID? =
 			savedStateHandle.get<String>("event")?.let { LeagueID.fromString(it) }
 	}
-	data object SeriesPreBowl : Route("edit_pre_bowl/{league}", isBottomBarVisible = false) {
+	data object SeriesPreBowl : Route("edit_pre_bowl/{league}?hide_bottom_bar=true") {
 		const val ARG_LEAGUE = "league"
 		fun createRoute(league: LeagueID): String = "edit_pre_bowl/${Uri.encode(league.toString())}"
 		fun getLeague(savedStateHandle: SavedStateHandle): LeagueID? =
@@ -315,8 +312,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 
 	// Sharing
 	data object SharingSeries : Route(
-		"sharing_series/{series}",
-		isBottomBarVisible = false,
+		"sharing_series/{series}?hide_bottom_bar=true",
 	) {
 		const val ARG_SERIES = "series"
 		fun createRoute(series: SeriesID): String = "sharing_series/${Uri.encode(series.toString())}"
@@ -330,8 +326,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 
 	data object StatisticsSettings : Route("statistics_settings")
 	data object MidGameStatisticsDetails : Route(
-		"mid_game_statistics_details/{source_type}/{source_id}",
-		isBottomBarVisible = false,
+		"mid_game_statistics_details/{source_type}/{source_id}?hide_bottom_bar=true",
 	) {
 		const val ARG_SOURCE_TYPE = "source_type"
 		const val ARG_SOURCE_ID = "source_id"
@@ -353,8 +348,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 			savedStateHandle.get<String>("source_id")?.let { UUID.fromString(it) }
 	}
 	data object StatisticsDetailsChart : Route(
-		"statistics_details/{source_type}/{source_id}/{statistic_id}",
-		isBottomBarVisible = false,
+		"statistics_details/{source_type}/{source_id}/{statistic_id}?hide_bottom_bar=true",
 	) {
 		const val ARG_SOURCE_TYPE = "source_type"
 		const val ARG_SOURCE_ID = "source_id"
@@ -372,8 +366,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 			savedStateHandle.get<StatisticID>("statistic_id")
 	}
 	data object StatisticsPicker : Route(
-		"statistics_picker/{statistic}",
-		isBottomBarVisible = false,
+		"statistics_picker/{statistic}?hide_bottom_bar=true",
 	) {
 		const val ARG_STATISTIC = "statistic"
 		fun createRoute(statistic: String): String = "statistics_picker/${Uri.encode(statistic)}"
@@ -381,8 +374,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 			savedStateHandle.get<StatisticID>("statistic")
 	}
 	data object StatisticsWidgetEditor : Route(
-		"statistics_widget_editor/{context}/{initial_source}/{priority}",
-		isBottomBarVisible = false,
+		"statistics_widget_editor/{context}/{initial_source}/{priority}?hide_bottom_bar=true",
 	) {
 		const val CONTEXT = "context"
 		const val INITIAL_SOURCE = "initial_source"
@@ -396,8 +388,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		fun getPriority(savedStateHandle: SavedStateHandle): Int? = savedStateHandle.get<Int>("priority")
 	}
 	data object StatisticsWidgetLayoutEditor : Route(
-		"statistics_widget_layout_editor/{context}/{initial_source}",
-		isBottomBarVisible = false,
+		"statistics_widget_layout_editor/{context}/{initial_source}?hide_bottom_bar=true",
 	) {
 		const val CONTEXT = "context"
 		const val INITIAL_SOURCE = "initial_source"
@@ -408,14 +399,14 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		fun getInitialSource(savedStateHandle: SavedStateHandle): String? =
 			savedStateHandle.get<String>("initial_source")
 	}
-	data object StatisticsWidgetError : Route("statistics_widget_error", isBottomBarVisible = false) {
+	data object StatisticsWidgetError : Route("statistics_widget_error?hide_bottom_bar=true") {
 		@Suppress("SameReturnValue")
 		fun createRoute(): String = "statistics_widget_error"
 	}
 
 	// Teams
-	data object AddTeam : Route("add_team", isBottomBarVisible = false)
-	data object EditTeam : Route("edit_team/{team}", isBottomBarVisible = false) {
+	data object AddTeam : Route("add_team?hide_bottom_bar=true")
+	data object EditTeam : Route("edit_team/{team}?hide_bottom_bar=true") {
 		const val ARG_TEAM = "team"
 		fun createRoute(team: TeamID): String = "edit_team/${Uri.encode(team.toString())}"
 		fun getTeam(savedStateHandle: SavedStateHandle): TeamID? =
@@ -427,7 +418,7 @@ sealed class Route(val route: String, val isBottomBarVisible: Boolean = true) {
 		fun getTeam(savedStateHandle: SavedStateHandle): TeamID? =
 			savedStateHandle.get<String>("team")?.let { TeamID.fromString(it) }
 	}
-	data object TeamPlay : Route("team_play/{team}", isBottomBarVisible = false) {
+	data object TeamPlay : Route("team_play/{team}?hide_bottom_bar=true") {
 		const val ARG_TEAM = "team"
 		fun createRoute(team: TeamID?): String = if (team == null) {
 			"team_play"
