@@ -117,13 +117,18 @@ data class SeriesDetailsEntity(
 		parentColumn = "id",
 		entityColumn = "series_id",
 		entity = GameEntity::class,
-		projection = ["score"],
+		projection = ["score", "archived_on"],
 	)
-	val scores: List<Int>,
+	val games: List<Game>,
 ) {
+	data class Game(
+		val score: Int,
+		@ColumnInfo(name="archived_on") val archivedOn: Instant?,
+	)
+
 	fun asModel(): SeriesDetails = SeriesDetails(
 		properties = properties,
-		scores = scores,
+		scores = games.filter { it.archivedOn == null }.map { it.score },
 		alley = alley?.asModel(),
 	)
 }
@@ -135,12 +140,17 @@ data class SeriesListEntity(
 		parentColumn = "id",
 		entityColumn = "series_id",
 		entity = GameEntity::class,
-		projection = ["score"],
+		projection = ["score", "archived_on"],
 	)
-	val scores: List<Int>,
+	val games: List<Game>,
 ) {
+	data class Game(
+		val score: Int,
+		@ColumnInfo(name="archived_on") val archivedOn: Instant?,
+	)
+
 	fun asModel(): SeriesListItem = SeriesListItem(
 		properties = properties,
-		scores = scores,
+		scores = games.filter { it.archivedOn == null }.map { it.score },
 	)
 }
