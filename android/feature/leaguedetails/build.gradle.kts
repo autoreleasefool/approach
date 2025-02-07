@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-	namespace = "ca.josephroque.bowlingcompanion.feature.seriesdetails"
+	namespace = "ca.josephroque.bowlingcompanion.feature.leaguedetails"
 }
 
 dependencies {
