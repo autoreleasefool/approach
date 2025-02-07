@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.onboarding.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -23,6 +24,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toBitmap
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
 
@@ -30,12 +32,29 @@ import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
 fun OnboardingBackground(modifier: Modifier = Modifier) {
 	Box(modifier = modifier.fillMaxSize()) {
 		val resources = LocalContext.current.resources
-		val image = remember {
-			ResourcesCompat.getDrawable(
+		val isDarkTheme = isSystemInDarkTheme()
+
+		val image = remember(isDarkTheme) {
+			val drawable = ResourcesCompat.getDrawable(
 				resources,
 				R.drawable.onboarding_pattern,
 				null,
-			)?.toBitmap()?.asImageBitmap()
+			) ?: return@remember null
+
+			val tint = ResourcesCompat.getColor(
+				resources,
+				if (isDarkTheme) {
+					ca.josephroque.bowlingcompanion.core.designsystem.R.color.white
+				} else {
+					ca.josephroque.bowlingcompanion.core.designsystem.R.color.black
+				},
+				null
+			)
+
+			val tinted = DrawableCompat.wrap(drawable)
+			DrawableCompat.setTint(tinted.mutate(), tint)
+
+			return@remember tinted.toBitmap().asImageBitmap()
 		} ?: return@Box
 
 		val brush = remember(image) {
