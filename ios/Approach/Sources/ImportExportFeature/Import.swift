@@ -292,6 +292,15 @@ public struct Import: Reducer, Sendable {
 			}
 		}
 
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case .internal(.didImportBackup(.success)):
+				return Analytics.Data.Imported()
+			default:
+				return nil
+			}
+		}
+
 		ErrorHandlerReducer<State, Action> { _, action in
 			switch action {
 			case let .view(.didImportFiles(.failure(error))),
