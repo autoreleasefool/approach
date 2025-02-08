@@ -26,10 +26,7 @@ data class SplitsStatistic(
 			splits = value
 		}
 
-	override fun adjustByFirstRoll(
-		firstRoll: TrackableFrame.Roll,
-		configuration: TrackablePerFrameConfiguration,
-	) {
+	override fun adjustByFirstRoll(firstRoll: TrackableFrame.Roll, configuration: TrackablePerFrameConfiguration) {
 		if (firstRoll.pinsDowned.isSplit() ||
 			(configuration.countSplitWithBonusAsSplit && firstRoll.pinsDowned.isSplitWithBonus())
 		) {

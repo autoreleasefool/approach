@@ -29,11 +29,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChang
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
 
 @Composable
-fun BowlerForm(
-	state: BowlerFormUiState,
-	onAction: (BowlerFormUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun BowlerForm(state: BowlerFormUiState, onAction: (BowlerFormUiAction) -> Unit, modifier: Modifier = Modifier) {
 	if (state.isShowingArchiveDialog) {
 		ArchiveDialog(
 			itemName = state.name,

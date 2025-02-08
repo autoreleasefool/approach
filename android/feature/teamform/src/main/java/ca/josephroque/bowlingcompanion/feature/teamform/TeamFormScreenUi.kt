@@ -56,9 +56,7 @@ sealed interface TeamFormScreenEvent {
 	data class ManageTeamMembers(val existingMembers: Set<BowlerID>) : TeamFormScreenEvent
 }
 
-fun MutableStateFlow<TeamFormScreenUiState>.updateForm(
-	function: (TeamFormUiState) -> TeamFormUiState,
-) {
+fun MutableStateFlow<TeamFormScreenUiState>.updateForm(function: (TeamFormUiState) -> TeamFormUiState) {
 	this.update { state ->
 		when (state) {
 			TeamFormScreenUiState.Loading -> state

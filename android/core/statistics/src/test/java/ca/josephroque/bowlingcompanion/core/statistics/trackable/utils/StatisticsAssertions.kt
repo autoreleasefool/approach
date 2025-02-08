@@ -18,12 +18,7 @@ fun <S : HighestOfStatistic> assertHighestOf(statistic: S, highest: Int) {
 	assertEquals(highest == 0, statistic.isEmpty)
 }
 
-fun <S : AveragingStatistic> assertAveraging(
-	statistic: S,
-	total: Int,
-	divisor: Int,
-	formattedAs: String,
-) {
+fun <S : AveragingStatistic> assertAveraging(statistic: S, total: Int, divisor: Int, formattedAs: String) {
 	val average = if (divisor == 0) 0.0 else total.toDouble() / divisor.toDouble()
 	assertEquals(total, statistic.total)
 	assertEquals(divisor, statistic.divisor)

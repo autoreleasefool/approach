@@ -25,10 +25,7 @@ data class FivesStatistic(
 			fives = value
 		}
 
-	override fun adjustByFirstRoll(
-		firstRoll: TrackableFrame.Roll,
-		configuration: TrackablePerFrameConfiguration,
-	) {
+	override fun adjustByFirstRoll(firstRoll: TrackableFrame.Roll, configuration: TrackablePerFrameConfiguration) {
 		if (firstRoll.pinsDowned.isFive()) {
 			fives++
 		}

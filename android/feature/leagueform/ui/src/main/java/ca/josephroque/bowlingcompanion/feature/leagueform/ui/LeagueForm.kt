@@ -41,11 +41,7 @@ import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 
 @Composable
-fun LeagueForm(
-	state: LeagueFormUiState,
-	onAction: (LeagueFormUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun LeagueForm(state: LeagueFormUiState, onAction: (LeagueFormUiAction) -> Unit, modifier: Modifier = Modifier) {
 	if (state.isShowingArchiveDialog) {
 		ArchiveDialog(
 			itemName = state.name,
@@ -217,10 +213,7 @@ private fun LeagueNameField(name: String, onNameChanged: (String) -> Unit, error
 }
 
 @Composable
-private fun RecurrencePicker(
-	recurrence: LeagueRecurrence,
-	onRecurrenceChanged: (LeagueRecurrence) -> Unit,
-) {
+private fun RecurrencePicker(recurrence: LeagueRecurrence, onRecurrenceChanged: (LeagueRecurrence) -> Unit) {
 	FormRadioGroup(
 		title = stringResource(R.string.league_form_property_repeat),
 		subtitle = stringResource(
@@ -339,10 +332,7 @@ private fun IncludeAdditionalPinFallSwitch(
 }
 
 @Composable
-private fun AdditionalPinFallField(
-	additionalPinFall: Int,
-	onAdditionalPinFallChanged: (Int) -> Unit,
-) {
+private fun AdditionalPinFallField(additionalPinFall: Int, onAdditionalPinFallChanged: (Int) -> Unit) {
 	OutlinedTextField(
 		value = additionalPinFall.toString(),
 		onValueChange = {

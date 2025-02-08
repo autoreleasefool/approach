@@ -16,10 +16,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OpponentsListTopBar(
-	onAction: (OpponentsListUiAction) -> Unit,
-	scrollBehavior: TopAppBarScrollBehavior,
-) {
+fun OpponentsListTopBar(onAction: (OpponentsListUiAction) -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
 		colors = TopAppBarDefaults.topAppBarColors(),

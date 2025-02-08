@@ -58,9 +58,7 @@ sealed interface GearFormScreenEvent {
 	data class EditOwner(val owner: BowlerID?) : GearFormScreenEvent
 }
 
-fun MutableStateFlow<GearFormScreenUiState>.updateForm(
-	function: (GearFormUiState) -> GearFormUiState,
-) {
+fun MutableStateFlow<GearFormScreenUiState>.updateForm(function: (GearFormUiState) -> GearFormUiState) {
 	this.update { state ->
 		when (state) {
 			GearFormScreenUiState.Loading -> state

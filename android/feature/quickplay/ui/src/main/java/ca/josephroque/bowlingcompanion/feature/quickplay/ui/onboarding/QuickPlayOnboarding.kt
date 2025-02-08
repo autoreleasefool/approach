@@ -27,10 +27,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.quickplay.ui.R
 
 @Composable
-fun QuickPlayOnboarding(
-	onAction: (QuickPlayOnboardingUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun QuickPlayOnboarding(onAction: (QuickPlayOnboardingUiAction) -> Unit, modifier: Modifier = Modifier) {
 	Column(
 
 		horizontalAlignment = Alignment.Start,

@@ -18,12 +18,7 @@ import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import ca.josephroque.bowlingcompanion.core.model.ui.R.drawable
 
 @Composable
-fun LaneRow(
-	label: String,
-	position: LanePosition,
-	modifier: Modifier = Modifier,
-	onClick: (() -> Unit)? = null,
-) {
+fun LaneRow(label: String, position: LanePosition, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(8.dp),

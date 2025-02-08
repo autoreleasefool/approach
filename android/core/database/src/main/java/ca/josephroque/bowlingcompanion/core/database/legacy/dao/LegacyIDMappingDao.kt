@@ -29,10 +29,7 @@ interface LegacyIDMappingDao {
 		offset: Int,
 	): List<LegacyIDMappingEntity>
 
-	suspend fun getLegacyIDMappings(
-		legacyIds: List<Long>,
-		key: LegacyIDMappingKey,
-	): List<LegacyIDMappingEntity> {
+	suspend fun getLegacyIDMappings(legacyIds: List<Long>, key: LegacyIDMappingKey): List<LegacyIDMappingEntity> {
 		val limit = 100
 		val results = mutableListOf<LegacyIDMappingEntity>()
 		var offset = 0

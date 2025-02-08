@@ -20,12 +20,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.R
 
 @Composable
-fun Tip(
-	@StringRes title: Int,
-	@StringRes message: Int,
-	onDismiss: () -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun Tip(@StringRes title: Int, @StringRes message: Int, onDismiss: () -> Unit, modifier: Modifier = Modifier) {
 	Card(modifier = modifier) {
 		Column {
 			Row(

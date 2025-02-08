@@ -40,10 +40,7 @@ abstract class TeamSeriesDao {
 			CASE WHEN :sortOrder = 'LOWEST_TO_HIGHEST' THEN total END ASC
 		""",
 	)
-	abstract fun getTeamSeriesList(
-		teamId: TeamID,
-		sortOrder: TeamSeriesSortOrder,
-	): Flow<List<TeamSeriesSummary>>
+	abstract fun getTeamSeriesList(teamId: TeamID, sortOrder: TeamSeriesSortOrder): Flow<List<TeamSeriesSummary>>
 
 	@Query(
 		"""
@@ -70,9 +67,7 @@ abstract class TeamSeriesDao {
 			ORDER BY team_series_series.position ASC, games.`index` ASC
 		""",
 	)
-	abstract fun getTeamSeriesDetails(
-		teamSeriesId: TeamSeriesID,
-	): Flow<List<TeamSeriesDetailItemEntity>>
+	abstract fun getTeamSeriesDetails(teamSeriesId: TeamSeriesID): Flow<List<TeamSeriesDetailItemEntity>>
 
 	@Query(
 		"""

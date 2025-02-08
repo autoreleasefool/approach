@@ -50,9 +50,8 @@ class LeagueDetailsViewModel @Inject constructor(
 	private val isSeriesSortOrderExpanded = MutableStateFlow(false)
 	private val seriesSortOrder = MutableStateFlow(SeriesSortOrder.NEWEST_TO_OLDEST)
 
-	private val seriesChartModelProducers = MutableStateFlow<Map<SeriesID, Pair<List<Int>, ChartEntryModelProducer>>>(
-		emptyMap(),
-	)
+	private val seriesChartModelProducers =
+		MutableStateFlow<Map<SeriesID, Pair<List<Int>, ChartEntryModelProducer>>>(emptyMap())
 
 	private val seriesList = seriesSortOrder.flatMapLatest { sortOrder ->
 		seriesRepository.getSeriesList(leagueId, sortOrder, null)
@@ -225,15 +224,14 @@ private fun SeriesListItem.withoutChart(): SeriesListChartItem = SeriesListChart
 	scores = null,
 )
 
-private fun SeriesListItem.withChart(
-	chartModelProducer: ChartEntryModelProducer,
-): SeriesListChartItem = SeriesListChartItem(
-	id = properties.id,
-	date = properties.date,
-	appliedDate = properties.appliedDate,
-	preBowl = properties.preBowl,
-	total = properties.total,
-	numberOfGames = scores.size,
-	scoreRange = (scores.minOrNull() ?: 0)..(scores.maxOrNull() ?: 0),
-	scores = chartModelProducer,
-)
+private fun SeriesListItem.withChart(chartModelProducer: ChartEntryModelProducer): SeriesListChartItem =
+	SeriesListChartItem(
+		id = properties.id,
+		date = properties.date,
+		appliedDate = properties.appliedDate,
+		preBowl = properties.preBowl,
+		total = properties.total,
+		numberOfGames = scores.size,
+		scoreRange = (scores.minOrNull() ?: 0)..(scores.maxOrNull() ?: 0),
+		scores = chartModelProducer,
+	)

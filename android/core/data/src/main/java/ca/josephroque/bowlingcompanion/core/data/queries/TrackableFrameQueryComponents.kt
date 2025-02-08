@@ -22,11 +22,8 @@ data class TrackableFrameQueryComponents(
 
 	override fun buildFromClause(): String = "FROM frames AS $tableAlias"
 
-	override fun buildJoinClause(
-		parentTable: String,
-		parentColumn: String,
-		childColumn: String,
-	): String = "JOIN frames AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn"
+	override fun buildJoinClause(parentTable: String, parentColumn: String, childColumn: String): String =
+		"JOIN frames AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn"
 
 	override fun buildWhereClauses(): List<String> {
 		return emptyList()

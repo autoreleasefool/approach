@@ -30,10 +30,8 @@ sealed class Route(val route: String) {
 	data object Acknowledgements : Route("acknowledgements")
 	data object AcknowledgementDetails : Route("acknowledgement/{acknowledgement}") {
 		const val ARG_ACKNOWLEDGEMENT = "acknowledgement"
-		fun createRoute(acknowledgement: String): String =
-			"acknowledgement/${Uri.encode(acknowledgement)}"
-		fun getAcknowledgement(savedStateHandle: SavedStateHandle): String? =
-			savedStateHandle.get<String>("acknowledgement")
+		fun createRoute(acknowledgement: String): String = "acknowledgement/${Uri.encode(acknowledgement)}"
+		fun getAcknowledgement(savedStateHandle: SavedStateHandle): String? = savedStateHandle.get<String>("acknowledgement")
 	}
 
 	// Alleys
@@ -53,8 +51,7 @@ sealed class Route(val route: String) {
 	data object EditAvatar : Route("edit_avatar/{avatar}?hide_bottom_bar=true") {
 		const val ARG_AVATAR = "avatar"
 		fun createRoute(avatar: String): String = "edit_avatar/${Uri.encode(avatar)}"
-		fun getAvatar(savedStateHandle: SavedStateHandle): String? =
-			savedStateHandle.get<String>("avatar")
+		fun getAvatar(savedStateHandle: SavedStateHandle): String? = savedStateHandle.get<String>("avatar")
 	}
 
 	// Bowlers
@@ -73,8 +70,7 @@ sealed class Route(val route: String) {
 	data object AddBowler : Route("add_bowler/{kind}?hide_bottom_bar=true") {
 		const val ARG_KIND = "kind"
 		fun createRoute(kind: String): String = "add_bowler/${Uri.encode(kind)}"
-		fun getKind(savedStateHandle: SavedStateHandle): BowlerKind? =
-			savedStateHandle.get<BowlerKind>("kind")
+		fun getKind(savedStateHandle: SavedStateHandle): BowlerKind? = savedStateHandle.get<BowlerKind>("kind")
 	}
 
 	// Data Export
@@ -91,13 +87,10 @@ sealed class Route(val route: String) {
 		const val ARG_TEAM_SERIES = "teamSeries"
 		const val ARG_SERIES = "series"
 		const val ARG_CURRENT_GAME = "current_game"
-		fun createRoute(
-			teamSeriesId: TeamSeriesID?,
-			series: List<SeriesID>,
-			currentGame: GameID,
-		): String = "games_settings/${Uri.encode(
-			teamSeriesId?.toString(),
-		)}/${Uri.encode(series.encodeForRoute())}/${Uri.encode(currentGame.toString())}"
+		fun createRoute(teamSeriesId: TeamSeriesID?, series: List<SeriesID>, currentGame: GameID): String =
+			"games_settings/${Uri.encode(
+				teamSeriesId?.toString(),
+			)}/${Uri.encode(series.encodeForRoute())}/${Uri.encode(currentGame.toString())}"
 		fun getTeamSeries(savedStateHandle: SavedStateHandle): TeamSeriesID? =
 			savedStateHandle.get<String>("teamSeries")?.let { TeamSeriesID.fromString(it) }
 		fun getSeries(savedStateHandle: SavedStateHandle): List<SeriesID> =
@@ -143,16 +136,14 @@ sealed class Route(val route: String) {
 			savedStateHandle.get<String>("series")?.decodeListFromRoute()?.map {
 				SeriesID.fromString(it)
 			} ?: emptyList()
-		fun getGameIndex(savedStateHandle: SavedStateHandle): Int? =
-			savedStateHandle.get<Int>("gameIndex")
+		fun getGameIndex(savedStateHandle: SavedStateHandle): Int? = savedStateHandle.get<Int>("gameIndex")
 	}
 	data object ScoreEditor : Route("edit_score/{scoringMethod}/{score}?hide_bottom_bar=true") {
 		const val ARG_SCORING_METHOD = "scoringMethod"
 		const val ARG_SCORE = "score"
 		fun createRoute(scoringMethod: GameScoringMethod, score: Int): String =
 			"edit_score/${Uri.encode(scoringMethod.name)}/$score"
-		fun getScoringMethod(savedStateHandle: SavedStateHandle) =
-			savedStateHandle.get<GameScoringMethod>("scoringMethod")
+		fun getScoringMethod(savedStateHandle: SavedStateHandle) = savedStateHandle.get<GameScoringMethod>("scoringMethod")
 		fun getScore(savedStateHandle: SavedStateHandle) = savedStateHandle.get<Int>("score")
 	}
 
@@ -216,7 +207,15 @@ sealed class Route(val route: String) {
 
 	// Resource Picker
 	data object ResourcePicker : Route(
-		"resource_picker/{result_key}/{type}/{filter}/{selected}/{hidden}/{limit}/{title}?hide_bottom_bar=true",
+		"resource_picker/" +
+			"{result_key}/" +
+			"{type}/" +
+			"{filter}/" +
+			"{selected}/" +
+			"{hidden}/" +
+			"{limit}/" +
+			"{title}" +
+			"?hide_bottom_bar=true",
 	) {
 		const val RESULT_KEY = "result_key"
 		const val RESOURCE_TYPE = "type"
@@ -241,12 +240,10 @@ sealed class Route(val route: String) {
 			"${hiddenIds.toList().encodeForRoute()}/" +
 			"${Uri.encode(limit.toString())}/" +
 			Uri.encode(titleOverride)
-		fun getResultKey(savedStateHandle: SavedStateHandle): String? =
-			savedStateHandle.get<String>("result_key")
+		fun getResultKey(savedStateHandle: SavedStateHandle): String? = savedStateHandle.get<String>("result_key")
 		fun getResourceType(savedStateHandle: SavedStateHandle): ResourcePickerType? =
 			savedStateHandle.get<ResourcePickerType>("type")
-		fun getResourceFilter(savedStateHandle: SavedStateHandle): String? =
-			savedStateHandle.get<String>("filter")
+		fun getResourceFilter(savedStateHandle: SavedStateHandle): String? = savedStateHandle.get<String>("filter")
 		fun getSelectedIds(savedStateHandle: SavedStateHandle): Set<UUID> =
 			savedStateHandle.get<String>("selected")?.decodeListFromRoute()?.mapNotNull {
 				UUID.fromString(it)
@@ -256,8 +253,7 @@ sealed class Route(val route: String) {
 				UUID.fromString(it)
 			}?.toSet() ?: emptySet()
 		fun getLimit(savedStateHandle: SavedStateHandle): Int? = savedStateHandle.get<Int>("limit")
-		fun getTitleOverride(savedStateHandle: SavedStateHandle): String? =
-			savedStateHandle.get<String>("title")
+		fun getTitleOverride(savedStateHandle: SavedStateHandle): String? = savedStateHandle.get<String>("title")
 	}
 
 	// Series
@@ -353,11 +349,10 @@ sealed class Route(val route: String) {
 		const val ARG_SOURCE_TYPE = "source_type"
 		const val ARG_SOURCE_ID = "source_id"
 		const val ARG_STATISTIC_ID = "statistic_id"
-		fun createRoute(sourceType: String, sourceId: UUID, statisticId: StatisticID): String =
-			"statistics_details/" +
-				"${Uri.encode(sourceType)}/" +
-				"${Uri.encode(sourceId.toString())}/" +
-				Uri.encode(statisticId.toString())
+		fun createRoute(sourceType: String, sourceId: UUID, statisticId: StatisticID): String = "statistics_details/" +
+			"${Uri.encode(sourceType)}/" +
+			"${Uri.encode(sourceId.toString())}/" +
+			Uri.encode(statisticId.toString())
 		fun getSourceType(savedStateHandle: SavedStateHandle): StatisticsDetailsSourceType? =
 			savedStateHandle.get<StatisticsDetailsSourceType>("source_type")
 		fun getSourceId(savedStateHandle: SavedStateHandle): UUID? =
@@ -370,8 +365,7 @@ sealed class Route(val route: String) {
 	) {
 		const val ARG_STATISTIC = "statistic"
 		fun createRoute(statistic: String): String = "statistics_picker/${Uri.encode(statistic)}"
-		fun getStatistic(savedStateHandle: SavedStateHandle): StatisticID? =
-			savedStateHandle.get<StatisticID>("statistic")
+		fun getStatistic(savedStateHandle: SavedStateHandle): StatisticID? = savedStateHandle.get<StatisticID>("statistic")
 	}
 	data object StatisticsWidgetEditor : Route(
 		"statistics_widget_editor/{context}/{initial_source}/{priority}?hide_bottom_bar=true",
@@ -381,10 +375,8 @@ sealed class Route(val route: String) {
 		const val PRIORITY = "priority"
 		fun createRoute(context: String, initialSource: String?, priority: Int): String =
 			"statistics_widget_editor/${Uri.encode(context)}/${Uri.encode(initialSource)}/$priority"
-		fun getContext(savedStateHandle: SavedStateHandle): String? =
-			savedStateHandle.get<String>("context")
-		fun getInitialSource(savedStateHandle: SavedStateHandle): String? =
-			savedStateHandle.get<String>("initial_source")
+		fun getContext(savedStateHandle: SavedStateHandle): String? = savedStateHandle.get<String>("context")
+		fun getInitialSource(savedStateHandle: SavedStateHandle): String? = savedStateHandle.get<String>("initial_source")
 		fun getPriority(savedStateHandle: SavedStateHandle): Int? = savedStateHandle.get<Int>("priority")
 	}
 	data object StatisticsWidgetLayoutEditor : Route(
@@ -394,10 +386,8 @@ sealed class Route(val route: String) {
 		const val INITIAL_SOURCE = "initial_source"
 		fun createRoute(context: String, initialSource: String?): String =
 			"statistics_widget_layout_editor/${Uri.encode(context)}/${Uri.encode(initialSource)}"
-		fun getContext(savedStateHandle: SavedStateHandle): String? =
-			savedStateHandle.get<String>("context")
-		fun getInitialSource(savedStateHandle: SavedStateHandle): String? =
-			savedStateHandle.get<String>("initial_source")
+		fun getContext(savedStateHandle: SavedStateHandle): String? = savedStateHandle.get<String>("context")
+		fun getInitialSource(savedStateHandle: SavedStateHandle): String? = savedStateHandle.get<String>("initial_source")
 	}
 	data object StatisticsWidgetError : Route("statistics_widget_error?hide_bottom_bar=true") {
 		@Suppress("SameReturnValue")
@@ -430,8 +420,7 @@ sealed class Route(val route: String) {
 	}
 	data object TeamSeriesDetails : Route("team_series/{team_series}") {
 		const val ARG_TEAM_SERIES = "team_series"
-		fun createRoute(teamSeries: TeamSeriesID): String =
-			"team_series/${Uri.encode(teamSeries.toString())}"
+		fun createRoute(teamSeries: TeamSeriesID): String = "team_series/${Uri.encode(teamSeries.toString())}"
 		fun getTeamSeries(savedStateHandle: SavedStateHandle): TeamSeriesID? =
 			savedStateHandle.get<String>("team_series")?.let { TeamSeriesID.fromString(it) }
 	}

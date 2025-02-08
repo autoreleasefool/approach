@@ -40,11 +40,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 
 @Composable
-fun DragHint(
-	isVisible: Boolean,
-	onAction: (FrameEditorUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun DragHint(isVisible: Boolean, onAction: (FrameEditorUiAction) -> Unit, modifier: Modifier = Modifier) {
 	AnimatedVisibility(
 		visible = isVisible,
 		enter = fadeIn(),
@@ -123,10 +119,7 @@ private fun DragHintAnimation(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun DragHintTipText(
-	onAction: (FrameEditorUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+private fun DragHintTipText(onAction: (FrameEditorUiAction) -> Unit, modifier: Modifier = Modifier) {
 	Card(modifier = modifier) {
 		Row(
 			horizontalArrangement = Arrangement.spacedBy(8.dp),

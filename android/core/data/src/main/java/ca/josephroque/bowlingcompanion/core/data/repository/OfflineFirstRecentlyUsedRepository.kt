@@ -25,14 +25,13 @@ class OfflineFirstRecentlyUsedRepository @Inject constructor(
 		}
 	}
 
-	override fun observeRecentlyUsed(resource: RecentResource): Flow<List<String>> =
-		userDataRepository.userData.map {
-			when (resource) {
-				RecentResource.ALLEYS -> it.recentlyUsedAlleyIds
-				RecentResource.BOWLERS, RecentResource.OPPONENTS -> it.recentlyUsedBowlerIds
-				RecentResource.GEAR -> it.recentlyUsedGearIds
-				RecentResource.LEAGUES -> it.recentlyUsedLeagueIds
-				RecentResource.TEAM -> it.recentlyUsedTeamIds
-			}
-		}.distinctUntilChanged()
+	override fun observeRecentlyUsed(resource: RecentResource): Flow<List<String>> = userDataRepository.userData.map {
+		when (resource) {
+			RecentResource.ALLEYS -> it.recentlyUsedAlleyIds
+			RecentResource.BOWLERS, RecentResource.OPPONENTS -> it.recentlyUsedBowlerIds
+			RecentResource.GEAR -> it.recentlyUsedGearIds
+			RecentResource.LEAGUES -> it.recentlyUsedLeagueIds
+			RecentResource.TEAM -> it.recentlyUsedTeamIds
+		}
+	}.distinctUntilChanged()
 }

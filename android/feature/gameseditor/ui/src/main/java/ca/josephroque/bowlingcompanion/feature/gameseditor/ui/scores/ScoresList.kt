@@ -7,11 +7,7 @@ import androidx.compose.ui.Modifier
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetLazyList
 
 @Composable
-fun ScoresList(
-	state: ScoresListUiState,
-	onAction: (ScoresListUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun ScoresList(state: ScoresListUiState, onAction: (ScoresListUiAction) -> Unit, modifier: Modifier = Modifier) {
 	val listState = rememberLazyListState()
 	LaunchedEffect(state.scoreSheetList.bowlerScores.size, state.gameIndex) {
 		listState.animateScrollToItem(state.gameIndex)

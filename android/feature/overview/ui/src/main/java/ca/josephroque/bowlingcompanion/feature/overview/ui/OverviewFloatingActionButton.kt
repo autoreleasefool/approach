@@ -9,10 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 
 @Composable
-fun OverviewFloatingActionButton(
-	onAction: (OverviewUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun OverviewFloatingActionButton(onAction: (OverviewUiAction) -> Unit, modifier: Modifier = Modifier) {
 	FloatingActionButton(
 		onClick = { onAction(OverviewUiAction.QuickPlayClicked) },
 		modifier = modifier,

@@ -32,11 +32,7 @@ import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ColorPicker(
-	state: ColorPickerUiState,
-	onAction: (ColorPickerUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun ColorPicker(state: ColorPickerUiState, onAction: (ColorPickerUiAction) -> Unit, modifier: Modifier = Modifier) {
 	val controller = rememberColorPickerController()
 	val initialColor = remember(state) {
 		when (state) {

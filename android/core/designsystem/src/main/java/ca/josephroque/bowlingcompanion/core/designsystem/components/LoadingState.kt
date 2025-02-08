@@ -11,10 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun LoadingState(
-	modifier: Modifier = Modifier,
-	indicatorColor: Color = ProgressIndicatorDefaults.circularColor,
-) {
+fun LoadingState(modifier: Modifier = Modifier, indicatorColor: Color = ProgressIndicatorDefaults.circularColor) {
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,
 		verticalArrangement = Arrangement.Center,

@@ -36,11 +36,7 @@ import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.R
 import kotlinx.datetime.LocalDate
 
 @Composable
-fun DataExport(
-	state: DataExportUiState,
-	onAction: (DataExportUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun DataExport(state: DataExportUiState, onAction: (DataExportUiAction) -> Unit, modifier: Modifier = Modifier) {
 	DataExportFilePicker(
 		state = state,
 		onAction = onAction,
@@ -138,11 +134,7 @@ private fun DataExportFilePicker(state: DataExportUiState, onAction: (DataExport
 }
 
 @Composable
-private fun DataExportProgressCard(
-	progress: DataExportProgress,
-	versionCode: String,
-	versionName: String,
-) {
+private fun DataExportProgressCard(progress: DataExportProgress, versionCode: String, versionName: String) {
 	when (progress) {
 		DataExportProgress.NotStarted,
 		is DataExportProgress.PickingDestination,

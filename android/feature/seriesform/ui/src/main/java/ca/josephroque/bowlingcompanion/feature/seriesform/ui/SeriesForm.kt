@@ -37,11 +37,7 @@ import ca.josephroque.bowlingcompanion.feature.seriesform.ui.components.SeriesDa
 import kotlinx.datetime.LocalDate
 
 @Composable
-fun SeriesForm(
-	state: SeriesFormUiState,
-	onAction: (SeriesFormUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun SeriesForm(state: SeriesFormUiState, onAction: (SeriesFormUiAction) -> Unit, modifier: Modifier = Modifier) {
 	if (state.isShowingArchiveDialog) {
 		ArchiveDialog(
 			itemName = state.date.simpleFormat(),

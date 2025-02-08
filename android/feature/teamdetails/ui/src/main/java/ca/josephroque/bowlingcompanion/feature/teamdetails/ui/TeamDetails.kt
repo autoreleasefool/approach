@@ -223,11 +223,7 @@ private fun MemberRow(name: String, modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun EditSeriesDialog(
-	date: LocalDate,
-	onDateChanged: (LocalDate) -> Unit,
-	onDismiss: () -> Unit,
-) {
+private fun EditSeriesDialog(date: LocalDate, onDateChanged: (LocalDate) -> Unit, onDismiss: () -> Unit) {
 	val initialSelection = remember(date) {
 		date
 			.atStartOfDayIn(TimeZone.currentSystemDefault())
@@ -264,11 +260,7 @@ private fun EditSeriesDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ArchiveMemberSeriesDialog(
-	onArchive: () -> Unit,
-	onKeep: () -> Unit,
-	onDismiss: () -> Unit,
-) {
+private fun ArchiveMemberSeriesDialog(onArchive: () -> Unit, onKeep: () -> Unit, onDismiss: () -> Unit) {
 	BasicAlertDialog(
 		onDismissRequest = onDismiss,
 	) {

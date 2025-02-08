@@ -12,10 +12,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.CloseButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MatchPlayEditorTopBar(
-	onAction: (MatchPlayEditorUiAction) -> Unit,
-	scrollBehavior: TopAppBarScrollBehavior,
-) {
+fun MatchPlayEditorTopBar(onAction: (MatchPlayEditorUiAction) -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
 	TopAppBar(
 		title = {
 			Text(

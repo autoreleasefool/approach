@@ -10,10 +10,7 @@ import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.settings.acknowledgements.AcknowledgementsSettingsRoute
 import ca.josephroque.bowlingcompanion.feature.settings.acknowledgements.details.AcknowledgementDetailsRoute
 
-fun NavController.navigateToAcknowledgementDetails(
-	acknowledgement: String,
-	navOptions: NavOptions? = null,
-) {
+fun NavController.navigateToAcknowledgementDetails(acknowledgement: String, navOptions: NavOptions? = null) {
 	this.navigate(
 		route = Route.AcknowledgementDetails.createRoute(acknowledgement),
 		navOptions = navOptions,

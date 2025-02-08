@@ -123,7 +123,7 @@ data class SeriesDetailsEntity(
 ) {
 	data class Game(
 		val score: Int,
-		@ColumnInfo(name="archived_on") val archivedOn: Instant?,
+		@ColumnInfo(name = "archived_on") val archivedOn: Instant?,
 	)
 
 	fun asModel(): SeriesDetails = SeriesDetails(
@@ -146,7 +146,7 @@ data class SeriesListEntity(
 ) {
 	data class Game(
 		val score: Int,
-		@ColumnInfo(name="archived_on") val archivedOn: Instant?,
+		@ColumnInfo(name = "archived_on") val archivedOn: Instant?,
 	)
 
 	fun asModel(): SeriesListItem = SeriesListItem(

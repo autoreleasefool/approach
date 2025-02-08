@@ -35,11 +35,7 @@ import ca.josephroque.bowlingcompanion.core.model.ui.toComposeColor
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.components.ColorPicker
 
 @Composable
-fun AvatarForm(
-	state: AvatarFormUiState,
-	onAction: (AvatarFormUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun AvatarForm(state: AvatarFormUiState, onAction: (AvatarFormUiAction) -> Unit, modifier: Modifier = Modifier) {
 	if (state.isShowingDiscardChangesDialog) {
 		DiscardChangesDialog(
 			onDiscardChanges = { onAction(AvatarFormUiAction.DiscardChangesClicked) },

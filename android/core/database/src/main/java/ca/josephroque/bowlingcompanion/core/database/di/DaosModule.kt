@@ -64,23 +64,19 @@ object DaosModule {
 	fun providesLaneDao(database: ApproachDatabase): LaneDao = database.laneDao()
 
 	@Provides
-	fun providesLegacyIDMappingDao(database: ApproachDatabase): LegacyIDMappingDao =
-		database.legacyIDMappingDao()
+	fun providesLegacyIDMappingDao(database: ApproachDatabase): LegacyIDMappingDao = database.legacyIDMappingDao()
 
 	@Provides
 	fun providesStatisticsDao(database: ApproachDatabase): StatisticsDao = database.statisticsDao()
 
 	@Provides
-	fun providesStatisticsWidgetDao(database: ApproachDatabase): StatisticsWidgetDao =
-		database.statisticsWidgetDao()
+	fun providesStatisticsWidgetDao(database: ApproachDatabase): StatisticsWidgetDao = database.statisticsWidgetDao()
 
 	@Provides
-	fun providesTransactionRunnerDao(database: ApproachDatabase): TransactionRunnerDao =
-		database.transactionRunnerDao()
+	fun providesTransactionRunnerDao(database: ApproachDatabase): TransactionRunnerDao = database.transactionRunnerDao()
 
 	@Provides
-	fun providesTransactionRunner(transactionRunnerDao: TransactionRunnerDao): TransactionRunner =
-		transactionRunnerDao
+	fun providesTransactionRunner(transactionRunnerDao: TransactionRunnerDao): TransactionRunner = transactionRunnerDao
 
 	@Provides
 	fun providesCheckpointDao(database: ApproachDatabase): CheckpointDao = database.checkpointDao()

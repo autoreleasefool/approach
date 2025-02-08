@@ -26,10 +26,7 @@ data class HeadPinsStatistic(
 			headPins = value
 		}
 
-	override fun adjustByFirstRoll(
-		firstRoll: TrackableFrame.Roll,
-		configuration: TrackablePerFrameConfiguration,
-	) {
+	override fun adjustByFirstRoll(firstRoll: TrackableFrame.Roll, configuration: TrackablePerFrameConfiguration) {
 		if (firstRoll.pinsDowned.isHeadPin() ||
 			(configuration.countHeadPin2AsHeadPin && firstRoll.pinsDowned.isHeadPin2())
 		) {

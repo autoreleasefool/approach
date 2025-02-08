@@ -71,10 +71,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.trackable.series.HighSeri
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.series.HighSeriesOf5Statistic
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.series.HighSeriesOf8Statistic
 
-fun allStatistics(
-	source: TrackableFilter.Source? = null,
-	supportingWidgets: Boolean? = null,
-): List<Statistic> = listOf(
+fun allStatistics(source: TrackableFilter.Source? = null, supportingWidgets: Boolean? = null): List<Statistic> = listOf(
 	// Overall
 	HighSingleStatistic(),
 	TotalPinFallStatistic(),
@@ -185,5 +182,4 @@ fun widgetStatistics(): List<StatisticGroup> = allStatistics(supportingWidgets =
 	.toSortedMap { o1, o2 -> o1.ordinal.compareTo(o2.ordinal) }
 	.map { StatisticGroup(it.key.titleResourceId, it.value) }
 
-fun statisticInstanceFromID(id: StatisticID?): Statistic? =
-	allStatistics().firstOrNull { it.id == id }
+fun statisticInstanceFromID(id: StatisticID?): Statistic? = allStatistics().firstOrNull { it.id == id }

@@ -35,11 +35,7 @@ import ca.josephroque.bowlingcompanion.core.model.ui.AvatarImage
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 
 @Composable
-fun RollEditor(
-	state: RollEditorUiState,
-	onAction: (RollEditorUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun RollEditor(state: RollEditorUiState, onAction: (RollEditorUiAction) -> Unit, modifier: Modifier = Modifier) {
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = modifier.fillMaxWidth(),

@@ -30,8 +30,7 @@ class OfflineFirstTeamsRepository @Inject constructor(
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ) : TeamsRepository {
-	override fun getTeamList(sortOrder: TeamSortOrder): Flow<List<TeamListItem>> =
-		teamDao.getTeamList(sortOrder)
+	override fun getTeamList(sortOrder: TeamSortOrder): Flow<List<TeamListItem>> = teamDao.getTeamList(sortOrder)
 
 	override fun getTeamMembers(bowlerIds: List<BowlerID>): Flow<List<TeamMemberListItem>> =
 		teamBowlerDao.getTeamMembers(bowlerIds)
@@ -47,8 +46,7 @@ class OfflineFirstTeamsRepository @Inject constructor(
 		)
 	}
 
-	override fun getTeamSummary(teamSeries: TeamSeriesID): Flow<TeamSummary> =
-		teamDao.getTeamSummary(teamSeries)
+	override fun getTeamSummary(teamSeries: TeamSeriesID): Flow<TeamSummary> = teamDao.getTeamSummary(teamSeries)
 
 	override suspend fun getTeamUpdate(id: TeamID): TeamUpdate {
 		val team = teamDao.getTeamSummary(id).first()

@@ -38,11 +38,7 @@ import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.R
 import kotlinx.datetime.LocalDate
 
 @Composable
-fun DataImport(
-	state: DataImportUiState,
-	onAction: (DataImportUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun DataImport(state: DataImportUiState, onAction: (DataImportUiAction) -> Unit, modifier: Modifier = Modifier) {
 	DataImportFilePicker(state = state, onAction = onAction)
 
 	if (state.isShowingRestoreDialog && state.lastImportDate != null) {
@@ -215,11 +211,7 @@ private fun DataImportFilePicker(state: DataImportUiState, onAction: (DataImport
 }
 
 @Composable
-private fun DataImportProgressCard(
-	progress: DataImportProgress,
-	versionName: String,
-	versionCode: String,
-) {
+private fun DataImportProgressCard(progress: DataImportProgress, versionName: String, versionCode: String) {
 	Card(
 		modifier = Modifier.fillMaxWidth(),
 		colors = CardDefaults.cardColors(

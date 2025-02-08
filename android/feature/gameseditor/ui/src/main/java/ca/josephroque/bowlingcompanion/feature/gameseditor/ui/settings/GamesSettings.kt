@@ -141,11 +141,7 @@ fun GamesSettings(
 }
 
 @Composable
-private fun Bowler(
-	bowler: BowlerSummary,
-	isSelected: Boolean,
-	onAction: (GamesSettingsUiAction) -> Unit,
-) {
+private fun Bowler(bowler: BowlerSummary, isSelected: Boolean, onAction: (GamesSettingsUiAction) -> Unit) {
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		verticalAlignment = Alignment.CenterVertically,

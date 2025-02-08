@@ -25,11 +25,7 @@ fun LazyListScope.header(
 	}
 }
 
-fun LazyListScope.header(
-	title: String,
-	modifier: Modifier = Modifier,
-	action: HeaderAction? = null,
-) {
+fun LazyListScope.header(title: String, modifier: Modifier = Modifier, action: HeaderAction? = null) {
 	item {
 		ListSectionHeader(
 			title = title,
@@ -40,11 +36,7 @@ fun LazyListScope.header(
 }
 
 @Composable
-fun ListSectionHeader(
-	@StringRes titleResourceId: Int,
-	modifier: Modifier = Modifier,
-	action: HeaderAction? = null,
-) {
+fun ListSectionHeader(@StringRes titleResourceId: Int, modifier: Modifier = Modifier, action: HeaderAction? = null) {
 	ListSectionHeader(
 		title = stringResource(titleResourceId),
 		modifier = modifier,

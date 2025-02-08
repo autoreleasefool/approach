@@ -25,11 +25,7 @@ import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
 @Composable
-fun ArchivesList(
-	state: ArchivesListUiState,
-	onAction: (ArchivesListUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun ArchivesList(state: ArchivesListUiState, onAction: (ArchivesListUiAction) -> Unit, modifier: Modifier = Modifier) {
 	state.itemToUnarchive?.let {
 		AlertDialog(
 			onDismissRequest = { onAction(ArchivesListUiAction.ConfirmUnarchiveClicked) },
@@ -58,10 +54,7 @@ fun ArchivesList(
 	}
 }
 
-fun LazyListScope.archivesList(
-	list: List<ArchiveListItem>,
-	onItemUnarchived: (ArchiveListItem) -> Unit,
-) {
+fun LazyListScope.archivesList(list: List<ArchiveListItem>, onItemUnarchived: (ArchiveListItem) -> Unit) {
 	items(
 		items = list,
 		key = { it.id },

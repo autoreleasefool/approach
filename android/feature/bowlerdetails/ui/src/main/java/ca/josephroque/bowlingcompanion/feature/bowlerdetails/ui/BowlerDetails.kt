@@ -81,10 +81,7 @@ fun BowlerDetails(
 	}
 }
 
-private fun LazyListScope.bowlerLeaguesList(
-	state: LeaguesListUiState,
-	onAction: (LeaguesListUiAction) -> Unit,
-) {
+private fun LazyListScope.bowlerLeaguesList(state: LeaguesListUiState, onAction: (LeaguesListUiAction) -> Unit) {
 	if (state.isShowingHeader) {
 		header(R.string.bowler_details_league_list_title)
 	}
@@ -125,10 +122,7 @@ private fun LazyListScope.bowlerLeaguesList(
 	}
 }
 
-private fun LazyListScope.bowlerGearList(
-	state: GearListUiState,
-	onAction: (BowlerDetailsUiAction) -> Unit,
-) {
+private fun LazyListScope.bowlerGearList(state: GearListUiState, onAction: (BowlerDetailsUiAction) -> Unit) {
 	header(
 		titleResourceId = R.string.bowler_details_preferred_gear_title,
 		action = HeaderAction(
@@ -148,10 +142,7 @@ private fun LazyListScope.bowlerGearList(
 }
 
 @Composable
-private fun RecurrencePicker(
-	recurrence: LeagueRecurrence?,
-	onRecurrenceClicked: (LeagueRecurrence?) -> Unit,
-) {
+private fun RecurrencePicker(recurrence: LeagueRecurrence?, onRecurrenceClicked: (LeagueRecurrence?) -> Unit) {
 	Row(
 		modifier = Modifier
 			.horizontalScroll(rememberScrollState())

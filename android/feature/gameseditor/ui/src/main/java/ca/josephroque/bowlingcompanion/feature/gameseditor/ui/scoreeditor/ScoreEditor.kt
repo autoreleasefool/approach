@@ -25,11 +25,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 
 @Composable
-fun ScoreEditor(
-	state: ScoreEditorUiState,
-	onAction: (ScoreEditorUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun ScoreEditor(state: ScoreEditorUiState, onAction: (ScoreEditorUiAction) -> Unit, modifier: Modifier = Modifier) {
 	val focusRequester = remember { FocusRequester() }
 
 	LaunchedEffect(state.scoringMethod) {
@@ -77,11 +73,7 @@ fun ScoreEditor(
 }
 
 @Composable
-private fun ScoreTextField(
-	score: Int,
-	onScoreChanged: (String) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+private fun ScoreTextField(score: Int, onScoreChanged: (String) -> Unit, modifier: Modifier = Modifier) {
 	OutlinedTextField(
 		value = score.toString(),
 		onValueChange = onScoreChanged,

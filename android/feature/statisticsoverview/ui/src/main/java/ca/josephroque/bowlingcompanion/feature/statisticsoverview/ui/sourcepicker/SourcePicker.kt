@@ -13,11 +13,7 @@ import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.R
 
 @Composable
-fun SourcePicker(
-	state: SourcePickerUiState,
-	onAction: (SourcePickerUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun SourcePicker(state: SourcePickerUiState, onAction: (SourcePickerUiAction) -> Unit, modifier: Modifier = Modifier) {
 	Column(
 		modifier = modifier.padding(bottom = 16.dp),
 	) {

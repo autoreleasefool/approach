@@ -134,10 +134,7 @@ private fun rememberBounceAnimation(isAnimating: Boolean): Float {
 }
 
 @Composable
-private fun rememberPositionAnimation(
-	transition: Transition<HeaderState>,
-	maxHeight: Float,
-): Float {
+private fun rememberPositionAnimation(transition: Transition<HeaderState>, maxHeight: Float): Float {
 	val positionOffset by transition.animateFloat(
 		label = "position",
 		transitionSpec = {

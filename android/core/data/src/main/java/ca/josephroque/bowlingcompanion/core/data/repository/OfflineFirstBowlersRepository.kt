@@ -46,11 +46,9 @@ class OfflineFirstBowlersRepository @Inject constructor(
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ) : BowlersRepository {
-	override fun getBowlerSummary(bowlerId: BowlerID): Flow<BowlerSummary> =
-		bowlerDao.getBowlerSummary(bowlerId)
+	override fun getBowlerSummary(bowlerId: BowlerID): Flow<BowlerSummary> = bowlerDao.getBowlerSummary(bowlerId)
 
-	override fun getBowlerDetails(bowlerId: BowlerID): Flow<BowlerDetails> =
-		bowlerDao.getBowlerDetails(bowlerId)
+	override fun getBowlerDetails(bowlerId: BowlerID): Flow<BowlerDetails> = bowlerDao.getBowlerDetails(bowlerId)
 
 	override fun getSeriesBowlers(series: List<SeriesID>): Flow<List<BowlerSummary>> =
 		bowlerDao.getSeriesBowlers(series = series)
@@ -60,14 +58,11 @@ class OfflineFirstBowlersRepository @Inject constructor(
 					.map(SeriesBowlerSummary::asSummary)
 			}
 
-	override fun getTeamBowlers(teamId: TeamID): Flow<List<BowlerSummary>> =
-		teamDao.getTeamMembers(teamId)
-			.map { members -> members.map { BowlerSummary(id = it.id, name = it.name) } }
+	override fun getTeamBowlers(teamId: TeamID): Flow<List<BowlerSummary>> = teamDao.getTeamMembers(teamId)
+		.map { members -> members.map { BowlerSummary(id = it.id, name = it.name) } }
 
-	override fun getBowlersList(
-		kind: BowlerKind?,
-		sortOrder: BowlerSortOrder,
-	): Flow<List<BowlerListItem>> = bowlerDao.getBowlersList(kind = kind, sortOrder = sortOrder)
+	override fun getBowlersList(kind: BowlerKind?, sortOrder: BowlerSortOrder): Flow<List<BowlerListItem>> =
+		bowlerDao.getBowlersList(kind = kind, sortOrder = sortOrder)
 
 	override fun getOpponentsList(): Flow<List<OpponentListItem>> = bowlerDao.getOpponentsList()
 
@@ -130,23 +125,21 @@ class OfflineFirstBowlersRepository @Inject constructor(
 		bowlerDao.getOpponentsList().first().any { it.kind == BowlerKind.OPPONENT }
 	}
 
-	override suspend fun mergeBowlers(
-		bowlers: List<BowlerEntity>,
-		associateBy: Map<BowlerID, BowlerID>,
-	) = withContext(ioDispatcher) {
-		transactionRunner {
-			for ((oldId, newId) in associateBy) {
-				matchPlayDao.replaceOpponentId(oldId, newId)
-			}
+	override suspend fun mergeBowlers(bowlers: List<BowlerEntity>, associateBy: Map<BowlerID, BowlerID>) =
+		withContext(ioDispatcher) {
+			transactionRunner {
+				for ((oldId, newId) in associateBy) {
+					matchPlayDao.replaceOpponentId(oldId, newId)
+				}
 
-			val bowlersToArchive = associateBy.keys - associateBy.values.toSet()
-			bowlerDao.archiveBowlers(bowlersToArchive.toList(), archivedOn = Clock.System.now())
+				val bowlersToArchive = associateBy.keys - associateBy.values.toSet()
+				bowlerDao.archiveBowlers(bowlersToArchive.toList(), archivedOn = Clock.System.now())
 
-			val updatedBowlerIds = associateBy.values.toSet()
-			val bowlersToUpdate = bowlers.filter { it.id in updatedBowlerIds }
-			for (bowler in bowlersToUpdate) {
-				bowlerDao.updateBowlerEntity(bowler)
+				val updatedBowlerIds = associateBy.values.toSet()
+				val bowlersToUpdate = bowlers.filter { it.id in updatedBowlerIds }
+				for (bowler in bowlersToUpdate) {
+					bowlerDao.updateBowlerEntity(bowler)
+				}
 			}
 		}
-	}
 }

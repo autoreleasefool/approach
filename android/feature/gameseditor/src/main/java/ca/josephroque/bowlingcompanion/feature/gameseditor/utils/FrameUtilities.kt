@@ -33,11 +33,7 @@ fun MutableList<FrameEdit>.setDidFoul(frameIndex: Int, rollIndex: Int, didFoul: 
 	this[frameIndex] = frame.copy(rolls = rolls)
 }
 
-fun MutableList<FrameEdit>.setBallRolled(
-	frameIndex: Int,
-	rollIndex: Int,
-	ballRolled: FrameEdit.Gear?,
-) {
+fun MutableList<FrameEdit>.setBallRolled(frameIndex: Int, rollIndex: Int, ballRolled: FrameEdit.Gear?) {
 	val frame = this[frameIndex].ensureRollExists(upTo = rollIndex)
 	val rolls = frame.rolls.toMutableList()
 	if (rolls[rollIndex].bowlingBall?.id == ballRolled?.id) {

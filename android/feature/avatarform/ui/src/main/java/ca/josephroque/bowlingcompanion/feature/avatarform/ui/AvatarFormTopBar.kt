@@ -12,10 +12,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AvatarFormTopBar(
-	onAction: (AvatarFormUiAction) -> Unit,
-	scrollBehavior: TopAppBarScrollBehavior,
-) {
+fun AvatarFormTopBar(onAction: (AvatarFormUiAction) -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
 		title = {

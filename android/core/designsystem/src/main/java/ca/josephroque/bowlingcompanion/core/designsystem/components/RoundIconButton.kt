@@ -11,11 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import ca.josephroque.bowlingcompanion.core.designsystem.R
 
 @Composable
-fun RoundIconButton(
-	modifier: Modifier = Modifier,
-	onClick: () -> Unit,
-	icon: @Composable () -> Unit,
-) {
+fun RoundIconButton(modifier: Modifier = Modifier, onClick: () -> Unit, icon: @Composable () -> Unit) {
 	FilledIconToggleButton(
 		checked = true,
 		onCheckedChange = { onClick() },

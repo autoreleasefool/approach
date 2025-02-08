@@ -19,10 +19,8 @@ data class TrackableGamesSequence(
 	private val seriesQuery = TrackableSeriesQueryComponents(filter = filter)
 	private val gamesQuery = TrackableGameQueryComponents(filter = filter)
 
-	override fun getPagingSource(
-		query: String,
-		whereArgs: List<Any>,
-	): PagingSource<Int, TrackableGameEntity> = statisticsDao.getTrackableGames(query, whereArgs)
+	override fun getPagingSource(query: String, whereArgs: List<Any>): PagingSource<Int, TrackableGameEntity> =
+		statisticsDao.getTrackableGames(query, whereArgs)
 
 	override fun mapEntityToModel(entity: TrackableGameEntity) = entity.asModel()
 

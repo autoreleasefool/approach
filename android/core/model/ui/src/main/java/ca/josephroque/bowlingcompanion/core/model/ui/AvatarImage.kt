@@ -79,8 +79,7 @@ fun Color.averagedWith(other: Color): Color = Color(
 
 // For determining the best color to use for foreground text when this color is the background
 // Source: https://stackoverflow.com/a/3943023
-fun Color.intensity(): Int =
-	(red * 0.299f * 255f + green * 0.587f * 255f + blue * 0.114f * 255f).toInt()
+fun Color.intensity(): Int = (red * 0.299f * 255f + green * 0.587f * 255f + blue * 0.114f * 255f).toInt()
 
 fun Color.preferredForegroundColor(): Color = if (intensity() > 186) Color.Black else Color.White
 

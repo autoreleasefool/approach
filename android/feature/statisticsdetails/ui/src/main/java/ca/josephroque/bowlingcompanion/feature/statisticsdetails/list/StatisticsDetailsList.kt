@@ -182,10 +182,7 @@ private fun ListGroup(
 }
 
 @Composable
-private fun ListEntry(
-	entry: StatisticListEntry,
-	onAction: (StatisticsDetailsListUiAction) -> Unit,
-) {
+private fun ListEntry(entry: StatisticListEntry, onAction: (StatisticsDetailsListUiAction) -> Unit) {
 	Row(
 		horizontalArrangement = Arrangement.SpaceBetween,
 		verticalAlignment = Alignment.CenterVertically,

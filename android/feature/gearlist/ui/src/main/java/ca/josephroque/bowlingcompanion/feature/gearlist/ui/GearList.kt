@@ -20,11 +20,7 @@ import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
 @Composable
-fun GearList(
-	state: GearListUiState,
-	onAction: (GearListUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun GearList(state: GearListUiState, onAction: (GearListUiAction) -> Unit, modifier: Modifier = Modifier) {
 	state.gearToDelete?.let {
 		DeleteDialog(
 			itemName = it.name,

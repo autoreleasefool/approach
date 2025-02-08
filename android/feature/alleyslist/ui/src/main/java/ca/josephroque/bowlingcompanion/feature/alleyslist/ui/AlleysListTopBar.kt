@@ -17,10 +17,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AlleysListTopBar(
-	onAction: (AlleysListUiAction) -> Unit,
-	scrollBehavior: TopAppBarScrollBehavior,
-) {
+fun AlleysListTopBar(onAction: (AlleysListUiAction) -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
 		colors = TopAppBarDefaults.topAppBarColors(),

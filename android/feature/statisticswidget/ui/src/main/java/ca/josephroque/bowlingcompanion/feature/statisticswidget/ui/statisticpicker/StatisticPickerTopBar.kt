@@ -12,10 +12,7 @@ import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatisticPickerTopBar(
-	onAction: (StatisticPickerUiAction) -> Unit,
-	scrollBehavior: TopAppBarScrollBehavior,
-) {
+fun StatisticPickerTopBar(onAction: (StatisticPickerUiAction) -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
 	TopAppBar(
 		title = {
 			Text(

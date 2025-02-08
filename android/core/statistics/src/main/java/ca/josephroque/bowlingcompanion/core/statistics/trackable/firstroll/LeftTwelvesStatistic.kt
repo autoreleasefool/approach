@@ -25,10 +25,7 @@ data class LeftTwelvesStatistic(
 			leftTwelves = value
 		}
 
-	override fun adjustByFirstRoll(
-		firstRoll: TrackableFrame.Roll,
-		configuration: TrackablePerFrameConfiguration,
-	) {
+	override fun adjustByFirstRoll(firstRoll: TrackableFrame.Roll, configuration: TrackablePerFrameConfiguration) {
 		if (firstRoll.pinsDowned.isLeftTwelve()) {
 			leftTwelves++
 		}

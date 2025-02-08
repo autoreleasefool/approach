@@ -136,10 +136,7 @@ private fun OverviewTabContents(
 }
 
 @Composable
-private fun OverviewTabIndicator(
-	modifier: Modifier = Modifier,
-	color: Color = MaterialTheme.colorScheme.primary,
-) {
+private fun OverviewTabIndicator(modifier: Modifier = Modifier, color: Color = MaterialTheme.colorScheme.primary) {
 	Spacer(
 		modifier
 			.padding(horizontal = 24.dp)
@@ -164,7 +161,8 @@ private fun SwipeHint(onAction: (OverviewUiAction) -> Unit) {
 		startActions = listOf(archiveAction),
 		endActions = listOf(archiveAction),
 	) {
-		Card(modifier =
+		Card(
+			modifier =
 			Modifier
 				.padding(horizontal = 16.dp)
 				.padding(bottom = 16.dp),

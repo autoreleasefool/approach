@@ -18,11 +18,7 @@ import androidx.compose.ui.unit.dp
 data class HeaderAction(@StringRes val actionResourceId: Int, val onClick: () -> Unit)
 
 @Composable
-fun SectionHeader(
-	title: String,
-	modifier: Modifier = Modifier,
-	headerAction: HeaderAction? = null,
-) {
+fun SectionHeader(title: String, modifier: Modifier = Modifier, headerAction: HeaderAction? = null) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(8.dp),

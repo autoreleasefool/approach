@@ -8,10 +8,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfigur
 interface FirstRollStatistic : PercentageStatistic, TrackablePerFirstRoll {
 	var totalRolls: Int
 
-	fun tracksRoll(
-		firstRoll: TrackableFrame.Roll,
-		configuration: TrackablePerFrameConfiguration,
-	): Boolean
+	fun tracksRoll(firstRoll: TrackableFrame.Roll, configuration: TrackablePerFrameConfiguration): Boolean
 
 	override val numeratorTitleResourceId: Int
 		get() = id.titleResourceId
@@ -28,10 +25,7 @@ interface FirstRollStatistic : PercentageStatistic, TrackablePerFirstRoll {
 			totalRolls = value
 		}
 
-	override fun adjustByFirstRoll(
-		firstRoll: TrackableFrame.Roll,
-		configuration: TrackablePerFrameConfiguration,
-	) {
+	override fun adjustByFirstRoll(firstRoll: TrackableFrame.Roll, configuration: TrackablePerFrameConfiguration) {
 		totalRolls++
 		if (tracksRoll(firstRoll, configuration)) {
 			numerator++

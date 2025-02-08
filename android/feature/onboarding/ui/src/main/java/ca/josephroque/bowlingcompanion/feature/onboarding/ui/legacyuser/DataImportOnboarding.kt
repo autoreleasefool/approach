@@ -39,11 +39,7 @@ fun DataImportOnboarding(
 }
 
 @Composable
-private fun DataImportCard(
-	versionName: String,
-	versionCode: String,
-	onAction: (DataImportUiAction) -> Unit,
-) {
+private fun DataImportCard(versionName: String, versionCode: String, onAction: (DataImportUiAction) -> Unit) {
 	Card(
 		modifier = Modifier
 			.fillMaxWidth()

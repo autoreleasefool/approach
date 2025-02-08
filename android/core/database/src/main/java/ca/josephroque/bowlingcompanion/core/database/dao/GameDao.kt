@@ -72,10 +72,7 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 			WHERE games.series_id IN (:series) AND games.`index` = :gameIndex AND games.archived_on IS NULL
 		""",
 	)
-	abstract fun getGamesFromSeries(
-		series: List<SeriesID>,
-		gameIndex: Int,
-	): Flow<List<GameListItemBySeries>>
+	abstract fun getGamesFromSeries(series: List<SeriesID>, gameIndex: Int): Flow<List<GameListItemBySeries>>
 
 	@Query(
 		"""
@@ -144,10 +141,7 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 	abstract fun setGameDuration(gameId: GameID, durationMillis: Long)
 
 	@Query("UPDATE games SET exclude_from_statistics = :excludeFromStatistics WHERE id = :gameId")
-	abstract fun setGameExcludedFromStatistics(
-		gameId: GameID,
-		excludeFromStatistics: ExcludeFromStatistics,
-	)
+	abstract fun setGameExcludedFromStatistics(gameId: GameID, excludeFromStatistics: ExcludeFromStatistics)
 
 	@Query("DELETE FROM game_lanes WHERE game_id = :gameId")
 	abstract fun deleteGameLanes(gameId: GameID)

@@ -26,10 +26,7 @@ data class RightOfMiddleHitsStatistic(
 			rightOfMiddleHits = value
 		}
 
-	override fun tracksRoll(
-		firstRoll: TrackableFrame.Roll,
-		configuration: TrackablePerFrameConfiguration,
-	): Boolean {
+	override fun tracksRoll(firstRoll: TrackableFrame.Roll, configuration: TrackablePerFrameConfiguration): Boolean {
 		return firstRoll.pinsDowned.isHitRightOfMiddle()
 	}
 

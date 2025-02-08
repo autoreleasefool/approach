@@ -20,11 +20,7 @@ import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
 @Composable
-fun AlleysList(
-	state: AlleysListUiState,
-	onAction: (AlleysListUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun AlleysList(state: AlleysListUiState, onAction: (AlleysListUiAction) -> Unit, modifier: Modifier = Modifier) {
 	state.alleyToDelete?.let {
 		DeleteDialog(
 			itemName = it.name,

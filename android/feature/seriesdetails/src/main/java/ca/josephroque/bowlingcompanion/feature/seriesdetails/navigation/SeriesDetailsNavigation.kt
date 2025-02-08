@@ -20,10 +20,7 @@ fun NavController.navigateToSeriesDetails(seriesId: SeriesID, navOptions: NavOpt
 	this.navigate(Route.SeriesDetails.createRoute(seriesId), navOptions)
 }
 
-fun NavGraphBuilder.seriesDetailsScreen(
-	onBackPressed: () -> Unit,
-	onEditGame: (EditGameArgs) -> Unit,
-) {
+fun NavGraphBuilder.seriesDetailsScreen(onBackPressed: () -> Unit, onEditGame: (EditGameArgs) -> Unit) {
 	composable(
 		route = Route.SeriesDetails.route,
 		arguments = listOf(

@@ -32,10 +32,7 @@ data class AverageFirstRollStatistic(
 			totalFirstRolls = value
 		}
 
-	override fun adjustByFirstRoll(
-		firstRoll: TrackableFrame.Roll,
-		configuration: TrackablePerFrameConfiguration,
-	) {
+	override fun adjustByFirstRoll(firstRoll: TrackableFrame.Roll, configuration: TrackablePerFrameConfiguration) {
 		totalFirstRollPinfall += firstRoll.pinsDowned.pinCount()
 		totalFirstRolls++
 	}

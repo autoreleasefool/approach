@@ -12,10 +12,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GamesSettingsTopBar(
-	onAction: (GamesSettingsUiAction) -> Unit,
-	scrollBehavior: TopAppBarScrollBehavior,
-) {
+fun GamesSettingsTopBar(onAction: (GamesSettingsUiAction) -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
 	TopAppBar(
 		title = {
 			Text(

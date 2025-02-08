@@ -28,10 +28,7 @@ import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AccessoriesOnboarding(
-	onAction: (AccessoriesOnboardingUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun AccessoriesOnboarding(onAction: (AccessoriesOnboardingUiAction) -> Unit, modifier: Modifier = Modifier) {
 	val sheetState = rememberModalBottomSheetState(
 		confirmValueChange = { sheetSize ->
 			if (sheetSize == SheetValue.Hidden) {
@@ -52,10 +49,7 @@ fun AccessoriesOnboarding(
 }
 
 @Composable
-private fun OnboardingContent(
-	onAction: (AccessoriesOnboardingUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+private fun OnboardingContent(onAction: (AccessoriesOnboardingUiAction) -> Unit, modifier: Modifier = Modifier) {
 	Column(
 		verticalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = modifier

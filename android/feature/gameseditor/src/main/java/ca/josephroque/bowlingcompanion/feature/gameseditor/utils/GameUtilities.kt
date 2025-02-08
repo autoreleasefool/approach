@@ -131,9 +131,7 @@ fun GamesEditorUiState.updateSelection(frameIndex: Int?, rollIndex: Int?): Games
 	)
 }
 
-fun GameDetailsUiState.updateSelection(
-	selection: ScoreSheetUiState.Selection,
-): GameDetailsUiState = copy(
+fun GameDetailsUiState.updateSelection(selection: ScoreSheetUiState.Selection): GameDetailsUiState = copy(
 	scoresList = scoresList?.copy(
 		bowlerScores = scoresList?.bowlerScores?.map { seriesScores ->
 			seriesScores.map {

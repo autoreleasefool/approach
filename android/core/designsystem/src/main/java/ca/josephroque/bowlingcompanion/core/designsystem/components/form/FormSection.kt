@@ -35,11 +35,7 @@ fun FormSection(
 }
 
 @Composable
-fun FormSectionHeader(
-	titleResourceId: Int,
-	modifier: Modifier = Modifier,
-	headerAction: HeaderAction? = null,
-) {
+fun FormSectionHeader(titleResourceId: Int, modifier: Modifier = Modifier, headerAction: HeaderAction? = null) {
 	SectionHeader(
 		title = stringResource(titleResourceId),
 		modifier = modifier,

@@ -59,9 +59,7 @@ sealed interface AlleyFormScreenEvent {
 	data class ManageLanes(val existingLanes: List<LaneID>) : AlleyFormScreenEvent
 }
 
-fun MutableStateFlow<AlleyFormScreenUiState>.updateForm(
-	function: (AlleyFormUiState) -> AlleyFormUiState,
-) {
+fun MutableStateFlow<AlleyFormScreenUiState>.updateForm(function: (AlleyFormUiState) -> AlleyFormUiState) {
 	this.update { state ->
 		when (state) {
 			AlleyFormScreenUiState.Loading -> state

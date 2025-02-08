@@ -16,11 +16,7 @@ import kotlinx.datetime.LocalDate
 
 interface SeriesRepository {
 	fun getSeriesDetails(seriesId: SeriesID): Flow<SeriesDetails>
-	fun getSeriesList(
-		leagueId: LeagueID,
-		sortOrder: SeriesSortOrder,
-		preBowl: SeriesPreBowl?,
-	): Flow<List<SeriesListItem>>
+	fun getSeriesList(leagueId: LeagueID, sortOrder: SeriesSortOrder, preBowl: SeriesPreBowl?): Flow<List<SeriesListItem>>
 	fun getArchivedSeries(): Flow<List<ArchivedSeries>>
 	fun getEventSeriesIdsList(eventIds: List<LeagueID>): Flow<List<SeriesID>>
 	fun getTeamSeriesIds(teamSeriesId: TeamSeriesID): Flow<List<SeriesID>>

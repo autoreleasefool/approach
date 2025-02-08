@@ -12,10 +12,7 @@ import ca.josephroque.bowlingcompanion.feature.settings.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AcknowledgementsTopBar(
-	onAction: (AcknowledgementsUiAction) -> Unit,
-	scrollBehavior: TopAppBarScrollBehavior,
-) {
+fun AcknowledgementsTopBar(onAction: (AcknowledgementsUiAction) -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
 		title = {

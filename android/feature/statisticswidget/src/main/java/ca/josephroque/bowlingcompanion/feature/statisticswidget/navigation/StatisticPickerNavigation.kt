@@ -14,10 +14,7 @@ import ca.josephroque.bowlingcompanion.feature.statisticswidget.statisticpicker.
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.bottomSheet
 
-fun NavController.navigateToStatisticPickerForResult(
-	selectedStatistic: StatisticID,
-	navOptions: NavOptions? = null,
-) {
+fun NavController.navigateToStatisticPickerForResult(selectedStatistic: StatisticID, navOptions: NavOptions? = null) {
 	this.navigate(
 		route = Route.StatisticsPicker.createRoute(selectedStatistic.name),
 		navOptions = navOptions,

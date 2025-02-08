@@ -29,11 +29,7 @@ import ca.josephroque.bowlingcompanion.feature.settings.ui.components.Link
 import ca.josephroque.bowlingcompanion.feature.settings.ui.components.NavigationItem
 
 @Composable
-fun Settings(
-	state: SettingsUiState,
-	onAction: (SettingsUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun Settings(state: SettingsUiState, onAction: (SettingsUiAction) -> Unit, modifier: Modifier = Modifier) {
 	Column(
 		modifier = modifier
 			.fillMaxSize()
@@ -131,11 +127,7 @@ private fun ArchivesSection(onAction: (SettingsUiAction) -> Unit) {
 }
 
 @Composable
-private fun HelpSection(
-	versionName: String,
-	versionCode: String,
-	onAction: (SettingsUiAction) -> Unit,
-) {
+private fun HelpSection(versionName: String, versionCode: String, onAction: (SettingsUiAction) -> Unit) {
 	Header(titleResourceId = R.string.settings_item_help)
 
 	val context = LocalContext.current

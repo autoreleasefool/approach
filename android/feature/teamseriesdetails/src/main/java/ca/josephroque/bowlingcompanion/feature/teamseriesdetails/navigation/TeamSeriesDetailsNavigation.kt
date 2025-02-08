@@ -14,10 +14,7 @@ fun NavController.navigateToTeamSeriesDetails(teamSeriesId: TeamSeriesID) {
 	navigate(Route.TeamSeriesDetails.createRoute(teamSeriesId))
 }
 
-fun NavGraphBuilder.teamSeriesDetailsScreen(
-	onBackPressed: () -> Unit,
-	onEditGame: (TeamSeriesID, GameID) -> Unit,
-) {
+fun NavGraphBuilder.teamSeriesDetailsScreen(onBackPressed: () -> Unit, onEditGame: (TeamSeriesID, GameID) -> Unit) {
 	composable(
 		route = Route.TeamSeriesDetails.route,
 		arguments = listOf(

@@ -12,10 +12,7 @@ import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DataExportTopBar(
-	onAction: (DataExportUiAction) -> Unit,
-	scrollBehavior: TopAppBarScrollBehavior,
-) {
+fun DataExportTopBar(onAction: (DataExportUiAction) -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
 		title = {

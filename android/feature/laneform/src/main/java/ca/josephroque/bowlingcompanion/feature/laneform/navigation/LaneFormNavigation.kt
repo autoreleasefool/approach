@@ -13,10 +13,7 @@ import ca.josephroque.bowlingcompanion.core.navigation.LaneFormResultViewModel
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.laneform.LaneFormRoute
 
-fun NavController.navigateToLaneFormForResult(
-	existingLanes: List<LaneID>,
-	navOptions: NavOptions? = null,
-) {
+fun NavController.navigateToLaneFormForResult(existingLanes: List<LaneID>, navOptions: NavOptions? = null) {
 	this.navigate(
 		route = Route.EditLanes.createRoute(existingLanes.map { it.toString() }),
 		navOptions = navOptions,

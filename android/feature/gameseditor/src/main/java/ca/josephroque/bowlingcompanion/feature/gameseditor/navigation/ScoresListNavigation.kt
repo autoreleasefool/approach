@@ -11,11 +11,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.scores.ScoresListRout
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.bottomSheet
 
-fun NavController.navigateToScoresList(
-	series: List<SeriesID>,
-	gameIndex: Int,
-	navOptions: NavOptions? = null,
-) {
+fun NavController.navigateToScoresList(series: List<SeriesID>, gameIndex: Int, navOptions: NavOptions? = null) {
 	this.navigate(
 		route = Route.ScoresList.createRoute(series, gameIndex),
 		navOptions = navOptions,

@@ -177,12 +177,7 @@ fun SeriesSharing(
 }
 
 @Composable
-private fun FilterItem(
-	@StringRes title: Int,
-	selected: Boolean,
-	onClick: () -> Unit,
-	imageVector: ImageVector,
-) {
+private fun FilterItem(@StringRes title: Int, selected: Boolean, onClick: () -> Unit, imageVector: ImageVector) {
 	FilterChip(
 		selected = selected,
 		onClick = onClick,

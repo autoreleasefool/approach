@@ -21,10 +21,8 @@ data class TrackableFramesSequence(
 	private val gamesQuery = TrackableGameQueryComponents(filter = filter)
 	private val framesQuery = TrackableFrameQueryComponents(filter = filter)
 
-	override fun getPagingSource(
-		query: String,
-		whereArgs: List<Any>,
-	): PagingSource<Int, TrackableFrameEntity> = statisticsDao.getTrackableFrames(query, whereArgs)
+	override fun getPagingSource(query: String, whereArgs: List<Any>): PagingSource<Int, TrackableFrameEntity> =
+		statisticsDao.getTrackableFrames(query, whereArgs)
 
 	override fun mapEntityToModel(entity: TrackableFrameEntity) = entity.asModel()
 
@@ -68,8 +66,7 @@ data class TrackableFramesSequence(
 		putAll(filter.source.whereClauseArgs())
 	}
 
-	override fun buildGroupByStatement() =
-		"GROUP BY ${gamesQuery.tableAlias}.id, ${framesQuery.tableAlias}.`index`"
+	override fun buildGroupByStatement() = "GROUP BY ${gamesQuery.tableAlias}.id, ${framesQuery.tableAlias}.`index`"
 
 	override fun buildOrderByStatement() = listOf(
 		leaguesQuery.buildOrderClause(),

@@ -46,11 +46,7 @@ import ca.josephroque.bowlingcompanion.core.model.isLastRoll
 import ca.josephroque.bowlingcompanion.core.model.stub.ScoringStub
 
 @Composable
-fun ScoreSheet(
-	state: ScoreSheetUiState,
-	onAction: (ScoreSheetUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun ScoreSheet(state: ScoreSheetUiState, onAction: (ScoreSheetUiAction) -> Unit, modifier: Modifier = Modifier) {
 	BoxWithConstraints(
 		modifier = modifier.fillMaxWidth(),
 	) {

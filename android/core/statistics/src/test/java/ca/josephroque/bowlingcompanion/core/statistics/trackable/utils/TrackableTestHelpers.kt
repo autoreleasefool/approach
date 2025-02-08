@@ -13,18 +13,15 @@ import kotlinx.datetime.LocalDate
 fun roll(index: Int, pinsDowned: Set<Pin>, didFoul: Boolean = false): TrackableFrame.Roll =
 	TrackableFrame.Roll(index, pinsDowned, didFoul)
 
-fun frame(
-	index: Int,
-	rolls: List<TrackableFrame.Roll>,
-	gameId: GameID = GameID(id(0)),
-): TrackableFrame = TrackableFrame(
-	seriesId = SeriesID(id(0)),
-	date = LocalDate(2023, 1, 1),
-	gameId = gameId,
-	gameIndex = 0,
-	index = index,
-	rolls = rolls,
-)
+fun frame(index: Int, rolls: List<TrackableFrame.Roll>, gameId: GameID = GameID(id(0))): TrackableFrame =
+	TrackableFrame(
+		seriesId = SeriesID(id(0)),
+		date = LocalDate(2023, 1, 1),
+		gameId = gameId,
+		gameIndex = 0,
+		index = index,
+		rolls = rolls,
+	)
 
 fun matchPlay(result: MatchPlayResult? = null): TrackableGame.MatchPlay = TrackableGame.MatchPlay(
 	id = id(0),

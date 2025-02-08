@@ -37,13 +37,10 @@ class OfflineFirstTeamSeriesRepository @Inject constructor(
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ) : TeamSeriesRepository {
-	override fun getTeamSeriesList(
-		teamId: TeamID,
-		sortOrder: TeamSeriesSortOrder,
-	): Flow<List<TeamSeriesSummary>> = teamSeriesDao.getTeamSeriesList(teamId, sortOrder)
+	override fun getTeamSeriesList(teamId: TeamID, sortOrder: TeamSeriesSortOrder): Flow<List<TeamSeriesSummary>> =
+		teamSeriesDao.getTeamSeriesList(teamId, sortOrder)
 
-	override fun getArchivedTeamSeries(): Flow<List<ArchivedTeamSeries>> =
-		teamSeriesDao.getArchivedTeamSeries()
+	override fun getArchivedTeamSeries(): Flow<List<ArchivedTeamSeries>> = teamSeriesDao.getArchivedTeamSeries()
 
 	override fun getTeamSeriesDetails(teamSeriesId: TeamSeriesID): Flow<TeamSeriesDetails> =
 		teamSeriesDao.getTeamSeriesDetails(teamSeriesId)
@@ -154,10 +151,9 @@ class OfflineFirstTeamSeriesRepository @Inject constructor(
 		}
 	}
 
-	override suspend fun updateTeamSeriesDate(teamSeriesId: TeamSeriesID, date: LocalDate) =
-		withContext(ioDispatcher) {
-			teamSeriesDao.setTeamSeriesDate(teamSeriesId, date)
-		}
+	override suspend fun updateTeamSeriesDate(teamSeriesId: TeamSeriesID, date: LocalDate) = withContext(ioDispatcher) {
+		teamSeriesDao.setTeamSeriesDate(teamSeriesId, date)
+	}
 
 	override suspend fun archiveTeamSeries(teamSeriesId: TeamSeriesID, archiveMemberSeries: Boolean) =
 		withContext(ioDispatcher) {

@@ -297,11 +297,7 @@ class QuickPlayViewModel @Inject constructor(
 		}
 	}
 
-	private suspend fun startRecordingSeries(
-		bowlerIds: List<BowlerID>,
-		leagueIds: List<LeagueID>,
-		numberOfGames: Int,
-	) {
+	private suspend fun startRecordingSeries(bowlerIds: List<BowlerID>, leagueIds: List<LeagueID>, numberOfGames: Int) {
 		if (bowlerIds.isEmpty() || bowlerIds.size != leagueIds.size) return
 
 		var firstGameId: GameID? = null

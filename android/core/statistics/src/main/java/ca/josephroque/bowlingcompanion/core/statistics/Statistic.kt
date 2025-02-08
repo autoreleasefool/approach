@@ -310,19 +310,13 @@ interface TrackablePerFrame : Statistic {
 		// Intentionally left blank
 	}
 
-	override fun adjustBySeries(
-		series: TrackableSeries,
-		configuration: TrackablePerSeriesConfiguration,
-	) {
+	override fun adjustBySeries(series: TrackableSeries, configuration: TrackablePerSeriesConfiguration) {
 		// Intentionally left blank
 	}
 }
 
 interface TrackablePerFirstRoll : TrackablePerFrame {
-	fun adjustByFirstRoll(
-		firstRoll: TrackableFrame.Roll,
-		configuration: TrackablePerFrameConfiguration,
-	)
+	fun adjustByFirstRoll(firstRoll: TrackableFrame.Roll, configuration: TrackablePerFrameConfiguration)
 
 	override fun adjustByFrame(frame: TrackableFrame, configuration: TrackablePerFrameConfiguration) {
 		for (roll in frame.firstRolls) {
@@ -356,10 +350,7 @@ interface TrackablePerGame : Statistic {
 		// Intentionally left blank
 	}
 
-	override fun adjustBySeries(
-		series: TrackableSeries,
-		configuration: TrackablePerSeriesConfiguration,
-	) {
+	override fun adjustBySeries(series: TrackableSeries, configuration: TrackablePerSeriesConfiguration) {
 		// Intentionally left blank
 	}
 }

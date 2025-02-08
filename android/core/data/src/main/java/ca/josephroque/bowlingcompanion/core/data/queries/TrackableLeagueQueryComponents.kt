@@ -23,11 +23,8 @@ data class TrackableLeagueQueryComponents(
 
 	override fun buildFromClause(): String = "FROM leagues AS $tableAlias"
 
-	override fun buildJoinClause(
-		parentTable: String,
-		parentColumn: String,
-		childColumn: String,
-	): String = "JOIN leagues AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn"
+	override fun buildJoinClause(parentTable: String, parentColumn: String, childColumn: String): String =
+		"JOIN leagues AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn"
 
 	override fun buildWhereClauses(): List<String> {
 		when (source) {

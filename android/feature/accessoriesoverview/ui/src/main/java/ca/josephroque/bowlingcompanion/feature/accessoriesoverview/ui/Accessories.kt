@@ -17,11 +17,7 @@ import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.alleysList
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.gearList
 
 @Composable
-fun Accessories(
-	state: AccessoriesUiState,
-	onAction: (AccessoriesUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun Accessories(state: AccessoriesUiState, onAction: (AccessoriesUiAction) -> Unit, modifier: Modifier = Modifier) {
 	if (state.isShowingOnboarding) {
 		AccessoriesOnboarding(
 			onAction = { onAction(AccessoriesUiAction.Onboarding(it)) },

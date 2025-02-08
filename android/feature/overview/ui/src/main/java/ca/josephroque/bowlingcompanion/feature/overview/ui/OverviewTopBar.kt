@@ -52,10 +52,7 @@ fun OverviewTopBar(
 }
 
 @Composable
-fun TeamTabTopBarActions(
-	state: OverviewTopBarUiState.TeamTab,
-	onAction: (OverviewUiAction) -> Unit,
-) {
+fun TeamTabTopBarActions(state: OverviewTopBarUiState.TeamTab, onAction: (OverviewUiAction) -> Unit) {
 	if (state.isSortOrderMenuVisible) {
 		Box {
 			IconButton(onClick = { onAction(OverviewUiAction.TeamsSortClicked) }) {
@@ -113,10 +110,7 @@ fun TeamTabTopBarActions(
 }
 
 @Composable
-fun BowlerTabTopBarActions(
-	state: OverviewTopBarUiState.BowlerTab,
-	onAction: (OverviewUiAction) -> Unit,
-) {
+fun BowlerTabTopBarActions(state: OverviewTopBarUiState.BowlerTab, onAction: (OverviewUiAction) -> Unit) {
 	if (state.isSortOrderMenuVisible) {
 		Box {
 			IconButton(onClick = { onAction(OverviewUiAction.BowlersSortClicked) }) {

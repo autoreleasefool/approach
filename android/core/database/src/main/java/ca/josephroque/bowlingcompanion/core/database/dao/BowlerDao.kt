@@ -87,10 +87,7 @@ abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 				CASE WHEN :sortOrder = 'ALPHABETICAL' THEN bowlers.name END ASC
 		""",
 	)
-	abstract fun getBowlersList(
-		kind: BowlerKind?,
-		sortOrder: BowlerSortOrder,
-	): Flow<List<BowlerListItem>>
+	abstract fun getBowlersList(kind: BowlerKind?, sortOrder: BowlerSortOrder): Flow<List<BowlerListItem>>
 
 	@Query(
 		"""

@@ -45,25 +45,21 @@ class OfflineFirstGamesRepository @Inject constructor(
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ) : GamesRepository {
-	override fun getGameDetails(gameId: GameID): Flow<GameEdit> =
-		gameDao.getGameDetails(gameId).map { it.asModel() }
+	override fun getGameDetails(gameId: GameID): Flow<GameEdit> = gameDao.getGameDetails(gameId).map { it.asModel() }
 
-	override fun getGamesList(seriesId: SeriesID): Flow<List<GameListItem>> =
-		gameDao.getGamesList(seriesId)
+	override fun getGamesList(seriesId: SeriesID): Flow<List<GameListItem>> = gameDao.getGamesList(seriesId)
 
 	override fun getGameIds(seriesId: SeriesID): Flow<List<GameID>> = gameDao.getGameIds(seriesId)
 
 	override fun getTeamSeriesGameIds(teamSeriesId: TeamSeriesID): Flow<List<GameID>> =
 		gameDao.getTeamSeriesGameIds(teamSeriesId)
 
-	override fun getGamesFromSeries(
-		series: List<SeriesID>,
-		gameIndex: Int,
-	): Flow<List<GameListItemBySeries>> = gameDao.getGamesFromSeries(series, gameIndex)
-		.map {
-			val seriesIndex = series.mapIndexed { index, seriesId -> seriesId to index }.toMap()
-			it.sortedBy { game -> seriesIndex[game.seriesId] }
-		}
+	override fun getGamesFromSeries(series: List<SeriesID>, gameIndex: Int): Flow<List<GameListItemBySeries>> =
+		gameDao.getGamesFromSeries(series, gameIndex)
+			.map {
+				val seriesIndex = series.mapIndexed { index, seriesId -> seriesId to index }.toMap()
+				it.sortedBy { game -> seriesIndex[game.seriesId] }
+			}
 
 	override fun getArchivedGames(): Flow<List<ArchivedGame>> = gameDao.getArchivedGames()
 
@@ -91,20 +87,15 @@ class OfflineFirstGamesRepository @Inject constructor(
 		)
 	}
 
-	override suspend fun setGameScoringMethod(
-		gameId: GameID,
-		scoringMethod: GameScoringMethod,
-		score: Int,
-	) = withContext(ioDispatcher) {
-		gameDao.setGameScoringMethod(gameId, scoringMethod, score)
-	}
+	override suspend fun setGameScoringMethod(gameId: GameID, scoringMethod: GameScoringMethod, score: Int) =
+		withContext(ioDispatcher) {
+			gameDao.setGameScoringMethod(gameId, scoringMethod, score)
+		}
 
-	override suspend fun setGameExcludedFromStatistics(
-		gameId: GameID,
-		excludeFromStatistics: ExcludeFromStatistics,
-	) = withContext(ioDispatcher) {
-		gameDao.setGameExcludedFromStatistics(gameId, excludeFromStatistics)
-	}
+	override suspend fun setGameExcludedFromStatistics(gameId: GameID, excludeFromStatistics: ExcludeFromStatistics) =
+		withContext(ioDispatcher) {
+			gameDao.setGameExcludedFromStatistics(gameId, excludeFromStatistics)
+		}
 
 	override suspend fun setGameLockState(gameId: GameID, locked: GameLockState) = withContext(
 		ioDispatcher,
@@ -116,10 +107,9 @@ class OfflineFirstGamesRepository @Inject constructor(
 		gameDao.setGameScore(gameId, score)
 	}
 
-	override suspend fun setGameDuration(gameId: GameID, durationMillis: Long) =
-		withContext(ioDispatcher) {
-			gameDao.setGameDuration(gameId, durationMillis)
-		}
+	override suspend fun setGameDuration(gameId: GameID, durationMillis: Long) = withContext(ioDispatcher) {
+		gameDao.setGameDuration(gameId, durationMillis)
+	}
 
 	override suspend fun setGameLanes(gameId: GameID, lanes: Set<LaneID>) = withContext(ioDispatcher) {
 		transactionRunner {

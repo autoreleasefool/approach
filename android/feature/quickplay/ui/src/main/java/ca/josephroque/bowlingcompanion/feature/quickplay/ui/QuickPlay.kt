@@ -50,11 +50,7 @@ import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
 
 @Composable
-fun QuickPlay(
-	state: QuickPlayUiState,
-	onAction: (QuickPlayUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun QuickPlay(state: QuickPlayUiState, onAction: (QuickPlayUiAction) -> Unit, modifier: Modifier = Modifier) {
 	val reorderableState = rememberReorderableLazyListState(
 		onMove = { from, to ->
 			onAction(QuickPlayUiAction.BowlerMoved(from.index, to.index))
@@ -163,10 +159,7 @@ fun QuickPlay(
 }
 
 @Composable
-private fun QuickPlayBowler(
-	bowler: Pair<BowlerSummary, LeagueSummary?>,
-	onAction: (QuickPlayUiAction) -> Unit,
-) {
+private fun QuickPlayBowler(bowler: Pair<BowlerSummary, LeagueSummary?>, onAction: (QuickPlayUiAction) -> Unit) {
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		verticalAlignment = Alignment.CenterVertically,
@@ -272,10 +265,7 @@ private fun LeagueNameField(name: String, onNameChanged: (String) -> Unit, error
 }
 
 @Composable
-private fun RecurrencePicker(
-	recurrence: LeagueRecurrence,
-	onRecurrenceChanged: (LeagueRecurrence) -> Unit,
-) {
+private fun RecurrencePicker(recurrence: LeagueRecurrence, onRecurrenceChanged: (LeagueRecurrence) -> Unit) {
 	FormRadioGroup(
 		title = stringResource(R.string.team_play_league_recurrence),
 		subtitle = stringResource(R.string.team_play_league_recurrence_subtitle),

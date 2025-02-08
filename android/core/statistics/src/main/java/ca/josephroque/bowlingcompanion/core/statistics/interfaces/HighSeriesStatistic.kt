@@ -25,10 +25,7 @@ interface HighSeriesStatistic :
 			highSeries = value
 		}
 
-	override fun adjustBySeries(
-		series: TrackableSeries,
-		configuration: TrackablePerSeriesConfiguration,
-	) {
+	override fun adjustBySeries(series: TrackableSeries, configuration: TrackablePerSeriesConfiguration) {
 		if (series.numberOfGames == seriesSize) {
 			highSeries = maxOf(series.total, highSeries)
 		}

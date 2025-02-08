@@ -46,11 +46,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEdi
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiState
 
 @Composable
-fun GamesEditor(
-	state: GamesEditorUiState,
-	onAction: (GamesEditorUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun GamesEditor(state: GamesEditorUiState, onAction: (GamesEditorUiAction) -> Unit, modifier: Modifier = Modifier) {
 	Column(modifier = modifier.fillMaxSize()) {
 		Box(modifier = Modifier.weight(1f)) {
 			BackgroundImage()
@@ -160,11 +156,7 @@ private fun BackgroundImage() {
 }
 
 @Composable
-private fun ManualScoreCard(
-	score: Int,
-	onAction: (GamesEditorUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+private fun ManualScoreCard(score: Int, onAction: (GamesEditorUiAction) -> Unit, modifier: Modifier = Modifier) {
 	Row(
 		modifier = modifier.fillMaxWidth(),
 	) {

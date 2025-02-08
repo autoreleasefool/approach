@@ -42,8 +42,7 @@ class OfflineFirstGearRepository @Inject constructor(
 
 	override fun getGearList(kind: GearKind?): Flow<List<GearListItem>> = gearDao.getGearList(kind)
 
-	override fun getGearUpdate(id: GearID): Flow<GearUpdate> =
-		gearDao.getGearUpdate(id).map { it.asModel() }
+	override fun getGearUpdate(id: GearID): Flow<GearUpdate> = gearDao.getGearUpdate(id).map { it.asModel() }
 
 	override fun getGearDetails(id: GearID): Flow<GearDetails> = gearDao.getGearDetails(id)
 

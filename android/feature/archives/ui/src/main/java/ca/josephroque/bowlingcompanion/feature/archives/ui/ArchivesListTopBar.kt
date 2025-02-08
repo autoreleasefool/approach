@@ -11,10 +11,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ArchivesListTopBar(
-	onAction: (ArchivesListUiAction) -> Unit,
-	scrollBehavior: TopAppBarScrollBehavior,
-) {
+fun ArchivesListTopBar(onAction: (ArchivesListUiAction) -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
 		title = {

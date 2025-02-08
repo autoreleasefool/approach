@@ -19,15 +19,13 @@ import kotlinx.coroutines.withContext
 class FivePinScoreKeeper @Inject constructor(
 	@Dispatcher(Default) private val defaultDispatcher: CoroutineDispatcher,
 ) : ScoreKeeper {
-	override suspend fun calculateHighestScorePossible(input: ScoreKeeperInput): Int =
-		withContext(defaultDispatcher) {
-			calculateHighestScorePossibleInternal(input)
-		}
+	override suspend fun calculateHighestScorePossible(input: ScoreKeeperInput): Int = withContext(defaultDispatcher) {
+		calculateHighestScorePossibleInternal(input)
+	}
 
-	override suspend fun calculateScore(input: ScoreKeeperInput): List<ScoringFrame> =
-		withContext(defaultDispatcher) {
-			calculateScoreInternal(input)
-		}
+	override suspend fun calculateScore(input: ScoreKeeperInput): List<ScoringFrame> = withContext(defaultDispatcher) {
+		calculateScoreInternal(input)
+	}
 
 	private fun calculateHighestScorePossibleInternal(input: ScoreKeeperInput): Int {
 		val scoredFrames = calculateScoreInternal(input)
@@ -184,10 +182,7 @@ class FivePinScoreKeeper @Inject constructor(
 		)
 	}
 
-	private fun scoreLastFrame(
-		lastFrameRolls: List<ScoreKeeperInput.Roll>,
-		state: ScoreKeeperState,
-	): ScoringFrame? {
+	private fun scoreLastFrame(lastFrameRolls: List<ScoreKeeperInput.Roll>, state: ScoreKeeperState): ScoringFrame? {
 		if (!Frame.isLastFrame(state.lastValidFrameIndex)) return null
 
 		var stepScore = 0

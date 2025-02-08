@@ -23,8 +23,7 @@ class OfflineFirstAlleysRepository @Inject constructor(
 	private val userDataRepository: UserDataRepository,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ) : AlleysRepository {
-	override fun getAlleyDetails(id: AlleyID): Flow<AlleyDetails> =
-		alleyDao.getAlleyDetails(id).map { it.asModel() }
+	override fun getAlleyDetails(id: AlleyID): Flow<AlleyDetails> = alleyDao.getAlleyDetails(id).map { it.asModel() }
 
 	override fun getRecentAlleysList(limit: Int): Flow<List<AlleyListItem>> = combine(
 		alleyDao.getAlleysList(),
@@ -39,8 +38,7 @@ class OfflineFirstAlleysRepository @Inject constructor(
 	override fun getGameAlleyDetails(gameId: GameID): Flow<AlleyDetails?> =
 		alleyDao.getGameAlleyDetails(gameId).map { it?.asModel() }
 
-	override fun getAlleyUpdate(id: AlleyID): Flow<AlleyUpdate> =
-		alleyDao.getAlleyUpdate(id).map { it.asModel() }
+	override fun getAlleyUpdate(id: AlleyID): Flow<AlleyUpdate> = alleyDao.getAlleyUpdate(id).map { it.asModel() }
 
 	override suspend fun insertAlley(alley: AlleyCreate) = withContext(ioDispatcher) {
 		alleyDao.insertAlley(alley.asEntity())

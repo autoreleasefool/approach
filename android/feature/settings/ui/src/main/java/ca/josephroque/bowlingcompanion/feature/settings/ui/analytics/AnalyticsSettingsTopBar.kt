@@ -13,10 +13,7 @@ import ca.josephroque.bowlingcompanion.feature.settings.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AnalyticsSettingsTopBar(
-	onAction: (AnalyticsSettingsUiAction) -> Unit,
-	scrollBehavior: TopAppBarScrollBehavior,
-) {
+fun AnalyticsSettingsTopBar(onAction: (AnalyticsSettingsUiAction) -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
 		colors = TopAppBarDefaults.topAppBarColors(),

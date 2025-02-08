@@ -13,10 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 
 interface TeamSeriesRepository {
-	fun getTeamSeriesList(
-		teamId: TeamID,
-		sortOrder: TeamSeriesSortOrder,
-	): Flow<List<TeamSeriesSummary>>
+	fun getTeamSeriesList(teamId: TeamID, sortOrder: TeamSeriesSortOrder): Flow<List<TeamSeriesSummary>>
 	fun getArchivedTeamSeries(): Flow<List<ArchivedTeamSeries>>
 	fun getTeamSeriesDetails(teamSeriesId: TeamSeriesID): Flow<TeamSeriesDetails>
 

@@ -32,8 +32,7 @@ class LocalDateConverter {
 
 class RollConverter {
 	@TypeConverter
-	fun stringToRoll(value: String?): FrameEntity.Roll? =
-		value?.let { FrameEntity.Roll.fromBitString(it) }
+	fun stringToRoll(value: String?): FrameEntity.Roll? = value?.let { FrameEntity.Roll.fromBitString(it) }
 
 	@TypeConverter
 	fun rollToString(roll: FrameEntity.Roll?): String? = roll?.toBitString()

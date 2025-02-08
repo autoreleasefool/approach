@@ -14,10 +14,7 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.google.accompanist.navigation.material.bottomSheet
 import java.util.UUID
 
-fun NavController.navigateToMidGameStatisticsDetails(
-	filter: TrackableFilter,
-	navOptions: NavOptions? = null,
-) {
+fun NavController.navigateToMidGameStatisticsDetails(filter: TrackableFilter, navOptions: NavOptions? = null) {
 	val type = filter.source.sourceType()
 	val id = filter.source.id
 	// FIXME: Parse and pass the rest of the filter as arguments

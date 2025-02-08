@@ -31,11 +31,7 @@ import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.NewUserOnbo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Logbook(
-	name: String,
-	onAction: (NewUserOnboardingUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun Logbook(name: String, onAction: (NewUserOnboardingUiAction) -> Unit, modifier: Modifier = Modifier) {
 	val sheetState = rememberModalBottomSheetState(
 		confirmValueChange = { sheetSize ->
 			when (sheetSize) {

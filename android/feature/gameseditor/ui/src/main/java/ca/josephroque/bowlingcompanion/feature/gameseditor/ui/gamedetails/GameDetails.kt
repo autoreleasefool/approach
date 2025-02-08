@@ -41,11 +41,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.compon
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.lanes.CopyLanesDialog
 
 @Composable
-fun GameDetails(
-	state: GameDetailsUiState,
-	onAction: (GameDetailsUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun GameDetails(state: GameDetailsUiState, onAction: (GameDetailsUiAction) -> Unit, modifier: Modifier = Modifier) {
 	if (state.copyLanesDialog != null) {
 		CopyLanesDialog(
 			state = state.copyLanesDialog,

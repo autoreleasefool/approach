@@ -37,11 +37,7 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
 import ca.josephroque.bowlingcompanion.core.model.ui.title
 
 @Composable
-fun AlleyForm(
-	state: AlleyFormUiState,
-	onAction: (AlleyFormUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun AlleyForm(state: AlleyFormUiState, onAction: (AlleyFormUiAction) -> Unit, modifier: Modifier = Modifier) {
 	if (state.isShowingDeleteDialog) {
 		DeleteDialog(
 			itemName = state.name,
@@ -188,10 +184,7 @@ private fun MaterialPicker(material: AlleyMaterial?, onMaterialChanged: (AlleyMa
 }
 
 @Composable
-private fun MechanismPicker(
-	mechanism: AlleyMechanism?,
-	onMechanismChanged: (AlleyMechanism?) -> Unit,
-) {
+private fun MechanismPicker(mechanism: AlleyMechanism?, onMechanismChanged: (AlleyMechanism?) -> Unit) {
 	FormRadioGroup(
 		title = stringResource(R.string.alley_form_property_mechanism),
 		subtitle = stringResource(R.string.alley_form_property_mechanism_footer),

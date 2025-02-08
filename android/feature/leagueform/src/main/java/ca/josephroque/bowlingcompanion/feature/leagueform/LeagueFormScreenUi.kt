@@ -30,8 +30,7 @@ sealed interface LeagueFormScreenUiState {
 		val form: LeagueFormUiState,
 		val topBar: LeagueFormTopBarUiState,
 	) : LeagueFormScreenUiState {
-		override fun isSavable(): Boolean =
-			form.name.isNotBlank() && form.updatedModel(id = initialValue.id) != initialValue
+		override fun isSavable(): Boolean = form.name.isNotBlank() && form.updatedModel(id = initialValue.id) != initialValue
 
 		override fun hasAnyChanges(): Boolean = form.updatedModel(id = initialValue.id) != initialValue
 	}
@@ -61,9 +60,7 @@ sealed interface LeagueFormScreenEvent {
 	data object Dismissed : LeagueFormScreenEvent
 }
 
-fun MutableStateFlow<LeagueFormScreenUiState>.updateForm(
-	function: (LeagueFormUiState) -> LeagueFormUiState,
-) {
+fun MutableStateFlow<LeagueFormScreenUiState>.updateForm(function: (LeagueFormUiState) -> LeagueFormUiState) {
 	this.update { state ->
 		when (state) {
 			LeagueFormScreenUiState.Loading -> state

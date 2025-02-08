@@ -70,7 +70,6 @@ class ApproachAppState(
 	}
 }
 
-fun NavDestination?.isTopLevelDestinationInHierarchy(destination: TopLevelDestination) =
-	this?.hierarchy?.any {
-		return@any it.route?.contains(destination.name, true) ?: false
-	} ?: false
+fun NavDestination?.isTopLevelDestinationInHierarchy(destination: TopLevelDestination) = this?.hierarchy?.any {
+	return@any it.route?.contains(destination.name, true) ?: false
+} ?: false

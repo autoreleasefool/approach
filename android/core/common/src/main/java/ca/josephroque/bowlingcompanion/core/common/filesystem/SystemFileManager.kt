@@ -42,11 +42,9 @@ class SystemFileManager @Inject constructor(
 
 	override fun getDatabasePath(fileName: String): File = context.getDatabasePath(fileName)
 
-	override fun getAssets(directory: String): List<String> =
-		context.assets.list(directory)?.toList() ?: emptyList()
+	override fun getAssets(directory: String): List<String> = context.assets.list(directory)?.toList() ?: emptyList()
 
-	override fun getAsset(fileName: String): String =
-		context.assets.open(fileName).bufferedReader().use { it.readText() }
+	override fun getAsset(fileName: String): String = context.assets.open(fileName).bufferedReader().use { it.readText() }
 
 	override fun zipFiles(zipFile: File, files: List<File>) {
 		ZipOutputStream(zipFile.outputStream()).use { zipOutputStream ->

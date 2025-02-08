@@ -9,7 +9,6 @@ import kotlinx.datetime.toLocalDateTime
 
 fun Instant.toLocalDate(): LocalDate = toLocalDateTime(TimeZone.currentSystemDefault()).date
 
-fun LocalDate.format(format: String): String =
-	DateTimeFormatter.ofPattern(format).format(this.toJavaLocalDate())
+fun LocalDate.format(format: String): String = DateTimeFormatter.ofPattern(format).format(this.toJavaLocalDate())
 
 fun LocalDate.simpleFormat(): String = this.format("MMMM d, yyyy")

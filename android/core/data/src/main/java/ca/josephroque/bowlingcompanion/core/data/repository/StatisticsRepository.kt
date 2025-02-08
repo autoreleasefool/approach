@@ -10,8 +10,5 @@ interface StatisticsRepository {
 	suspend fun getDefaultSource(): TrackableFilter.SourceSummaries?
 
 	suspend fun getStatisticsList(filter: TrackableFilter): List<StatisticListEntryGroup>
-	suspend fun getStatisticsChart(
-		statistic: Statistic,
-		filter: TrackableFilter,
-	): StatisticChartContent
+	suspend fun getStatisticsChart(statistic: Statistic, filter: TrackableFilter): StatisticChartContent
 }

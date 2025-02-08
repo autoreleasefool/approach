@@ -24,11 +24,7 @@ data class TrackableGameQueryComponents(
 
 	override fun buildFromClause(): String = "FROM games AS $tableAlias"
 
-	override fun buildJoinClause(
-		parentTable: String,
-		parentColumn: String,
-		childColumn: String,
-	): String = listOf(
+	override fun buildJoinClause(parentTable: String, parentColumn: String, childColumn: String): String = listOf(
 		"JOIN games AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn",
 		"LEFT JOIN match_plays AS $matchPlayTableAlias ON $matchPlayTableAlias.game_id = $tableAlias.id",
 	).joinToString("\n")

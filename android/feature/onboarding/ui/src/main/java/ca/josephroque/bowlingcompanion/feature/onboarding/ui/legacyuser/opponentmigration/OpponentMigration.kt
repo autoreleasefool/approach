@@ -235,10 +235,7 @@ private fun NameDialog(
 }
 
 @Composable
-private fun NameDialogActions(
-	isSaveEnabled: Boolean,
-	onAction: (OpponentMigrationNameDialogUiAction) -> Unit,
-) {
+private fun NameDialogActions(isSaveEnabled: Boolean, onAction: (OpponentMigrationNameDialogUiAction) -> Unit) {
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = Modifier.fillMaxWidth(),

@@ -91,10 +91,7 @@ fun LaneForm(
 }
 
 @Composable
-private fun LaneLabelDialog(
-	state: LaneLabelDialogUiState,
-	onAction: (LaneLabelDialogUiAction) -> Unit,
-) {
+private fun LaneLabelDialog(state: LaneLabelDialogUiState, onAction: (LaneLabelDialogUiAction) -> Unit) {
 	Dialog(
 		onDismissRequest = { onAction(LaneLabelDialogUiAction.CancelClicked) },
 	) {
@@ -202,10 +199,7 @@ private fun LaneLabelDialogActions(onAction: (LaneLabelDialogUiAction) -> Unit) 
 }
 
 @Composable
-private fun AddLanesDialog(
-	state: AddLanesDialogUiState,
-	onAction: (AddLanesDialogUiAction) -> Unit,
-) {
+private fun AddLanesDialog(state: AddLanesDialogUiState, onAction: (AddLanesDialogUiAction) -> Unit) {
 	Dialog(
 		onDismissRequest = { onAction(AddLanesDialogUiAction.Dismissed) },
 	) {

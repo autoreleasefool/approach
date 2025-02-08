@@ -47,9 +47,7 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 interface DataModule {
 	@Binds
-	fun bindsTeamSeriesRepository(
-		teamSeriesRepository: OfflineFirstTeamSeriesRepository,
-	): TeamSeriesRepository
+	fun bindsTeamSeriesRepository(teamSeriesRepository: OfflineFirstTeamSeriesRepository): TeamSeriesRepository
 
 	@Binds
 	fun bindsTeamsRepository(teamsRepository: OfflineFirstTeamsRepository): TeamsRepository
@@ -67,9 +65,7 @@ interface DataModule {
 	fun bindsGamesRepository(gamesRepository: OfflineFirstGamesRepository): GamesRepository
 
 	@Binds
-	fun bindsMatchPlaysRepository(
-		matchPlaysRepository: OfflineFirstMatchPlaysRepository,
-	): MatchPlaysRepository
+	fun bindsMatchPlaysRepository(matchPlaysRepository: OfflineFirstMatchPlaysRepository): MatchPlaysRepository
 
 	@Binds
 	fun bindsFramesRepository(framesRepository: OfflineFirstFramesRepository): FramesRepository
@@ -87,9 +83,7 @@ interface DataModule {
 	fun bindsUserDataRepository(userDataRepository: OfflineFirstUserDataRepository): UserDataRepository
 
 	@Binds
-	fun bindsRecentlyUsedRepository(
-		recentlyUsedRepository: OfflineFirstRecentlyUsedRepository,
-	): RecentlyUsedRepository
+	fun bindsRecentlyUsedRepository(recentlyUsedRepository: OfflineFirstRecentlyUsedRepository): RecentlyUsedRepository
 
 	@Binds
 	fun bindsScoresRepository(scoresRepository: OfflineFirstScoresRepository): ScoresRepository
@@ -100,9 +94,7 @@ interface DataModule {
 	): AcknowledgementsRepository
 
 	@Binds
-	fun bindsStatisticsRepository(
-		statisticsRepository: OfflineFirstStatisticsRepository,
-	): StatisticsRepository
+	fun bindsStatisticsRepository(statisticsRepository: OfflineFirstStatisticsRepository): StatisticsRepository
 
 	@Binds
 	fun bindsStatisticsWidgetsRepository(

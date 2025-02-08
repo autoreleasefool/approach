@@ -29,8 +29,7 @@ sealed interface BowlerFormScreenUiState {
 		val form: BowlerFormUiState,
 		val topBar: BowlerFormTopBarUiState,
 	) : BowlerFormScreenUiState {
-		override fun isSavable(): Boolean =
-			form.name.isNotBlank() && form.updatedModel(id = initialValue.id) != initialValue
+		override fun isSavable(): Boolean = form.name.isNotBlank() && form.updatedModel(id = initialValue.id) != initialValue
 
 		override fun hasAnyChanges(): Boolean = form.updatedModel(id = initialValue.id) != initialValue
 	}
@@ -50,9 +49,7 @@ sealed interface BowlerFormScreenEvent {
 	data object Dismissed : BowlerFormScreenEvent
 }
 
-fun MutableStateFlow<BowlerFormScreenUiState>.updateForm(
-	function: (BowlerFormUiState) -> BowlerFormUiState,
-) {
+fun MutableStateFlow<BowlerFormScreenUiState>.updateForm(function: (BowlerFormUiState) -> BowlerFormUiState) {
 	this.update { state ->
 		when (state) {
 			BowlerFormScreenUiState.Loading -> state

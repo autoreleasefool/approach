@@ -35,9 +35,7 @@ sealed interface AvatarFormScreenEvent {
 	data class Dismissed(val result: Avatar) : AvatarFormScreenEvent
 }
 
-fun MutableStateFlow<AvatarFormScreenUiState>.updateForm(
-	function: (AvatarFormUiState) -> AvatarFormUiState,
-) {
+fun MutableStateFlow<AvatarFormScreenUiState>.updateForm(function: (AvatarFormUiState) -> AvatarFormUiState) {
 	this.update { state ->
 		when (state) {
 			AvatarFormScreenUiState.Loading -> state

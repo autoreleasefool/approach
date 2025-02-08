@@ -37,11 +37,7 @@ import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
 
 @Composable
-fun TeamForm(
-	state: TeamFormUiState,
-	onAction: (TeamFormUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun TeamForm(state: TeamFormUiState, onAction: (TeamFormUiAction) -> Unit, modifier: Modifier = Modifier) {
 	val reorderableState = rememberReorderableLazyListState(
 		onMove = { from, to ->
 			onAction(TeamFormUiAction.MemberMoved(from.index, to.index))

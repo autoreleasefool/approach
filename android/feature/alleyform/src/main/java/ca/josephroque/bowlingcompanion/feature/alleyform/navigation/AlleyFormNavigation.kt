@@ -19,10 +19,7 @@ fun NavController.navigateToAlleyForm(alleyId: AlleyID, navOptions: NavOptions? 
 	this.navigate(Route.EditAlley.createRoute(alleyId), navOptions)
 }
 
-fun NavGraphBuilder.alleyFormScreen(
-	onBackPressed: () -> Unit,
-	onManageLanes: (List<LaneID>) -> Unit,
-) {
+fun NavGraphBuilder.alleyFormScreen(onBackPressed: () -> Unit, onManageLanes: (List<LaneID>) -> Unit) {
 	composable(
 		route = Route.EditAlley.route,
 		arguments = listOf(

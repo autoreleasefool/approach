@@ -14,10 +14,7 @@ import ca.josephroque.bowlingcompanion.feature.statisticsdetails.StatisticsDetai
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.sourceType
 import java.util.UUID
 
-fun NavController.navigateToStatisticsDetails(
-	filter: TrackableFilter,
-	navOptions: NavOptions? = null,
-) {
+fun NavController.navigateToStatisticsDetails(filter: TrackableFilter, navOptions: NavOptions? = null) {
 	val type = filter.source.sourceType()
 	val id = filter.source.id
 	// FIXME: Parse and pass the rest of the filter as arguments

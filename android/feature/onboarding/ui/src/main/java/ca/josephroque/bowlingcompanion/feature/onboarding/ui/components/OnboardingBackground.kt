@@ -48,7 +48,7 @@ fun OnboardingBackground(modifier: Modifier = Modifier) {
 				} else {
 					ca.josephroque.bowlingcompanion.core.designsystem.R.color.black
 				},
-				null
+				null,
 			)
 
 			val tinted = DrawableCompat.wrap(drawable)

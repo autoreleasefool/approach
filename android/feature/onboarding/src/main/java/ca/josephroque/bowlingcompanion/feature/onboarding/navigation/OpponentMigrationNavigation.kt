@@ -11,10 +11,7 @@ fun NavController.navigateToOpponentMigration(navOptions: NavOptions? = null) {
 	this.navigate(Route.OpponentMigration.route, navOptions)
 }
 
-fun NavGraphBuilder.opponentMigrationScreen(
-	onDismiss: () -> Unit,
-	onCompleteMigration: () -> Unit,
-) {
+fun NavGraphBuilder.opponentMigrationScreen(onDismiss: () -> Unit, onCompleteMigration: () -> Unit) {
 	composable(
 		route = Route.OpponentMigration.route,
 	) {

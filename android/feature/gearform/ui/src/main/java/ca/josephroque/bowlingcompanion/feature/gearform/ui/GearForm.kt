@@ -37,11 +37,7 @@ import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.ui.AvatarImage
 
 @Composable
-fun GearForm(
-	state: GearFormUiState,
-	onAction: (GearFormUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun GearForm(state: GearFormUiState, onAction: (GearFormUiAction) -> Unit, modifier: Modifier = Modifier) {
 	if (state.isShowingDeleteDialog) {
 		DeleteDialog(
 			itemName = state.name,

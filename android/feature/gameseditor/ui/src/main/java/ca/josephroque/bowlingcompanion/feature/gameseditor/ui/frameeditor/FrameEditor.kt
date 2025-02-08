@@ -28,11 +28,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.model.Pin
 
 @Composable
-fun FrameEditor(
-	state: FrameEditorUiState,
-	onAction: (FrameEditorUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun FrameEditor(state: FrameEditorUiState, onAction: (FrameEditorUiAction) -> Unit, modifier: Modifier = Modifier) {
 	var downedPins by remember(state.downedPins) { mutableStateOf(state.downedPins) }
 	var maxX by remember { mutableFloatStateOf(1.0f) }
 	var isDragging by remember { mutableStateOf(false) }

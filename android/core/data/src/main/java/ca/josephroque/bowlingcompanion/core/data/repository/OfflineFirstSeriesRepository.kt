@@ -91,22 +91,21 @@ class OfflineFirstSeriesRepository @Inject constructor(
 		}
 	}
 
-	override suspend fun setSeriesAlley(seriesId: SeriesID, alleyId: AlleyID?) =
-		withContext(ioDispatcher) {
-			transactionRunner {
-				val series = seriesDao.getSeriesDetails(seriesId).firstOrNull() ?: return@transactionRunner
+	override suspend fun setSeriesAlley(seriesId: SeriesID, alleyId: AlleyID?) = withContext(ioDispatcher) {
+		transactionRunner {
+			val series = seriesDao.getSeriesDetails(seriesId).firstOrNull() ?: return@transactionRunner
 
-				if (series.alley?.id == alleyId) {
-					return@transactionRunner
-				}
+			if (series.alley?.id == alleyId) {
+				return@transactionRunner
+			}
 
-				val games = gameDao.getGamesList(seriesId).firstOrNull() ?: return@transactionRunner
-				seriesDao.setSeriesAlley(seriesId, alleyId)
-				games.forEach {
-					gameDao.deleteGameLanes(it.id)
-				}
+			val games = gameDao.getGamesList(seriesId).firstOrNull() ?: return@transactionRunner
+			seriesDao.setSeriesAlley(seriesId, alleyId)
+			games.forEach {
+				gameDao.deleteGameLanes(it.id)
 			}
 		}
+	}
 
 	override suspend fun addGameToSeries(seriesId: SeriesID) = withContext(ioDispatcher) {
 		transactionRunner {

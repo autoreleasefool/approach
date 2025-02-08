@@ -71,9 +71,7 @@ sealed interface SeriesFormScreenEvent {
 		SeriesFormScreenEvent
 }
 
-fun MutableStateFlow<SeriesFormScreenUiState>.updateForm(
-	function: (SeriesFormUiState) -> SeriesFormUiState,
-) {
+fun MutableStateFlow<SeriesFormScreenUiState>.updateForm(function: (SeriesFormUiState) -> SeriesFormUiState) {
 	this.update { state ->
 		when (state) {
 			SeriesFormScreenUiState.Loading -> state

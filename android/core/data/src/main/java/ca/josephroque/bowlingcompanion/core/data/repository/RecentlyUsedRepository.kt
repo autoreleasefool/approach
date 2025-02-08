@@ -20,13 +20,10 @@ interface RecentlyUsedRepository {
 	suspend fun didRecentlyUse(resource: RecentResource, id: String)
 	fun observeRecentlyUsed(resource: RecentResource): Flow<List<String>>
 
-	suspend fun didRecentlyUseBowler(id: BowlerID) =
-		didRecentlyUse(RecentResource.BOWLERS, id.toString())
-	suspend fun didRecentlyUseLeague(id: LeagueID) =
-		didRecentlyUse(RecentResource.LEAGUES, id.toString())
+	suspend fun didRecentlyUseBowler(id: BowlerID) = didRecentlyUse(RecentResource.BOWLERS, id.toString())
+	suspend fun didRecentlyUseLeague(id: LeagueID) = didRecentlyUse(RecentResource.LEAGUES, id.toString())
 	suspend fun didRecentlyUseAlley(id: AlleyID) = didRecentlyUse(RecentResource.ALLEYS, id.toString())
 	suspend fun didRecentlyUseGear(id: GearID) = didRecentlyUse(RecentResource.GEAR, id.toString())
-	suspend fun didRecentlyUseOpponent(id: BowlerID) =
-		didRecentlyUse(RecentResource.OPPONENTS, id.toString())
+	suspend fun didRecentlyUseOpponent(id: BowlerID) = didRecentlyUse(RecentResource.OPPONENTS, id.toString())
 	suspend fun didRecentlyUseTeam(id: TeamID) = didRecentlyUse(RecentResource.TEAM, id.toString())
 }

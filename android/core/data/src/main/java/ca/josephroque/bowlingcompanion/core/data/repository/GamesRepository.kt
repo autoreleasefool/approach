@@ -30,10 +30,7 @@ interface GamesRepository {
 
 	suspend fun setGameScoringMethod(gameId: GameID, scoringMethod: GameScoringMethod, score: Int)
 	suspend fun setGameLockState(gameId: GameID, locked: GameLockState)
-	suspend fun setGameExcludedFromStatistics(
-		gameId: GameID,
-		excludeFromStatistics: ExcludeFromStatistics,
-	)
+	suspend fun setGameExcludedFromStatistics(gameId: GameID, excludeFromStatistics: ExcludeFromStatistics)
 	suspend fun setGameScore(gameId: GameID, score: Int)
 	suspend fun setGameLanes(gameId: GameID, lanes: Set<LaneID>)
 	suspend fun setGameDuration(gameId: GameID, durationMillis: Long)

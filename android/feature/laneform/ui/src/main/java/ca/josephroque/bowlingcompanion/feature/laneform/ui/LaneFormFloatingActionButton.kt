@@ -9,10 +9,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 
 @Composable
-fun LaneFormFloatingActionButton(
-	onAction: (LaneFormUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun LaneFormFloatingActionButton(onAction: (LaneFormUiAction) -> Unit, modifier: Modifier = Modifier) {
 	FloatingActionButton(
 		onClick = { onAction(LaneFormUiAction.AddLanesClicked) },
 		modifier = modifier,
