@@ -7,7 +7,7 @@ data class MatchPlayUpdated(
 	val withScore: Boolean,
 	val withResult: Boolean,
 ) : TrackableEvent {
-	override val name = "MatchPlay.Created"
+	override val name = "MatchPlay.Updated"
 	override val payload = mapOf(
 		"WithOpponent" to withOpponent.toString(),
 		"WithScore" to withScore.toString(),

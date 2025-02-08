@@ -6,7 +6,7 @@ data class AlleyCreated(
 	val withLocation: Boolean,
 	val numberOfLanes: Int,
 ) : TrackableEvent {
-	override val name = "Alley.Updated"
+	override val name = "Alley.Created"
 	override val payload = mapOf(
 		"WithLocation" to withLocation.toString(),
 		"NumberOfLanes" to numberOfLanes.toString(),
