@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.ui
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -52,7 +53,8 @@ fun ApproachApp(
 			Row(
 				modifier = Modifier
 					.fillMaxSize()
-					.padding(padding),
+					.padding(padding)
+					.consumeWindowInsets(padding),
 			) {
 				ApproachNavHost(
 					appState = appState,

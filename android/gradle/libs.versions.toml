@@ -1,7 +1,7 @@
 [versions]
 minSdk = "26"
 compileSdk = "35"
-targetSdk = "34"
+targetSdk = "35"
 
 accompanist = "0.34.0"
 androidGradlePlugin = "8.8.0"
@@ -37,6 +37,7 @@ vico = "1.15.0"
 [libraries]
 accompanist-navigation = { group = "com.google.accompanist", name = "accompanist-navigation-material", version.ref = "accompanist" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
+androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidxActivity" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
