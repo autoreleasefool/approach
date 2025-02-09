@@ -7,52 +7,24 @@ import org.junit.Test
 
 class ScoreKeeperInputTest {
 	@Test
-	fun testFromBitString_whenBitStringWithFoul_ReturnsRollWithFoul() {
-		val bitString = "100000"
-		val roll = ScoreKeeperInput.Roll.fromBitString(
-			frameIndex = 0,
-			rollIndex = 1,
-			bitString = bitString,
-		)
-		assertEquals(
-			ScoreKeeperInput.Roll(frameIndex = 0, rollIndex = 1, pinsDowned = setOf(), didFoul = true),
-			roll,
-		)
-	}
-
-	@Test
-	fun testFromBitString_whenBitStringWithPinsDowned_ReturnsRollWithPinsDowned() {
-		val bitString = "010011"
-		val roll = ScoreKeeperInput.Roll.fromBitString(
-			frameIndex = 0,
-			rollIndex = 1,
-			bitString = bitString,
-		)
-		assertEquals(
-			ScoreKeeperInput.Roll(
-				frameIndex = 0,
-				rollIndex = 1,
-				pinsDowned = setOf(Pin.LEFT_TWO_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN),
-				didFoul = false,
-			),
-			roll,
-		)
-	}
-
-	@Test
-	fun testFromBitString_whenBitStringIsNull_ReturnsEmptyRoll() {
-		val roll = ScoreKeeperInput.Roll.fromBitString(frameIndex = 0, rollIndex = 1, bitString = null)
-		assertEquals(
-			ScoreKeeperInput.Roll(frameIndex = 0, rollIndex = 1, pinsDowned = setOf(), didFoul = false),
-			roll,
-		)
-	}
-
-	@Test
 	fun whenFramesWithRolls_Parsed_ReturnsValidInput() {
 		val frames = listOf(
-			ScoreableFrame(index = 0, roll0 = "011111", roll1 = null, roll2 = null),
-			ScoreableFrame(index = 1, roll0 = "100100", roll1 = "011000", roll2 = "000011"),
+			ScoreableFrame(
+				index = 0,
+				rolls = listOf(
+					ScoreableFrame.Roll(index = 0, pinsDowned = Pin.fullDeck(), didFoul = false),
+					ScoreableFrame.Roll(index = 1, pinsDowned = setOf(), didFoul = false),
+					ScoreableFrame.Roll(index = 2, pinsDowned = setOf(), didFoul = false),
+				)
+			),
+			ScoreableFrame(
+				index = 1,
+				rolls = listOf(
+					ScoreableFrame.Roll(index = 0, pinsDowned = setOf(Pin.HEAD_PIN), didFoul = true),
+					ScoreableFrame.Roll(index = 1, pinsDowned = setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN), didFoul = false),
+					ScoreableFrame.Roll(index = 2, pinsDowned = setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN), didFoul = false),
+				)
+			),
 		)
 
 		val input = ScoreKeeperInput.fromFrames(frames)
