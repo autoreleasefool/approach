@@ -33,13 +33,33 @@ class FivePinScoreKeeper @Inject constructor(
 		val lastValidFrame = input.rolls.indexOfLast { it.isNotEmpty() }
 		if (lastValidFrame < 0) return Game.MAX_SCORE
 		val pinValueForFrame = pinValueRemaining(input.rolls[lastValidFrame], lastValidFrame)
+		val pinValueForPreviousFrameStrike = if (lastValidFrame > 0) strikeValueRemaining(input.rolls[lastValidFrame - 1], input.rolls[lastValidFrame]) else 0
 		val remainingFrameIndices = (lastValidFrame + 1)..<Game.NUMBER_OF_FRAMES
-		return currentScore + pinValueForFrame + remainingFrameIndices.count() * 45
+		return currentScore + pinValueForFrame + pinValueForPreviousFrameStrike + remainingFrameIndices.count() * 45
+	}
+
+	private fun strikeValueRemaining(previousFrame: List<ScoreKeeperInput.Roll>, currentFrame: List<ScoreKeeperInput.Roll>): Int {
+		if (previousFrame.isEmpty() || currentFrame.isEmpty() || currentFrame.size >= 2) return 0
+
+		if (previousFrame[0].pinsDowned.arePinsCleared()) {
+			// If the previous frame was a strike, the next thrown ball can add additional value
+			return if (currentFrame[0].pinsDowned.arePinsCleared()) {
+				// If the current frame is a strike, the next thrown ball as a strike will add 15 points
+				15
+			} else if (currentFrame.arePinsCleared()) {
+				// If the current frame is a spare, there is no additional value
+				0
+			} else {
+				// Otherwise, we can add the remaining value of the current frame
+				Pin.fullDeck().pinCount() - currentFrame.pinCount()
+			}
+		} else {
+			// Otherwise, there is no additional value
+			return 0
+		}
 	}
 
 	private fun pinValueRemaining(frame: List<ScoreKeeperInput.Roll>, frameIndex: Int): Int {
-		if (frame.size == Frame.NUMBER_OF_ROLLS) return 0
-
 		val pinsDown = mutableSetOf<Pin>()
 		for (roll in frame) {
 			pinsDown += roll.pinsDowned
@@ -47,9 +67,13 @@ class FivePinScoreKeeper @Inject constructor(
 				if (Frame.isLastFrame(frameIndex)) {
 					pinsDown.clear()
 				} else {
-					return 0
+					return (Frame.NUMBER_OF_ROLLS - roll.rollIndex - 1) * 15
 				}
 			}
+		}
+
+		if (frame.size == Frame.NUMBER_OF_ROLLS) {
+			return 0
 		}
 
 		val standingPinValue = Pin.fullDeck().pinCount() - pinsDown.pinCount()
