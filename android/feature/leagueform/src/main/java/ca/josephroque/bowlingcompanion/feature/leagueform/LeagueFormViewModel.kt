@@ -175,7 +175,6 @@ class LeagueFormViewModel @Inject constructor(
 						_uiState.updateForm { form ->
 							form.copy(
 								nameErrorId = if (state.form.name.isBlank()) {
-									@Suppress("ktlint:standard:max-line-length")
 									ca.josephroque.bowlingcompanion.feature.leagueform.ui.R.string.league_form_property_name_missing
 								} else {
 									null
@@ -194,7 +193,6 @@ class LeagueFormViewModel @Inject constructor(
 						_uiState.updateForm { form ->
 							form.copy(
 								nameErrorId = if (state.form.name.isBlank()) {
-									@Suppress("ktlint:standard:max-line-length")
 									ca.josephroque.bowlingcompanion.feature.leagueform.ui.R.string.league_form_property_name_missing
 								} else {
 									null

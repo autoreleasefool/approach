@@ -39,8 +39,7 @@ fun Accessories(state: AccessoriesUiState, onAction: (AccessoriesUiAction) -> Un
 					MutedEmptyState(
 						title = R.string.accessory_list_alley_empty_title,
 						message = R.string.accessory_list_alley_empty_message,
-						icon = @Suppress("ktlint:standard:max-line-length")
-						ca.josephroque.bowlingcompanion.feature.alleyslist.ui.R.drawable.alleys_list_empty_state,
+						icon = ca.josephroque.bowlingcompanion.feature.alleyslist.ui.R.drawable.alleys_list_empty_state,
 						modifier = Modifier.padding(bottom = 16.dp),
 					)
 				}

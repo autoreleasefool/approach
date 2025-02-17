@@ -334,7 +334,6 @@ private class StatisticsListEntryGroupProvider :
 @Preview
 @Composable
 private fun StatisticsDetailsListPreview(
-	@Suppress("ktlint:standard:max-line-length")
 	@PreviewParameter(StatisticsListEntryGroupProvider::class)
 	statistics: List<StatisticListEntryGroup>,
 ) {

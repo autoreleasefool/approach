@@ -100,16 +100,12 @@ private fun LazyListScope.bowlerLeaguesList(state: LeaguesListUiState, onAction:
 			MutedEmptyState(
 				title = ca.josephroque.bowlingcompanion.feature.leagueslist.ui.R.string.league_list_empty_title,
 				message = if (state.filter.isEmpty) {
-					@Suppress("ktlint:standard:max-line-length")
 					ca.josephroque.bowlingcompanion.feature.leagueslist.ui.R.string.league_list_empty_message
 				} else {
-					@Suppress("ktlint:standard:max-line-length")
 					ca.josephroque.bowlingcompanion.feature.leagueslist.ui.R.string.league_list_empty_filters_message
 				},
-				icon = @Suppress("ktlint:standard:max-line-length")
-				ca.josephroque.bowlingcompanion.feature.leagueslist.ui.R.drawable.league_list_empty_state,
-				modifier =
-				Modifier.padding(bottom = 16.dp),
+				icon = ca.josephroque.bowlingcompanion.feature.leagueslist.ui.R.drawable.league_list_empty_state,
+				modifier = Modifier.padding(bottom = 16.dp),
 			)
 		}
 	} else {
