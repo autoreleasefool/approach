@@ -33,12 +33,22 @@ class FivePinScoreKeeper @Inject constructor(
 		val lastValidFrame = input.rolls.indexOfLast { it.isNotEmpty() }
 		if (lastValidFrame < 0) return Game.MAX_SCORE
 		val pinValueForFrame = pinValueRemaining(input.rolls[lastValidFrame], lastValidFrame)
-		val pinValueForPreviousFrameStrike = if (lastValidFrame > 0) strikeValueRemaining(input.rolls[lastValidFrame - 1], input.rolls[lastValidFrame]) else 0
+		val pinValueForPreviousFrameStrike = if (lastValidFrame > 0) {
+			strikeValueRemaining(
+				input.rolls[lastValidFrame - 1],
+				input.rolls[lastValidFrame],
+			)
+		} else {
+			0
+		}
 		val remainingFrameIndices = (lastValidFrame + 1)..<Game.NUMBER_OF_FRAMES
 		return currentScore + pinValueForFrame + pinValueForPreviousFrameStrike + remainingFrameIndices.count() * 45
 	}
 
-	private fun strikeValueRemaining(previousFrame: List<ScoreKeeperInput.Roll>, currentFrame: List<ScoreKeeperInput.Roll>): Int {
+	private fun strikeValueRemaining(
+		previousFrame: List<ScoreKeeperInput.Roll>,
+		currentFrame: List<ScoreKeeperInput.Roll>,
+	): Int {
 		if (previousFrame.isEmpty() || currentFrame.isEmpty() || currentFrame.size >= 2) return 0
 
 		if (previousFrame[0].pinsDowned.arePinsCleared()) {

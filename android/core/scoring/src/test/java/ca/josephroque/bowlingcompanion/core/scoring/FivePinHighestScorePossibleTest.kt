@@ -1,12 +1,12 @@
 package ca.josephroque.bowlingcompanion.core.scoring
 
 import ca.josephroque.bowlingcompanion.core.model.Pin
+import kotlin.test.assertEquals
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import kotlin.test.assertEquals
 
-class FivePinHighestPossiblePossibleTest {
+class FivePinHighestScorePossibleTest {
 	@Test
 	fun testWithOneStrike_AndAtStartOfFrame2_Returns450() = runTest {
 		val input = ScoreKeeperInput(
@@ -14,7 +14,7 @@ class FivePinHighestPossiblePossibleTest {
 				listOf(
 					ScoreKeeperInput.Roll(0, 0, Pin.fullDeck(), false),
 				),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(450, input)
@@ -29,7 +29,7 @@ class FivePinHighestPossiblePossibleTest {
 					ScoreKeeperInput.Roll(0, 1, emptySet(), false),
 					ScoreKeeperInput.Roll(0, 2, emptySet(), false),
 				),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(450, input)
@@ -43,7 +43,7 @@ class FivePinHighestPossiblePossibleTest {
 					ScoreKeeperInput.Roll(0, 0, emptySet(), false),
 					ScoreKeeperInput.Roll(0, 1, Pin.fullDeck(), false),
 				),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(435, input)
@@ -58,7 +58,7 @@ class FivePinHighestPossiblePossibleTest {
 					ScoreKeeperInput.Roll(0, 1, Pin.fullDeck(), false),
 					ScoreKeeperInput.Roll(0, 2, emptySet(), false),
 				),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(435, input)
@@ -74,7 +74,7 @@ class FivePinHighestPossiblePossibleTest {
 				listOf(
 					ScoreKeeperInput.Roll(1, 0, Pin.fullDeck(), false),
 				),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(450, input)
@@ -89,7 +89,7 @@ class FivePinHighestPossiblePossibleTest {
 					ScoreKeeperInput.Roll(0, 1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN), false),
 					ScoreKeeperInput.Roll(0, 2, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN), false),
 				),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(415, input)
@@ -103,7 +103,7 @@ class FivePinHighestPossiblePossibleTest {
 					ScoreKeeperInput.Roll(0, 0, emptySet(), false),
 					ScoreKeeperInput.Roll(0, 1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN), false),
 				),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(420, input)
@@ -114,7 +114,7 @@ class FivePinHighestPossiblePossibleTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
 				strikeFrame(0),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(450, input)
@@ -126,7 +126,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				strikeFrame(0),
 				spareFrame(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(420, input)
@@ -138,7 +138,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				strikeFrame(0),
 				fifteenFrame(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(400, input)
@@ -150,7 +150,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				strikeFrame(0),
 				openFrame(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(390, input)
@@ -162,7 +162,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				strikeFrame(0),
 				twoRollsWithPins(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(400, input)
@@ -174,7 +174,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				strikeFrame(0),
 				twoRollsWithMisses(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(390, input)
@@ -186,7 +186,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				strikeFrame(0),
 				oneRollWithPins(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(420, input)
@@ -198,7 +198,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				strikeFrame(0),
 				oneRollWithMiss(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(420, input)
@@ -210,7 +210,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				strikeFrame(0),
 				zeroRolls(),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(450, input)
@@ -221,7 +221,7 @@ class FivePinHighestPossiblePossibleTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
 				spareFrame(0),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(435, input)
@@ -233,7 +233,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				spareFrame(0),
 				fifteenFrame(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(395, input)
@@ -245,7 +245,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				spareFrame(0),
 				openFrame(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(385, input)
@@ -257,7 +257,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				spareFrame(0),
 				twoRollsWithPins(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(395, input)
@@ -269,7 +269,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				spareFrame(0),
 				twoRollsWithMisses(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(390, input)
@@ -281,7 +281,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				spareFrame(0),
 				oneRollWithPins(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(410, input)
@@ -293,7 +293,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				spareFrame(0),
 				oneRollWithMiss(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(405, input)
@@ -305,7 +305,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				spareFrame(0),
 				zeroRolls(),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(435, input)
@@ -316,7 +316,7 @@ class FivePinHighestPossiblePossibleTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
 				fifteenFrame(0),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(420, input)
@@ -328,7 +328,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				fifteenFrame(0),
 				spareFrame(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(405, input)
@@ -340,7 +340,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				fifteenFrame(0),
 				openFrame(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(385, input)
@@ -352,7 +352,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				fifteenFrame(0),
 				twoRollsWithPins(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(390, input)
@@ -364,7 +364,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				fifteenFrame(0),
 				twoRollsWithMisses(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(390, input)
@@ -376,7 +376,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				fifteenFrame(0),
 				oneRollWithPins(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(405, input)
@@ -388,7 +388,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				fifteenFrame(0),
 				oneRollWithMiss(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(405, input)
@@ -400,7 +400,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				fifteenFrame(0),
 				zeroRolls(),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(420, input)
@@ -411,7 +411,7 @@ class FivePinHighestPossiblePossibleTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
 				openFrame(0),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(415, input)
@@ -423,7 +423,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				openFrame(0),
 				spareFrame(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(400, input)
@@ -435,7 +435,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				openFrame(0),
 				fifteenFrame(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(385, input)
@@ -447,7 +447,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				openFrame(0),
 				openFrame(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(380, input)
@@ -459,7 +459,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				openFrame(0),
 				twoRollsWithPins(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(385, input)
@@ -471,7 +471,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				openFrame(0),
 				twoRollsWithMisses(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(385, input)
@@ -483,7 +483,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				openFrame(0),
 				oneRollWithPins(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(400, input)
@@ -495,7 +495,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				openFrame(0),
 				oneRollWithMiss(1),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(400, input)
@@ -507,7 +507,7 @@ class FivePinHighestPossiblePossibleTest {
 			rolls = listOf(
 				openFrame(0),
 				zeroRolls(),
-			)
+			),
 		)
 
 		assertHighestScorePossibleEquals(415, input)

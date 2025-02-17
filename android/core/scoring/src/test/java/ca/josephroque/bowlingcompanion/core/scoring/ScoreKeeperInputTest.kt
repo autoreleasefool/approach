@@ -15,7 +15,7 @@ class ScoreKeeperInputTest {
 					ScoreableFrame.Roll(index = 0, pinsDowned = Pin.fullDeck(), didFoul = false),
 					ScoreableFrame.Roll(index = 1, pinsDowned = setOf(), didFoul = false),
 					ScoreableFrame.Roll(index = 2, pinsDowned = setOf(), didFoul = false),
-				)
+				),
 			),
 			ScoreableFrame(
 				index = 1,
@@ -23,7 +23,7 @@ class ScoreKeeperInputTest {
 					ScoreableFrame.Roll(index = 0, pinsDowned = setOf(Pin.HEAD_PIN), didFoul = true),
 					ScoreableFrame.Roll(index = 1, pinsDowned = setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN), didFoul = false),
 					ScoreableFrame.Roll(index = 2, pinsDowned = setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN), didFoul = false),
-				)
+				),
 			),
 		)
 

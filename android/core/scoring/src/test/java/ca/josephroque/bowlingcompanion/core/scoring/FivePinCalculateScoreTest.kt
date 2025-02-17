@@ -3,8 +3,8 @@ package ca.josephroque.bowlingcompanion.core.scoring
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.ScoringFrame
 import ca.josephroque.bowlingcompanion.core.model.ScoringRoll
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlin.test.assertEquals
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
