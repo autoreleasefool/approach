@@ -74,8 +74,7 @@ class MainActivityViewModel @Inject constructor(
 
 sealed interface MainActivityUiState {
 	data object Loading : MainActivityUiState
-	data class Success(val appState: ApproachAppUiState, val isLaunchComplete: Boolean) :
-		MainActivityUiState
+	data class Success(val appState: ApproachAppUiState, val isLaunchComplete: Boolean) : MainActivityUiState
 }
 
 internal fun MainActivityUiState.isLaunchComplete(): Boolean = when (this) {

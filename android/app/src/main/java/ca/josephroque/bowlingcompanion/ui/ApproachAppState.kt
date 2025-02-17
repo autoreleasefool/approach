@@ -28,10 +28,7 @@ fun rememberApproachAppState(
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Stable
-class ApproachAppState(
-	val bottomSheetNavigator: BottomSheetNavigator,
-	val navController: NavHostController,
-) {
+class ApproachAppState(val bottomSheetNavigator: BottomSheetNavigator, val navController: NavHostController) {
 	val currentDestination: NavDestination?
 		@Composable get() = navController
 			.currentBackStackEntryAsState().value?.destination
