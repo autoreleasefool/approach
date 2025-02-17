@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor.navigation
 
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.navigation.bottomSheet
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -8,8 +10,6 @@ import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gameseditor.scores.ScoresListRoute
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.bottomSheet
 
 fun NavController.navigateToScoresList(series: List<SeriesID>, gameIndex: Int, navOptions: NavOptions? = null) {
 	this.navigate(
@@ -18,7 +18,6 @@ fun NavController.navigateToScoresList(series: List<SeriesID>, gameIndex: Int, n
 	)
 }
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
 fun NavGraphBuilder.scoresListScreen(onDismiss: () -> Unit) {
 	bottomSheet(
 		route = Route.ScoresList.route,

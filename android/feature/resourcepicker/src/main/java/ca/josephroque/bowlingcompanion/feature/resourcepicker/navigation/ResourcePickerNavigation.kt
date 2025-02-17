@@ -1,6 +1,8 @@
 package ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation
 
 import android.net.Uri
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.navigation.bottomSheet
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -25,8 +27,6 @@ import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultViewModel
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ResourcePickerRoute
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.bottomSheet
 import java.util.UUID
 
 fun NavController.navigateToTeamPickerForResult(
@@ -213,7 +213,6 @@ fun NavController.navigateToResourcePickerForResult(
 	)
 }
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
 fun NavGraphBuilder.resourcePickerSheet(navController: NavController, onDismiss: () -> Unit) {
 	bottomSheet(
 		route = Route.ResourcePicker.route,

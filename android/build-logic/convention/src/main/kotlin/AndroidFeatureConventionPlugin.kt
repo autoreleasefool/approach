@@ -28,7 +28,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
 
 				add("implementation", libs.findLibrary("androidx.hilt.navigation.compose").get())
 				add("implementation", libs.findLibrary("androidx.lifecycle.runtimeCompose").get())
-				add("implementation", libs.findLibrary("accompanist.navigation").get())
+				add("implementation", libs.findLibrary("androidx.compose.material.navigation").get())
 			}
 		}
 	}

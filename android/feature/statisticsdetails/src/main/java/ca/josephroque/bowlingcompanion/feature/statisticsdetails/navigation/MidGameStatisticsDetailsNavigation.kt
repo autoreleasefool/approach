@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation
 
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.navigation.bottomSheet
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -10,8 +12,6 @@ import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.midgame.MidGameStatisticsDetailsRoute
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.sourceType
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.bottomSheet
 import java.util.UUID
 
 fun NavController.navigateToMidGameStatisticsDetails(filter: TrackableFilter, navOptions: NavOptions? = null) {
@@ -29,7 +29,6 @@ fun NavController.navigateToMidGameStatisticsDetails(
 	this.navigate(Route.MidGameStatisticsDetails.createRoute(sourceType.name, sourceId), navOptions)
 }
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
 fun NavGraphBuilder.midGameStatisticsDetailsScreen(onBackPressed: () -> Unit) {
 	bottomSheet(
 		route = Route.MidGameStatisticsDetails.route,

@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation
 
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.navigation.bottomSheet
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -11,8 +13,6 @@ import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.navigation.StatisticPickerResultViewModel
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.statisticpicker.StatisticPickerRoute
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.bottomSheet
 
 fun NavController.navigateToStatisticPickerForResult(selectedStatistic: StatisticID, navOptions: NavOptions? = null) {
 	this.navigate(
@@ -21,7 +21,6 @@ fun NavController.navigateToStatisticPickerForResult(selectedStatistic: Statisti
 	)
 }
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
 fun NavGraphBuilder.statisticPickerSheet(navController: NavController, onDismiss: () -> Unit) {
 	bottomSheet(
 		route = Route.StatisticsPicker.route,

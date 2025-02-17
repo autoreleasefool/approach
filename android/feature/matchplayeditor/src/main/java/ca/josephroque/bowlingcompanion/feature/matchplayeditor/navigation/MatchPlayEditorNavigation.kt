@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.matchplayeditor.navigation
 
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.navigation.bottomSheet
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -10,14 +12,11 @@ import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.matchplayeditor.MatchPlayEditorRoute
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.bottomSheet
 
 fun NavController.navigateToMatchPlayEditor(gameId: GameID, navOptions: NavOptions? = null) {
 	this.navigate(Route.EditMatchPlay.createRoute(gameId), navOptions)
 }
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
 fun NavGraphBuilder.matchPlayEditorScreen(
 	onBackPressed: () -> Unit,
 	onEditOpponent: (BowlerID?, ResourcePickerResultKey) -> Unit,

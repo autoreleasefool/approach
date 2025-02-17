@@ -6,6 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.navigation.rememberBottomSheetNavigator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
@@ -20,15 +22,12 @@ import androidx.navigation.compose.rememberNavController
 import ca.josephroque.bowlingcompanion.core.designsystem.theme.ApproachTheme
 import ca.josephroque.bowlingcompanion.ui.ApproachApp
 import ca.josephroque.bowlingcompanion.ui.rememberApproachAppState
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import dagger.hilt.android.AndroidEntryPoint
 import io.sentry.compose.withSentryObservableEffect
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 

@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.navigation.ModalBottomSheetLayout
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
@@ -22,10 +24,7 @@ import androidx.navigation.NavDestination
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ApproachNavigationBarItem
 import ca.josephroque.bowlingcompanion.navigation.ApproachNavHost
 import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
 fun ApproachApp(
 	state: ApproachAppUiState,

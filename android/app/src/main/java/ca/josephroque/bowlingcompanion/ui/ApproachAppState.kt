@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.ui
 
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.navigation.BottomSheetNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
@@ -14,10 +16,7 @@ import ca.josephroque.bowlingcompanion.navigation.navigateToAccessoriesGraph
 import ca.josephroque.bowlingcompanion.navigation.navigateToOverviewGraph
 import ca.josephroque.bowlingcompanion.navigation.navigateToSettingsGraph
 import ca.josephroque.bowlingcompanion.navigation.navigateToStatisticsGraph
-import com.google.accompanist.navigation.material.BottomSheetNavigator
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
 fun rememberApproachAppState(
 	bottomSheetNavigator: BottomSheetNavigator,
@@ -26,7 +25,6 @@ fun rememberApproachAppState(
 	ApproachAppState(bottomSheetNavigator, navController)
 }
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
 @Stable
 class ApproachAppState(val bottomSheetNavigator: BottomSheetNavigator, val navController: NavHostController) {
 	val currentDestination: NavDestination?

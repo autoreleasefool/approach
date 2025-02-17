@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.statisticsoverview.navigation
 
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.navigation.bottomSheet
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -12,14 +14,11 @@ import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.sourcepicker.SourcePickerRoute
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.bottomSheet
 
 fun NavController.navigateToStatisticsSourcePicker(navOptions: NavOptions? = null) {
 	this.navigate(Route.StatisticsSourcePicker.route, navOptions)
 }
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
 fun NavGraphBuilder.statisticsSourcePickerSheet(
 	onBackPressed: () -> Unit,
 	onPickTeam: (TeamID?, ResourcePickerResultKey) -> Unit,

@@ -3,10 +3,10 @@ minSdk = "26"
 compileSdk = "35"
 targetSdk = "35"
 
-accompanist = "0.34.0"
 androidGradlePlugin = "8.8.1"
 androidxActivity = "1.10.0"
 androidxComposeBom = "2025.02.00"
+androidxComposeMaterialNavigation = "1.7.8"
 androidxCore = "1.15.0"
 androidxDataStore = "1.1.2"
 androidxHiltNavigationCompose = "1.2.0"
@@ -35,12 +35,12 @@ telemetryDeck = "3.0.3"
 vico = "1.15.0"
 
 [libraries]
-accompanist-navigation = { group = "com.google.accompanist", name = "accompanist-navigation-material", version.ref = "accompanist" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidxActivity" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
+androidx-compose-material-navigation = { group = "androidx.compose.material", name = "material-navigation", version.ref = "androidxComposeMaterialNavigation" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
 androidx-compose-ui-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "googleFonts" }

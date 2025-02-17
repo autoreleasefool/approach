@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.quickplay.navigation
 
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.navigation.bottomSheet
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -11,8 +13,6 @@ import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.quickplay.QuickPlayRoute
 import ca.josephroque.bowlingcompanion.feature.quickplay.onboarding.QuickPlayOnboardingRoute
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.bottomSheet
 
 fun NavController.navigateToQuickPlay(navOptions: NavOptions? = null) {
 	this.navigate(Route.QuickPlay.route, navOptions)
@@ -22,7 +22,6 @@ fun NavController.navigateToQuickPlayOnboarding(navOptions: NavOptions? = null) 
 	this.navigate(Route.QuickPlayOnboarding.route, navOptions)
 }
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
 fun NavGraphBuilder.quickPlay(
 	onBackPressed: () -> Unit,
 	onBeginRecording: (List<SeriesID>, GameID) -> Unit,
@@ -49,7 +48,6 @@ fun NavGraphBuilder.quickPlay(
 	}
 }
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
 fun NavGraphBuilder.quickPlayOnboarding(onBackPressed: () -> Unit) {
 	bottomSheet(
 		route = Route.QuickPlayOnboarding.route,
