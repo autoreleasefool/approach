@@ -1,7 +1,8 @@
+@file:Suppress("UsingMaterialAndMaterial3Libraries")
+
 package ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation
 
 import android.net.Uri
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.navigation.bottomSheet
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
