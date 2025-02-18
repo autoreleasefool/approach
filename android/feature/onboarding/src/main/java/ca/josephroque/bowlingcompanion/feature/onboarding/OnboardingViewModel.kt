@@ -82,7 +82,7 @@ class OnboardingViewModel @Inject constructor(
 
 	private fun showLogbook() {
 		val state = _uiState.value as? OnboardingScreenUiState.NewUser ?: return
-		_uiState.value = state.copy(newUser = NewUserOnboardingUiState.ShowingLogbook(name = ""))
+		_uiState.value = state.copy(newUser = NewUserOnboardingUiState.ShowingLogbook(name = "", enabled = true))
 	}
 
 	private fun updateName(name: String) {
@@ -96,7 +96,12 @@ class OnboardingViewModel @Inject constructor(
 		val state = _uiState.value as? OnboardingScreenUiState.NewUser ?: return
 		val newUserState = state.newUser as? NewUserOnboardingUiState.ShowingLogbook ?: return
 
+		if (!newUserState.enabled) {
+			return
+		}
+
 		if (newUserState.name.isNotBlank()) {
+			_uiState.value = state.copy(newUser = newUserState.copy(enabled = false))
 			viewModelScope.launch {
 				bowlersRepository.insertBowler(
 					BowlerCreate(

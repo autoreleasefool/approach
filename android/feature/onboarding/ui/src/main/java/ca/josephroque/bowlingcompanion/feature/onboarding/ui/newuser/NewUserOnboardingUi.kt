@@ -5,6 +5,7 @@ sealed interface NewUserOnboardingUiState {
 
 	data class ShowingLogbook(
 		val name: String,
+		val enabled: Boolean,
 	) : NewUserOnboardingUiState
 }
 

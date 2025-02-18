@@ -31,7 +31,12 @@ import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.NewUserOnbo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Logbook(name: String, onAction: (NewUserOnboardingUiAction) -> Unit, modifier: Modifier = Modifier) {
+fun Logbook(
+	name: String,
+	enabled: Boolean,
+	onAction: (NewUserOnboardingUiAction) -> Unit,
+	modifier: Modifier = Modifier,
+) {
 	val sheetState = rememberModalBottomSheetState(
 		confirmValueChange = { sheetSize ->
 			when (sheetSize) {
@@ -68,6 +73,7 @@ fun Logbook(name: String, onAction: (NewUserOnboardingUiAction) -> Unit, modifie
 			onValueChange = { onAction(NewUserOnboardingUiAction.NameChanged(it)) },
 			textStyle = textStyle,
 			singleLine = true,
+			enabled = enabled,
 			keyboardOptions = KeyboardOptions(
 				imeAction = ImeAction.Done,
 				capitalization = KeyboardCapitalization.Words,
@@ -98,6 +104,7 @@ fun Logbook(name: String, onAction: (NewUserOnboardingUiAction) -> Unit, modifie
 				focusManager.clearFocus()
 				onAction(NewUserOnboardingUiAction.AddBowlerClicked)
 			},
+			enabled = enabled,
 			modifier = Modifier
 				.fillMaxWidth()
 				.padding(top = 16.dp, bottom = 32.dp, start = 16.dp, end = 16.dp),
@@ -113,5 +120,6 @@ private fun LogbookPreview() {
 	Logbook(
 		name = "Joseph Roque",
 		onAction = {},
+		enabled = true,
 	)
 }

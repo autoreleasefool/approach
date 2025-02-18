@@ -58,6 +58,7 @@ fun NewUserOnboarding(
 			is NewUserOnboardingUiState.ShowingWelcomeMessage -> Unit
 			is NewUserOnboardingUiState.ShowingLogbook -> Logbook(
 				name = state.name,
+				enabled = state.enabled,
 				onAction = onAction,
 			)
 		}
