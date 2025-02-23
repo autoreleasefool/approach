@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
+import ca.josephroque.bowlingcompanion.core.model.ShareableSeries
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
@@ -20,6 +21,7 @@ interface SeriesRepository {
 	fun getArchivedSeries(): Flow<List<ArchivedSeries>>
 	fun getEventSeriesIdsList(eventIds: List<LeagueID>): Flow<List<SeriesID>>
 	fun getTeamSeriesIds(teamSeriesId: TeamSeriesID): Flow<List<SeriesID>>
+	fun getShareableSeries(seriesId: SeriesID): Flow<ShareableSeries>
 
 	suspend fun setSeriesAlley(seriesId: SeriesID, alleyId: AlleyID?)
 

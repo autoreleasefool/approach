@@ -23,6 +23,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
+import ca.josephroque.bowlingcompanion.core.model.ShareableSeries
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -62,6 +63,9 @@ class OfflineFirstSeriesRepository @Inject constructor(
 		seriesDao.getTeamSeriesIds(teamSeriesId)
 
 	override fun getArchivedSeries(): Flow<List<ArchivedSeries>> = seriesDao.getArchivedSeries()
+
+	override fun getShareableSeries(seriesId: SeriesID): Flow<ShareableSeries> = seriesDao.getShareableSeries(seriesId)
+		.map { it.asModel() }
 
 	override suspend fun insertSeries(series: SeriesCreate) = withContext(ioDispatcher) {
 		transactionRunner {

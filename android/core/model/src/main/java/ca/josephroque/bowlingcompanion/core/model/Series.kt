@@ -67,6 +67,20 @@ data class ArchivedSeries(
 	val archivedOn: Instant,
 )
 
+data class ShareableSeries(
+	val properties: Properties,
+	val scores: List<Int>,
+) {
+	data class Properties(
+		val id: SeriesID,
+		val date: LocalDate,
+		val appliedDate: LocalDate?,
+		val total: Int,
+		val bowlerName: String,
+		val leagueName: String,
+	)
+}
+
 data class SeriesDetails(
 	val properties: SeriesDetailsProperties,
 	val alley: AlleyDetails?,

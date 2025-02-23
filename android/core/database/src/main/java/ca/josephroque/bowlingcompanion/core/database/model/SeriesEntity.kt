@@ -18,6 +18,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesListProperties
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
+import ca.josephroque.bowlingcompanion.core.model.ShareableSeries
 import ca.josephroque.bowlingcompanion.core.model.TrackableSeries
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -150,6 +151,28 @@ data class SeriesListEntity(
 	)
 
 	fun asModel(): SeriesListItem = SeriesListItem(
+		properties = properties,
+		scores = games.filter { it.archivedOn == null }.map { it.score },
+	)
+}
+
+data class ShareableSeriesEntity(
+	@Embedded
+	val properties: ShareableSeries.Properties,
+	@Relation(
+		parentColumn = "id",
+		entityColumn = "series_id",
+		entity = GameEntity::class,
+		projection = ["score", "archived_on"],
+	)
+	val games: List<Game>
+) {
+	data class Game(
+		val score: Int,
+		@ColumnInfo(name = "archived_on") val archivedOn: Instant?,
+	)
+
+	fun asModel(): ShareableSeries = ShareableSeries(
 		properties = properties,
 		scores = games.filter { it.archivedOn == null }.map { it.score },
 	)

@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.SeriesDetailsEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesListEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesUpdateEntity
+import ca.josephroque.bowlingcompanion.core.database.model.ShareableSeriesEntity
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
@@ -115,6 +116,28 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 		""",
 	)
 	abstract fun getArchivedSeries(): Flow<List<ArchivedSeries>>
+
+	@Transaction
+	@Query(
+		"""
+		SELECT
+		 series.id AS id,
+		 series.'date' AS 'date',
+		 series.applied_date AS appliedDate,
+		 SUM(games.score) AS 'total',
+		 leagues.name AS leagueName,
+		 bowlers.name AS bowlerName
+		FROM series
+		LEFT JOIN leagues
+			ON leagues.id = series.league_id
+		LEFT JOIN bowlers
+			ON bowlers.id = leagues.bowler_id
+		LEFT JOIN games
+			ON games.series_id = series.id AND games.archived_on IS NULL
+		WHERE series.id = :seriesId
+		""",
+	)
+	abstract fun getShareableSeries(seriesId: SeriesID): Flow<ShareableSeriesEntity>
 
 	@Query("UPDATE series SET alley_id = :alleyId WHERE id = :seriesId")
 	abstract fun setSeriesAlley(seriesId: SeriesID, alleyId: AlleyID?)
