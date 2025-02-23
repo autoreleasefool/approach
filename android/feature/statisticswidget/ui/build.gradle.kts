@@ -12,6 +12,6 @@ dependencies {
 	implementation(projects.core.statistics)
 	implementation(projects.core.statistics.charts)
 
-	implementation(libs.compose.reorderable)
+	implementation(libs.reorderable.compose)
 	implementation(libs.vico.compose)
 }

@@ -12,7 +12,7 @@ dependencies {
 	implementation(projects.feature.statisticswidget.ui)
 	implementation(projects.feature.teamslist.ui)
 
-	implementation(libs.compose.reorderable)
+	implementation(libs.reorderable.compose)
 	implementation(libs.swipe)
 	implementation(libs.vico.compose)
 }

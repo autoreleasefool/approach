@@ -10,6 +10,6 @@ android {
 dependencies {
 	implementation(projects.core.common)
 
-	implementation(libs.compose.reorderable)
+	implementation(libs.reorderable.compose)
 	implementation(libs.swipe)
 }
