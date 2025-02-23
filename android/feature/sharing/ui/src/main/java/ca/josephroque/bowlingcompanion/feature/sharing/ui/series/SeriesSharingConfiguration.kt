@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -18,7 +17,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Button
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -38,12 +36,13 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.SectionHeader
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.Stepper
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.R
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingAppearance
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun SeriesSharing(
-	state: SeriesSharingUiState,
-	onAction: (SeriesSharingUiAction) -> Unit,
+fun SeriesSharingConfiguration(
+	state: SeriesSharingConfigurationUiState,
+	onAction: (SeriesSharingConfigurationUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	Column(
@@ -63,28 +62,28 @@ fun SeriesSharing(
 				FilterItem(
 					selected = state.isDateChecked,
 					title = R.string.sharing_series_modifier_date,
-					onClick = { onAction(SeriesSharingUiAction.IsDateCheckedToggled(!state.isDateChecked)) },
+					onClick = { onAction(SeriesSharingConfigurationUiAction.IsDateCheckedToggled(!state.isDateChecked)) },
 					imageVector = Icons.Default.DateRange,
 				)
 
 				FilterItem(
 					selected = state.isSummaryChecked,
 					title = R.string.sharing_series_modifier_summary,
-					onClick = { onAction(SeriesSharingUiAction.IsSummaryCheckedToggled(!state.isSummaryChecked)) },
+					onClick = { onAction(SeriesSharingConfigurationUiAction.IsSummaryCheckedToggled(!state.isSummaryChecked)) },
 					imageVector = Icons.AutoMirrored.Default.List,
 				)
 
 				FilterItem(
 					selected = state.isBowlerChecked,
 					title = R.string.sharing_series_modifier_bowler,
-					onClick = { onAction(SeriesSharingUiAction.IsBowlerCheckedToggled(!state.isBowlerChecked)) },
+					onClick = { onAction(SeriesSharingConfigurationUiAction.IsBowlerCheckedToggled(!state.isBowlerChecked)) },
 					imageVector = Icons.Default.Person,
 				)
 
 				FilterItem(
 					selected = state.isLeagueChecked,
 					title = R.string.sharing_series_modifier_league,
-					onClick = { onAction(SeriesSharingUiAction.IsLeagueCheckedToggled(!state.isLeagueChecked)) },
+					onClick = { onAction(SeriesSharingConfigurationUiAction.IsLeagueCheckedToggled(!state.isLeagueChecked)) },
 					imageVector = Icons.Default.Refresh,
 				)
 			}
@@ -99,7 +98,7 @@ fun SeriesSharing(
 					selected = state.isHighScoreChecked,
 					title = R.string.sharing_series_modifier_high_score,
 					onClick = {
-						onAction(SeriesSharingUiAction.IsHighScoreCheckedToggled(!state.isHighScoreChecked))
+						onAction(SeriesSharingConfigurationUiAction.IsHighScoreCheckedToggled(!state.isHighScoreChecked))
 					},
 					imageVector = Icons.Default.KeyboardArrowUp,
 				)
@@ -108,7 +107,7 @@ fun SeriesSharing(
 					selected = state.isLowScoreChecked,
 					title = R.string.sharing_series_modifier_low_score,
 					onClick = {
-						onAction(SeriesSharingUiAction.IsLowScoreCheckedToggled(!state.isLowScoreChecked))
+						onAction(SeriesSharingConfigurationUiAction.IsLowScoreCheckedToggled(!state.isLowScoreChecked))
 					},
 					imageVector = Icons.Default.KeyboardArrowDown,
 				)
@@ -123,7 +122,7 @@ fun SeriesSharing(
 					title = "Lowest Score",
 					value = state.chartRange.first,
 					range = state.chartLowerBoundRange,
-					onValueChanged = { onAction(SeriesSharingUiAction.ChartRangeMinimumChanged(it)) },
+					onValueChanged = { onAction(SeriesSharingConfigurationUiAction.ChartRangeMinimumChanged(it)) },
 					step = 5,
 					modifier = Modifier.padding(bottom = 8.dp),
 				)
@@ -132,7 +131,7 @@ fun SeriesSharing(
 					title = "Highest Score",
 					value = state.chartRange.last,
 					range = state.chartUpperBoundRange,
-					onValueChanged = { onAction(SeriesSharingUiAction.ChartRangeMaximumChanged(it)) },
+					onValueChanged = { onAction(SeriesSharingConfigurationUiAction.ChartRangeMaximumChanged(it)) },
 					step = 5,
 					modifier = Modifier.padding(bottom = 8.dp),
 				)
@@ -148,7 +147,7 @@ fun SeriesSharing(
 				SharingAppearance.entries.forEachIndexed { index, appearance ->
 					SegmentedButton(
 						selected = state.appearance == appearance,
-						onClick = { onAction(SeriesSharingUiAction.AppearanceChanged(appearance)) },
+						onClick = { onAction(SeriesSharingConfigurationUiAction.AppearanceChanged(appearance)) },
 						shape = SegmentedButtonDefaults.itemShape(
 							index = index,
 							count = SharingAppearance.entries.size,
@@ -161,17 +160,6 @@ fun SeriesSharing(
 					}
 				}
 			}
-		}
-
-		HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
-		Button(
-			onClick = {},
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 16.dp),
-		) {
-			Text("Share")
 		}
 	}
 }
@@ -202,10 +190,8 @@ private fun FilterItem(@StringRes title: Int, selected: Boolean, onClick: () -> 
 @Composable
 private fun SeriesSharingPreview() {
 	Surface {
-		SeriesSharing(
-			state = SeriesSharingUiState(
-				appearance = SharingAppearance.Light,
-			),
+		SeriesSharingConfiguration(
+			state = SeriesSharingConfigurationUiState(),
 			onAction = {},
 		)
 	}
