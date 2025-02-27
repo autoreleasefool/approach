@@ -64,10 +64,19 @@ public struct GamesListView: View {
 		}
 		.navigationTitle(store.series.primaryDate.longFormat)
 		.onAppear { send(.onAppear) }
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.sharing($store.scope(state: \.destination?.sharing, action: \.internal.destination.sharing))
-		.gameEditor($store.scope(state: \.destination?.gameEditor, action: \.internal.destination.gameEditor))
-		.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
+		.modifier(DestinationModifier(store: store))
+	}
+}
+
+private struct DestinationModifier: ViewModifier {
+	@Bindable var store: StoreOf<GamesList>
+
+	func body(content: Content) -> some View {
+		content
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.sharing($store.scope(state: \.destination?.sharing, action: \.internal.destination.sharing))
+			.gameEditor($store.scope(state: \.destination?.gameEditor, action: \.internal.destination.gameEditor))
+			.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
 	}
 }
 

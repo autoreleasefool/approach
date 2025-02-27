@@ -32,80 +32,9 @@ public struct AccessoriesOverviewView: View {
 
 	public var body: some View {
 		List {
-			Section {
-				if store.recentAlleys.isEmpty {
-					Text(Strings.Alley.Error.Empty.message)
-				} else {
-					ForEach(store.recentAlleys) { alley in
-						Alley.View(alley)
-							.swipeActions(allowsFullSwipe: true) {
-								EditButton { send(.didSwipe(.edit, .alley(alley))) }
-							}
-					}
-				}
-			} header: {
-				HStack(alignment: .firstTextBaseline) {
-					Text(Strings.Alley.List.title)
-					Spacer()
-					Button { send(.didTapViewAllAlleys) } label: {
-						Text(Strings.Action.viewAll)
-							.font(.caption)
-					}
-				}
-			} footer: {
-				if store.recentAlleys.count >= AccessoriesOverview.recentAlleysLimit {
-					Text(Strings.Accessory.Overview.showingLimit(AccessoriesOverview.recentAlleysLimit))
-				}
-			}
-
-			Section {
-				Grid(horizontalSpacing: 0, verticalSpacing: 0) {
-					ForEach(GearKindGroup.groups) { row in
-						GridRow {
-							ForEach(row.group) { kind in
-								Button { send(.didTapGearKind(kind)) } label: {
-									HStack {
-										Image(systemSymbol: kind.systemSymbol)
-											.scaledToFit()
-											.frame(width: .smallIcon, height: .smallIcon)
-										Text(kind.pluralDescription)
-											.frame(maxWidth: .infinity, alignment: .leading)
-									}
-									.padding()
-								}
-								.buttonStyle(TappableElement(Asset.Colors.Primary.default, pressed: Asset.Colors.Primary.light))
-							}
-						}
-					}
-				}
-				.listRowInsets(EdgeInsets())
-			} header: {
-				HStack(alignment: .firstTextBaseline) {
-					Text(Strings.Gear.List.title)
-					Spacer()
-					Button { send(.didTapViewAllGear) } label: {
-						Text(Strings.Action.viewAll)
-							.font(.caption)
-					}
-				}
-			}
-
-			Section {
-				if store.recentGear.isEmpty {
-					Text(Strings.Gear.Error.Empty.message)
-				} else {
-					ForEach(store.recentGear) { gear in
-						Gear.ViewWithAvatar(gear)
-							.swipeActions(allowsFullSwipe: true) {
-								EditButton { send(.didSwipe(.edit, .gear(gear))) }
-							}
-					}
-				}
-			} footer: {
-				if store.recentGear.count >= AccessoriesOverview.recentGearLimit {
-					Text(Strings.Accessory.Overview.showingLimit(AccessoriesOverview.recentGearLimit))
-				}
-			}
+			alleysSection
+			gearKindsSection
+			gearSection
 		}
 		.navigationBarTitle(Strings.Accessory.Overview.title)
 		.toolbar {
@@ -120,12 +49,102 @@ public struct AccessoriesOverviewView: View {
 		}
 		.onAppear { send(.onAppear) }
 		.task { await send(.task).finish() }
-		.gearList($store.scope(state: \.destination?.gearList, action: \.internal.destination.gearList))
-		.alleysList($store.scope(state: \.destination?.alleysList, action: \.internal.destination.alleysList))
-		.alleyEditor($store.scope(state: \.destination?.alleyEditor, action: \.internal.destination.alleyEditor))
-		.gearEditor($store.scope(state: \.destination?.gearEditor, action: \.internal.destination.gearEditor))
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.alert($store.scope(state: \.destination?.alert, action: \.internal.destination.alert))
+		.modifier(DestinationModifier(store: store))
+	}
+
+	private var alleysSection: some View {
+		Section {
+			if store.recentAlleys.isEmpty {
+				Text(Strings.Alley.Error.Empty.message)
+			} else {
+				ForEach(store.recentAlleys) { alley in
+					Alley.View(alley)
+						.swipeActions(allowsFullSwipe: true) {
+							EditButton { send(.didSwipe(.edit, .alley(alley))) }
+						}
+				}
+			}
+		} header: {
+			HStack(alignment: .firstTextBaseline) {
+				Text(Strings.Alley.List.title)
+				Spacer()
+				Button { send(.didTapViewAllAlleys) } label: {
+					Text(Strings.Action.viewAll)
+						.font(.caption)
+				}
+			}
+		} footer: {
+			if store.recentAlleys.count >= AccessoriesOverview.recentAlleysLimit {
+				Text(Strings.Accessory.Overview.showingLimit(AccessoriesOverview.recentAlleysLimit))
+			}
+		}
+	}
+
+	private var gearKindsSection: some View {
+		Section {
+			Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+				ForEach(GearKindGroup.groups) { row in
+					GridRow {
+						ForEach(row.group) { kind in
+							Button { send(.didTapGearKind(kind)) } label: {
+								HStack {
+									Image(systemSymbol: kind.systemSymbol)
+										.scaledToFit()
+										.frame(width: .smallIcon, height: .smallIcon)
+									Text(kind.pluralDescription)
+										.frame(maxWidth: .infinity, alignment: .leading)
+								}
+								.padding()
+							}
+							.buttonStyle(TappableElement(Asset.Colors.Primary.default, pressed: Asset.Colors.Primary.light))
+						}
+					}
+				}
+			}
+			.listRowInsets(EdgeInsets())
+		} header: {
+			HStack(alignment: .firstTextBaseline) {
+				Text(Strings.Gear.List.title)
+				Spacer()
+				Button { send(.didTapViewAllGear) } label: {
+					Text(Strings.Action.viewAll)
+						.font(.caption)
+				}
+			}
+		}
+	}
+
+	private var gearSection: some View {
+		Section {
+			if store.recentGear.isEmpty {
+				Text(Strings.Gear.Error.Empty.message)
+			} else {
+				ForEach(store.recentGear) { gear in
+					Gear.ViewWithAvatar(gear)
+						.swipeActions(allowsFullSwipe: true) {
+							EditButton { send(.didSwipe(.edit, .gear(gear))) }
+						}
+				}
+			}
+		} footer: {
+			if store.recentGear.count >= AccessoriesOverview.recentGearLimit {
+				Text(Strings.Accessory.Overview.showingLimit(AccessoriesOverview.recentGearLimit))
+			}
+		}
+	}
+}
+
+private struct DestinationModifier: ViewModifier {
+	@Bindable var store: StoreOf<AccessoriesOverview>
+
+	func body(content: Content) -> some View {
+		content
+			.gearList($store.scope(state: \.destination?.gearList, action: \.internal.destination.gearList))
+			.alleysList($store.scope(state: \.destination?.alleysList, action: \.internal.destination.alleysList))
+			.alleyEditor($store.scope(state: \.destination?.alleyEditor, action: \.internal.destination.alleyEditor))
+			.gearEditor($store.scope(state: \.destination?.gearEditor, action: \.internal.destination.gearEditor))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.alert($store.scope(state: \.destination?.alert, action: \.internal.destination.alert))
 	}
 }
 

@@ -53,36 +53,54 @@ extension TrackableFilter {
 		let (series, games, frames) = try buildInitialQueries(db: db)
 
 		return (
-			series?
-				.annotated(
-					with: Series.Database.trackableGames(filter: .init()).count.forKey("numberOfGames") ?? 0
-				)
-				.annotated(
-					with: Series.Database.trackableGames(filter: .init()).sum(Game.Database.Columns.score).forKey("total") ?? 0
-				)
-				.asRequest(of: Series.TrackableEntry.self),
-			games?
-				.annotated(withRequired: Game.Database.series.select(
-					Series.Database.Columns.id.forKey("seriesid"),
-					Series.Database.Columns.date
-				))
-				.including(optional: Game.Database.matchPlay)
-				.asRequest(of: Game.TrackableEntry.self),
-			frames?
-				.annotated(withRequired: Frame.Database.series.select(
-					Series.Database.Columns.id.forKey("seriesId"),
-					Series.Database.Columns.date
-				))
-				.annotated(withRequired: Frame.Database.game.select(
-					Game.Database.Columns.index.forKey("gameIndex")
-				))
-				.filter(
-					!(Frame.Database.Columns.roll1 == nil &&
-						Frame.Database.Columns.roll2 == nil &&
-						(Frame.Database.Columns.roll0 == nil || Frame.Database.Columns.roll0 == "000000")
-						)
-				)
-				.asRequest(of: Frame.TrackableEntry.self)
+			refineTrackableSeriesQuery(series),
+			refineTrackableGamesQuery(games),
+			refineTrackableFramesQuery(frames)
 		)
+	}
+
+	private func refineTrackableSeriesQuery(
+		_ query: QueryInterfaceRequest<Series.Database>?
+	) -> QueryInterfaceRequest<Series.TrackableEntry>? {
+		query?
+			.annotated(
+				with: Series.Database.trackableGames(filter: .init()).count.forKey("numberOfGames") ?? 0
+			)
+			.annotated(
+				with: Series.Database.trackableGames(filter: .init()).sum(Game.Database.Columns.score).forKey("total") ?? 0
+			)
+			.asRequest(of: Series.TrackableEntry.self)
+	}
+
+	private func refineTrackableGamesQuery(
+		_ query: QueryInterfaceRequest<Game.Database>?
+	) -> QueryInterfaceRequest<Game.TrackableEntry>? {
+		query?
+			.annotated(withRequired: Game.Database.series.select(
+				Series.Database.Columns.id.forKey("seriesid"),
+				Series.Database.Columns.date
+			))
+			.including(optional: Game.Database.matchPlay)
+			.asRequest(of: Game.TrackableEntry.self)
+	}
+
+	private func refineTrackableFramesQuery(
+		_ query: QueryInterfaceRequest<Frame.Database>?
+	) -> QueryInterfaceRequest<Frame.TrackableEntry>? {
+		query?
+			.annotated(withRequired: Frame.Database.series.select(
+				Series.Database.Columns.id.forKey("seriesId"),
+				Series.Database.Columns.date
+			))
+			.annotated(withRequired: Frame.Database.game.select(
+				Game.Database.Columns.index.forKey("gameIndex")
+			))
+			.filter(
+				!(Frame.Database.Columns.roll1 == nil &&
+					Frame.Database.Columns.roll2 == nil &&
+					(Frame.Database.Columns.roll0 == nil || Frame.Database.Columns.roll0 == "000000")
+					)
+			)
+			.asRequest(of: Frame.TrackableEntry.self)
 	}
 }

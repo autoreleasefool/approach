@@ -57,12 +57,21 @@ public struct LeaguesListView: View {
 		}
 		.task { await send(.didStartTask).finish() }
 		.onAppear { send(.onAppear) }
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.leagueEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
-		.leaguesFilter($store.scope(state: \.destination?.filters, action: \.internal.destination.filters))
-		.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
-		.seriesList($store.scope(state: \.destination?.series, action: \.internal.destination.series))
-		.gamesList($store.scope(state: \.destination?.games, action: \.internal.destination.games))
+		.modifier(DestinationModifier(store: store))
+	}
+}
+
+private struct DestinationModifier: ViewModifier {
+	@Bindable var store: StoreOf<LeaguesList>
+
+	func body(content: Content) -> some View {
+		content
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.leagueEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
+			.leaguesFilter($store.scope(state: \.destination?.filters, action: \.internal.destination.filters))
+			.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
+			.seriesList($store.scope(state: \.destination?.series, action: \.internal.destination.series))
+			.gamesList($store.scope(state: \.destination?.games, action: \.internal.destination.games))
 	}
 }
 

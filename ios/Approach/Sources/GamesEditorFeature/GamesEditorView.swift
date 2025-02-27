@@ -112,26 +112,7 @@ public struct GamesEditorView: View {
 		}
 		.onAppear { send(.onAppear) }
 		.onFirstAppear { send(.didFirstAppear) }
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.toast($store.scope(state: \.toast, action: \.internal.toast))
-		.alert(
-			$store.scope(
-				state: \.destination?.duplicateLanesAlert,
-				action: \.internal.destination.duplicateLanesAlert
-			)
-		)
-		.ballPicker(
-			$store.scope(state: \.destination?.sheets?.ballPicker, action: \.internal.destination.sheets.ballPicker),
-			onDismiss: { send(.didDismissOpenSheet) }
-		)
-		.settings(
-			$store.scope(state: \.destination?.sheets?.settings, action: \.internal.destination.sheets.settings),
-			onDismiss: { send(.didDismissOpenSheet) }
-		)
-		.sharing(
-			$store.scope(state: \.destination?.sheets?.sharing, action: \.internal.destination.sheets.sharing),
-			onDismiss: { send(.didDismissOpenSheet) }
-		)
+		.modifier(DestinationModifier(store: store))
 	}
 
 	private func gameDetails(gameDetailsStore: StoreOf<GameDetails>) -> some View {
@@ -156,6 +137,35 @@ public struct GamesEditorView: View {
 		if let game = store.score {
 			ScoreSheetScrollView(game: game, configuration: .plain, selection: $store.currentFrame)
 		}
+	}
+}
+
+@ViewAction(for: GamesEditor.self)
+private struct DestinationModifier: ViewModifier {
+	@Bindable var store: StoreOf<GamesEditor>
+
+	func body(content: Content) -> some View {
+		content
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.toast($store.scope(state: \.toast, action: \.internal.toast))
+			.alert(
+				$store.scope(
+					state: \.destination?.duplicateLanesAlert,
+					action: \.internal.destination.duplicateLanesAlert
+				)
+			)
+			.ballPicker(
+				$store.scope(state: \.destination?.sheets?.ballPicker, action: \.internal.destination.sheets.ballPicker),
+				onDismiss: { send(.didDismissOpenSheet) }
+			)
+			.settings(
+				$store.scope(state: \.destination?.sheets?.settings, action: \.internal.destination.sheets.settings),
+				onDismiss: { send(.didDismissOpenSheet) }
+			)
+			.sharing(
+				$store.scope(state: \.destination?.sheets?.sharing, action: \.internal.destination.sheets.sharing),
+				onDismiss: { send(.didDismissOpenSheet) }
+			)
 	}
 }
 

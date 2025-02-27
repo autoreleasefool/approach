@@ -55,12 +55,21 @@ public struct SeriesListView: View {
 			}
 		}
 		.onAppear { send(.onAppear) }
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
-		.leagueEditor($store.scope(state: \.destination?.leagueEditor, action: \.internal.destination.leagueEditor))
-		.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
-		.gamesList($store.scope(state: \.destination?.games, action: \.internal.destination.games))
-		.preBowl($store.scope(state: \.destination?.preBowl, action: \.internal.destination.preBowl))
+		.modifier(DestinationModifier(store: store))
+	}
+}
+
+private struct DestinationModifier: ViewModifier {
+	@Bindable var store: StoreOf<SeriesList>
+
+	func body(content: Content) -> some View {
+		content
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
+			.leagueEditor($store.scope(state: \.destination?.leagueEditor, action: \.internal.destination.leagueEditor))
+			.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
+			.gamesList($store.scope(state: \.destination?.games, action: \.internal.destination.games))
+			.preBowl($store.scope(state: \.destination?.preBowl, action: \.internal.destination.preBowl))
 	}
 }
 

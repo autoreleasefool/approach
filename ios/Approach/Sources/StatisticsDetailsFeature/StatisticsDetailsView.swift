@@ -11,10 +11,6 @@ import ViewsLibrary
 @ViewAction(for: StatisticsDetails.self)
 public struct StatisticsDetailsView: View {
 	@Bindable public var store: StoreOf<StatisticsDetails>
-
-	@Environment(\.continuousClock) private var clock
-	@Environment(\.safeAreaInsetsProvider) private var safeAreaInsetsProvider
-	@State private var sheetContentSize: CGSize = .zero
 	@State private var windowContentSize: CGSize = .zero
 
 	public init(store: StoreOf<StatisticsDetails>) {
@@ -60,27 +56,20 @@ public struct StatisticsDetailsView: View {
 		}
 		.task { await send(.didFirstAppear).finish() }
 		.onAppear { send(.onAppear) }
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.sourcePicker($store.scope(state: \.destination?.sourcePicker, action: \.internal.destination.sourcePicker))
-		.sharing($store.scope(state: \.destination?.sharing, action: \.internal.destination.sharing))
-		.list(
-			$store.scope(state: \.destination?.list, action: \.internal.destination.list),
-			sheetDetent: $store.sheetDetent,
-			sheetContentSize: $sheetContentSize
-		)
-		.trackShouldAdjustChartSize(
-			willAdjustLaneLayoutAt: store.willAdjustLaneLayoutAt,
-			sheetContentSize: sheetContentSize
-		) {
-			send(
-				.didAdjustChartSize(
-					backdropSize: measuredBackdropSize,
-					filtersSize: store.filterViewSize
-				),
-				animation: .easeInOut
-			)
-		}
+		.modifier(DestinationModifier(store: store, windowContentSize: $windowContentSize))
 	}
+}
+
+// MARK: Destinations
+
+@ViewAction(for: StatisticsDetails.self)
+private struct DestinationModifier: ViewModifier {
+	@Bindable var store: StoreOf<StatisticsDetails>
+	@Binding var windowContentSize: CGSize
+
+	@Environment(\.safeAreaInsetsProvider) private var safeAreaInsetsProvider
+	@State private var sheetContentSize: CGSize = .zero
+
 
 	private var measuredBackdropSize: CGSize {
 		let sheetContentSize = store.ignoreSheetSizeForBackdrop ? .zero : self.sheetContentSize
@@ -89,7 +78,33 @@ public struct StatisticsDetailsView: View {
 			height: windowContentSize.height - sheetContentSize.height - safeAreaInsetsProvider.get().bottom
 		)
 	}
+
+	func body(content: Content) -> some View {
+		content
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.sourcePicker($store.scope(state: \.destination?.sourcePicker, action: \.internal.destination.sourcePicker))
+			.sharing($store.scope(state: \.destination?.sharing, action: \.internal.destination.sharing))
+			.list(
+				$store.scope(state: \.destination?.list, action: \.internal.destination.list),
+				sheetDetent: $store.sheetDetent,
+				sheetContentSize: $sheetContentSize
+			)
+			.trackShouldAdjustChartSize(
+				willAdjustLaneLayoutAt: store.willAdjustLaneLayoutAt,
+				sheetContentSize: sheetContentSize
+			) {
+				send(
+					.didAdjustChartSize(
+						backdropSize: measuredBackdropSize,
+						filtersSize: store.filterViewSize
+					),
+					animation: .easeInOut
+				)
+			}
+	}
 }
+
+// MARK: Measuring
 
 private struct SheetContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct WindowContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
