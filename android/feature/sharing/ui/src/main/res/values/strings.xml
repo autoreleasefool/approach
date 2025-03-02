@@ -13,6 +13,12 @@
 
 	<string name="sharing_series_chart_range">Chart Range</string>
 	<string name="sharing_series_chart_range_x_to_y">%1$d to %2$d</string>
+	
+	<string name="sharing_series_total_label">%1$d TOTAL</string>
+	<string name="sharing_series_high_score_label">%1$d HIGH</string>
+	<string name="sharing_series_low_score_label">%1$d LOW</string>
+
+	<string name="sharing_made_with_tryapproach">Made with tryapproach.app</string>
 
 	<string name="sharing_appearance">Appearance</string>
 	<string name="sharing_appearance_dark">Dark</string>

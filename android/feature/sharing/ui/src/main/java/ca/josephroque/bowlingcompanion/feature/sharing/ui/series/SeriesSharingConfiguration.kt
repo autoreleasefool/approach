@@ -46,8 +46,7 @@ fun SeriesSharingConfiguration(
 	modifier: Modifier = Modifier,
 ) {
 	Column(
-		modifier = modifier
-			.fillMaxSize(),
+		modifier = modifier,
 	) {
 		Column(
 			modifier = Modifier

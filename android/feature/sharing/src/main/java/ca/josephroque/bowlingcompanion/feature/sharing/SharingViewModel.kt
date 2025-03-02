@@ -6,9 +6,12 @@ import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingAppearance
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingData
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingSource
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingUiAction
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingUiState
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfigurationUiAction
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfigurationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -34,29 +37,33 @@ class SharingViewModel @Inject constructor(
 
 	private val sharingSource: MutableStateFlow<SharingSource?> = MutableStateFlow(null)
 
-	private val sharingData = sharingSource
-		.mapNotNull { source ->
+	private val sharingData = combine(
+		sharingSource.mapNotNull { it },
+		seriesSharingState,
+	) { source, seriesSharingState ->
 			when (source) {
 				is SharingSource.Series ->
 					seriesRepository.getShareableSeries(source.seriesId)
-						.map { SharingData.Series(it) }
+						.map { SharingData.Series(it, seriesSharingState) }
 				is SharingSource.Game -> flowOf(SharingData.Game)
 				is SharingSource.Statistic -> flowOf(SharingData.Statistic)
-				null -> null
 			}
-		}
-		.flatMapLatest { it }
+	}
+	.flatMapLatest { it }
 
-	val uiState: StateFlow<SharingScreenUiState> = combine(
+	private val sharingUiState: Flow<SharingUiState> = combine(
 		sharingData,
 		seriesSharingState,
 	) { sharingData, seriesSharingState ->
 		when (sharingData) {
-			is SharingData.Series -> SharingScreenUiState.SharingSeries(seriesSharingState, sharingData)
-			is SharingData.Game -> SharingScreenUiState.SharingGame
-			is SharingData.Statistic -> SharingScreenUiState.SharingStatistic
+			is SharingData.Series -> SharingUiState.SharingSeries(seriesSharingState, sharingData)
+			is SharingData.Game -> SharingUiState.SharingGame
+			is SharingData.Statistic -> SharingUiState.SharingStatistic
 		}
 	}
+
+	val uiState: StateFlow<SharingScreenUiState> = sharingUiState
+		.map { SharingScreenUiState.Sharing(it) }
 		.stateIn(
 			scope = viewModelScope,
 			started = SharingStarted.WhileSubscribed(5_000),
@@ -65,14 +72,20 @@ class SharingViewModel @Inject constructor(
 
 	fun handleAction(action: SharingScreenUiAction) {
 		when (action) {
-			SharingScreenUiAction.ShareButtonClicked -> TODO()
+			is SharingScreenUiAction.Sharing -> handleSharingAction(action.action)
 			is SharingScreenUiAction.DidStartSharing -> {
 				loadSource(action.source)
 				setDefaultAppearance(isSystemInDarkTheme = action.isSystemInDarkTheme)
 			}
-			is SharingScreenUiAction.SeriesSharingAction -> handleSeriesSharingAction(action.action)
-			is SharingScreenUiAction.GameSharingAction -> TODO()
-			is SharingScreenUiAction.StatisticSharingAction -> TODO()
+		}
+	}
+
+	private fun handleSharingAction(action: SharingUiAction) {
+		when (action) {
+			SharingUiAction.ShareButtonClicked-> shareImage()
+			is SharingUiAction.SeriesSharingAction -> handleSeriesSharingAction(action.action)
+			is SharingUiAction.GameSharingAction -> TODO()
+			is SharingUiAction.StatisticSharingAction -> TODO()
 		}
 	}
 
@@ -97,6 +110,10 @@ class SharingViewModel @Inject constructor(
 			is SeriesSharingConfigurationUiAction.AppearanceChanged ->
 				updateAppearance(appearance = action.appearance)
 		}
+	}
+
+	private fun shareImage() {
+		TODO()
 	}
 
 	private fun loadSource(source: SharingSource) {

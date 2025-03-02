@@ -1,8 +1,8 @@
 package ca.josephroque.bowlingcompanion.feature.sharing.ui.components
 
+import android.hardware.lights.Light
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -20,28 +20,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingAppearance
 
 @Composable
 fun ChartLabel(
 	icon: Painter,
 	title: String,
 	style: ChartLabelStyle,
+	appearance: SharingAppearance,
 	modifier: Modifier = Modifier,
 ) {
-	val isSystemInDarkTheme = isSystemInDarkTheme()
-
 	Row(
 		modifier = modifier
 			.clip(RoundedCornerShape(8.dp))
 			.background(
-				if (isSystemInDarkTheme) Color.Gray.copy(alpha = 0.8f)
-				else Color.Black.copy(alpha = 0.2f)
+				when (appearance) {
+					SharingAppearance.Dark -> Color.Gray.copy(alpha = 0.8f)
+					SharingAppearance.Light -> Color.Black.copy(alpha = 0.2f)
+				}
 			)
 			.padding(horizontal = 8.dp, vertical = style.padding),
 		verticalAlignment = Alignment.CenterVertically,
@@ -50,11 +53,21 @@ fun ChartLabel(
 		Image(
 			painter = icon,
 			contentDescription = null,
+			colorFilter = ColorFilter.tint(
+				color = when (appearance) {
+					SharingAppearance.Dark -> Color.White.copy(alpha = 0.9f)
+					SharingAppearance.Light -> Color.Black
+				}
+			),
 			modifier = Modifier.size(style.iconSize),
 		)
 
 		Text(
 			text = title,
+			color = when (appearance) {
+				SharingAppearance.Dark -> Color.White.copy(alpha = 0.9f)
+				SharingAppearance.Light -> Color.Black
+			},
 			style = style.getTextStyle(),
 		)
 	}
@@ -78,7 +91,7 @@ enum class ChartLabelStyle(
 	),
 
 	SMALL(
-		iconSize = 8.dp,
+		iconSize = 12.dp,
 		spacing = 8.dp,
 		padding = 4.dp,
 	)
@@ -97,23 +110,26 @@ enum class ChartLabelStyle(
 fun ChartLabelPreview() {
 	Surface {
 		Row {
-		ChartLabel(
-			icon = rememberVectorPainter(Icons.Default.Star),
-			title = "450 TOTAL",
-			style = ChartLabelStyle.TITLE,
-		)
+			ChartLabel(
+				icon = rememberVectorPainter(Icons.Default.Star),
+				title = "450 TOTAL",
+				style = ChartLabelStyle.TITLE,
+				appearance = SharingAppearance.Dark,
+			)
 
-		ChartLabel(
-			icon = rememberVectorPainter(Icons.Default.KeyboardArrowUp),
-			title = "420 HIGH",
-			style = ChartLabelStyle.PLAIN,
-		)
+			ChartLabel(
+				icon = rememberVectorPainter(Icons.Default.KeyboardArrowUp),
+				title = "420 HIGH",
+				style = ChartLabelStyle.PLAIN,
+				appearance = SharingAppearance.Light,
+			)
 
-		ChartLabel(
-			icon = rememberVectorPainter(Icons.Default.KeyboardArrowDown),
-			title = "200 LOW",
-			style = ChartLabelStyle.SMALL,
-		)
-			}
+			ChartLabel(
+				icon = rememberVectorPainter(Icons.Default.KeyboardArrowDown),
+				title = "200 LOW",
+				style = ChartLabelStyle.SMALL,
+				appearance = SharingAppearance.Light,
+			)
+		}
 	}
 }

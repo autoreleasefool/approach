@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="area_background_light">#BEADFA</color>
+    <color name="area_background_dark">#EDF0FF</color>
+
+    <color name="line_stroke_light">#F1C27B</color>
+    <color name="line_stroke_dark">#AAC4FF</color>
+</resources>
