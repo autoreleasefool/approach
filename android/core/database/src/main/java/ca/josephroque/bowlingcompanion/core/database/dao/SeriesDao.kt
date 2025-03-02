@@ -123,7 +123,6 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 		SELECT
 		 series.id AS id,
 		 series.'date' AS 'date',
-		 series.applied_date AS appliedDate,
 		 SUM(games.score) AS 'total',
 		 leagues.name AS leagueName,
 		 bowlers.name AS bowlerName

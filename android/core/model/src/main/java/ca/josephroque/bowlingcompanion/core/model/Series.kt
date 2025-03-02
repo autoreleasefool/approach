@@ -74,7 +74,6 @@ data class ShareableSeries(
 	data class Properties(
 		val id: SeriesID,
 		val date: LocalDate,
-		val appliedDate: LocalDate?,
 		val total: Int,
 		val bowlerName: String,
 		val leagueName: String,
