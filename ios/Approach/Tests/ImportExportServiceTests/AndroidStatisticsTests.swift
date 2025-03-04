@@ -68,7 +68,15 @@ struct AndroidStatisticsTests {
 			"AVERAGE_PINS_LEFT_ON_DECK",
 			"TOTAL_PINS_LEFT_ON_DECK",
 			"AVERAGE_FIRST_ROLL",
+			"HIGH_SERIES_OF_2",
 			"HIGH_SERIES_OF_3",
+			"HIGH_SERIES_OF_4",
+			"HIGH_SERIES_OF_5",
+			"HIGH_SERIES_OF_8",
+			"HIGH_SERIES_OF_10",
+			"HIGH_SERIES_OF_12",
+			"HIGH_SERIES_OF_15",
+			"HIGH_SERIES_OF_20",
 		]
 
 		let mapped = androidStatistics.compactMap {
