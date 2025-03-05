@@ -44,7 +44,7 @@ fun ChartLabel(
 				when (appearance) {
 					SharingAppearance.Dark -> Color.Gray.copy(alpha = 0.8f)
 					SharingAppearance.Light -> Color.Black.copy(alpha = 0.2f)
-				}
+				},
 			)
 			.padding(horizontal = 8.dp, vertical = style.padding),
 		verticalAlignment = Alignment.CenterVertically,
@@ -57,7 +57,7 @@ fun ChartLabel(
 				color = when (appearance) {
 					SharingAppearance.Dark -> Color.White.copy(alpha = 0.9f)
 					SharingAppearance.Light -> Color.Black
-				}
+				},
 			),
 			modifier = Modifier.size(style.iconSize),
 		)
@@ -94,7 +94,7 @@ enum class ChartLabelStyle(
 		iconSize = 12.dp,
 		spacing = 8.dp,
 		padding = 4.dp,
-	)
+	),
 	;
 
 	@Composable

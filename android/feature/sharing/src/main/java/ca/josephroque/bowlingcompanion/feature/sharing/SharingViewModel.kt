@@ -15,9 +15,12 @@ import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingUiState
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfigurationUiAction
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfigurationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.io.File
+import javax.inject.Inject
+import kotlin.math.max
+import kotlin.math.min
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -30,9 +33,6 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
-import kotlin.math.max
-import kotlin.math.min
 
 @HiltViewModel
 class SharingViewModel @Inject constructor(
@@ -52,15 +52,15 @@ class SharingViewModel @Inject constructor(
 		sharingSource.mapNotNull { it },
 		seriesSharingState,
 	) { source, seriesSharingState ->
-			when (source) {
-				is SharingSource.Series ->
-					seriesRepository.getShareableSeries(source.seriesId)
-						.map { SharingData.Series(it, seriesSharingState) }
-				is SharingSource.Game -> flowOf(SharingData.Game)
-				is SharingSource.Statistic -> flowOf(SharingData.Statistic)
-			}
+		when (source) {
+			is SharingSource.Series ->
+				seriesRepository.getShareableSeries(source.seriesId)
+					.map { SharingData.Series(it, seriesSharingState) }
+			is SharingSource.Game -> flowOf(SharingData.Game)
+			is SharingSource.Statistic -> flowOf(SharingData.Statistic)
+		}
 	}
-	.flatMapLatest { it }
+		.flatMapLatest { it }
 
 	private val sharingUiState: Flow<SharingUiState> = combine(
 		sharingData,
@@ -148,7 +148,7 @@ class SharingViewModel @Inject constructor(
 				stream.close()
 
 				sendEvent(SharingScreenEvent.LaunchShareIntent(file))
-			} catch(e: Throwable) {
+			} catch (e: Throwable) {
 				// TODO: Handle error thrown capturing image
 			}
 		}

@@ -21,11 +21,7 @@ import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Sharing(
-	state: SharingUiState,
-	onAction: (SharingUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun Sharing(state: SharingUiState, onAction: (SharingUiAction) -> Unit, modifier: Modifier = Modifier) {
 	val captureController = rememberCaptureController()
 
 	Column(
@@ -79,7 +75,7 @@ private fun SharingPreview() {
 						scores = listOf(300, 200, 400),
 					),
 					configuration = SeriesSharingConfigurationUiState(),
-				)
+				),
 			),
 			onAction = {},
 		)

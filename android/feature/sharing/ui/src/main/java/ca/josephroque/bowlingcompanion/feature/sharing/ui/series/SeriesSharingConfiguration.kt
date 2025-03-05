@@ -88,7 +88,11 @@ fun SeriesSharingConfiguration(
 				FilterItem(
 					selected = state.isSeriesTotalChecked,
 					title = R.string.sharing_series_modifier_total,
-					onClick = { onAction(SeriesSharingConfigurationUiAction.IsSeriesTotalCheckedToggled(!state.isSeriesTotalChecked)) },
+					onClick = {
+						onAction(
+							SeriesSharingConfigurationUiAction.IsSeriesTotalCheckedToggled(!state.isSeriesTotalChecked),
+						)
+					},
 					imageVector = Icons.AutoMirrored.Default.List,
 				)
 

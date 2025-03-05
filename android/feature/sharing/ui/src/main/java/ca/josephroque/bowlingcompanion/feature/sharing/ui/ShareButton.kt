@@ -9,9 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ShareButton(
-		onClick: () -> Unit,
-) {
+fun ShareButton(onClick: () -> Unit) {
 	Button(
 		onClick = onClick,
 		modifier = Modifier

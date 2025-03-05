@@ -69,7 +69,7 @@ fun ShareableSeriesImage(
 				when (configuration.appearance) {
 					SharingAppearance.Light -> Color.White
 					SharingAppearance.Dark -> Color.Black
-				}
+				},
 			),
 	) {
 		ScoreChart(
@@ -101,15 +101,12 @@ fun ShareableSeriesImage(
 }
 
 @Composable
-private fun ScoreChart(
-	series: ShareableSeries,
-	configuration: SeriesSharingConfigurationUiState,
-) {
+private fun ScoreChart(series: ShareableSeries, configuration: SeriesSharingConfigurationUiState) {
 	val scoresModel = remember(series.scores, configuration) {
 		ChartEntryModelProducer(
 			series.scores.mapIndexed { index, score ->
 				entryOf(x = index.toFloat(), y = score.toFloat())
-			}
+			},
 		)
 	}
 
@@ -155,10 +152,7 @@ private fun ScoreChart(
 }
 
 @Composable
-private fun BowlerPropertiesLabels(
-	series: ShareableSeries,
-	configuration: SeriesSharingConfigurationUiState,
-) {
+private fun BowlerPropertiesLabels(series: ShareableSeries, configuration: SeriesSharingConfigurationUiState) {
 	Column {
 		if (configuration.isDateChecked) {
 			ChartLabel(
@@ -202,13 +196,10 @@ private fun BowlerPropertiesLabels(
 }
 
 @Composable
-private fun SeriesSummaryLabels(
-	series: ShareableSeries,
-	configuration: SeriesSharingConfigurationUiState,
-) {
+private fun SeriesSummaryLabels(series: ShareableSeries, configuration: SeriesSharingConfigurationUiState) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
-		horizontalArrangement = Arrangement.spacedBy(8.dp)
+		horizontalArrangement = Arrangement.spacedBy(8.dp),
 	) {
 		if (configuration.isSeriesTotalChecked) {
 			ChartLabel(
@@ -256,7 +247,7 @@ private fun rememberScoreMarkers(
 		MarkerComponent(
 			indicator = ShapeComponent(
 				shape = Shapes.pillShape,
-				color = markerColor.toArgb()
+				color = markerColor.toArgb(),
 			),
 			label = TextComponent.Builder()
 				.apply { textSizeSp = 0f }
@@ -281,8 +272,8 @@ private data class ScoreMarkerState(
 	val highScoreIndex: Int?,
 ) {
 	constructor(
-			scores: List<Int>,
-			configuration: SeriesSharingConfigurationUiState,
+		scores: List<Int>,
+		configuration: SeriesSharingConfigurationUiState,
 	) : this(
 		lowScoreIndex = if (configuration.isLowScoreChecked && scores.isNotEmpty()) scores.indexOf(scores.min()) else null,
 		highScoreIndex = if (configuration.isHighScoreChecked && scores.isNotEmpty()) scores.indexOf(scores.max()) else null,
@@ -317,7 +308,7 @@ private fun ShareableSeriesImagePreview(
 				isLowScoreChecked = true,
 				isHighScoreChecked = true,
 				appearance = appearance,
-				chartRange = IntRange(150, 450)
+				chartRange = IntRange(150, 450),
 			),
 		)
 	}
