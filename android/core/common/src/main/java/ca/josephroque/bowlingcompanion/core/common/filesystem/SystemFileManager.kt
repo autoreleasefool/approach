@@ -20,6 +20,9 @@ class SystemFileManager @Inject constructor(
 	override val exportsDir: File
 		get() = context.cacheDir.resolve("exports")
 
+	override val sharedImagesDir: File
+		get() = context.cacheDir.resolve("shared_images")
+
 	override fun filePathExists(fileName: String): Boolean = fileExists(File(fileName))
 
 	override fun fileExists(file: File): Boolean = file.exists()

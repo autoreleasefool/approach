@@ -33,7 +33,7 @@
 				android:exported="false">
 			<meta-data
 					android:name="android.support.FILE_PROVIDER_PATHS"
-					android:resource="@xml/data_export_filepaths" />
+					android:resource="@xml/fileprovider_filepaths" />
 		</provider>
 
 	</application>
