@@ -1,10 +1,11 @@
 # Most recent version
 
-## iOS 1.10.0b32
+## iOS 1.11.0b33
 
 ```
-- Feat: High Series for 2-20 games
-- Chore: More distinct icons in sharing menu
+- Feat: Unlock action added to warning about locked games
+- Fix: Pin dragging animation sizing fixed
+- Fix: Default number of leagues in a game can be changed
 ```
 
 ## Android 4.4.2b339
@@ -16,6 +17,13 @@
 ---
 
 # Legacy iOS Versions
+
+## iOS 1.10.0b32
+
+```
+- Feat: High Series for 2-20 games
+- Chore: More distinct icons in sharing menu
+```
 
 ## iOS 1.9.0b31
 
