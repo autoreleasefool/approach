@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
@@ -14,14 +15,19 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.ShareableSeries
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfiguration
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfigurationUiState
+import dev.shreyaspatil.capturable.capturable
+import dev.shreyaspatil.capturable.controller.rememberCaptureController
 import kotlinx.datetime.LocalDate
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Sharing(
 	state: SharingUiState,
 	onAction: (SharingUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	val captureController = rememberCaptureController()
+
 	Column(
 		modifier = modifier,
 	) {
@@ -31,7 +37,6 @@ fun Sharing(
 			is SharingUiState.SharingSeries -> SeriesSharingConfiguration(
 				state = state.seriesSharing,
 				onAction = { onAction(SharingUiAction.SeriesSharingAction(it)) },
-				modifier = modifier,
 			)
 		}
 
@@ -39,11 +44,18 @@ fun Sharing(
 
 		ShareablePreviewImage(
 			state = state.sharingData,
-			modifier = Modifier.clip(RoundedCornerShape(16.dp)),
+			modifier = Modifier
+				.capturable(captureController)
+				.padding(horizontal = 16.dp)
+				.padding(top = 8.dp, bottom = 16.dp)
+				.clip(RoundedCornerShape(16.dp)),
 		)
 
+		rememberCaptureController()
+
 		ShareButton {
-			onAction(SharingUiAction.ShareButtonClicked)
+			val capture = captureController.captureAsync()
+			onAction(SharingUiAction.ShareButtonClicked(capture))
 		}
 	}
 }

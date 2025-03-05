@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.sharing
 
+import android.content.Intent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -7,6 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -27,6 +30,7 @@ fun SharingSheet(
 ) {
 	val sharingState by viewModel.uiState.collectAsStateWithLifecycle()
 
+	val context = LocalContext.current
 	val lifecycleOwner = LocalLifecycleOwner.current
 	LaunchedEffect(Unit) {
 		lifecycleOwner.lifecycleScope.launch {
@@ -35,6 +39,21 @@ fun SharingSheet(
 				.collect {
 					when (it) {
 						SharingScreenEvent.Dismissed -> onDismiss()
+						is SharingScreenEvent.LaunchShareIntent -> {
+							val fileUri = FileProvider.getUriForFile(
+								context,
+								"ca.josephroque.bowlingcompanion.fileprovider",
+								it.file,
+							)
+
+							val intent = Intent(Intent.ACTION_SEND).apply {
+								type = "image/png"
+								putExtra(Intent.EXTRA_STREAM, fileUri)
+								addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+							}
+
+							context.startActivity(Intent.createChooser(intent, null))
+						}
 					}
 				}
 		}

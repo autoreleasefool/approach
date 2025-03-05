@@ -1,6 +1,10 @@
 package ca.josephroque.bowlingcompanion.feature.sharing
 
+import android.graphics.Bitmap
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.common.filesystem.SystemFileManager
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingAppearance
@@ -11,6 +15,7 @@ import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingUiState
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfigurationUiAction
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfigurationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +33,7 @@ import kotlinx.coroutines.flow.update
 class SharingViewModel @Inject constructor(
 // TODO: Add Analytics to Sharing
 // 	private val analyticsClient: AnalyticsClient,
+	private val fileManager: SystemFileManager,
 	private val seriesRepository: SeriesRepository,
 ) : ApproachViewModel<SharingScreenEvent>() {
 
@@ -82,7 +88,7 @@ class SharingViewModel @Inject constructor(
 
 	private fun handleSharingAction(action: SharingUiAction) {
 		when (action) {
-			SharingUiAction.ShareButtonClicked-> shareImage()
+			is SharingUiAction.ShareButtonClicked -> shareImage(action.image)
 			is SharingUiAction.SeriesSharingAction -> handleSeriesSharingAction(action.action)
 			is SharingUiAction.GameSharingAction -> TODO()
 			is SharingUiAction.StatisticSharingAction -> TODO()
@@ -112,8 +118,23 @@ class SharingViewModel @Inject constructor(
 		}
 	}
 
-	private fun shareImage() {
-		TODO()
+	private fun shareImage(image: Deferred<ImageBitmap>) {
+		viewModelScope.launch {
+			try {
+				val bitmap = image.await()
+				fileManager.sharedImagesDir.mkdirs()
+
+				val file = File(fileManager.sharedImagesDir, "shared_image.png")
+				val stream = file.outputStream()
+				bitmap.asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream)
+				stream.flush()
+				stream.close()
+
+				sendEvent(SharingScreenEvent.LaunchShareIntent(file))
+			} catch(e: Throwable) {
+				// TODO: Handle error thrown capturing image
+			}
+		}
 	}
 
 	private fun loadSource(source: SharingSource) {

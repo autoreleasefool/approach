@@ -165,7 +165,7 @@ data class ShareableSeriesEntity(
 		entity = GameEntity::class,
 		projection = ["score", "archived_on"],
 	)
-	val games: List<Game>
+	val games: List<Game>,
 ) {
 	data class Game(
 		val score: Int,

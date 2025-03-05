@@ -1,10 +1,13 @@
 package ca.josephroque.bowlingcompanion.feature.sharing.ui
 
+import android.graphics.Bitmap
+import androidx.compose.ui.graphics.ImageBitmap
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.ShareableSeries
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfigurationUiAction
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfigurationUiState
+import kotlinx.coroutines.Deferred
 
 sealed interface SharingUiState {
 	data class SharingSeries(
@@ -24,7 +27,7 @@ sealed interface SharingUiState {
 }
 
 sealed interface SharingUiAction {
-	data object ShareButtonClicked : SharingUiAction
+	data class ShareButtonClicked(val image: Deferred<ImageBitmap>) : SharingUiAction
 
 	data class SeriesSharingAction(val action: SeriesSharingConfigurationUiAction) : SharingUiAction
 	data object GameSharingAction : SharingUiAction
