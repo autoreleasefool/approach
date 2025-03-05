@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -66,13 +65,6 @@ fun SeriesSharingConfiguration(
 				)
 
 				FilterItem(
-					selected = state.isSummaryChecked,
-					title = R.string.sharing_series_modifier_summary,
-					onClick = { onAction(SeriesSharingConfigurationUiAction.IsSummaryCheckedToggled(!state.isSummaryChecked)) },
-					imageVector = Icons.AutoMirrored.Default.List,
-				)
-
-				FilterItem(
 					selected = state.isBowlerChecked,
 					title = R.string.sharing_series_modifier_bowler,
 					onClick = { onAction(SeriesSharingConfigurationUiAction.IsBowlerCheckedToggled(!state.isBowlerChecked)) },
@@ -93,6 +85,13 @@ fun SeriesSharingConfiguration(
 				horizontalArrangement = Arrangement.spacedBy(8.dp),
 				modifier = Modifier.padding(horizontal = 16.dp),
 			) {
+				FilterItem(
+					selected = state.isSeriesTotalChecked,
+					title = R.string.sharing_series_modifier_total,
+					onClick = { onAction(SeriesSharingConfigurationUiAction.IsSeriesTotalCheckedToggled(!state.isSeriesTotalChecked)) },
+					imageVector = Icons.AutoMirrored.Default.List,
+				)
+
 				FilterItem(
 					selected = state.isHighScoreChecked,
 					title = R.string.sharing_series_modifier_high_score,

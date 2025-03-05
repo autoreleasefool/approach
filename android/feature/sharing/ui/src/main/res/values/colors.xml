@@ -5,4 +5,7 @@
 
     <color name="line_stroke_light">#F1C27B</color>
     <color name="line_stroke_dark">#AAC4FF</color>
+
+    <color name="marker_light">#8680DF</color>
+    <color name="marker_dark">#FF8DC6</color>
 </resources>

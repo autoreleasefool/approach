@@ -21,6 +21,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -28,6 +29,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.io.File
+import kotlin.math.max
+import kotlin.math.min
 
 @HiltViewModel
 class SharingViewModel @Inject constructor(
@@ -76,6 +81,18 @@ class SharingViewModel @Inject constructor(
 			initialValue = SharingScreenUiState.Loading,
 		)
 
+	init {
+		viewModelScope.launch {
+			sharingData
+				.collectLatest { data ->
+					when (data) {
+						is SharingData.Series -> updateDefaultChartRanges(data.series.scores)
+						SharingData.Game, SharingData.Statistic -> TODO()
+					}
+				}
+		}
+	}
+
 	fun handleAction(action: SharingScreenUiAction) {
 		when (action) {
 			is SharingScreenUiAction.Sharing -> handleSharingAction(action.action)
@@ -99,8 +116,8 @@ class SharingViewModel @Inject constructor(
 		when (action) {
 			is SeriesSharingConfigurationUiAction.IsDateCheckedToggled ->
 				toggleIsDateChecked(isDateChecked = action.isDateChecked)
-			is SeriesSharingConfigurationUiAction.IsSummaryCheckedToggled ->
-				toggleIsSummaryChecked(isSummaryChecked = action.isSummaryChecked)
+			is SeriesSharingConfigurationUiAction.IsSeriesTotalCheckedToggled ->
+				toggleIsSeriesTotalChecked(isSeriesTotalChecked = action.isSeriesTotalChecked)
 			is SeriesSharingConfigurationUiAction.IsBowlerCheckedToggled ->
 				toggleIsBowlerChecked(isBowlerChecked = action.isBowlerChecked)
 			is SeriesSharingConfigurationUiAction.IsLeagueCheckedToggled ->
@@ -151,8 +168,8 @@ class SharingViewModel @Inject constructor(
 		seriesSharingState.update { it.copy(isDateChecked = isDateChecked) }
 	}
 
-	private fun toggleIsSummaryChecked(isSummaryChecked: Boolean) {
-		seriesSharingState.update { it.copy(isSummaryChecked = isSummaryChecked) }
+	private fun toggleIsSeriesTotalChecked(isSeriesTotalChecked: Boolean) {
+		seriesSharingState.update { it.copy(isSeriesTotalChecked = isSeriesTotalChecked) }
 	}
 
 	private fun toggleIsBowlerChecked(isBowlerChecked: Boolean) {
@@ -169,6 +186,19 @@ class SharingViewModel @Inject constructor(
 
 	private fun toggleIsLowScoreChecked(isLowScoreChecked: Boolean) {
 		seriesSharingState.update { it.copy(isLowScoreChecked = isLowScoreChecked) }
+	}
+
+	private fun updateDefaultChartRanges(scores: List<Int>) {
+		val rangeMinimum = max((scores.minOrNull() ?: 0) - 5, 0)
+		val rangeMaximum = min((scores.maxOrNull() ?: 0) + 5, 450)
+
+		seriesSharingState.update {
+			it.copy(
+				chartLowerBoundRange = IntRange(0, rangeMinimum),
+				chartUpperBoundRange = IntRange(rangeMaximum, 450),
+				chartRange = if (it.chartRange.isEmpty()) IntRange(rangeMinimum, rangeMaximum) else it.chartRange,
+			)
+		}
 	}
 
 	private fun updateChartRangeMinimum(minimum: Int) {

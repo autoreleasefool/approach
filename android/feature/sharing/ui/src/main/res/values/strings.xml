@@ -5,9 +5,9 @@
 	<string name="sharing_series_modifier_section_overlay">Overlay</string>
 	<string name="sharing_series_modifier_section_scores">Scores</string>
 	<string name="sharing_series_modifier_date">Date</string>
-	<string name="sharing_series_modifier_summary">Summary</string>
 	<string name="sharing_series_modifier_bowler">Bowler</string>
 	<string name="sharing_series_modifier_league">League</string>
+	<string name="sharing_series_modifier_total">Total</string>
 	<string name="sharing_series_modifier_high_score">High</string>
 	<string name="sharing_series_modifier_low_score">Low</string>
 
