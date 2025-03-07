@@ -161,7 +161,7 @@ let package = Package(
 		.package(url: "https://github.com/autoreleasefool/swift-utilities.git", from: "3.0.0"),
 		.package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.5"),
 		.package(url: "https://github.com/getsentry/sentry-cocoa.git", from: "8.43.0"),
-		.package(url: "https://github.com/groue/GRDB.swift.git", from: "7.0.0"),
+		.package(url: "https://github.com/groue/GRDB.swift.git", from: "7.3.0"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.17.1"),
 		.package(url: "https://github.com/pointfreeco/swift-concurrency-extras.git", from: "1.3.1"),
 		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.6.3"),
