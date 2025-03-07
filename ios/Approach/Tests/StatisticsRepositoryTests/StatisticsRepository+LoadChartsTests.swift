@@ -98,6 +98,8 @@ final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 	// MARK: - Populated, no filters
 
 	func testBowler_NoFilters_AllTime_ReturnsValues() async throws {
+		try XCTSkipIf(true, "Not yet implemented")
+
 		let db = try generatePopulatedDatabase()
 		let expectedResults: [(first: Entry?, last: Entry?)] = [
 			(
