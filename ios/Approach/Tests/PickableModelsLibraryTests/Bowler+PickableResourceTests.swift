@@ -1,17 +1,23 @@
 import ModelsLibrary
 @testable import PickableModelsLibrary
-import XCTest
+import Testing
 
-final class BowlerPickableResourceTests: XCTestCase {
-	func testModelName() {
-		XCTAssertEqual(Bowler.Summary.pickableModelName(forCount: 0), "Bowlers")
-		XCTAssertEqual(Bowler.Summary.pickableModelName(forCount: 1), "Bowler")
-		XCTAssertEqual(Bowler.Summary.pickableModelName(forCount: 2), "Bowlers")
+@Suite("Bowler+PickableResource")
+struct BowlerPickableResourceTests {
+
+	@Test(
+		"Model name is correct",
+		arguments: zip([0, 1, 2], ["Bowlers", "Bowler", "Bowlers"])
+	)
+	func modelName(count: Int, expected: String) {
+		#expect(Bowler.Summary.pickableModelName(forCount: count) == expected)
 	}
 
-	func testOpponentModelName() {
-		XCTAssertEqual(Bowler.Opponent.pickableModelName(forCount: 0), "Opponents")
-		XCTAssertEqual(Bowler.Opponent.pickableModelName(forCount: 1), "Opponent")
-		XCTAssertEqual(Bowler.Opponent.pickableModelName(forCount: 2), "Opponents")
+	@Test(
+		"Opponent model name is correct",
+		arguments: zip([0, 1, 2], ["Opponents", "Opponent", "Opponents"])
+	)
+	func opponentModelName(count: Int, expected: String) {
+		#expect(Bowler.Opponent.pickableModelName(forCount: count) == expected)
 	}
 }

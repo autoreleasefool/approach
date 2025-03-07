@@ -1,21 +1,25 @@
 @testable import StatisticsLibrary
-import XCTest
+import Testing
 
-final class StatisticsTests: XCTestCase {
-	func testType_FindsTypeByID() {
+@Suite("Statistics")
+struct StatisticsTests {
+
+	@Test("Finds type by ID")
+	func findsTypeByID() {
 		let id = "High Single"
 
 		let type = Statistics.type(of: id)
 
-		XCTAssertTrue(type is Statistics.HighSingle.Type)
-		XCTAssertFalse(type is Statistics.HighSeriesOf3.Type)
+		#expect(type is Statistics.HighSingle.Type)
+		#expect(!(type is Statistics.HighSeriesOf3.Type))
 	}
 
-	func testType_WithInvalidID_ReturnsNil() {
+	@Test("With invalid ID returns nil")
+	func typeWithInvalidIDReturnsNil() {
 		let id = "invalid"
 
 		let type = Statistics.type(of: id)
 
-		XCTAssertNil(type)
+		#expect(type == nil)
 	}
 }

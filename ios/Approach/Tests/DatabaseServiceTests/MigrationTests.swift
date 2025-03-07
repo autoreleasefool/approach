@@ -2,9 +2,10 @@
 @testable import DatabaseService
 @testable import DatabaseServiceInterface
 import GRDB
-import XCTest
+import Testing
 
-final class DBMigrationTests: XCTestCase {
+@Suite("DBMigration")
+struct DBMigrationTests {
 	static let allMigrations = [
 		"Migration20230325CreateBowler",
 		"Migration20230408CreateAlley",
@@ -42,29 +43,29 @@ final class DBMigrationTests: XCTestCase {
 		"Migration20241021CreateTeam",
 	]
 
-	func testIdentifier() {
-		XCTAssertEqual(
-			Migration20230325CreateBowler.identifier,
-			"Migration20230325CreateBowler"
-		)
+	@Test("identifier matches")
+	func identifierMatches() {
+		#expect(Migration20230325CreateBowler.identifier == "Migration20230325CreateBowler")
 	}
 
-	func testRegistersMigration() throws {
+	@Test("Registers migrations")
+	func registersMigrations() throws {
 		var migrator = DatabaseMigrator()
-		XCTAssertEqual(migrator.migrations, [])
+		#expect(migrator.migrations == [])
 
 		migrator.register(migration: Migration20230325CreateBowler.self)
-		XCTAssertEqual(migrator.migrations, ["Migration20230325CreateBowler"])
+		#expect(migrator.migrations == ["Migration20230325CreateBowler"])
 	}
 
-	func testRunsMigrations() throws {
+	@Test("Runs migrations")
+	func runsMigrations() throws {
 		let dbQueue = try DatabaseQueue()
 		var migrator = DatabaseMigrator()
 
 		let appliedBefore = try dbQueue.read {
 			try migrator.appliedMigrations($0)
 		}
-		XCTAssertEqual(appliedBefore, [])
+		#expect(appliedBefore == [])
 
 		for migration in Migrations.approachMigrations {
 			migrator.register(migration: migration)
@@ -74,6 +75,6 @@ final class DBMigrationTests: XCTestCase {
 		let appliedAfter = try dbQueue.read {
 			try migrator.appliedMigrations($0)
 		}
-		XCTAssertEqual(appliedAfter, Self.allMigrations)
+		#expect(appliedAfter == Self.allMigrations)
 	}
 }

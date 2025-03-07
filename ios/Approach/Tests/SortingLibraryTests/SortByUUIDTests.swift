@@ -1,8 +1,12 @@
+import Foundation
 import SortingLibrary
-import XCTest
+import Testing
 
-final class SortByUUIDTests: XCTestCase {
-	func testSortWithNoIds() {
+@Suite("SortByUUID")
+struct SortByUUIDTests {
+
+	@Test("Sort with no IDs does not change order")
+	func sortWithNoIDsDoesNotChangeOrder() {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
 		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
@@ -13,10 +17,11 @@ final class SortByUUIDTests: XCTestCase {
 			Sortable(id: id1),
 		]
 
-		XCTAssertEqual(sortables, sortables.sortBy(ids: []))
+		#expect(sortables == sortables.sortBy(ids: []))
 	}
 
-	func testSortsAllElements() {
+	@Test("Sorts all elements")
+	func sortsAllElements() {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
 		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
@@ -27,14 +32,17 @@ final class SortByUUIDTests: XCTestCase {
 			Sortable(id: id1),
 		]
 
-		XCTAssertEqual([
+		let expectedOrder = [
 			Sortable(id: id2),
 			Sortable(id: id1),
 			Sortable(id: id0),
-		], sortables.sortBy(ids: [id2, id1, id0]))
+		]
+
+		#expect(expectedOrder == sortables.sortBy(ids: [id2, id1, id0]))
 	}
 
-	func testSortsElementsToFront() {
+	@Test("Sorts elements with IDs to start of list")
+	func sortsElementsWithIDsToStartOfList() {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
 		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
@@ -45,11 +53,13 @@ final class SortByUUIDTests: XCTestCase {
 			Sortable(id: id1),
 		]
 
-		XCTAssertEqual([
+		let expectedOrder = [
 			Sortable(id: id1),
 			Sortable(id: id0),
 			Sortable(id: id2),
-		], sortables.sortBy(ids: [id1]))
+		]
+
+		#expect(expectedOrder == sortables.sortBy(ids: [id1]))
 	}
 }
 

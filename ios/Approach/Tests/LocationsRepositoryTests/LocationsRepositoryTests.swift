@@ -1,73 +1,80 @@
 import DatabaseModelsLibrary
 import DatabaseServiceInterface
 import Dependencies
+import Foundation
 import GRDB
 @testable import LocationsRepository
 @testable import LocationsRepositoryInterface
 @testable import ModelsLibrary
 import TestDatabaseUtilitiesLibrary
 import TestUtilitiesPackageLibrary
-import XCTest
+import Testing
 
-final class LocationsRepositoryTests: XCTestCase {
-	@Dependency(LocationsRepository.self) var locations
+@Suite("LocationsRepository")
+struct LocationsRepositoryTests {
 
-	// MARK: - InsertOrUpdate
+	@Suite("insertOrUpdate")
+	struct InsertOrUpdateTests {
 
-	func testInsertOrUpdate_WhenLocationNotExists_CreatesLocation() async throws {
-		// Given a database with no locations
-		let db = try initializeApproachDatabase(withLocations: nil)
+		@Dependency(LocationsRepository.self) var locations
 
-		// Creating the location
-		let new = Location.Create(
-			id: UUID(0),
-			title: "456 Fake Street",
-			subtitle: "Viewgrand",
-			coordinate: .init(latitude: 456, longitude: 456)
-		)
-		try await withDependencies {
-			$0[DatabaseService.self].writer = { @Sendable in db }
-			$0[LocationsRepository.self] = .liveValue
-		} operation: {
-			try await self.locations.insertOrUpdate(new)
+		@Test("Creates location when it does not exist")
+		func createsLocationWhenItDoesNotExist() async throws {
+			// Given a database with no locations
+			let db = try initializeApproachDatabase(withLocations: nil)
+
+			// Creating the location
+			let new = Location.Create(
+				id: UUID(0),
+				title: "456 Fake Street",
+				subtitle: "Viewgrand",
+				coordinate: .init(latitude: 456, longitude: 456)
+			)
+			try await withDependencies {
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[LocationsRepository.self] = .liveValue
+			} operation: {
+				try await self.locations.insertOrUpdate(new)
+			}
+
+			// Inserts the location
+			let count = try await db.read { try Location.Database.fetchCount($0) }
+			#expect(count == 1)
+
+			// Updates the database
+			let existing = try await db.read { try Location.Database.fetchOne($0, id: UUID(0)) }
+			#expect(existing?.id == UUID(0))
+			#expect(existing?.title == "456 Fake Street")
 		}
 
-		// Inserts the location
-		let count = try await db.read { try Location.Database.fetchCount($0) }
-		XCTAssertEqual(count, 1)
+		@Test("Updates location when it exists")
+		func updatesLocationWhenItExists() async throws {
+			// Given a database with an existing location
+			let location = Location.Database.mock(id: UUID(0))
+			let db = try initializeApproachDatabase(withLocations: .custom([location]))
 
-		// Updates the database
-		let existing = try await db.read { try Location.Database.fetchOne($0, id: UUID(0)) }
-		XCTAssertEqual(existing?.id, UUID(0))
-		XCTAssertEqual(existing?.title, "456 Fake Street")
-	}
+			// Editing the location
+			let existing = Location.Edit(
+				id: UUID(0),
+				title: "456 Fake Street",
+				subtitle: "Viewgrand",
+				coordinate: .init(latitude: 456, longitude: 456)
+			)
+			try await withDependencies {
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[LocationsRepository.self] = .liveValue
+			} operation: {
+				try await self.locations.insertOrUpdate(existing)
+			}
 
-	func testInsertOrUpdate_WhenLocationExists_UpdatesLocation() async throws {
-		// Given a database with an existing location
-		let location = Location.Database.mock(id: UUID(0))
-		let db = try initializeApproachDatabase(withLocations: .custom([location]))
+			// Does not insert any records
+			let count = try await db.read { try Location.Database.fetchCount($0) }
+			#expect(count == 1)
 
-		// Editing the location
-		let existing = Location.Edit(
-			id: UUID(0),
-			title: "456 Fake Street",
-			subtitle: "Viewgrand",
-			coordinate: .init(latitude: 456, longitude: 456)
-		)
-		try await withDependencies {
-			$0[DatabaseService.self].writer = { @Sendable in db }
-			$0[LocationsRepository.self] = .liveValue
-		} operation: {
-			try await self.locations.insertOrUpdate(existing)
+			// Updates the database
+			let updated = try await db.read { try Location.Database.fetchOne($0, id: UUID(0)) }
+			#expect(updated?.id == UUID(0))
+			#expect(updated?.title == "456 Fake Street")
 		}
-
-		// Does not insert any records
-		let count = try await db.read { try Location.Database.fetchCount($0) }
-		XCTAssertEqual(count, 1)
-
-		// Updates the database
-		let updated = try await db.read { try Location.Database.fetchOne($0, id: UUID(0)) }
-		XCTAssertEqual(updated?.id, UUID(0))
-		XCTAssertEqual(updated?.title, "456 Fake Street")
 	}
 }

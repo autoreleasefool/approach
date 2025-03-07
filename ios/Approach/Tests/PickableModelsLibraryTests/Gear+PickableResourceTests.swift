@@ -1,11 +1,15 @@
 import ModelsLibrary
 @testable import PickableModelsLibrary
-import XCTest
+import Testing
 
-final class GearPickableResourceTests: XCTestCase {
-	func testModelName() {
-		XCTAssertEqual(Gear.Summary.pickableModelName(forCount: 0), "Gear")
-		XCTAssertEqual(Gear.Summary.pickableModelName(forCount: 1), "Gear")
-		XCTAssertEqual(Gear.Summary.pickableModelName(forCount: 2), "Gear")
+@Suite("Gear+PickableResource")
+struct GearPickableResourceTests {
+
+	@Test(
+		"Model name is correct",
+		arguments: zip([0, 1, 2], ["Gear", "Gear", "Gear"])
+	)
+	func modelName(count: Int, expected: String) {
+		#expect(Gear.Summary.pickableModelName(forCount: count) == expected)
 	}
 }
