@@ -1,112 +1,130 @@
 import DatabaseServiceInterface
 import Dependencies
+import Foundation
 @testable import ModelsLibrary
 @testable import StatisticsLibrary
 @testable import StatisticsRepository
 @testable import StatisticsRepositoryInterface
 @testable import StatisticsWidgetsLibrary
 import TestDatabaseUtilitiesLibrary
-import XCTest
+import Testing
 
-final class StatisticsRepositoryWidgetSourcesTests: XCTestCase {
-	@Dependency(StatisticsRepository.self) var statistics
+@Suite("StatisticsRepository+WidgetSources")
+struct StatisticsRepositoryWidgetSourcesTests {
 
-	func testLoadsWidgetSources_ForBowler() async throws {
-		let db = try generatePopulatedDatabase()
-		let source: StatisticsWidget.Source = .bowler(UUID(0))
+	@Suite("loadWidgetSources")
+	struct LoadWidgetSourcesTests {
+		@Dependency(StatisticsRepository.self) var statistics
 
-		let sources = try await withDependencies {
-			$0[DatabaseService.self].reader = { @Sendable in db }
-			$0[StatisticsRepository.self] = .liveValue
-		} operation: {
-			try await self.statistics.loadWidgetSources(source)
+		@Test("loadsWidgetSources for Bowler")
+		func loadsForBowler() async throws {
+			let db = try generatePopulatedDatabase()
+			let source: StatisticsWidget.Source = .bowler(UUID(0))
+
+			let sources = try await withDependencies {
+				$0[DatabaseService.self].reader = { @Sendable in db }
+				$0[StatisticsRepository.self] = .liveValue
+			} operation: {
+				try await statistics.loadWidgetSources(source)
+			}
+
+			#expect(sources == .init(bowler: .init(id: UUID(0), name: "Joseph"), league: nil))
 		}
 
-		XCTAssertEqual(sources, .init(
-			bowler: .init(id: UUID(0), name: "Joseph"),
-			league: nil
-		))
-	}
+		@Test("loadsWidgetSources for League")
+		func loadsForLeague() async throws {
+			let db = try generatePopulatedDatabase()
+			let source: StatisticsWidget.Source = .league(UUID(0))
 
-	func testLoadsWidgetSources_ForLeague() async throws {
-		let db = try generatePopulatedDatabase()
-		let source: StatisticsWidget.Source = .league(UUID(0))
+			let sources = try await withDependencies {
+				$0[DatabaseService.self].reader = { @Sendable in db }
+				$0[StatisticsRepository.self] = .liveValue
+			} operation: {
+				try await statistics.loadWidgetSources(source)
+			}
 
-		let sources = try await withDependencies {
-			$0[DatabaseService.self].reader = { @Sendable in db }
-			$0[StatisticsRepository.self] = .liveValue
-		} operation: {
-			try await self.statistics.loadWidgetSources(source)
+			#expect(sources == .init(
+				bowler: .init(id: UUID(0), name: "Joseph"),
+				league: .init(id: UUID(0), name: "Majors, 2022-23")
+			))
 		}
-
-		XCTAssertEqual(sources, .init(
-			bowler: .init(id: UUID(0), name: "Joseph"),
-			league: .init(id: UUID(0), name: "Majors, 2022-23")
-		))
 	}
 
 	// MARK: Load Default Sources
 
-	func testLoadsDefaultWidgetSources_WithOneBowler_ReturnsBowler() async throws {
-		let bowler1 = Bowler.Database.mock(id: UUID(0), name: "Joseph")
-		let db = try initializeApproachDatabase(withBowlers: .custom([bowler1]))
+	@Suite("loadDefaultWidgets")
+	struct LoadDefaultWidgetsTests {
+		@Dependency(StatisticsRepository.self) var statistics
 
-		let sources = try await withDependencies {
-			$0[DatabaseService.self].reader = { @Sendable in db }
-			$0[StatisticsRepository.self] = .liveValue
-		} operation: {
-			try await self.statistics.loadDefaultWidgetSources()
+		@Test("With one bowler, returns one bowler")
+		func withOneBowlerReturnsOneBowler() async throws {
+			let bowler1 = Bowler.Database.mock(id: UUID(0), name: "Joseph")
+			let db = try initializeApproachDatabase(withBowlers: .custom([bowler1]))
+
+			let sources = try await withDependencies {
+				$0[DatabaseService.self].reader = { @Sendable in db }
+				$0[StatisticsRepository.self] = .liveValue
+			} operation: {
+				try await statistics.loadDefaultWidgetSources()
+			}
+
+			let expectedSources = StatisticsWidget.Sources(
+				bowler: .init(id: UUID(0), name: "Joseph"),
+				league: nil
+			)
+
+			#expect(sources == expectedSources)
 		}
 
-		XCTAssertEqual(sources, .init(
-			bowler: .init(id: UUID(0), name: "Joseph"),
-			league: nil
-		))
-	}
+		@Test("With no bowlers, returns nil")
+		func withNoBowlersReturnsNil() async throws {
+			let db = try initializeApproachDatabase(withBowlers: .zero)
 
-	func testLoadsDefaultWidgetSources_WithNoBowlers_ReturnsNil() async throws {
-		let db = try initializeApproachDatabase(withBowlers: .zero)
+			let sources = try await withDependencies {
+				$0[DatabaseService.self].reader = { @Sendable in db }
+				$0[StatisticsRepository.self] = .liveValue
+			} operation: {
+				try await statistics.loadDefaultWidgetSources()
+			}
 
-		let sources = try await withDependencies {
-			$0[DatabaseService.self].reader = { @Sendable in db }
-			$0[StatisticsRepository.self] = .liveValue
-		} operation: {
-			try await self.statistics.loadDefaultWidgetSources()
+			#expect(sources == nil)
 		}
 
-		XCTAssertNil(sources)
-	}
+		@Test("With two bowlers, returs nil")
+		func withTwoBowlersReturnsNil() async throws {
+			let bowler1 = Bowler.Database.mock(id: UUID(0), name: "Joseph")
+			let bowler2 = Bowler.Database.mock(id: UUID(1), name: "Sarah")
+			let db = try initializeApproachDatabase(withBowlers: .custom([bowler1, bowler2]))
 
-	func testLoadsDefaultWidgetSources_WithTwoBowlers_ReturnsNil() async throws {
-		let bowler1 = Bowler.Database.mock(id: UUID(0), name: "Joseph")
-		let bowler2 = Bowler.Database.mock(id: UUID(1), name: "Sarah")
-		let db = try initializeApproachDatabase(withBowlers: .custom([bowler1, bowler2]))
+			let sources = try await withDependencies {
+				$0[DatabaseService.self].reader = { @Sendable in db }
+				$0[StatisticsRepository.self] = .liveValue
+			} operation: {
+				try await statistics.loadDefaultWidgetSources()
+			}
 
-		let sources = try await withDependencies {
-			$0[DatabaseService.self].reader = { @Sendable in db }
-			$0[StatisticsRepository.self] = .liveValue
-		} operation: {
-			try await self.statistics.loadDefaultWidgetSources()
+			#expect(sources == nil)
 		}
 
-		XCTAssertNil(sources)
-	}
+		@Test("With opponent, returns bowler")
+		func testLoadsDefaultWidgetSources_WithOpponent_ReturnsBowler() async throws {
+			let bowler1 = Bowler.Database.mock(id: UUID(0), name: "Joseph")
+			let bowler2 = Bowler.Database.mock(id: UUID(1), name: "Sarah", kind: .opponent)
+			let db = try initializeApproachDatabase(withBowlers: .custom([bowler1, bowler2]))
 
-	func testLoadsDefaultWidgetSources_WithOpponent_ReturnsBowler() async throws {
-		let bowler1 = Bowler.Database.mock(id: UUID(0), name: "Joseph")
-		let bowler2 = Bowler.Database.mock(id: UUID(1), name: "Sarah", kind: .opponent)
-		let db = try initializeApproachDatabase(withBowlers: .custom([bowler1, bowler2]))
+			let sources = try await withDependencies {
+				$0[DatabaseService.self].reader = { @Sendable in db }
+				$0[StatisticsRepository.self] = .liveValue
+			} operation: {
+				try await statistics.loadDefaultWidgetSources()
+			}
 
-		let sources = try await withDependencies {
-			$0[DatabaseService.self].reader = { @Sendable in db }
-			$0[StatisticsRepository.self] = .liveValue
-		} operation: {
-			try await self.statistics.loadDefaultWidgetSources()
+			let expectedSources = StatisticsWidget.Sources(
+				bowler: .init(id: UUID(0), name: "Joseph"),
+				league: nil
+			)
+
+			#expect(sources == expectedSources)
 		}
-
-		XCTAssertEqual(sources, .init(
-			bowler: .init(id: UUID(0), name: "Joseph"),
-			league: nil
-		))
 	}
 }
