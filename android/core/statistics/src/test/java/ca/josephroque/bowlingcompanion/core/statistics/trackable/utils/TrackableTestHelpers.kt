@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.statistics.trackable.utils
 
 import ca.josephroque.bowlingcompanion.core.model.GameID
+import ca.josephroque.bowlingcompanion.core.model.MatchPlayID
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
@@ -24,7 +25,7 @@ fun frame(index: Int, rolls: List<TrackableFrame.Roll>, gameId: GameID = GameID(
 	)
 
 fun matchPlay(result: MatchPlayResult? = null): TrackableGame.MatchPlay = TrackableGame.MatchPlay(
-	id = id(0),
+	id = MatchPlayID(id(0)),
 	result = result,
 )
 

@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.statistics.trackable.firstroll
 
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.assertAveraging
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.assertStatisticAdjusts
@@ -23,7 +24,7 @@ class AverageFirstRollStatisticTest {
 						roll(1, setOf(Pin.LEFT_THREE_PIN, Pin.RIGHT_THREE_PIN)),
 						roll(2, emptySet()),
 					),
-					gameId = id(0),
+					gameId = GameID(id(0)),
 				),
 				frame(
 					1,
@@ -49,7 +50,7 @@ class AverageFirstRollStatisticTest {
 							),
 						),
 					),
-					gameId = id(0),
+					gameId = GameID(id(0)),
 				),
 				frame(
 					1,
@@ -66,7 +67,7 @@ class AverageFirstRollStatisticTest {
 							),
 						),
 					),
-					gameId = id(0),
+					gameId = GameID(id(0)),
 				),
 				frame(
 					9,
@@ -98,7 +99,7 @@ class AverageFirstRollStatisticTest {
 							),
 						),
 					),
-					gameId = id(0),
+					gameId = GameID(id(0)),
 				),
 			),
 		)

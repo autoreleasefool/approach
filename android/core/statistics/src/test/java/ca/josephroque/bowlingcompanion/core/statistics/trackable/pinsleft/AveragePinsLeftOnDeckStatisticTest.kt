@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.statistics.trackable.pinsleft
 
+import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.assertAveraging
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.assertStatisticAdjusts
@@ -23,7 +24,7 @@ class AveragePinsLeftOnDeckStatisticTest {
 						roll(1, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
 						roll(2, emptySet()),
 					),
-					gameId = id(0),
+					gameId = GameID(id(0)),
 				),
 				frame(
 					1,
@@ -31,7 +32,7 @@ class AveragePinsLeftOnDeckStatisticTest {
 						roll(0, setOf(Pin.HEAD_PIN)),
 						roll(0, emptySet()),
 					),
-					gameId = id(0),
+					gameId = GameID(id(0)),
 				),
 				frame(
 					9,
@@ -67,7 +68,7 @@ class AveragePinsLeftOnDeckStatisticTest {
 							),
 						),
 					),
-					gameId = id(0),
+					gameId = GameID(id(0)),
 				),
 				frame(
 					9,
@@ -97,7 +98,7 @@ class AveragePinsLeftOnDeckStatisticTest {
 							setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN),
 						),
 					),
-					gameId = id(1),
+					gameId = GameID(id(1)),
 				),
 				frame(
 					9,
@@ -124,7 +125,7 @@ class AveragePinsLeftOnDeckStatisticTest {
 						),
 						roll(0, emptySet()),
 					),
-					gameId = id(2),
+					gameId = GameID(id(2)),
 				),
 				frame(
 					9,
@@ -142,7 +143,7 @@ class AveragePinsLeftOnDeckStatisticTest {
 						),
 						roll(0, setOf(Pin.LEFT_TWO_PIN)),
 					),
-					gameId = id(3),
+					gameId = GameID(id(3)),
 				),
 			),
 		)
