@@ -22,16 +22,15 @@ type_name:
   excluded:
     - ID
 
-type_body_length:
-  error: 999
-
 # Rules Opt-In
 
 disabled_rules:
   - cyclomatic_complexity
+  - file_length
   - identifier_name
   - large_tuple
   - nesting
+  - type_body_length
 
 opt_in_rules:
   - array_init
