@@ -1,11 +1,9 @@
 # Most recent version
 
-## iOS 1.11.0b33
+## iOS 1.11.1b34
 
 ```
-- Feat: Unlock action added to warning about locked games
-- Fix: Pin dragging animation sizing fixed
-- Fix: Default number of leagues in a game can be changed
+- Fix: Upgrade GRDB to 7.3.0 to resolve DB issues.
 ```
 
 ## Android 4.4.2b339
@@ -17,6 +15,14 @@
 ---
 
 # Legacy iOS Versions
+
+## iOS 1.11.0b33
+
+```
+- Feat: Unlock action added to warning about locked games
+- Fix: Pin dragging animation sizing fixed
+- Fix: Default number of leagues in a game can be changed
+```
 
 ## iOS 1.10.0b32
 
