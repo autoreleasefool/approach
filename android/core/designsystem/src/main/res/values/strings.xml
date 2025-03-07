@@ -26,6 +26,10 @@
 	<string name="action_done">Done</string>
 	<string name="action_ok">OK</string>
 	<string name="action_hide">Hide</string>
+	<string name="action_more">More</string>
+	<string name="action_less">Less</string>
+	<string name="action_expand">Expand</string>
+	<string name="action_collapse">Collapse</string>
 
 	<string name="filter_none">No filter applied</string>
 	<string name="filter_reset">Reset filter</string>

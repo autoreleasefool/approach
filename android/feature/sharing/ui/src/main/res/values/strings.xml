@@ -10,13 +10,28 @@
 	<string name="sharing_series_modifier_total">Total</string>
 	<string name="sharing_series_modifier_high_score">High</string>
 	<string name="sharing_series_modifier_low_score">Low</string>
+	<string name="sharing_series_modifier_range_highest_score">Highest Score</string>
+	<string name="sharing_series_modifier_range_lowest_score">Lowest Score</string>
 
 	<string name="sharing_series_chart_range">Chart Range</string>
 	<string name="sharing_series_chart_range_x_to_y">%1$d to %2$d</string>
-	
+
 	<string name="sharing_series_total_label">%1$d TOTAL</string>
 	<string name="sharing_series_high_score_label">%1$d HIGH</string>
 	<string name="sharing_series_low_score_label">%1$d LOW</string>
+
+	<string name="sharing_games_modifier_section_header">Header</string>
+	<string name="sharing_games_modifier_date">Date</string>
+	<string name="sharing_games_modifier_summary">Summary</string>
+	<string name="sharing_games_modifier_bowler">Bowler</string>
+	<string name="sharing_games_modifier_league">League</string>
+
+	<string name="sharing_games_modifier_section_games">Games</string>
+	<string name="sharing_games_modifier_section_games_description">Hide or show your games</string>
+
+	<string name="sharing_games_color_palette">Color Palette</string>
+	<string name="sharing_games_color_palette_standard">Standard</string>
+	<string name="sharing_games_color_palette_grayscale">Grayscale</string>
 
 	<string name="sharing_made_with_tryapproach">Made with tryapproach.app</string>
 
