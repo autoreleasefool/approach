@@ -13,4 +13,3 @@ struct SeriesPickableResourceTests {
 		#expect(Series.Summary.pickableModelName(forCount: count) == expected)
 	}
 }
-

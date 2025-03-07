@@ -7,8 +7,8 @@ import GRDB
 @testable import LocationsRepositoryInterface
 @testable import ModelsLibrary
 import TestDatabaseUtilitiesLibrary
-import TestUtilitiesPackageLibrary
 import Testing
+import TestUtilitiesPackageLibrary
 
 @Suite("LocationsRepository")
 struct LocationsRepositoryTests {
@@ -34,7 +34,7 @@ struct LocationsRepositoryTests {
 				$0[DatabaseService.self].writer = { @Sendable in db }
 				$0[LocationsRepository.self] = .liveValue
 			} operation: {
-				try await self.locations.insertOrUpdate(new)
+				try await locations.insertOrUpdate(new)
 			}
 
 			// Inserts the location
@@ -64,7 +64,7 @@ struct LocationsRepositoryTests {
 				$0[DatabaseService.self].writer = { @Sendable in db }
 				$0[LocationsRepository.self] = .liveValue
 			} operation: {
-				try await self.locations.insertOrUpdate(existing)
+				try await locations.insertOrUpdate(existing)
 			}
 
 			// Does not insert any records

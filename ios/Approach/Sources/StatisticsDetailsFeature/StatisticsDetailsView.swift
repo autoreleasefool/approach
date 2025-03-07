@@ -70,7 +70,6 @@ private struct DestinationModifier: ViewModifier {
 	@Environment(\.safeAreaInsetsProvider) private var safeAreaInsetsProvider
 	@State private var sheetContentSize: CGSize = .zero
 
-
 	private var measuredBackdropSize: CGSize {
 		let sheetContentSize = store.ignoreSheetSizeForBackdrop ? .zero : self.sheetContentSize
 		return .init(

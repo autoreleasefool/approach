@@ -51,7 +51,7 @@ struct DBMigrationTests {
 	@Test("Registers migrations")
 	func registersMigrations() throws {
 		var migrator = DatabaseMigrator()
-		#expect(migrator.migrations == [])
+		#expect(migrator.migrations.isEmpty)
 
 		migrator.register(migration: Migration20230325CreateBowler.self)
 		#expect(migrator.migrations == ["Migration20230325CreateBowler"])
@@ -65,7 +65,7 @@ struct DBMigrationTests {
 		let appliedBefore = try dbQueue.read {
 			try migrator.appliedMigrations($0)
 		}
-		#expect(appliedBefore == [])
+		#expect(appliedBefore.isEmpty)
 
 		for migration in Migrations.approachMigrations {
 			migrator.register(migration: migration)

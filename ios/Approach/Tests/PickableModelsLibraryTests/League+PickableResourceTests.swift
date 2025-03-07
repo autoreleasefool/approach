@@ -13,4 +13,3 @@ struct LeaguePickableResourceTests {
 		#expect(League.Summary.pickableModelName(forCount: count) == expected)
 	}
 }
-
