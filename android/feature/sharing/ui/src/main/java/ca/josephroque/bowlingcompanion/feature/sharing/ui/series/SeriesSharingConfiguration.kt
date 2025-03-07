@@ -40,7 +40,6 @@ fun SeriesSharingConfiguration(
 			modifier = Modifier
 				.verticalScroll(rememberScrollState()),
 		) {
-
 			OverlaySection(
 				state = state,
 				onAction = onAction,

@@ -12,10 +12,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingAppearance
 
 @Composable
-fun AppearanceSegmentedButton(
-	selected: SharingAppearance,
-	onAppearanceChanged: (SharingAppearance) -> Unit,
-) {
+fun AppearanceSegmentedButton(selected: SharingAppearance, onAppearanceChanged: (SharingAppearance) -> Unit) {
 	SingleChoiceSegmentedButtonRow(
 		modifier = Modifier.padding(horizontal = 16.dp),
 	) {

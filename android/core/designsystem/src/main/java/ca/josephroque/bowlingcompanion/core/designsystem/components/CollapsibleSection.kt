@@ -30,11 +30,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.R
 
 @Composable
-fun CollapsibleSection(
-	title: String,
-	footer: String? = null,
-	sectionContent: @Composable ColumnScope.() -> Unit,
-) {
+fun CollapsibleSection(title: String, footer: String? = null, sectionContent: @Composable ColumnScope.() -> Unit) {
 	val isExpanded = remember { mutableStateOf(false) }
 	val rotationAngle by animateFloatAsState(targetValue = if (isExpanded.value) 180f else 0f)
 
@@ -52,10 +48,16 @@ fun CollapsibleSection(
 
 			Icon(
 				imageVector = Icons.Filled.KeyboardArrowDown,
-				contentDescription = if (isExpanded.value) stringResource(R.string.action_collapse) else stringResource(R.string.action_expand),
+				contentDescription = if (isExpanded.value) {
+					stringResource(
+						R.string.action_collapse,
+					)
+				} else {
+					stringResource(R.string.action_expand)
+				},
 				modifier = Modifier
 					.padding(end = 16.dp)
-					.graphicsLayer(rotationZ = rotationAngle)
+					.graphicsLayer(rotationZ = rotationAngle),
 			)
 		}
 
@@ -85,9 +87,9 @@ private fun CollapsibleSectionPreview() {
 			sectionContent = {
 				Text(
 					text = "This is the content of the collapsible section",
-					modifier = Modifier.padding(16.dp)
+					modifier = Modifier.padding(16.dp),
 				)
-			}
+			},
 		)
 	}
 }

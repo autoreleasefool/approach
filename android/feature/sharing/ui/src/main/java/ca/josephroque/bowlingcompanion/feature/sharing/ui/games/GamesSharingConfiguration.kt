@@ -34,7 +34,7 @@ fun GamesSharingConfiguration(
 	modifier: Modifier = Modifier,
 ) {
 	Column(modifier = modifier) {
-		Column(modifier = Modifier.verticalScroll(rememberScrollState()))  {
+		Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
 			HeaderSection(state = state, onAction = onAction)
 
 			HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
@@ -106,16 +106,16 @@ private fun GamesSection(
 					onAction(
 						GamesSharingConfigurationUiAction.IsGameIncludedToggled(
 							game.gameId,
-							!game.isGameIncluded
-						)
+							!game.isGameIncluded,
+						),
 					)
 				},
 				content = {
 					Text(
 						text = stringResource(
 							ca.josephroque.bowlingcompanion.core.designsystem.R.string.game_with_ordinal,
-							game.index + 1
-						)
+							game.index + 1,
+						),
 					)
 				},
 			)
@@ -135,6 +135,7 @@ private fun AppearanceSection(
 		onAppearanceChanged = { onAction(GamesSharingConfigurationUiAction.AppearanceChanged(it)) },
 	)
 }
+
 @Preview
 @Composable
 private fun GamesSharingConfigurationPreview() {
@@ -152,7 +153,7 @@ private fun GamesSharingConfigurationPreview() {
 						index = 1,
 						isGameIncluded = false,
 					),
-				)
+				),
 			),
 			onAction = {},
 		)

@@ -73,7 +73,7 @@ private fun CheckBoxRowPreview() {
 				onClick = {},
 				content = {
 					Text(text = "Selected")
-				}
+				},
 			)
 
 			CheckBoxRow(
@@ -81,7 +81,7 @@ private fun CheckBoxRowPreview() {
 				onClick = {},
 				content = {
 					Text(text = "Unselected")
-				}
+				},
 			)
 		}
 	}
