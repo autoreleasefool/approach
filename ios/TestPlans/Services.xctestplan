@@ -1,0 +1,136 @@
+{
+  "configurations" : [
+    {
+      "id" : "83504561-6961-4CF5-8B85-46F4829D6DDA",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "AvatarServiceTests",
+        "name" : "AvatarServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "RecentlyUsedServiceTests",
+        "name" : "RecentlyUsedServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "AddressLookupServiceTests",
+        "name" : "AddressLookupServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "HUDServiceTests",
+        "name" : "HUDServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "LaunchServiceTests",
+        "name" : "LaunchServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ZIPServiceTests",
+        "name" : "ZIPServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ProductsServiceTests",
+        "name" : "ProductsServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "LoggingServiceTests",
+        "name" : "LoggingServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "NotificationsServiceTests",
+        "name" : "NotificationsServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "EmailServiceTests",
+        "name" : "EmailServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "PreferenceServiceTests",
+        "name" : "PreferenceServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "CodableServiceTests",
+        "name" : "CodableServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "DatabaseServiceTests",
+        "name" : "DatabaseServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "TipsServiceTests",
+        "name" : "TipsServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "BadgesServiceTests",
+        "name" : "BadgesServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ImportExportServiceTests",
+        "name" : "ImportExportServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "AnalyticsServiceTests",
+        "name" : "AnalyticsServiceTests"
+      }
+    }
+  ],
+  "version" : 1
+}
