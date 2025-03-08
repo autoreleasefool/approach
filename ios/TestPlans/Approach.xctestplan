@@ -1,0 +1,647 @@
+{
+  "configurations" : [
+    {
+      "id" : "F52A46AF-D9BC-493A-BE99-6AB049C40131",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "SortingLibraryTests",
+        "name" : "SortingLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "BadgesServiceTests",
+        "name" : "BadgesServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "OnboardingFeatureTests",
+        "name" : "OnboardingFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "GearEditorFeatureTests",
+        "name" : "GearEditorFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "BowlerDetailsFeatureTests",
+        "name" : "BowlerDetailsFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "AvatarEditorFeatureTests",
+        "name" : "AvatarEditorFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "LaunchServiceTests",
+        "name" : "LaunchServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ImportExportFeatureTests",
+        "name" : "ImportExportFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "LocationsRepositoryTests",
+        "name" : "LocationsRepositoryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ReorderingLibraryTests",
+        "name" : "ReorderingLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "OpponentDetailsFeatureTests",
+        "name" : "OpponentDetailsFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "StatisticsOverviewFeatureTests",
+        "name" : "StatisticsOverviewFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "BowlersRepositoryTests",
+        "name" : "BowlersRepositoryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "StatisticsWidgetEditorFeatureTests",
+        "name" : "StatisticsWidgetEditorFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "LeaguesRepositoryTests",
+        "name" : "LeaguesRepositoryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "StatisticsWidgetsLibraryTests",
+        "name" : "StatisticsWidgetsLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ListContentLibraryTests",
+        "name" : "ListContentLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "FramesRepositoryTests",
+        "name" : "FramesRepositoryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "GamesListFeatureTests",
+        "name" : "GamesListFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "RecentlyUsedServiceTests",
+        "name" : "RecentlyUsedServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "GearRepositoryTests",
+        "name" : "GearRepositoryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "BadgesLibraryTests",
+        "name" : "BadgesLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "CodableServiceTests",
+        "name" : "CodableServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ScoreKeeperModelsLibraryTests",
+        "name" : "ScoreKeeperModelsLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "FeatureFlagsListFeatureTests",
+        "name" : "FeatureFlagsListFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ProductsServiceTests",
+        "name" : "ProductsServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ResourceListLibraryTests",
+        "name" : "ResourceListLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "AlleysRepositoryTests",
+        "name" : "AlleysRepositoryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "SeriesListFeatureTests",
+        "name" : "SeriesListFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "AvatarServiceTests",
+        "name" : "AvatarServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "SettingsFeatureTests",
+        "name" : "SettingsFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "SharingFeatureTests",
+        "name" : "SharingFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "AnnouncementsFeatureTests",
+        "name" : "AnnouncementsFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "StatisticsRepositoryTests",
+        "name" : "StatisticsRepositoryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "StatisticsWidgetsLayoutFeatureTests",
+        "name" : "StatisticsWidgetsLayoutFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "StatisticsWidgetsRepositoryTests",
+        "name" : "StatisticsWidgetsRepositoryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "TipsServiceTests",
+        "name" : "TipsServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "PaywallFeatureTests",
+        "name" : "PaywallFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "AddressLookupServiceTests",
+        "name" : "AddressLookupServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ScoreKeeperLibraryTests",
+        "name" : "ScoreKeeperLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "RepositoryLibraryTests",
+        "name" : "RepositoryLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "StringsLibraryTests",
+        "name" : "StringsLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ImportExportServiceTests",
+        "name" : "ImportExportServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ToastLibraryTests",
+        "name" : "ToastLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "TipsLibraryTests",
+        "name" : "TipsLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "MatchPlaysRepositoryTests",
+        "name" : "MatchPlaysRepositoryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "LoggingServiceTests",
+        "name" : "LoggingServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "LanesRepositoryTests",
+        "name" : "LanesRepositoryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "GamesRepositoryTests",
+        "name" : "GamesRepositoryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "AutomaticBackupsFeatureTests",
+        "name" : "AutomaticBackupsFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "LeaguesListFeatureTests",
+        "name" : "LeaguesListFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ErrorsFeatureTests",
+        "name" : "ErrorsFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ScoreSheetLibraryTests",
+        "name" : "ScoreSheetLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "StatisticsLibraryTests",
+        "name" : "StatisticsLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "BadgesFeatureTests",
+        "name" : "BadgesFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "BowlersListFeatureTests",
+        "name" : "BowlersListFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "SeriesRepositoryTests",
+        "name" : "SeriesRepositoryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "SortOrderLibraryTests",
+        "name" : "SortOrderLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "PreferenceServiceTests",
+        "name" : "PreferenceServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ZIPServiceTests",
+        "name" : "ZIPServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "FormFeatureTests",
+        "name" : "FormFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "StatisticsDetailsFeatureTests",
+        "name" : "StatisticsDetailsFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "GearListFeatureTests",
+        "name" : "GearListFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "OpponentsListFeatureTests",
+        "name" : "OpponentsListFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "LaneEditorFeatureTests",
+        "name" : "LaneEditorFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "LeagueEditorFeatureTests",
+        "name" : "LeagueEditorFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ViewsLibraryTests",
+        "name" : "ViewsLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "DatabaseServiceTests",
+        "name" : "DatabaseServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "StatisticsModelsLibraryTests",
+        "name" : "StatisticsModelsLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "DateTimeLibraryTests",
+        "name" : "DateTimeLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ScoresRepositoryTests",
+        "name" : "ScoresRepositoryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ArchiveListFeatureTests",
+        "name" : "ArchiveListFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ModelsLibraryTests",
+        "name" : "ModelsLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "StatisticsChartsLibraryTests",
+        "name" : "StatisticsChartsLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "AppFeatureTests",
+        "name" : "AppFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "AlleysListFeatureTests",
+        "name" : "AlleysListFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "AlleyEditorFeatureTests",
+        "name" : "AlleyEditorFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "EmailServiceTests",
+        "name" : "EmailServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ResourcePickerLibraryTests",
+        "name" : "ResourcePickerLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "QuickLaunchRepositoryTests",
+        "name" : "QuickLaunchRepositoryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "GamesEditorFeatureTests",
+        "name" : "GamesEditorFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "AddressLookupFeatureTests",
+        "name" : "AddressLookupFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "BowlerEditorFeatureTests",
+        "name" : "BowlerEditorFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "ModelsViewsLibraryTests",
+        "name" : "ModelsViewsLibraryTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "AccessoriesOverviewFeatureTests",
+        "name" : "AccessoriesOverviewFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "SeriesEditorFeatureTests",
+        "name" : "SeriesEditorFeatureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "HUDServiceTests",
+        "name" : "HUDServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "AnalyticsServiceTests",
+        "name" : "AnalyticsServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "NotificationsServiceTests",
+        "name" : "NotificationsServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Approach",
+        "identifier" : "PickableModelsLibraryTests",
+        "name" : "PickableModelsLibraryTests"
+      }
+    }
+  ],
+  "version" : 1
+}
