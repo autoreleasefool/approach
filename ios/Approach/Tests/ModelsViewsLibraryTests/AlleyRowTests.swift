@@ -3,6 +3,7 @@
 import SnapshotTesting
 import SwiftUI
 import Testing
+import TestUtilitiesLibrary
 
 @Suite(.snapshots(record: .missing))
 struct AlleyRowTests {

@@ -7,6 +7,7 @@ import GRDBDatabasePackageServiceInterface
 import ModelsLibrary
 import StatisticsLibrary
 import Testing
+import TestUtilitiesLibrary
 
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
