@@ -93,12 +93,7 @@
 		CABA39BE2C38AD7100F74E0C /* AvatarEditorPreviewApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarEditorPreviewApp.swift; sourceTree = "<group>"; };
 		CABA39C22C38AD7200F74E0C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CABA39CA2C38ADB800F74E0C /* AppAvatarEditorPreview.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppAvatarEditorPreview.xcconfig; sourceTree = "<group>"; };
-		CAE039052D7C0C97005C3546 /* Libraries.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Libraries.xctestplan; sourceTree = "<group>"; };
-		CAE039062D7C0CD7005C3546 /* Services.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Services.xctestplan; sourceTree = "<group>"; };
-		CAE039072D7C0D21005C3546 /* Repositories.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Repositories.xctestplan; sourceTree = "<group>"; };
-		CAE039082D7C0D42005C3546 /* Features.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Features.xctestplan; sourceTree = "<group>"; };
-		CAE039092D7C0DD0005C3546 /* Approach.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Approach.xctestplan; sourceTree = "<group>"; };
-		CAEFC2002D7C2673005F47C8 /* StringsLibrary.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = StringsLibrary.xctestplan; path = TestPlans/Packages/StringsLibrary.xctestplan; sourceTree = "<group>"; };
+		CAE039092D7C0DD0005C3546 /* FullTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FullTests.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -238,7 +233,6 @@
 		CA8BBC4C28D59B8B00653A1E = {
 			isa = PBXGroup;
 			children = (
-				CAEFC2002D7C2673005F47C8 /* StringsLibrary.xctestplan */,
 				CA2F033928F87C4100030BFE /* Approach */,
 				CA8BBC5728D59B8B00653A1E /* ApproachIOS */,
 				CA5F86EC2A01E5780092F519 /* XCConfigs */,
@@ -291,11 +285,7 @@
 		CAE039042D7C0C49005C3546 /* TestPlans */ = {
 			isa = PBXGroup;
 			children = (
-				CAE039092D7C0DD0005C3546 /* Approach.xctestplan */,
-				CAE039052D7C0C97005C3546 /* Libraries.xctestplan */,
-				CAE039062D7C0CD7005C3546 /* Services.xctestplan */,
-				CAE039072D7C0D21005C3546 /* Repositories.xctestplan */,
-				CAE039082D7C0D42005C3546 /* Features.xctestplan */,
+				CAE039092D7C0DD0005C3546 /* FullTests.xctestplan */,
 			);
 			path = TestPlans;
 			sourceTree = "<group>";

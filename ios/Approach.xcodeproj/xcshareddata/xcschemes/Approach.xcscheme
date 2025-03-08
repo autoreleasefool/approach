@@ -41,7 +41,7 @@
             reference = "container:TestPlans/Features.xctestplan">
          </TestPlanReference>
          <TestPlanReference
-            reference = "container:TestPlans/Approach.xctestplan"
+            reference = "container:TestPlans/FullTests.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>
