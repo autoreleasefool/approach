@@ -457,6 +457,9 @@ skip_tests = true
 libraries = [ "DatabaseMigrations", "DatabaseModels" ]
 dependencies = [ "GRDBDatabaseTestUtilitiesPackageLibrary" ]
 
+[libraries.TestUtilities]
+skip_tests = true
+
 [libraries.Tips]
 libraries = [ "Views" ]
 
@@ -593,6 +596,7 @@ dependencies = [ "ComposableArchitecture" ]
 
 [defaults.features.tests]
 dependencies = [ "SnapshotTesting" ]
+libraries = [ "TestUtilities" ]
 
 [defaults.repositories]
 services = [ "Database" ]
@@ -604,14 +608,16 @@ dependencies = [ "Dependencies" ]
 
 [defaults.repositories.tests]
 services = [ "Database" ]
-libraries = [ "TestDatabaseUtilities" ]
+libraries = [ "TestDatabaseUtilities", "TestUtilities" ]
 dependencies = [ "SnapshotTesting", "TestUtilitiesPackageLibrary" ]
 
 [defaults.services.interface]
 dependencies = [ "Dependencies" ]
 
 [defaults.services.tests]
+libraries = [ "TestUtilities" ]
 dependencies = [ "SnapshotTesting" ]
 
 [defaults.libraries.tests]
+libraries = [ "TestUtilities" ]
 dependencies = [ "SnapshotTesting" ]

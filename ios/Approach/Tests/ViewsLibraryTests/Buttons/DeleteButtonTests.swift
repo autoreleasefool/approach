@@ -1,6 +1,7 @@
 import SnapshotTesting
 import SwiftUI
 import Testing
+import TestUtilitiesLibrary
 @testable import ViewsLibrary
 
 @Suite(.snapshots(record: .missing))

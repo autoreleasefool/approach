@@ -3,8 +3,9 @@
 @testable import DatabaseServiceInterface
 import GRDB
 import Testing
+import TestUtilitiesLibrary
 
-@Suite("DBMigration")
+@Suite("DBMigration", .tags(.grdb))
 struct DBMigrationTests {
 	static let allMigrations = [
 		"Migration20230325CreateBowler",
