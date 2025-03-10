@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.ShareableGame
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import kotlinx.coroutines.flow.Flow
 
@@ -24,6 +25,7 @@ interface GamesRepository {
 	fun getGameIndex(gameId: GameID): Flow<Int>
 	fun getTeamSeriesGameIds(teamSeriesId: TeamSeriesID): Flow<List<GameID>>
 	fun getGamesFromSeries(series: List<SeriesID>, gameIndex: Int): Flow<List<GameListItemBySeries>>
+	fun getShareableGame(gameId: GameID): Flow<ShareableGame>
 
 	suspend fun isGameInProgress(): Boolean
 	suspend fun getGameInProgress(): GameInProgress?

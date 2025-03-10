@@ -24,6 +24,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.ShareableGame
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.isGameFinished
 import javax.inject.Inject
@@ -64,6 +65,9 @@ class OfflineFirstGamesRepository @Inject constructor(
 	override fun getArchivedGames(): Flow<List<ArchivedGame>> = gameDao.getArchivedGames()
 
 	override fun getGameIndex(gameId: GameID): Flow<Int> = gameDao.getGameIndex(gameId)
+
+	override fun getShareableGame(gameId: GameID): Flow<ShareableGame> = gameDao.getShareableGame(gameId)
+		.map { it.asModel() }
 
 	override suspend fun isGameInProgress(): Boolean = getGameInProgress() != null
 

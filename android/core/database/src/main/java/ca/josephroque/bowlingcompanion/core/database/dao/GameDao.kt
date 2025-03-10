@@ -6,6 +6,7 @@ import androidx.room.Query
 import ca.josephroque.bowlingcompanion.core.database.model.GameEditEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GameLaneCrossRef
+import ca.josephroque.bowlingcompanion.core.database.model.ShareableGameEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedGame
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameID
@@ -127,6 +128,27 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 		""",
 	)
 	abstract fun getArchivedGames(): Flow<List<ArchivedGame>>
+
+	@Query(
+		"""
+			SELECT
+				games.id AS id,
+				games.`index` AS `index`,
+				games.score AS score,
+				games.scoring_method AS scoringMethod,
+				series.date AS seriesDate,
+				bowlers.name AS bowlerName,
+				leagues.name AS leagueName,
+				alley.name AS alleyName
+			FROM games
+			JOIN series ON series.id = games.series_id
+			JOIN leagues ON leagues.id = series.league_id
+			JOIN bowlers ON bowlers.id = leagues.bowler_id
+			LEFT JOIN alleys AS alley ON alley.id = series.alley_id
+			WHERE games.id = :gameId
+		"""
+	)
+	abstract fun getShareableGame(gameId: GameID): Flow<ShareableGameEntity>
 
 	@Query("UPDATE games SET scoring_method = :scoringMethod, score = :score WHERE id = :gameId")
 	abstract fun setGameScoringMethod(gameId: GameID, scoringMethod: GameScoringMethod, score: Int)
