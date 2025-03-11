@@ -9,6 +9,8 @@ android {
 
 dependencies {
 	implementation(projects.core.scoresheet)
+	implementation(projects.feature.sharing)
+	implementation(projects.feature.sharing.ui)
 
 	implementation(libs.reorderable.compose)
 }

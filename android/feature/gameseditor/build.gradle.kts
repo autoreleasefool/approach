@@ -12,4 +12,6 @@ dependencies {
 	implementation(projects.core.scoresheet)
 	implementation(projects.core.statistics)
 	implementation(projects.feature.gameseditor.ui)
+	implementation(projects.feature.sharing)
+	implementation(projects.feature.sharing.ui)
 }

@@ -19,11 +19,20 @@ data class GamesEditorUiState(
 )
 
 sealed interface GamesEditorUiAction {
-	data object BackClicked : GamesEditorUiAction
-	data object SettingsClicked : GamesEditorUiAction
 	data object ManualScoreClicked : GamesEditorUiAction
 
 	data class FrameEditor(val action: FrameEditorUiAction) : GamesEditorUiAction
 	data class RollEditor(val action: RollEditorUiAction) : GamesEditorUiAction
 	data class ScoreSheet(val action: ScoreSheetUiAction) : GamesEditorUiAction
+}
+
+data class GamesEditorTopBarUiState(
+	val currentGameIndex: Int = 0,
+	val isSharingButtonVisible: Boolean = false,
+)
+
+sealed interface GamesEditorTopBarUiAction {
+	data object BackClicked : GamesEditorTopBarUiAction
+	data object ShareClicked : GamesEditorTopBarUiAction
+	data object SettingsClicked : GamesEditorTopBarUiAction
 }

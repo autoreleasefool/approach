@@ -49,6 +49,8 @@ import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetListUiState
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiAction
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorTopBarUiAction
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.AnimationDirection
@@ -73,6 +75,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateGamesEdit
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateGamesEditorAndGet
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateHeader
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateSelection
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -141,6 +144,8 @@ class GamesEditorViewModel @Inject constructor(
 		Route.EditGame.getGame(savedStateHandle)!!
 	}
 
+	private val sharingSource: MutableStateFlow<SharingSource?> = MutableStateFlow(null)
+
 	private val bowlers = series.flatMapLatest { bowlersRepository.getSeriesBowlers(it) }
 	private val currentBowlerId = MutableStateFlow<BowlerID?>(null)
 
@@ -176,16 +181,36 @@ class GamesEditorViewModel @Inject constructor(
 		!it.isHidingTeamScoresInGameDetails
 	}
 
-	private val bottomSheetUiState: Flow<GamesEditorScreenBottomSheetUiState> = combine(
+	private val topBarState = currentGameIndex.map {
+		GamesEditorTopBarUiState(
+			currentGameIndex = it,
+			isSharingButtonVisible = featureFlagsClient.isEnabled(FeatureFlag.SHARING_GAMES),
+		)
+	}
+
+	private val bottomSheetAppearanceUiState: Flow<GamesEditorScreenBottomSheetAppearanceUiState> = combine(
 		headerPeekHeight,
 		isGameDetailsSheetVisible,
 	) {
 			headerPeekHeight,
 			isGameDetailsSheetVisible,
 		->
-		GamesEditorScreenBottomSheetUiState(
+		GamesEditorScreenBottomSheetAppearanceUiState(
 			headerPeekHeight = headerPeekHeight,
 			isGameDetailsSheetVisible = isGameDetailsSheetVisible,
+		)
+	}
+
+	private val bottomSheetContentUiState: Flow<GamesEditorScreenBottomSheetContentUiState> = combine(
+		gameDetailsState,
+		bottomSheetAppearanceUiState,
+	) {
+			gameDetails,
+			appearance,
+		->
+		GamesEditorScreenBottomSheetContentUiState(
+			gameDetails = gameDetails,
+			appearance = appearance,
 		)
 	}
 
@@ -202,22 +227,35 @@ class GamesEditorViewModel @Inject constructor(
 		)
 	}
 
-	val uiState: StateFlow<GamesEditorScreenUiState> = combine(
+	private val contentUiState: Flow<GamesEditorScreenContentUiState> = combine(
 		gamesEditorState,
-		gameDetailsState,
-		alertsUiState,
-		bottomSheetUiState,
+		topBarState,
 	) {
 			gamesEditor,
-			gameDetails,
+			topBar,
+		->
+		GamesEditorScreenContentUiState(
+			gamesEditor = gamesEditor,
+			topBar = topBar,
+		)
+	}
+
+	val uiState: StateFlow<GamesEditorScreenUiState> = combine(
+		alertsUiState,
+		bottomSheetContentUiState,
+		contentUiState,
+		sharingSource,
+	) {
 			alertsUiState,
-			bottomSheetUiState,
+			bottomSheetContentUiState,
+			contentUiState,
+			sharingSource,
 		->
 		GamesEditorScreenUiState.Loaded(
-			gamesEditor = gamesEditor,
-			gameDetails = gameDetails,
-			bottomSheet = bottomSheetUiState,
-			screenAlerts = alertsUiState,
+			alerts = alertsUiState,
+			content = contentUiState,
+			bottomSheet = bottomSheetContentUiState,
+			sharingSource = sharingSource,
 		)
 	}.stateIn(
 		scope = viewModelScope,
@@ -248,6 +286,8 @@ class GamesEditorViewModel @Inject constructor(
 			}
 			GamesEditorScreenUiAction.HighestPossibleScoreSnackBarDismissed ->
 				dismissHighestPossibleScoreSnackBar()
+			GamesEditorScreenUiAction.SharingDismissed -> dismissShareSheet()
+			is GamesEditorScreenUiAction.TopBar -> handleTopBarAction(action.action)
 			is GamesEditorScreenUiAction.GamesEditor -> handleGamesEditorAction(action.action)
 			is GamesEditorScreenUiAction.GameDetails -> handleGameDetailsAction(action.action)
 			is GamesEditorScreenUiAction.GearUpdated -> updateGear(action.gearIds)
@@ -257,6 +297,14 @@ class GamesEditorViewModel @Inject constructor(
 			is GamesEditorScreenUiAction.CurrentGameUpdated -> loadGameIfChanged(action.gameId)
 			is GamesEditorScreenUiAction.SelectedBallUpdated -> updateSelectedBall(id = action.ballId)
 			is GamesEditorScreenUiAction.ScoreUpdated -> updateScore(action.score, action.scoringMethod)
+		}
+	}
+
+	private fun handleTopBarAction(action: GamesEditorTopBarUiAction) {
+		when (action) {
+			GamesEditorTopBarUiAction.BackClicked -> dismiss()
+			GamesEditorTopBarUiAction.ShareClicked -> openShareSheet()
+			GamesEditorTopBarUiAction.SettingsClicked -> openGameSettings()
 		}
 	}
 
@@ -291,8 +339,6 @@ class GamesEditorViewModel @Inject constructor(
 
 	private fun handleGamesEditorAction(action: GamesEditorUiAction) {
 		when (action) {
-			GamesEditorUiAction.BackClicked -> dismiss()
-			GamesEditorUiAction.SettingsClicked -> openGameSettings()
 			GamesEditorUiAction.ManualScoreClicked -> openScoreSettings()
 			is GamesEditorUiAction.FrameEditor -> handleFrameEditorAction(action.action)
 			is GamesEditorUiAction.RollEditor -> handleRollEditorAction(action.action)
@@ -766,6 +812,14 @@ class GamesEditorViewModel @Inject constructor(
 		viewModelScope.launch(ioDispatcher) {
 			userDataRepository.didDismissFrameDragHint()
 		}
+	}
+
+	private fun openShareSheet() {
+		sharingSource.value = SharingSource.Game(currentGameId.value)
+	}
+
+	private fun dismissShareSheet() {
+		sharingSource.value = null
 	}
 
 	private fun openGameSettings() {

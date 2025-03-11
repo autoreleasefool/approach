@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor.ui
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -14,20 +16,34 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GamesEditorTopBar(currentGameIndex: Int, onAction: (GamesEditorUiAction) -> Unit) {
+fun GamesEditorTopBar(
+	state: GamesEditorTopBarUiState,
+	onAction: (GamesEditorTopBarUiAction) -> Unit,
+) {
 	TopAppBar(
 		title = {
 			Text(
 				stringResource(
 					ca.josephroque.bowlingcompanion.core.designsystem.R.string.game_with_ordinal,
-					currentGameIndex + 1,
+					state.currentGameIndex + 1,
 				),
 			)
 		},
 		colors = TopAppBarDefaults.topAppBarColors(),
-		navigationIcon = { BackButton(onClick = { onAction(GamesEditorUiAction.BackClicked) }) },
+		navigationIcon = { BackButton(onClick = { onAction(GamesEditorTopBarUiAction.BackClicked) }) },
 		actions = {
-			IconButton(onClick = { onAction(GamesEditorUiAction.SettingsClicked) }) {
+			if (state.isSharingButtonVisible) {
+				IconButton(onClick = { onAction(GamesEditorTopBarUiAction.ShareClicked) }) {
+					Icon(
+						Icons.Default.Share,
+						contentDescription = stringResource(
+							ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_share,
+						),
+					)
+				}
+			}
+
+			IconButton(onClick = { onAction(GamesEditorTopBarUiAction.SettingsClicked) }) {
 				Icon(
 					painter = painterResource(
 						ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_settings,

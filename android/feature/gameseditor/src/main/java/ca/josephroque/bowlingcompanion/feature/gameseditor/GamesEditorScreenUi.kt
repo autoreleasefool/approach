@@ -8,19 +8,22 @@ import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorTopBarUiAction
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiState
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingSource
 
 sealed interface GamesEditorScreenUiState {
 	data object Loading : GamesEditorScreenUiState
 
 	data class Loaded(
-		val screenAlerts: GamesEditorScreenAlertsUiState,
-		val gameDetails: GameDetailsUiState,
-		val gamesEditor: GamesEditorUiState,
-		val bottomSheet: GamesEditorScreenBottomSheetUiState,
+		val alerts: GamesEditorScreenAlertsUiState,
+		val bottomSheet: GamesEditorScreenBottomSheetContentUiState,
+		val content: GamesEditorScreenContentUiState,
+		val sharingSource: SharingSource?,
 	) : GamesEditorScreenUiState
 }
 
@@ -31,7 +34,17 @@ data class GamesEditorScreenAlertsUiState(
 
 data class HighestScorePossibleAlertUiState(val score: Int)
 
-data class GamesEditorScreenBottomSheetUiState(
+data class GamesEditorScreenContentUiState(
+	val gamesEditor: GamesEditorUiState,
+	val topBar: GamesEditorTopBarUiState,
+)
+
+data class GamesEditorScreenBottomSheetContentUiState(
+	val gameDetails: GameDetailsUiState,
+	val appearance: GamesEditorScreenBottomSheetAppearanceUiState,
+)
+
+data class GamesEditorScreenBottomSheetAppearanceUiState(
 	val headerPeekHeight: Float = 0f,
 	val isGameDetailsSheetVisible: Boolean = true,
 )
@@ -42,12 +55,14 @@ sealed interface GamesEditorScreenUiAction {
 	data object GameLockSnackBarDismissed : GamesEditorScreenUiAction
 	data object GameLockSnackBarUnlocked : GamesEditorScreenUiAction
 	data object HighestPossibleScoreSnackBarDismissed : GamesEditorScreenUiAction
+	data object SharingDismissed : GamesEditorScreenUiAction
 
 	data class GearUpdated(val gearIds: Set<GearID>) : GamesEditorScreenUiAction
 	data class AlleyUpdated(val alleyId: AlleyID?) : GamesEditorScreenUiAction
 	data class LanesUpdated(val laneIds: Set<LaneID>) : GamesEditorScreenUiAction
 	data class GamesEditor(val action: GamesEditorUiAction) : GamesEditorScreenUiAction
 	data class GameDetails(val action: GameDetailsUiAction) : GamesEditorScreenUiAction
+	data class TopBar(val action: GamesEditorTopBarUiAction) : GamesEditorScreenUiAction
 	data class SeriesUpdated(val series: List<SeriesID>) : GamesEditorScreenUiAction
 	data class CurrentGameUpdated(val gameId: GameID) : GamesEditorScreenUiAction
 	data class SelectedBallUpdated(val ballId: GearID?) : GamesEditorScreenUiAction

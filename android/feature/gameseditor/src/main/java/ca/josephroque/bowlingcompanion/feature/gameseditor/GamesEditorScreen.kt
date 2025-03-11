@@ -52,8 +52,10 @@ import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultViewM
 import ca.josephroque.bowlingcompanion.core.navigation.ScoreEditorResultViewModel
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorTopBar
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetails
+import ca.josephroque.bowlingcompanion.feature.sharing.SharingSheet
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -202,13 +204,13 @@ internal fun GamesEditorScreen(
 		when (state) {
 			GamesEditorScreenUiState.Loading -> Unit
 			is GamesEditorScreenUiState.Loaded -> {
-				if (state.bottomSheet.isGameDetailsSheetVisible == hasExpandedSheet) return@LaunchedEffect
-				if (state.bottomSheet.isGameDetailsSheetVisible) {
+				if (state.bottomSheet.appearance.isGameDetailsSheetVisible == hasExpandedSheet) return@LaunchedEffect
+				if (state.bottomSheet.appearance.isGameDetailsSheetVisible) {
 					scaffoldState.bottomSheetState.partialExpand()
 				} else {
 					scaffoldState.bottomSheetState.hide()
 				}
-				hasExpandedSheet = state.bottomSheet.isGameDetailsSheetVisible
+				hasExpandedSheet = state.bottomSheet.appearance.isGameDetailsSheetVisible
 			}
 		}
 	}
@@ -229,7 +231,7 @@ internal fun GamesEditorScreen(
 	val snackBarLockedMessage = stringResource(R.string.game_editor_locked)
 	val snackBarUnlockAction = stringResource(R.string.game_editor_locked_unlock)
 	val isGameLockSnackBarVisible = state is GamesEditorScreenUiState.Loaded &&
-		state.screenAlerts.isGameLockSnackBarVisible
+		state.alerts.isGameLockSnackBarVisible
 	LaunchedEffect(isGameLockSnackBarVisible) {
 		if (isGameLockSnackBarVisible) {
 			val result = scaffoldState.snackbarHostState.showSnackbar(
@@ -246,7 +248,7 @@ internal fun GamesEditorScreen(
 	}
 	
 	val highestPossibleScore = if (state is GamesEditorScreenUiState.Loaded) {
-		state.screenAlerts.highestScorePossibleAlert?.score
+		state.alerts.highestScorePossibleAlert?.score
 	} else {
 		0
 	}
@@ -277,11 +279,11 @@ internal fun GamesEditorScreen(
 		scaffoldState = scaffoldState,
 		topBar = {
 			GamesEditorTopBar(
-				currentGameIndex = when (state) {
-					is GamesEditorScreenUiState.Loaded -> state.gameDetails.currentGameIndex
-					else -> 0
+				state = when (state) {
+					is GamesEditorScreenUiState.Loaded -> state.content.topBar
+					else -> GamesEditorTopBarUiState()
 				},
-				onAction = { onAction(GamesEditorScreenUiAction.GamesEditor(it)) },
+				onAction = { onAction(GamesEditorScreenUiAction.TopBar(it)) },
 			)
 		},
 		sheetDragHandle = {
@@ -302,7 +304,7 @@ internal fun GamesEditorScreen(
 			}
 		},
 		sheetPeekHeight = (
-			(state as? GamesEditorScreenUiState.Loaded)?.bottomSheet?.headerPeekHeight?.plus(
+			(state as? GamesEditorScreenUiState.Loaded)?.bottomSheet?.appearance?.headerPeekHeight?.plus(
 				handleHeight.floatValue,
 			) ?: 0f
 			).dp,
@@ -310,7 +312,7 @@ internal fun GamesEditorScreen(
 			when (state) {
 				GamesEditorScreenUiState.Loading -> Unit
 				is GamesEditorScreenUiState.Loaded -> GameDetails(
-					state = state.gameDetails,
+					state = state.bottomSheet.gameDetails,
 					onAction = { onAction(GamesEditorScreenUiAction.GameDetails(it)) },
 				)
 			}
@@ -324,7 +326,7 @@ internal fun GamesEditorScreen(
 				when (state) {
 					GamesEditorScreenUiState.Loading -> Unit
 					is GamesEditorScreenUiState.Loaded -> GamesEditor(
-						state = state.gamesEditor,
+						state = state.content.gamesEditor,
 						onAction = { onAction(GamesEditorScreenUiAction.GamesEditor(it)) },
 						modifier = Modifier.padding(padding),
 					)
@@ -342,6 +344,17 @@ internal fun GamesEditorScreen(
 						),
 				)
 			}
+		}
+
+		val sharingSource = when (state) {
+			is GamesEditorScreenUiState.Loaded -> state.sharingSource
+			else -> null
+		}
+		if (sharingSource != null) {
+			SharingSheet(
+				source = sharingSource,
+				onDismiss = { onAction(GamesEditorScreenUiAction.SharingDismissed) },
+			)
 		}
 	}
 }
