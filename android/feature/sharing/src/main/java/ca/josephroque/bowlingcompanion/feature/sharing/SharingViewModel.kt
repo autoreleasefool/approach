@@ -58,6 +58,8 @@ class SharingViewModel @Inject constructor(
 					.map { SharingData.Series(it, seriesSharingState) }
 			is SharingSource.Game -> flowOf(SharingData.Game)
 			is SharingSource.Statistic -> flowOf(SharingData.Statistic)
+			is SharingSource.TeamSeries -> flowOf(SharingData.TeamSeries)
+
 		}
 	}
 		.flatMapLatest { it }
@@ -70,6 +72,7 @@ class SharingViewModel @Inject constructor(
 			is SharingData.Series -> SharingUiState.SharingSeries(seriesSharingState, sharingData)
 			is SharingData.Game -> SharingUiState.SharingGame
 			is SharingData.Statistic -> SharingUiState.SharingStatistic
+			is SharingData.TeamSeries -> SharingUiState.SharingTeamSeries
 		}
 	}
 
@@ -87,7 +90,7 @@ class SharingViewModel @Inject constructor(
 				.collectLatest { data ->
 					when (data) {
 						is SharingData.Series -> updateDefaultChartRanges(data.series.scores)
-						SharingData.Game, SharingData.Statistic -> TODO()
+						SharingData.Game, SharingData.Statistic, SharingData.TeamSeries -> TODO()
 					}
 				}
 		}

@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.ShareableSeries
+import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfigurationUiAction
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfigurationUiState
 import kotlinx.coroutines.Deferred
@@ -16,12 +17,14 @@ sealed interface SharingUiState {
 
 	data object SharingGame : SharingUiState
 	data object SharingStatistic : SharingUiState
+	data object SharingTeamSeries: SharingUiState
 
 	val sharingData: SharingData
 		get() = when (this) {
 			is SharingSeries -> series
 			is SharingGame -> SharingData.Game
 			is SharingStatistic -> SharingData.Statistic
+			is SharingTeamSeries -> SharingData.TeamSeries
 		}
 }
 
@@ -34,6 +37,7 @@ sealed interface SharingUiAction {
 }
 
 sealed interface SharingSource {
+	data class TeamSeries(val teamSeriesId: TeamSeriesID) : SharingSource
 	data class Series(val seriesId: SeriesID) : SharingSource
 	data class Game(val gameID: GameID) : SharingSource
 	data class Statistic(val statisticId: String) : SharingSource
@@ -46,6 +50,7 @@ sealed interface SharingData {
 	) : SharingData
 	data object Game : SharingData
 	data object Statistic : SharingData
+	data object TeamSeries: SharingData
 }
 
 enum class SharingAppearance {

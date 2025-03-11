@@ -14,5 +14,6 @@ fun ShareablePreviewImage(state: SharingData, modifier: Modifier = Modifier) {
 		)
 		SharingData.Game -> TODO()
 		SharingData.Statistic -> TODO()
+		SharingData.TeamSeries -> TODO()
 	}
 }

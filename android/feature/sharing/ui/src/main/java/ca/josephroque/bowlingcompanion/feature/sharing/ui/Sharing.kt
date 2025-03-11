@@ -30,6 +30,7 @@ fun Sharing(state: SharingUiState, onAction: (SharingUiAction) -> Unit, modifier
 		when (state) {
 			is SharingUiState.SharingGame -> TODO()
 			is SharingUiState.SharingStatistic -> TODO()
+			is SharingUiState.SharingTeamSeries -> TODO()
 			is SharingUiState.SharingSeries -> SeriesSharingConfiguration(
 				state = state.seriesSharing,
 				onAction = { onAction(SharingUiAction.SeriesSharingAction(it)) },
