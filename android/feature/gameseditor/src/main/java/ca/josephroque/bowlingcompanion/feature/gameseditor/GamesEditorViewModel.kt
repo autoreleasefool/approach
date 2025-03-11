@@ -189,25 +189,35 @@ class GamesEditorViewModel @Inject constructor(
 		)
 	}
 
+	private val alertsUiState: Flow<GamesEditorScreenAlertsUiState> = combine(
+		isGameLockSnackBarVisible,
+		highestScorePossibleAlert,
+	) {
+			isGameLockSnackBarVisible,
+			highestScorePossibleAlert,
+		->
+		GamesEditorScreenAlertsUiState(
+			isGameLockSnackBarVisible = isGameLockSnackBarVisible,
+			highestScorePossibleAlert = highestScorePossibleAlert,
+		)
+	}
+
 	val uiState: StateFlow<GamesEditorScreenUiState> = combine(
 		gamesEditorState,
 		gameDetailsState,
-		isGameLockSnackBarVisible,
-		highestScorePossibleAlert,
+		alertsUiState,
 		bottomSheetUiState,
 	) {
 			gamesEditor,
 			gameDetails,
-			isGameLockSnackBarVisible,
-			highestScorePossibleAlert,
+			alertsUiState,
 			bottomSheetUiState,
 		->
 		GamesEditorScreenUiState.Loaded(
 			gamesEditor = gamesEditor,
 			gameDetails = gameDetails,
 			bottomSheet = bottomSheetUiState,
-			isGameLockSnackBarVisible = isGameLockSnackBarVisible,
-			highestScorePossibleAlert = highestScorePossibleAlert,
+			screenAlerts = alertsUiState,
 		)
 	}.stateIn(
 		scope = viewModelScope,

@@ -17,13 +17,17 @@ sealed interface GamesEditorScreenUiState {
 	data object Loading : GamesEditorScreenUiState
 
 	data class Loaded(
-		val isGameLockSnackBarVisible: Boolean = false,
-		val highestScorePossibleAlert: HighestScorePossibleAlertUiState? = null,
+		val screenAlerts: GamesEditorScreenAlertsUiState,
 		val gameDetails: GameDetailsUiState,
 		val gamesEditor: GamesEditorUiState,
 		val bottomSheet: GamesEditorScreenBottomSheetUiState,
 	) : GamesEditorScreenUiState
 }
+
+data class GamesEditorScreenAlertsUiState(
+	val isGameLockSnackBarVisible: Boolean = false,
+	val highestScorePossibleAlert: HighestScorePossibleAlertUiState? = null,
+)
 
 data class HighestScorePossibleAlertUiState(val score: Int)
 

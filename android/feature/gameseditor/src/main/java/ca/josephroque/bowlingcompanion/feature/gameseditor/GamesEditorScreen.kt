@@ -229,7 +229,7 @@ internal fun GamesEditorScreen(
 	val snackBarLockedMessage = stringResource(R.string.game_editor_locked)
 	val snackBarUnlockAction = stringResource(R.string.game_editor_locked_unlock)
 	val isGameLockSnackBarVisible = state is GamesEditorScreenUiState.Loaded &&
-		state.isGameLockSnackBarVisible
+		state.screenAlerts.isGameLockSnackBarVisible
 	LaunchedEffect(isGameLockSnackBarVisible) {
 		if (isGameLockSnackBarVisible) {
 			val result = scaffoldState.snackbarHostState.showSnackbar(
@@ -246,7 +246,7 @@ internal fun GamesEditorScreen(
 	}
 	
 	val highestPossibleScore = if (state is GamesEditorScreenUiState.Loaded) {
-		state.highestScorePossibleAlert?.score
+		state.screenAlerts.highestScorePossibleAlert?.score
 	} else {
 		0
 	}
