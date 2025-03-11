@@ -39,13 +39,15 @@ fun SeriesDetailsTopBar(
 			BackButton(onClick = { onAction(SeriesDetailsTopBarUiAction.BackClicked) })
 		},
 		actions = {
-			IconButton(onClick = { onAction(SeriesDetailsTopBarUiAction.ShareClicked) }) {
-				Icon(
-					Icons.Default.Share,
-					contentDescription = stringResource(
-						ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_share,
-					),
-				)
+			if (state.isSharingButtonVisible) {
+				IconButton(onClick = { onAction(SeriesDetailsTopBarUiAction.ShareClicked) }) {
+					Icon(
+						Icons.Default.Share,
+						contentDescription = stringResource(
+							ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_share,
+						),
+					)
+				}
 			}
 
 			IconButton(onClick = { onAction(SeriesDetailsTopBarUiAction.AddGameClicked) }) {
