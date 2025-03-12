@@ -8,17 +8,18 @@ import GRDB
 @testable import ModelsLibrary
 import TestDatabaseUtilitiesLibrary
 import Testing
+import TestUtilitiesLibrary
 import TestUtilitiesPackageLibrary
 
-@Suite("LocationsRepository")
+@Suite("LocationsRepository", .tags(.repository))
 struct LocationsRepositoryTests {
 
-	@Suite("insertOrUpdate")
+	@Suite("insertOrUpdate", .tags(.dependencies, .grdb))
 	struct InsertOrUpdateTests {
 
 		@Dependency(LocationsRepository.self) var locations
 
-		@Test("Creates location when it does not exist")
+		@Test("Creates location when it does not exist", .tags(.unit))
 		func createsLocationWhenItDoesNotExist() async throws {
 			// Given a database with no locations
 			let db = try initializeApproachDatabase(withLocations: nil)
@@ -47,7 +48,7 @@ struct LocationsRepositoryTests {
 			#expect(existing?.title == "456 Fake Street")
 		}
 
-		@Test("Updates location when it exists")
+		@Test("Updates location when it exists", .tags(.unit))
 		func updatesLocationWhenItExists() async throws {
 			// Given a database with an existing location
 			let location = Location.Database.mock(id: UUID(0))

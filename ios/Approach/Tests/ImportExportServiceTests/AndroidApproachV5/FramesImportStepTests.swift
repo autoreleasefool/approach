@@ -11,7 +11,7 @@ import TestUtilitiesLibrary
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("FramesImportStep", .tags(.android, .imports, .grdb))
+@Suite("FramesImportStep", .tags(.android, .imports, .grdb, .service))
 struct FramesImportStepTests {
 	let preSteps: [SQLiteImportStep] = [
 		AndroidApproachV5SQLiteImporter.AlleysImportStep(),
@@ -113,7 +113,7 @@ struct FramesImportStepTests {
 
 	// MARK: Test Properties
 
-	@Test("Imports properties")
+	@Test("Imports properties", .tags(.unit))
 	func importsProperties() throws {
 		try androidDb.write {
 			try $0.execute(

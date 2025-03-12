@@ -9,18 +9,19 @@ import GRDB
 import RecentlyUsedServiceInterface
 import TestDatabaseUtilitiesLibrary
 import Testing
+import TestUtilitiesLibrary
 import TestUtilitiesPackageLibrary
 
-@Suite("GearRepository")
+@Suite("GearRepository", .tags(.repository))
 struct GearRepositoryTests {
 
 	// MARK: - List
 
-	@Suite("list")
+	@Suite("list", .tags(.grdb, .dependencies))
 	struct ListTests {
 		@Dependency(GearRepository.self) var gear
 
-		@Test("Returns all gear")
+		@Test("Returns all gear", .tags(.unit))
 		func returnsAllGear() async throws {
 			// Given a database with two gear
 			let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow")
@@ -46,7 +47,7 @@ struct GearRepositoryTests {
 			#expect(fetched == expectedResults)
 		}
 
-		@Test("Filtering by Kind returns matching gear")
+		@Test("Filtering by Kind returns matching gear", .tags(.unit))
 		func filteringByKindReturnsMatchingGear() async throws {
 			// Given a database with two gear
 			let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall)
@@ -71,7 +72,7 @@ struct GearRepositoryTests {
 			#expect(fetched == expectedResults)
 		}
 
-		@Test("Filtering by owner returns matching gear")
+		@Test("Filtering by owner returns matching gear", .tags(.unit))
 		func filteringByOwnerReturnsMatchingGear() async throws {
 			// Given a database with two gear
 			let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
@@ -96,7 +97,7 @@ struct GearRepositoryTests {
 			#expect(fetched == expectedResults)
 		}
 
-		@Test("Order by recently used returns ordered list")
+		@Test("Order by recently used returns ordered list", .tags(.unit))
 		func orderByRecentlyUsedReturnsOrderedList() async throws {
 			// Given a database with two gear
 			let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
@@ -132,11 +133,11 @@ struct GearRepositoryTests {
 
 	// MARK: - Preferred
 
-	@Suite("preferredGear")
+	@Suite("preferredGear", .tags(.grdb, .dependencies))
 	struct PreferredGearTests {
 		@Dependency(GearRepository.self) var gear
 
-		@Test("Returns gear for bowler")
+		@Test("Returns gear for bowler", .tags(.unit))
 		func returnsGearForBowler() async throws {
 			// Given a database with two gear preferred by bowler
 			let bowler1 = Bowler.Database.mock(id: UUID(0), name: "Joseph")
@@ -170,11 +171,11 @@ struct GearRepositoryTests {
 
 	// MARK: - Most Recently Used
 
-	@Suite("mostRecentlyUsed")
+	@Suite("mostRecentlyUsed", .tags(.grdb, .dependencies))
 	struct MostRecentlyUsedTests {
 		@Dependency(GearRepository.self) var gear
 
-		@Test("Returns gear")
+		@Test("Returns gear", .tags(.unit))
 		func returnsGear() async throws {
 			// Given a database with four gear
 			let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
@@ -208,7 +209,7 @@ struct GearRepositoryTests {
 			#expect(fetched == expectedResults)
 		}
 
-		@Test("Returns gear sorted by recently used")
+		@Test("Returns gear sorted by recently used", .tags(.unit))
 		func returnsGearSortedByRecentlyUsed() async throws {
 			// Given a database with four gear
 			let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
@@ -242,7 +243,7 @@ struct GearRepositoryTests {
 			#expect(fetched == expectedResults)
 		}
 
-		@Test("Returns limited number of gear when limit provided")
+		@Test("Returns limited number of gear when limit provided", .tags(.unit))
 		func returnsLimitedNumberOfGearWhenLimitProvided() async throws {
 			// Given a database with four gear
 			let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
@@ -274,7 +275,7 @@ struct GearRepositoryTests {
 			#expect(fetched == expectedResults)
 		}
 
-		@Test("Returns gear of the correct kind when filtering by kind")
+		@Test("Returns gear of the correct kind when filtering by kind", .tags(.unit))
 		func returnsGearOfTheCorrectKindWhenFilteringByKind() async throws {
 			// Given a database with four gear
 			let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
@@ -309,11 +310,11 @@ struct GearRepositoryTests {
 
 	// MARK: - Create
 
-	@Suite("create")
+	@Suite("create", .tags(.grdb, .dependencies))
 	struct CreateTests {
 		@Dependency(GearRepository.self) var gear
 
-		@Test("Throws error when Gear ID exists")
+		@Test("Throws error when Gear ID exists", .tags(.unit))
 		func throwsErrorWhenGearIDExists() async throws {
 			// Given a database with an existing gear
 			let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow")
@@ -342,7 +343,7 @@ struct GearRepositoryTests {
 			#expect(updated?.bowlerId == UUID(0))
 		}
 
-		@Test("Creates a new gear when Gear ID does not exist")
+		@Test("Creates a new gear when Gear ID does not exist", .tags(.unit))
 		func createsANewGearWhenGearIDDoesNotExist() async throws {
 			// Given a database with no gear
 			let db = try initializeApproachDatabase(withGear: nil)
@@ -367,7 +368,7 @@ struct GearRepositoryTests {
 			#expect(updated?.kind == .bowlingBall)
 		}
 
-		@Test("Creates Avatar DB record when Gear has attached Avatar")
+		@Test("Creates Avatar DB record when Gear has attached Avatar", .tags(.unit))
 		func createsAvatarDBRecordWhenGearHasAttachedAvatar() async throws {
 			// Given a database with no gear
 			let db = try initializeApproachDatabase(withGear: nil)
@@ -394,11 +395,11 @@ struct GearRepositoryTests {
 
 	// MARK: - Update
 
-	@Suite("update")
+	@Suite("update", .tags(.grdb, .dependencies))
 	struct UpdateTests {
 		@Dependency(GearRepository.self) var gear
 
-		@Test("Updates gear when Gear ID exists")
+		@Test("Updates gear when Gear ID exists", .tags(.unit))
 		func updatesGearWhenGearIDExists() async throws {
 			// Given a database with an existing gear
 			let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: nil)
@@ -426,7 +427,7 @@ struct GearRepositoryTests {
 			#expect(count == 1)
 		}
 
-		@Test("Throws error when Gear ID does not exist")
+		@Test("Throws error when Gear ID does not exist", .tags(.unit))
 		func throwsErrorWhenGearIDDoesNotExist() async throws {
 			// Given a database with no gear
 			let db = try initializeApproachDatabase(withGear: nil)
@@ -447,7 +448,7 @@ struct GearRepositoryTests {
 			#expect(numberOfRecords == 0)
 		}
 
-		@Test("Updates Avatar DB entry when Gear has Avatar")
+		@Test("Updates Avatar DB entry when Gear has Avatar", .tags(.unit))
 		func updatesAvatarDBEntryWhenGearHasAvatar() async throws {
 			// Given a database with an existing gear
 			let avatar1 = Avatar.Database.mock(id: UUID(0))
@@ -477,11 +478,11 @@ struct GearRepositoryTests {
 	}
 
 	// MARK: - Edit
-	@Suite("edit")
+	@Suite("edit", .tags(.grdb, .dependencies))
 	struct EditTest {
 		@Dependency(GearRepository.self) var gear
 
-		@Test("Returns gear when gear exists")
+		@Test("Returns gear when gear exists", .tags(.unit))
 		func returnsGearWhenGearExists() async throws {
 			// Given a database with a gear
 			let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0), avatarId: UUID(0))
@@ -507,7 +508,7 @@ struct GearRepositoryTests {
 			#expect(editable == expectedResult)
 		}
 
-		@Test("Throws error when Gear ID does not exist")
+		@Test("Throws error when Gear ID does not exist", .tags(.unit))
 		func throwsErrorWhenGearIDDoesNotExist() async throws {
 			// Given a database with no gear
 			let db = try initializeApproachDatabase(withGear: nil)
@@ -526,11 +527,11 @@ struct GearRepositoryTests {
 
 	// MARK: - Delete
 
-	@Suite("delete")
+	@Suite("delete", .tags(.grdb, .dependencies))
 	struct DeleteTests {
 		@Dependency(GearRepository.self) var gear
 
-		@Test("Deletes gear when ID exists")
+		@Test("Deletes gear when ID exists", .tags(.unit))
 		func deletesGearWhenIDExists() async throws {
 			// Given a database with 2 gear
 			let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow")
@@ -554,7 +555,7 @@ struct GearRepositoryTests {
 			#expect(otherExists)
 		}
 
-		@Test("Does nothing when ID does not exist")
+		@Test("Does nothing when ID does not exist", .tags(.unit))
 		func doesNothingWhenIDDoesNotExist() async throws {
 			// Given a database with 1
 			let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow")

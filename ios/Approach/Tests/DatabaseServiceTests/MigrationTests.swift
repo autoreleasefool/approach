@@ -5,7 +5,7 @@ import GRDB
 import Testing
 import TestUtilitiesLibrary
 
-@Suite("DBMigration Tests", .tags(.grdb))
+@Suite("DBMigration", .tags(.grdb, .service))
 struct DBMigrationTests {
 	static let allMigrations = [
 		"Migration20230325CreateBowler",
@@ -44,12 +44,12 @@ struct DBMigrationTests {
 		"Migration20241021CreateTeam",
 	]
 
-	@Test("identifier matches")
+	@Test("identifier matches", .tags(.unit))
 	func identifierMatches() {
 		#expect(Migration20230325CreateBowler.identifier == "Migration20230325CreateBowler")
 	}
 
-	@Test("Registers migrations")
+	@Test("Registers migrations", .tags(.unit))
 	func registersMigrations() throws {
 		var migrator = DatabaseMigrator()
 		#expect(migrator.migrations.isEmpty)
@@ -58,7 +58,7 @@ struct DBMigrationTests {
 		#expect(migrator.migrations == ["Migration20230325CreateBowler"])
 	}
 
-	@Test("Runs migrations")
+	@Test("Runs migrations", .tags(.unit))
 	func runsMigrations() throws {
 		let dbQueue = try DatabaseQueue()
 		var migrator = DatabaseMigrator()

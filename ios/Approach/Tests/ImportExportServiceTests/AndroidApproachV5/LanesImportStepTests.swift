@@ -9,7 +9,7 @@ import TestUtilitiesLibrary
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("LanesImportStep", .tags(.android, .imports, .grdb))
+@Suite("LanesImportStep", .tags(.android, .imports, .grdb, .service))
 struct LanesImportStepTests {
 	let preSteps = [AndroidApproachV5SQLiteImporter.AlleysImportStep()]
 	let step = AndroidApproachV5SQLiteImporter.LanesImportStep()
@@ -49,7 +49,7 @@ struct LanesImportStepTests {
 
 	// MARK: Test Properties
 
-	@Test("Imports properties")
+	@Test("Imports properties", .tags(.unit))
 	func importsProperties() throws {
 		try androidDb.write {
 			try $0.execute(
@@ -78,7 +78,11 @@ struct LanesImportStepTests {
 		#expect(lane.position == .leftWall)
 	}
 
-	@Test("Imports position", arguments: zip(["LEFT_WALL", "RIGHT_WALL", "NO_WALL"], Lane.Position.allCases))
+	@Test(
+		"Imports position",
+		.tags(.unit),
+		arguments: zip(["LEFT_WALL", "RIGHT_WALL", "NO_WALL"], Lane.Position.allCases)
+	)
 	func importsPosition(from: String, to: Lane.Position) throws {
 		try androidDb.write {
 			try $0.execute(

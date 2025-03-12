@@ -11,7 +11,7 @@ import TestUtilitiesLibrary
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("GameGearImportStep", .tags(.android, .imports, .grdb))
+@Suite("GameGearImportStep", .tags(.android, .imports, .grdb, .service))
 struct GameGearImportStepTests {
 	let preSteps: [SQLiteImportStep] = [
 		AndroidApproachV5SQLiteImporter.AlleysImportStep(),
@@ -112,7 +112,7 @@ struct GameGearImportStepTests {
 
 	// MARK: Test Properties
 
-	@Test("Imports properties")
+	@Test("Imports properties", .tags(.unit))
 	func importsProperties() throws {
 		try androidDb.write {
 			try $0.execute(

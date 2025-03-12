@@ -9,7 +9,7 @@ import TestUtilitiesLibrary
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("BowlersImportStep", .tags(.android, .imports, .grdb))
+@Suite("BowlersImportStep", .tags(.android, .imports, .grdb, .service))
 struct BowlersImportStepTests {
 	let step = AndroidApproachV5SQLiteImporter.BowlersImportStep()
 	let dbProvider: ImportTestDatabaseProvider
@@ -27,7 +27,7 @@ struct BowlersImportStepTests {
 
 	// MARK: Test Properties
 
-	@Test("Imports properties")
+	@Test("Imports properties", .tags(.unit))
 	func importsProperties() throws {
 		try androidDb.write {
 			try $0.execute(
@@ -56,7 +56,11 @@ struct BowlersImportStepTests {
 		#expect(bowler.archivedOn == Date(timeIntervalSince1970: 123))
 	}
 
-	@Test("Imports kind", arguments: zip(["PLAYABLE", "OPPONENT"], Bowler.Kind.allCases))
+	@Test(
+		"Imports kind",
+		.tags(.unit),
+		arguments: zip(["PLAYABLE", "OPPONENT"], Bowler.Kind.allCases)
+	)
 	func importsKind(from: String, to: Bowler.Kind) throws {
 		try androidDb.write {
 			try $0.execute(

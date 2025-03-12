@@ -11,7 +11,7 @@ import TestUtilitiesLibrary
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("SeriesImportStep", .tags(.android, .imports, .grdb))
+@Suite("SeriesImportStep", .tags(.android, .imports, .grdb, .service))
 struct SeriesImportStepTests {
 	let preSteps: [SQLiteImportStep] = [
 		AndroidApproachV5SQLiteImporter.AlleysImportStep(),
@@ -76,7 +76,7 @@ struct SeriesImportStepTests {
 
 	// MARK: Test Properties
 
-	@Test("Imports properties")
+	@Test("Imports properties", .tags(.unit))
 	func importsProperties() throws {
 		try androidDb.write {
 			try $0.execute(
@@ -111,6 +111,7 @@ struct SeriesImportStepTests {
 
 	@Test(
 		"Imports exclude from statistics",
+		.tags(.unit),
 		arguments: zip(["INCLUDE", "EXCLUDE"], Series.ExcludeFromStatistics.allCases)
 	)
 	func importsExcludeFromStatistics(from: String, to: Series.ExcludeFromStatistics) throws {
@@ -140,6 +141,7 @@ struct SeriesImportStepTests {
 
 	@Test(
 		"Imports applied date",
+		.tags(.unit),
 		arguments: zip([nil, "2024-10-23"], [nil, Date(timeIntervalSince1970: 1_729_666_800)])
 	)
 	func importsAppliedDate(from: String?, to: Date?) throws {
@@ -169,6 +171,7 @@ struct SeriesImportStepTests {
 
 	@Test(
 		"Imports pre bowl",
+		.tags(.unit),
 		arguments: zip(["REGULAR", "PRE_BOWL"], Series.PreBowl.allCases)
 	)
 	func importsPreBowl(from: String, to: Series.PreBowl) throws {

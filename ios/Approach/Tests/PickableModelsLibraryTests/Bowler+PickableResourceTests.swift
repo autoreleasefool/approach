@@ -1,12 +1,14 @@
 import ModelsLibrary
 @testable import PickableModelsLibrary
 import Testing
+import TestUtilitiesLibrary
 
-@Suite("Bowler+PickableResource")
+@Suite("Bowler+PickableResource", .tags(.library))
 struct BowlerPickableResourceTests {
 
 	@Test(
 		"Model name is correct",
+		.tags(.unit),
 		arguments: zip([0, 1, 2], ["Bowlers", "Bowler", "Bowlers"])
 	)
 	func modelName(count: Int, expected: String) {
@@ -15,6 +17,7 @@ struct BowlerPickableResourceTests {
 
 	@Test(
 		"Opponent model name is correct",
+		.tags(.unit),
 		arguments: zip([0, 1, 2], ["Opponents", "Opponent", "Opponents"])
 	)
 	func opponentModelName(count: Int, expected: String) {

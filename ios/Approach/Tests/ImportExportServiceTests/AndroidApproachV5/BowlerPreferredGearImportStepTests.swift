@@ -11,7 +11,7 @@ import TestUtilitiesLibrary
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("BowlerPreferredGearImportStep", .tags(.android, .imports, .grdb))
+@Suite("BowlerPreferredGearImportStep", .tags(.android, .imports, .grdb, .service))
 struct BowlerPreferredGearImportStepTests {
 	let preSteps: [SQLiteImportStep] = [
 		AndroidApproachV5SQLiteImporter.BowlersImportStep(),
@@ -67,7 +67,7 @@ struct BowlerPreferredGearImportStepTests {
 
 	// MARK: Test Properties
 
-	@Test("Imports properties")
+	@Test("Imports properties", .tags(.unit))
 	func importsProperties() throws {
 		try androidDb.write {
 			try $0.execute(

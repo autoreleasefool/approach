@@ -11,7 +11,7 @@ import TestUtilitiesLibrary
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("GearImportStep", .tags(.android, .imports, .grdb))
+@Suite("GearImportStep", .tags(.android, .imports, .grdb, .service))
 struct GearImportStepTests {
 	let preSteps = [AndroidApproachV5SQLiteImporter.BowlersImportStep()]
 	let step = AndroidApproachV5SQLiteImporter.GearImportStep()
@@ -51,7 +51,7 @@ struct GearImportStepTests {
 
 	// MARK: Test Properties
 
-	@Test("Imports properties")
+	@Test("Imports properties", .tags(.unit))
 	func importsProperties() throws {
 		try androidDb.write {
 			try $0.execute(
@@ -97,7 +97,11 @@ struct GearImportStepTests {
 		))
 	}
 
-	@Test("Imports kind", arguments: zip(["SHOES", "BOWLING_BALL", "TOWEL", "OTHER"], Gear.Kind.allCases))
+	@Test(
+		"Imports kind",
+		.tags(.unit),
+		arguments: zip(["SHOES", "BOWLING_BALL", "TOWEL", "OTHER"], Gear.Kind.allCases)
+	)
 	func importsKind(from: String, to: Gear.Kind) throws {
 		let gearId = Gear.ID()
 

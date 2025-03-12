@@ -4,7 +4,7 @@ import Testing
 import TestUtilitiesLibrary
 @testable import ViewsLibrary
 
-@Suite("ChipTests", .snapshots(record: .missing))
+@Suite("ChipTests", .tags(.library), .snapshots(record: .missing))
 struct ChipTests {
 
 	@Test("Chip snapshots", .tags(.snapshot))

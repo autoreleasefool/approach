@@ -11,7 +11,7 @@ import TestUtilitiesLibrary
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("MatchPlaysImportStep", .tags(.android, .imports, .grdb))
+@Suite("MatchPlaysImportStep", .tags(.android, .imports, .grdb, .service))
 struct MatchPlaysImportStepTests {
 	let preSteps: [SQLiteImportStep] = [
 		AndroidApproachV5SQLiteImporter.AlleysImportStep(),
@@ -113,7 +113,7 @@ struct MatchPlaysImportStepTests {
 
 	// MARK: Test Properties
 
-	@Test("Imports properties")
+	@Test("Imports properties", .tags(.unit))
 	func importsProperties() throws {
 		try androidDb.write {
 			try $0.execute(
@@ -145,6 +145,7 @@ struct MatchPlaysImportStepTests {
 
 	@Test(
 		"Imports result",
+		.tags(.unit),
 		arguments: zip(
 			[nil, "TIED", "WON", "LOST"],
 			[nil] + MatchPlay.Result.allCases

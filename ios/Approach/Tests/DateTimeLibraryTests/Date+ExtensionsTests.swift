@@ -1,11 +1,13 @@
 import DateTimeLibrary
 import Foundation
 import Testing
+import TestUtilitiesLibrary
 
-@Suite("Date Extensions")
+@Suite("Date Extensions", .tags(.extensions, .library))
 struct DateExtensionTests {
 	@Test(
 		"longFormat formats correctly",
+		.tags(.unit),
 		arguments: zip(
 			[72_072, 1_741_323_817],
 			["January 1, 1970", "March 6, 2025"]
@@ -18,6 +20,7 @@ struct DateExtensionTests {
 
 	@Test(
 		"mediumFormat formats correctly",
+		.tags(.unit),
 		arguments: zip(
 			[72_072, 1_741_323_817],
 			["Thu, Jan 1", "Thu, Mar 6"]
@@ -30,6 +33,7 @@ struct DateExtensionTests {
 
 	@Test(
 		"shortFormat formats correctly",
+		.tags(.unit),
 		arguments: zip(
 			[72_072, 1_741_323_817],
 			["Jan 1", "Mar 6"]

@@ -9,7 +9,7 @@ import TestUtilitiesLibrary
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("TeamsImportStep", .tags(.android, .imports, .grdb))
+@Suite("TeamsImportStep", .tags(.android, .imports, .grdb, .service))
 struct TeamsImportStepTests {
 	let step = AndroidApproachV5SQLiteImporter.TeamsImportStep()
 	let dbProvider: ImportTestDatabaseProvider
@@ -27,7 +27,7 @@ struct TeamsImportStepTests {
 
 	// MARK: Test Properties
 
-	@Test("Imports properties")
+	@Test("Imports properties", .tags(.unit))
 	func importsProperties() throws {
 		try androidDb.write {
 			try $0.execute(

@@ -11,7 +11,7 @@ import TestUtilitiesLibrary
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("LeaguesImportStep", .tags(.android, .imports, .grdb))
+@Suite("LeaguesImportStep", .tags(.android, .imports, .grdb, .service))
 struct LeaguesImportStepTests {
 	let preSteps = [AndroidApproachV5SQLiteImporter.BowlersImportStep()]
 	let step = AndroidApproachV5SQLiteImporter.LeaguesImportStep()
@@ -51,7 +51,7 @@ struct LeaguesImportStepTests {
 
 	// MARK: Test Properties
 
-	@Test("Imports properties")
+	@Test("Imports properties", .tags(.unit))
 	func importsProperties() throws {
 		try androidDb.write {
 			try $0.execute(
@@ -86,7 +86,11 @@ struct LeaguesImportStepTests {
 		#expect(league.archivedOn == Date(timeIntervalSince1970: 123))
 	}
 
-	@Test("Imports recurrence", arguments: zip(["REPEATING", "ONCE"], League.Recurrence.allCases))
+	@Test(
+		"Imports recurrence",
+		.tags(.unit),
+		arguments: zip(["REPEATING", "ONCE"], League.Recurrence.allCases)
+	)
 	func importsRecurrence(from: String, to: League.Recurrence) throws {
 		try androidDb.write {
 			try $0.execute(
@@ -115,6 +119,7 @@ struct LeaguesImportStepTests {
 
 	@Test(
 		"Imports exclude from statistics",
+		.tags(.unit),
 		arguments: zip(["INCLUDE", "EXCLUDE"], League.ExcludeFromStatistics.allCases)
 	)
 	func importsExcludeFromStatistics(from: String, to: League.ExcludeFromStatistics) throws {
@@ -145,6 +150,7 @@ struct LeaguesImportStepTests {
 
 	@Test(
 		"Imports additional pinfall",
+		.tags(.unit),
 		arguments: [nil, 0, 123, 99_999], [nil, 0, 123, 99_999])
 	func importsAdditionalPinfall(additionalPinfall: Int?, additionalGames: Int?) throws {
 		try androidDb.write {
@@ -175,6 +181,7 @@ struct LeaguesImportStepTests {
 
 	@Test(
 		"Imports number of games",
+		.tags(.unit),
 		arguments: [nil, 0, 123, 99_999])
 	func importsNumberOfGames(numberOfGames: Int?) throws {
 		try androidDb.write {

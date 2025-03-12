@@ -29,18 +29,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:TestPlans/LibraryTests.xctestplan">
-         </TestPlanReference>
-         <TestPlanReference
-            reference = "container:TestPlans/Services.xctestplan">
-         </TestPlanReference>
-         <TestPlanReference
-            reference = "container:TestPlans/Repositories.xctestplan">
-         </TestPlanReference>
-         <TestPlanReference
-            reference = "container:TestPlans/Features.xctestplan">
-         </TestPlanReference>
-         <TestPlanReference
             reference = "container:TestPlans/FullTests.xctestplan"
             default = "YES">
          </TestPlanReference>

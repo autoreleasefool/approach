@@ -9,7 +9,7 @@ import TestUtilitiesLibrary
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("AlleysImportStep", .tags(.android, .imports, .grdb))
+@Suite("AlleysImportStep", .tags(.android, .imports, .grdb, .service))
 struct AlleysImportStepTests {
 	let preSteps = [AndroidApproachV5SQLiteImporter.LocationsImportStep()]
 	let step = AndroidApproachV5SQLiteImporter.AlleysImportStep()
@@ -49,7 +49,7 @@ struct AlleysImportStepTests {
 
 	// MARK: Test Properties
 
-	@Test("Imports properties")
+	@Test("Imports properties", .tags(.unit))
 	func importsProperties() throws {
 		try androidDb.write {
 			try $0.execute(
@@ -77,7 +77,11 @@ struct AlleysImportStepTests {
 		#expect(alley.locationId == locationId)
 	}
 
-	@Test("Imports materials", arguments: zip([nil, "SYNTHETIC", "WOOD"], [nil] + Alley.Material.allCases))
+	@Test(
+		"Imports materials",
+		.tags(.unit),
+		arguments: zip([nil, "SYNTHETIC", "WOOD"], [nil] + Alley.Material.allCases)
+	)
 	func importsMaterials(from: String?, to: Alley.Material?) throws {
 		let alleyId = Alley.ID()
 
@@ -106,7 +110,11 @@ struct AlleysImportStepTests {
 		#expect(alley.material == to)
 	}
 
-	@Test("Imports mechanism", arguments: zip([nil, "DEDICATED", "INTERCHANGEABLE"], [nil] + Alley.Mechanism.allCases))
+	@Test(
+		"Imports mechanism",
+		.tags(.unit),
+		arguments: zip([nil, "DEDICATED", "INTERCHANGEABLE"], [nil] + Alley.Mechanism.allCases),
+	)
 	func importsMechanism(from: String?, to: Alley.Mechanism?) throws {
 		let alleyId = Alley.ID()
 
@@ -135,7 +143,11 @@ struct AlleysImportStepTests {
 		#expect(alley.mechanism == to)
 	}
 
-	@Test("Imports pinFall", arguments: zip([nil, "FREE_FALL", "STRINGS"], [nil] + Alley.PinFall.allCases))
+	@Test(
+		"Imports pinFall",
+		.tags(.unit),
+		arguments: zip([nil, "FREE_FALL", "STRINGS"], [nil] + Alley.PinFall.allCases)
+	)
 	func importsPinFall(from: String?, to: Alley.PinFall?) throws {
 		let alleyId = Alley.ID()
 
@@ -164,7 +176,11 @@ struct AlleysImportStepTests {
 		#expect(alley.pinFall == to)
 	}
 
-	@Test("Imports pinBase", arguments: zip([nil, "BLACK", "WHITE", "OTHER"], [nil] + Alley.PinBase.allCases))
+	@Test(
+		"Imports pinBase",
+		.tags(.unit),
+		arguments: zip([nil, "BLACK", "WHITE", "OTHER"], [nil] + Alley.PinBase.allCases)
+	)
 	func importsPinBase(from: String?, to: Alley.PinBase?) throws {
 		let alleyId = Alley.ID()
 

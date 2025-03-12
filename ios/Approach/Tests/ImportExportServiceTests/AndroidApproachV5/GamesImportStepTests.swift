@@ -11,7 +11,7 @@ import TestUtilitiesLibrary
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("GamesImportStep", .tags(.android, .imports, .grdb))
+@Suite("GamesImportStep", .tags(.android, .imports, .grdb, .service))
 struct GamesImportStepTests {
 	let preSteps: [SQLiteImportStep] = [
 		AndroidApproachV5SQLiteImporter.AlleysImportStep(),
@@ -87,7 +87,7 @@ struct GamesImportStepTests {
 
 	// MARK: Test Properties
 
-	@Test("Imports properties")
+	@Test("Imports properties", .tags(.unit))
 	func importsProperties() throws {
 		try androidDb.write {
 			try $0.execute(
@@ -123,6 +123,7 @@ struct GamesImportStepTests {
 
 	@Test(
 		"Imports exclude from statistics",
+		.tags(.unit),
 		arguments: zip(["INCLUDE", "EXCLUDE"], Game.ExcludeFromStatistics.allCases)
 	)
 	func importsExcludeFromStatistics(from: String, to: Game.ExcludeFromStatistics) throws {
@@ -152,6 +153,7 @@ struct GamesImportStepTests {
 
 	@Test(
 		"Imports locked",
+		.tags(.unit),
 		arguments: zip(["LOCKED", "UNLOCKED"], Game.Lock.allCases)
 	)
 	func importsLocked(from: String, to: Game.Lock) throws {
@@ -181,6 +183,7 @@ struct GamesImportStepTests {
 
 	@Test(
 		"Imports scoring method",
+		.tags(.unit),
 		arguments: zip(["MANUAL", "BY_FRAME"], Game.ScoringMethod.allCases)
 	)
 	func importsScoringMethod(from: String, to: Game.ScoringMethod) throws {
@@ -210,6 +213,7 @@ struct GamesImportStepTests {
 
 	@Test(
 		"Imports score",
+		.tags(.unit),
 		arguments: [0, 1, 225, 300, 393, 450]
 	)
 	func importsScore(score: Int) throws {

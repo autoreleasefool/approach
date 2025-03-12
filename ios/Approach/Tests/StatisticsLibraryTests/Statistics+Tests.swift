@@ -1,10 +1,11 @@
 @testable import StatisticsLibrary
 import Testing
+import TestUtilitiesLibrary
 
-@Suite("Statistics")
+@Suite("Statistics", .tags(.library))
 struct StatisticsTests {
 
-	@Test("Finds type by ID")
+	@Test("Finds type by ID", .tags(.unit))
 	func findsTypeByID() {
 		let id = "High Single"
 
@@ -14,7 +15,7 @@ struct StatisticsTests {
 		#expect(!(type is Statistics.HighSeriesOf3.Type))
 	}
 
-	@Test("With invalid ID returns nil")
+	@Test("With invalid ID returns nil", .tags(.unit))
 	func typeWithInvalidIDReturnsNil() {
 		let id = "invalid"
 

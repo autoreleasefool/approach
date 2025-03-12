@@ -9,7 +9,7 @@ import TestUtilitiesLibrary
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("LocationsImportStep", .tags(.android, .imports, .grdb))
+@Suite("LocationsImportStep", .tags(.android, .imports, .grdb, .service))
 struct LocationsImportStepTests {
 	let step = AndroidApproachV5SQLiteImporter.LocationsImportStep()
 	let dbProvider: ImportTestDatabaseProvider
@@ -41,16 +41,20 @@ struct LocationsImportStepTests {
 
 	// MARK: Test Properties
 
-	@Test("Imports properties", arguments: zip(
-		[
-			FromLocation(title: "Grandview Lanes", subtitle: "Vancouver", latitude: 49.265201, longitude: -123.069897),
-			FromLocation(title: "Skyview Lanes", subtitle: "Bolton", latitude: 43.879517, longitude: -79.738271),
-		],
-		[
-			ToLocation(title: "Grandview Lanes", subtitle: "Vancouver", latitude: 49.265201, longitude: -123.069897),
-			ToLocation(title: "Skyview Lanes", subtitle: "Bolton", latitude: 43.879517, longitude: -79.738271),
-		]
-	))
+	@Test(
+		"Imports properties",
+		.tags(.unit)
+		arguments: zip(
+			[
+				FromLocation(title: "Grandview Lanes", subtitle: "Vancouver", latitude: 49.265201, longitude: -123.069897),
+				FromLocation(title: "Skyview Lanes", subtitle: "Bolton", latitude: 43.879517, longitude: -79.738271),
+			],
+			[
+				ToLocation(title: "Grandview Lanes", subtitle: "Vancouver", latitude: 49.265201, longitude: -123.069897),
+				ToLocation(title: "Skyview Lanes", subtitle: "Bolton", latitude: 43.879517, longitude: -79.738271),
+			]
+		)
+	)
 	func importsProperties(_ from: FromLocation, to: ToLocation) throws {
 		let locationId = Location.ID()
 

@@ -11,16 +11,16 @@ import Testing
 import TestUtilitiesLibrary
 import TestUtilitiesPackageLibrary
 
-@Suite("MatchPlaysRepository", .tags(.grdb))
+@Suite("MatchPlaysRepository", .tags(.repository))
 struct MatchPlaysRepositoryTests {
 
 	// MARK: Create
 
-	@Suite("create")
+	@Suite("create", .tags(.dependencies, .grdb))
 	struct CreateTests {
 		@Dependency(MatchPlaysRepository.self) var matchPlays
 
-		@Test("Throws error when match play ID exists")
+		@Test("Throws error when match play ID exists", .tags(.unit))
 		func throwsErrorWhenMatchPlayIDExists() async throws {
 			// Given a database with an existing match play
 			let matchPlay = MatchPlay.Database(
@@ -54,7 +54,7 @@ struct MatchPlaysRepositoryTests {
 			#expect(updated?.result == .lost)
 		}
 
-		@Test("Creates match play when match play ID does not exist")
+		@Test("Creates match play when match play ID does not exist", .tags(.unit))
 		func createsMatchPlayWhenMatchPlayIDDoesNotExist() async throws {
 			// Given a database with no match plays
 			let db = try initializeApproachDatabase(withGames: .default, withMatchPlays: nil)
@@ -82,11 +82,11 @@ struct MatchPlaysRepositoryTests {
 
 	// MARK: Update
 
-	@Suite("update")
+	@Suite("update", .tags(.dependencies, .grdb))
 	struct UpdateTests {
 		@Dependency(MatchPlaysRepository.self) var matchPlays
 
-		@Test("Updates match play when match play ID exists")
+		@Test("Updates match play when match play ID exists", .tags(.unit))
 		func updatesMatchPlayWhenIDExists() async throws {
 			// Given a database with an existing match play
 			let matchPlay = MatchPlay.Database(
@@ -118,7 +118,7 @@ struct MatchPlaysRepositoryTests {
 			#expect(updated?.result == .tied)
 		}
 
-		@Test("Throws error when match play ID does not exist")
+		@Test("Throws error when match play ID does not exist", .tags(.unit))
 		func throwsErrorWhenIDDoesNotExist() async throws {
 			// Given a database with no match plays
 			let db = try initializeApproachDatabase(withMatchPlays: nil)
@@ -142,11 +142,11 @@ struct MatchPlaysRepositoryTests {
 
 	// MARK: Delete
 
-	@Suite("Delete")
+	@Suite("Delete", .tags(.dependencies, .grdb))
 	struct DeleteTests {
 		@Dependency(MatchPlaysRepository.self) var matchPlays
 
-		@Test("Deletes match play when ID exists")
+		@Test("Deletes match play when ID exists", .tags(.unit))
 		func deletesMatchPlayWhenIDExists() async throws {
 			// Given a database with 2 match plays
 			let matchPlay1 = MatchPlay.Database(
@@ -182,7 +182,7 @@ struct MatchPlaysRepositoryTests {
 			#expect(otherExists)
 		}
 
-		@Test("Does nothing when ID does not exist")
+		@Test("Does nothing when ID does not exist", .tags(.unit))
 		func doesNothingWhenIDDoesNotExist() async throws {
 			// Given a database with 1 match play
 			let matchPlay1 = MatchPlay.Database(
@@ -199,7 +199,7 @@ struct MatchPlaysRepositoryTests {
 				$0[DatabaseService.self].writer = { @Sendable in db }
 				$0[MatchPlaysRepository.self] = .liveValue
 			} operation: {
-				try await self.matchPlays.delete(UUID(1))
+				try await matchPlays.delete(UUID(1))
 			}
 
 			// Leaves the match play

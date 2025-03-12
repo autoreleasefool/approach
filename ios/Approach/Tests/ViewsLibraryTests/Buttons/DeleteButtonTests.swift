@@ -4,7 +4,7 @@ import Testing
 import TestUtilitiesLibrary
 @testable import ViewsLibrary
 
-@Suite("DeleteButton", .snapshots(record: .missing))
+@Suite("DeleteButton", .tags(.library), .snapshots(record: .missing))
 struct DeleteButtonTests {
 
 	@Test("Delete button snapshots", .tags(.snapshot))

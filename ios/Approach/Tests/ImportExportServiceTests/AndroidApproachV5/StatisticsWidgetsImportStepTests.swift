@@ -12,7 +12,7 @@ import TestUtilitiesLibrary
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("StatisticsWidgetsImportStep", .tags(.android, .imports, .grdb))
+@Suite("StatisticsWidgetsImportStep", .tags(.android, .imports, .grdb, .service))
 struct StatisticsWidgetsImportStepTests {
 	let preSteps: [SQLiteImportStep] = [
 		AndroidApproachV5SQLiteImporter.BowlersImportStep(),
@@ -66,7 +66,7 @@ struct StatisticsWidgetsImportStepTests {
 
 	// MARK: Test Properties
 
-	@Test("Imports properties")
+	@Test("Imports properties", .tags(.unit))
 	func importsProperties() throws {
 		try androidDb.write {
 			try $0.execute(
@@ -98,7 +98,11 @@ struct StatisticsWidgetsImportStepTests {
 		#expect(widget.priority == 1)
 	}
 
-	@Test("Imports timeline", arguments: zip(["ONE_MONTH", "THREE_MONTHS", "SIX_MONTHS", "ONE_YEAR", "ALL_TIME"], StatisticsWidget.Timeline.allCases))
+	@Test(
+		"Imports timeline",
+		.tags(.unit),
+		arguments: zip(["ONE_MONTH", "THREE_MONTHS", "SIX_MONTHS", "ONE_YEAR", "ALL_TIME"], StatisticsWidget.Timeline.allCases)
+	)
 	func importsTimeline(from: String, to: StatisticsWidget.Timeline) throws {
 		try androidDb.write {
 			try $0.execute(
@@ -156,7 +160,7 @@ struct StatisticsWidgetsImportStepTests {
 		#expect(widget.statistic == to.title)
 	}
 
-	@Test("Imports overview context")
+	@Test("Imports overview context", .tags(.unit))
 	func importsOverviewContext() throws {
 		try androidDb.write {
 			try $0.execute(
@@ -182,7 +186,7 @@ struct StatisticsWidgetsImportStepTests {
 		#expect(widget.context == "bowlersList")
 	}
 
-	@Test("Imports bowler context")
+	@Test("Imports bowler context", .tags(.unit))
 	func importsBowlerContext() throws {
 		try androidDb.write {
 			try $0.execute(

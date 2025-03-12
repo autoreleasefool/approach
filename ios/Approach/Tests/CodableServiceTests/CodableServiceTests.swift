@@ -3,13 +3,14 @@
 import Dependencies
 import Foundation
 import Testing
+import TestUtilitiesLibrary
 
-@Suite("CodableService")
+@Suite("CodableService", .tags(.service))
 struct CodableServiceTests {
 	@Dependency(DecoderService.self) var decoder
 	@Dependency(EncoderService.self) var encoder
 
-	@Test("Encodes and decodes")
+	@Test("Encodes and decodes", .tags(.unit))
 	func encodesAndDecodes() throws {
 		let codable = ["foo": "bar"]
 

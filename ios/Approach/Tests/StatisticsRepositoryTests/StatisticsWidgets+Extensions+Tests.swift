@@ -4,14 +4,15 @@ import ModelsLibrary
 @testable import StatisticsRepositoryInterface
 @testable import StatisticsWidgetsLibrary
 import Testing
+import TestUtilitiesLibrary
 
-@Suite("StatisticsWidgetsExtensions")
+@Suite("StatisticsWidgetsExtensions", .tags(.repository))
 struct StatisticsWidgetsExtensionsTests {
 
 	@Suite("Timeline")
 	struct TimelineTests {
 
-		@Test("startDate is correct")
+		@Test("startDate is correct", .tags(.unit))
 		func startDateIsCorrect() throws {
 			let formatter = ISO8601DateFormatter()
 

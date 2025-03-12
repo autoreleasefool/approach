@@ -5,7 +5,7 @@ import SwiftUI
 import Testing
 import TestUtilitiesLibrary
 
-@Suite("ListContent", .snapshots(record: .missing))
+@Suite("ListContent", .tags(.library), .snapshots(record: .missing))
 struct ListContentTests {
 	@Test("List empty content snapshot", .tags(.snapshot))
 	@MainActor
