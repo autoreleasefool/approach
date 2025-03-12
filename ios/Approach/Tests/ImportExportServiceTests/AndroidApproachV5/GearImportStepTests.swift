@@ -11,7 +11,7 @@ import TestUtilitiesLibrary
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("GearImportStep tests", .tags(.android, .imports))
+@Suite("GearImportStep", .tags(.android, .imports, .grdb))
 struct GearImportStepTests {
 	let preSteps = [AndroidApproachV5SQLiteImporter.BowlersImportStep()]
 	let step = AndroidApproachV5SQLiteImporter.GearImportStep()

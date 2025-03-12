@@ -4,7 +4,7 @@ import Testing
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("AndroidStatistics tests", .tags(.android))
+@Suite("AndroidStatistics", .tags(.android))
 struct AndroidStatisticsTests {
 	@Test("Android statistics map to iOS")
 	func mappingExists() {

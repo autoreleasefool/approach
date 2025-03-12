@@ -4,8 +4,9 @@ import Testing
 import TestUtilitiesLibrary
 @testable import ViewsLibrary
 
-@Suite(.snapshots(record: .missing))
+@Suite("ChipTests", .snapshots(record: .missing))
 struct ChipTests {
+
 	@Test("Chip snapshots", .tags(.snapshot))
 	@MainActor
 	func snapshotChips() {

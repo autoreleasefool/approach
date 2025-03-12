@@ -4,8 +4,9 @@ import Testing
 import TestUtilitiesLibrary
 @testable import ViewsLibrary
 
-@Suite(.snapshots(record: .missing))
+@Suite("EditButton", .snapshots(record: .missing))
 struct EditButtonTests {
+
 	@Test("Edit button snapshots", .tags(.snapshot))
 	@MainActor
 	func snapshotEditButton() {

@@ -4,8 +4,9 @@ import Testing
 import TestUtilitiesLibrary
 @testable import ViewsLibrary
 
-@Suite(.snapshots(record: .missing))
+@Suite("FilterButton", .snapshots(record: .missing))
 struct FilterButtonTests {
+
 	@Test("Active filter button snapshot", .tags(.snapshot))
 	@MainActor
 	func snapshotActiveFilterButton() {

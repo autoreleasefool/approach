@@ -4,8 +4,9 @@ import Testing
 import TestUtilitiesLibrary
 @testable import ViewsLibrary
 
-@Suite(.snapshots(record: .missing))
+@Suite("DeleteButton", .snapshots(record: .missing))
 struct DeleteButtonTests {
+
 	@Test("Delete button snapshots", .tags(.snapshot))
 	@MainActor
 	func snapshotDeleteButton() {

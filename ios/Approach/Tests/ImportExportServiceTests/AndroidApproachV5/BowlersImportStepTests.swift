@@ -9,7 +9,7 @@ import TestUtilitiesLibrary
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("BowlersImportStep tests", .tags(.android, .imports))
+@Suite("BowlersImportStep", .tags(.android, .imports, .grdb))
 struct BowlersImportStepTests {
 	let step = AndroidApproachV5SQLiteImporter.BowlersImportStep()
 	let dbProvider: ImportTestDatabaseProvider

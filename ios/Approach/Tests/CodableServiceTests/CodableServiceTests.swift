@@ -4,7 +4,7 @@ import Dependencies
 import Foundation
 import Testing
 
-@Suite("CodableService Tests")
+@Suite("CodableService")
 struct CodableServiceTests {
 	@Dependency(DecoderService.self) var decoder
 	@Dependency(EncoderService.self) var encoder

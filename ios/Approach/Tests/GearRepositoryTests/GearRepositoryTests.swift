@@ -11,7 +11,7 @@ import TestDatabaseUtilitiesLibrary
 import Testing
 import TestUtilitiesPackageLibrary
 
-@Suite("GearRepository Tests")
+@Suite("GearRepository")
 struct GearRepositoryTests {
 
 	// MARK: - List

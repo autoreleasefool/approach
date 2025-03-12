@@ -11,7 +11,7 @@ import TestUtilitiesLibrary
 @testable import ImportExportService
 @testable import ImportExportServiceInterface
 
-@Suite("GameLanesImportStep tests", .tags(.android, .imports))
+@Suite("GameLanesImportStep", .tags(.android, .imports, .grdb))
 struct GameLanesImportStepTests {
 	let preSteps: [SQLiteImportStep] = [
 		AndroidApproachV5SQLiteImporter.AlleysImportStep(),
