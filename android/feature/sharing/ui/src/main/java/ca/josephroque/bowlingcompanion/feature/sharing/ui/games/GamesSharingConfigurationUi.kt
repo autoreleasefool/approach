@@ -16,6 +16,21 @@ data class GamesSharingConfigurationUiState(
 		val index: Int,
 		val isGameIncluded: Boolean,
 	)
+
+	fun performAction(action: GamesSharingConfigurationUiAction): GamesSharingConfigurationUiState {
+		return when (action) {
+			is GamesSharingConfigurationUiAction.IsSeriesDetailCheckedToggled -> copy(isSeriesDetailChecked = action.isSeriesDetailChecked)
+			is GamesSharingConfigurationUiAction.IsSeriesDateCheckedToggled -> copy(isSeriesDateChecked = action.isSeriesDateChecked)
+			is GamesSharingConfigurationUiAction.IsBowlerNameCheckedToggled -> copy(isBowlerNameChecked = action.isBowlerNameChecked)
+			is GamesSharingConfigurationUiAction.IsLeagueNameCheckedToggled -> copy(isLeagueNameChecked = action.isLeagueNameChecked)
+			is GamesSharingConfigurationUiAction.IsGameIncludedToggled -> {
+				val gameIndex = isGameIncluded.indexOfFirst { it.gameId == action.gameId }
+				val updatedGame = isGameIncluded[gameIndex].copy(isGameIncluded = action.isGameIncluded)
+				copy(isGameIncluded = isGameIncluded.toMutableList().apply { set(gameIndex, updatedGame) })
+			}
+			is GamesSharingConfigurationUiAction.AppearanceChanged -> copy(appearance = action.appearance)
+		}
+	}
 }
 
 sealed interface GamesSharingConfigurationUiAction {

@@ -16,6 +16,20 @@ data class SeriesSharingConfigurationUiState(
 ) {
 	val isAnySummaryItemShowing: Boolean
 		get() = isSeriesTotalChecked || isLowScoreChecked || isHighScoreChecked
+
+	fun performAction(action: SeriesSharingConfigurationUiAction): SeriesSharingConfigurationUiState {
+		return when (action) {
+			is SeriesSharingConfigurationUiAction.IsDateCheckedToggled -> copy(isDateChecked = action.isDateChecked)
+			is SeriesSharingConfigurationUiAction.IsBowlerCheckedToggled -> copy(isBowlerChecked = action.isBowlerChecked)
+			is SeriesSharingConfigurationUiAction.IsLeagueCheckedToggled -> copy(isLeagueChecked = action.isLeagueChecked)
+			is SeriesSharingConfigurationUiAction.IsSeriesTotalCheckedToggled -> copy(isSeriesTotalChecked = action.isSeriesTotalChecked)
+			is SeriesSharingConfigurationUiAction.IsHighScoreCheckedToggled -> copy(isHighScoreChecked = action.isHighScoreChecked)
+			is SeriesSharingConfigurationUiAction.IsLowScoreCheckedToggled -> copy(isLowScoreChecked = action.isLowScoreChecked)
+			is SeriesSharingConfigurationUiAction.ChartRangeMinimumChanged -> copy(chartRange = IntRange(action.minimum, chartRange.last))
+			is SeriesSharingConfigurationUiAction.ChartRangeMaximumChanged -> copy(chartRange = IntRange(chartRange.first, action.maximum))
+			is SeriesSharingConfigurationUiAction.AppearanceChanged -> copy(appearance = action.appearance)
+		}
+	}
 }
 
 sealed interface SeriesSharingConfigurationUiAction {

@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.ShareableSeries
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.games.GamesSharingConfiguration
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfiguration
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfigurationUiState
 import dev.shreyaspatil.capturable.capturable
@@ -28,7 +29,10 @@ fun Sharing(state: SharingUiState, onAction: (SharingUiAction) -> Unit, modifier
 		modifier = modifier,
 	) {
 		when (state) {
-			is SharingUiState.SharingGame -> TODO()
+			is SharingUiState.SharingGames -> GamesSharingConfiguration(
+				state = state.gamesSharing,
+				onAction = { onAction(SharingUiAction.GameSharingAction(it)) },
+			)
 			is SharingUiState.SharingStatistic -> TODO()
 			is SharingUiState.SharingTeamSeries -> TODO()
 			is SharingUiState.SharingSeries -> SeriesSharingConfiguration(

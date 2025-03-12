@@ -6,12 +6,16 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.filesystem.SystemFileManager
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
+import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
+import ca.josephroque.bowlingcompanion.core.model.ShareableGame
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingAppearance
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingData
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingSource
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingUiAction
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingUiState
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.games.GamesSharingConfigurationUiAction
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.games.GamesSharingConfigurationUiState
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfigurationUiAction
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfigurationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,10 +44,15 @@ class SharingViewModel @Inject constructor(
 // 	private val analyticsClient: AnalyticsClient,
 	private val fileManager: SystemFileManager,
 	private val seriesRepository: SeriesRepository,
+	private val gamesRepository: GamesRepository,
 ) : ApproachViewModel<SharingScreenEvent>() {
 
 	private val seriesSharingState: MutableStateFlow<SeriesSharingConfigurationUiState> = MutableStateFlow(
 		SeriesSharingConfigurationUiState(),
+	)
+
+	private var gamesSharingState: MutableStateFlow<GamesSharingConfigurationUiState> = MutableStateFlow(
+		GamesSharingConfigurationUiState(),
 	)
 
 	private val sharingSource: MutableStateFlow<SharingSource?> = MutableStateFlow(null)
@@ -51,12 +60,15 @@ class SharingViewModel @Inject constructor(
 	private val sharingData = combine(
 		sharingSource.mapNotNull { it },
 		seriesSharingState,
-	) { source, seriesSharingState ->
+		gamesSharingState,
+	) { source, seriesSharingState, gamesSharingState ->
 		when (source) {
 			is SharingSource.Series ->
 				seriesRepository.getShareableSeries(source.seriesId)
 					.map { SharingData.Series(it, seriesSharingState) }
-			is SharingSource.Game -> flowOf(SharingData.Game)
+			is SharingSource.Game ->
+				gamesRepository.getShareableGame(source.gameId)
+					.map { SharingData.Games(listOf(it), gamesSharingState) }
 			is SharingSource.Statistic -> flowOf(SharingData.Statistic)
 			is SharingSource.TeamSeries -> flowOf(SharingData.TeamSeries)
 
@@ -67,10 +79,11 @@ class SharingViewModel @Inject constructor(
 	private val sharingUiState: Flow<SharingUiState> = combine(
 		sharingData,
 		seriesSharingState,
-	) { sharingData, seriesSharingState ->
+		gamesSharingState,
+	) { sharingData, seriesSharingState, gamesSharingState ->
 		when (sharingData) {
 			is SharingData.Series -> SharingUiState.SharingSeries(seriesSharingState, sharingData)
-			is SharingData.Game -> SharingUiState.SharingGame
+			is SharingData.Games -> SharingUiState.SharingGames(gamesSharingState, sharingData)
 			is SharingData.Statistic -> SharingUiState.SharingStatistic
 			is SharingData.TeamSeries -> SharingUiState.SharingTeamSeries
 		}
@@ -90,7 +103,8 @@ class SharingViewModel @Inject constructor(
 				.collectLatest { data ->
 					when (data) {
 						is SharingData.Series -> updateDefaultChartRanges(data.series.scores)
-						SharingData.Game, SharingData.Statistic, SharingData.TeamSeries -> TODO()
+						is SharingData.Games -> updateDefaultIncludedGames(data.games)
+						SharingData.Statistic, SharingData.TeamSeries -> TODO()
 					}
 				}
 		}
@@ -110,32 +124,17 @@ class SharingViewModel @Inject constructor(
 		when (action) {
 			is SharingUiAction.ShareButtonClicked -> shareImage(action.image)
 			is SharingUiAction.SeriesSharingAction -> handleSeriesSharingAction(action.action)
-			is SharingUiAction.GameSharingAction -> TODO()
+			is SharingUiAction.GameSharingAction -> handleGamesSharingAction(action.action)
 			is SharingUiAction.StatisticSharingAction -> TODO()
 		}
 	}
 
 	private fun handleSeriesSharingAction(action: SeriesSharingConfigurationUiAction) {
-		when (action) {
-			is SeriesSharingConfigurationUiAction.IsDateCheckedToggled ->
-				toggleIsDateChecked(isDateChecked = action.isDateChecked)
-			is SeriesSharingConfigurationUiAction.IsSeriesTotalCheckedToggled ->
-				toggleIsSeriesTotalChecked(isSeriesTotalChecked = action.isSeriesTotalChecked)
-			is SeriesSharingConfigurationUiAction.IsBowlerCheckedToggled ->
-				toggleIsBowlerChecked(isBowlerChecked = action.isBowlerChecked)
-			is SeriesSharingConfigurationUiAction.IsLeagueCheckedToggled ->
-				toggleIsLeagueChecked(isLeagueChecked = action.isLeagueChecked)
-			is SeriesSharingConfigurationUiAction.IsHighScoreCheckedToggled ->
-				toggleIsHighScoreChecked(isHighScoreChecked = action.isHighScoreChecked)
-			is SeriesSharingConfigurationUiAction.IsLowScoreCheckedToggled ->
-				toggleIsLowScoreChecked(isLowScoreChecked = action.isLowScoreChecked)
-			is SeriesSharingConfigurationUiAction.ChartRangeMinimumChanged ->
-				updateChartRangeMinimum(minimum = action.minimum)
-			is SeriesSharingConfigurationUiAction.ChartRangeMaximumChanged ->
-				updateChartRangeMaximum(maximum = action.maximum)
-			is SeriesSharingConfigurationUiAction.AppearanceChanged ->
-				updateAppearance(appearance = action.appearance)
-		}
+		seriesSharingState.update { it.performAction(action) }
+	}
+
+	private fun handleGamesSharingAction(action: GamesSharingConfigurationUiAction) {
+		gamesSharingState.update { it.performAction(action) }
 	}
 
 	private fun shareImage(image: Deferred<ImageBitmap>) {
@@ -164,31 +163,8 @@ class SharingViewModel @Inject constructor(
 	private fun setDefaultAppearance(isSystemInDarkTheme: Boolean) {
 		val appearance = if (isSystemInDarkTheme) SharingAppearance.Dark else SharingAppearance.Light
 		seriesSharingState.update { it.copy(appearance = appearance) }
-		// TODO: Update GameSharingState and StatisticSharingState
-	}
-
-	private fun toggleIsDateChecked(isDateChecked: Boolean) {
-		seriesSharingState.update { it.copy(isDateChecked = isDateChecked) }
-	}
-
-	private fun toggleIsSeriesTotalChecked(isSeriesTotalChecked: Boolean) {
-		seriesSharingState.update { it.copy(isSeriesTotalChecked = isSeriesTotalChecked) }
-	}
-
-	private fun toggleIsBowlerChecked(isBowlerChecked: Boolean) {
-		seriesSharingState.update { it.copy(isBowlerChecked = isBowlerChecked) }
-	}
-
-	private fun toggleIsLeagueChecked(isLeagueChecked: Boolean) {
-		seriesSharingState.update { it.copy(isLeagueChecked = isLeagueChecked) }
-	}
-
-	private fun toggleIsHighScoreChecked(isHighScoreChecked: Boolean) {
-		seriesSharingState.update { it.copy(isHighScoreChecked = isHighScoreChecked) }
-	}
-
-	private fun toggleIsLowScoreChecked(isLowScoreChecked: Boolean) {
-		seriesSharingState.update { it.copy(isLowScoreChecked = isLowScoreChecked) }
+		gamesSharingState.update { it.copy(appearance = appearance) }
+		// TODO: Update StatisticSharingState
 	}
 
 	private fun updateDefaultChartRanges(scores: List<Int>) {
@@ -204,19 +180,19 @@ class SharingViewModel @Inject constructor(
 		}
 	}
 
-	private fun updateChartRangeMinimum(minimum: Int) {
-		seriesSharingState.update {
-			it.copy(chartRange = IntRange(start = minimum, endInclusive = it.chartRange.last))
+	private fun updateDefaultIncludedGames(games: List<ShareableGame>) {
+		gamesSharingState.update {
+			it.copy(
+				isGameIncluded = games.map { game ->
+					GamesSharingConfigurationUiState.IncludedGame(
+						gameId = game.id,
+						index = game.index,
+						isGameIncluded = it.isGameIncluded
+							.firstOrNull { existingGame -> existingGame.gameId == game.id }
+							?.isGameIncluded ?: true,
+					)
+				}
+			)
 		}
-	}
-
-	private fun updateChartRangeMaximum(maximum: Int) {
-		seriesSharingState.update {
-			it.copy(chartRange = IntRange(start = it.chartRange.first, endInclusive = maximum))
-		}
-	}
-
-	private fun updateAppearance(appearance: SharingAppearance) {
-		seriesSharingState.update { it.copy(appearance = appearance) }
 	}
 }
