@@ -17,6 +17,8 @@ data class ScoreSheetConfiguration(
 	val style: Style = Style.PLAIN,
 	val framePosition: Set<FramePosition> = setOf(FramePosition.BOTTOM),
 	val scorePosition: Set<ScorePosition> = setOf(ScorePosition.END),
+	val scrollEnabled: Boolean = true,
+	val relativeContainerSizing: Boolean = true,
 ) {
 	enum class Style(
 		@StringRes val title: Int,

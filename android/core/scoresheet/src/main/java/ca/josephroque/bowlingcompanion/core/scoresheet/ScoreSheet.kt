@@ -48,14 +48,19 @@ import ca.josephroque.bowlingcompanion.core.model.stub.ScoringStub
 @Composable
 fun ScoreSheet(state: ScoreSheetUiState, onAction: (ScoreSheetUiAction) -> Unit, modifier: Modifier = Modifier) {
 	BoxWithConstraints(
-		modifier = modifier.fillMaxWidth(),
+		modifier = modifier.width(120.dp * 12f),
 	) {
 		val scrollState = rememberScrollState()
-		val cellWidth = if (maxWidth >= 600.dp) maxWidth / 5f else maxWidth / 3f
+		val cellWidth = if (state.configuration.relativeContainerSizing) {
+			if (maxWidth >= 600.dp) maxWidth / 5f else maxWidth / 3f
+		} else {
+			120.dp
+		}
+
 		val targetPositionDp = (state.selection.frameIndex - 1) * (maxWidth.value / 3f)
 		val targetPositionPx = with(LocalDensity.current) { targetPositionDp.dp.toPx() }
-		LaunchedEffect(state.selection) {
-			if (state.selection.frameIndex >= 0) {
+		LaunchedEffect(state.selection, state.configuration.scrollEnabled) {
+			if (state.selection.frameIndex >= 0 && state.configuration.scrollEnabled) {
 				scrollState.animateScrollTo(targetPositionPx.toInt())
 			}
 		}
@@ -64,7 +69,13 @@ fun ScoreSheet(state: ScoreSheetUiState, onAction: (ScoreSheetUiAction) -> Unit,
 			state = state,
 			onAction = onAction,
 			cellWidth = cellWidth,
-			modifier = Modifier.horizontalScroll(scrollState),
+			modifier = Modifier.then(
+				if (state.configuration.scrollEnabled) {
+					Modifier.horizontalScroll(scrollState)
+				} else {
+					Modifier.width(120.dp * 12f)
+				},
+			),
 		)
 	}
 }
@@ -473,6 +484,8 @@ private fun ScoreSheetPreview(
 		ScoreSheet(
 			state = ScoreSheetUiState(
 				configuration = ScoreSheetConfiguration(
+					relativeContainerSizing = false,
+					scrollEnabled = false,
 					framePosition = setOf(framePosition),
 					scorePosition = setOf(ScorePosition.START, ScorePosition.END),
 					style = ScoreSheetConfiguration.Style.PLAIN,
