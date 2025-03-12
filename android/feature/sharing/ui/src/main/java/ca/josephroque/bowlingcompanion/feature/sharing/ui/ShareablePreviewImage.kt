@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.sharing.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.games.ShareableGamesImage
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.ShareableSeriesImage
 
 @Composable
@@ -12,7 +13,11 @@ fun ShareablePreviewImage(state: SharingData, modifier: Modifier = Modifier) {
 			configuration = state.configuration,
 			modifier = modifier,
 		)
-		SharingData.Game -> TODO()
+		is SharingData.Games -> ShareableGamesImage(
+			games = state.games,
+			configuration = state.configuration,
+			modifier = modifier,
+		)
 		SharingData.Statistic -> TODO()
 		SharingData.TeamSeries -> TODO()
 	}
