@@ -58,7 +58,7 @@ struct StatisticsRepositoryWidgetSourcesTests {
 		@Dependency(StatisticsRepository.self) var statistics
 
 		@Test("With one bowler, returns one bowler", .tags(.unit))
-		func withOneBowlerReturnsOneBowler() async throws {
+		func withOneBowler_returnsOneBowler() async throws {
 			let bowler1 = Bowler.Database.mock(id: UUID(0), name: "Joseph")
 			let db = try initializeApproachDatabase(withBowlers: .custom([bowler1]))
 
@@ -78,7 +78,7 @@ struct StatisticsRepositoryWidgetSourcesTests {
 		}
 
 		@Test("With no bowlers, returns nil", .tags(.unit))
-		func withNoBowlersReturnsNil() async throws {
+		func withNoBowlers_returnsNil() async throws {
 			let db = try initializeApproachDatabase(withBowlers: .zero)
 
 			let sources = try await withDependencies {
@@ -91,8 +91,8 @@ struct StatisticsRepositoryWidgetSourcesTests {
 			#expect(sources == nil)
 		}
 
-		@Test("With two bowlers, returs nil", .tags(.unit))
-		func withTwoBowlersReturnsNil() async throws {
+		@Test("With two bowlers, returns nil", .tags(.unit))
+		func withTwoBowlers_returnsNil() async throws {
 			let bowler1 = Bowler.Database.mock(id: UUID(0), name: "Joseph")
 			let bowler2 = Bowler.Database.mock(id: UUID(1), name: "Sarah")
 			let db = try initializeApproachDatabase(withBowlers: .custom([bowler1, bowler2]))
@@ -108,7 +108,7 @@ struct StatisticsRepositoryWidgetSourcesTests {
 		}
 
 		@Test("With opponent, returns bowler", .tags(.unit))
-		func testLoadsDefaultWidgetSources_WithOpponent_ReturnsBowler() async throws {
+		func withOpponent_returnsOneBowler() async throws {
 			let bowler1 = Bowler.Database.mock(id: UUID(0), name: "Joseph")
 			let bowler2 = Bowler.Database.mock(id: UUID(1), name: "Sarah", kind: .opponent)
 			let db = try initializeApproachDatabase(withBowlers: .custom([bowler1, bowler2]))

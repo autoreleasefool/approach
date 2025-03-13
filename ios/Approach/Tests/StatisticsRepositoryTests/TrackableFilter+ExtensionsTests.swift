@@ -1,14 +1,17 @@
 import DatabaseServiceInterface
+import Foundation
 import GRDB
 import ModelsLibrary
 @testable import StatisticsLibrary
 @testable import StatisticsRepository
 @testable import StatisticsRepositoryInterface
 import TestDatabaseUtilitiesLibrary
+import Testing
+import TestUtilitiesLibrary
 import TestUtilitiesPackageLibrary
-import XCTest
 
-final class TrackableFiltersTests: XCTestCase {
+@Suite("TrackableFilters", .tags(.repository, .grdb, .dependencies))
+struct TrackableFiltersTests {
 
 	let bowler = Bowler.Database.mock(id: UUID(0), name: "Joseph")
 
@@ -65,7 +68,8 @@ final class TrackableFiltersTests: XCTestCase {
 
 	// MARK: Bowler
 
-	func testBuildInitialQueries_WithBowlerSource_ReturnsExpectedSeries() async throws {
+	@Test("buildInitialQueries with bowler source returns expected series", .tags(.unit))
+	func buildInitialQueries_withBowlerSource_returnsExpectedSeries() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .bowler(UUID(0)))
@@ -75,10 +79,11 @@ final class TrackableFiltersTests: XCTestCase {
 			return try seriesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(series, [series1])
+		#expect(series == [series1])
 	}
 
-	func testBuildInitialQueries_WithBowlerSource_ReturnsExpectedGames() async throws {
+	@Test("buildInitialQueries with bowler source returns expected games", .tags(.unit))
+	func buildInitialQueries_withBowlerSource_returnsExpectedGames() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .bowler(UUID(0)))
@@ -88,10 +93,11 @@ final class TrackableFiltersTests: XCTestCase {
 			return try gamesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(games, [game1])
+		#expect(games == [game1])
 	}
 
-	func testBuildInitialQueries_WithBowlerSource_ReturnsExpectedFrames() async throws {
+	@Test("buildInitialQueries with bowler source returns expected frames", .tags(.unit))
+	func buildInitialQueries_withBowlerSource_returnsExpectedFrames() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .bowler(UUID(0)))
@@ -101,15 +107,16 @@ final class TrackableFiltersTests: XCTestCase {
 			return try framesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(frames, [frame1])
+		#expect(frames == [frame1])
 	}
 
-	func testBuildInitialQueries_WithBowlerSource_WhenBowlerMissing_ThrowsError() async throws {
+	@Test("buildInitialQueries with bowler source throws error when bowler missing", .tags(.unit))
+	func buildInitialQueries_withBowlerSource_rhrowsErrorWhenBowlerMissing() async throws {
 		let database = try initializeApproachDatabase(withBowlers: .zero)
 
 		let filter = TrackableFilter(source: .bowler(UUID(0)))
 
-		await assertThrowsError(ofType: FetchableError.self) {
+		await #expect(throws: FetchableError.self) {
 			_ = try await database.read {
 				let (seriesRequest, _, _) = try filter.buildInitialQueries(db: $0)
 				return try seriesRequest?.fetchAll($0)
@@ -119,7 +126,8 @@ final class TrackableFiltersTests: XCTestCase {
 
 	// MARK: League
 
-	func testBuildInitialQueries_WithLeagueSource_ReturnsExpectedSeries() async throws {
+	@Test("buildInitialQueries with league source returns expected series", .tags(.unit))
+	func buildInitialQueries_withLeagueSource_returnsExpectedSeries() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .league(UUID(0)))
@@ -129,10 +137,11 @@ final class TrackableFiltersTests: XCTestCase {
 			return try seriesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(series, [series1])
+		#expect(series == [series1])
 	}
 
-	func testBuildInitialQueries_WithLeagueSource_ReturnsExpectedGames() async throws {
+	@Test("buildInitialQueries with league source returns expected games", .tags(.unit))
+	func buildInitialQueries_withLeagueSource_returnsExpectedGames() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .league(UUID(0)))
@@ -142,10 +151,11 @@ final class TrackableFiltersTests: XCTestCase {
 			return try gamesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(games, [game1])
+		#expect(games == [game1])
 	}
 
-	func testBuildInitialQueries_WithLeagueSource_ReturnsExpectedFrames() async throws {
+	@Test("buildInitialQueries with league source returns expected frames", .tags(.unit))
+	func buildInitialQueries_withLeagueSource_returnsExpectedFrames() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .league(UUID(0)))
@@ -155,15 +165,16 @@ final class TrackableFiltersTests: XCTestCase {
 			return try framesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(frames, [frame1])
+		#expect(frames == [frame1])
 	}
 
-	func testBuildInitialQueries_WithLeagueSource_WhenLeagueMissing_ThrowsError() async throws {
+	@Test("buildInitialQueries with league source throws error when league missing", .tags(.unit))
+	func buildInitialQueries_withLeagueSource_throwsErrorWhenLeagueMissing() async throws {
 		let database = try initializeApproachDatabase(withLeagues: .zero)
 
 		let filter = TrackableFilter(source: .league(UUID(0)))
 
-		await assertThrowsError(ofType: FetchableError.self) {
+		await #expect(throws: FetchableError.self) {
 			_ = try await database.read {
 				let (seriesRequest, _, _) = try filter.buildInitialQueries(db: $0)
 				return try seriesRequest?.fetchAll($0)
@@ -173,7 +184,8 @@ final class TrackableFiltersTests: XCTestCase {
 
 	// MARK: Series
 
-	func testBuildInitialQueries_WithSeriesSource_ReturnsExpectedSeries() async throws {
+	@Test("buildInitialQueries with series source returns nil series", .tags(.unit))
+	func buildInitialQueries_withSeriesSource_returnsExpectedSeries() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .series(UUID(0)))
@@ -183,10 +195,11 @@ final class TrackableFiltersTests: XCTestCase {
 			return try seriesRequest?.fetchAll($0)
 		}
 
-		XCTAssertNil(series)
+		#expect(series == nil)
 	}
 
-	func testBuildInitialQueries_WithSeriesSource_ReturnsExpectedGames() async throws {
+	@Test("buildInitialQueries with series source returns expected games", .tags(.unit))
+	func buildInitialQueries_withSeriesSource_returnsExpectedGames() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .series(UUID(0)))
@@ -196,10 +209,11 @@ final class TrackableFiltersTests: XCTestCase {
 			return try gamesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(games, [game1])
+		#expect(games == [game1])
 	}
 
-	func testBuildInitialQueries_WithSeriesSource_ReturnsExpectedFrames() async throws {
+	@Test("buildInitialQueries with series source returns expected frames", .tags(.unit))
+	func buildInitialQueries_withSeriesSource_returnsExpectedFrames() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .series(UUID(0)))
@@ -209,15 +223,16 @@ final class TrackableFiltersTests: XCTestCase {
 			return try framesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(frames, [frame1])
+		#expect(frames == [frame1])
 	}
 
-	func testBuildInitialQueries_WithSeriesSource_WhenSeriesMissing_ThrowsError() async throws {
+	@Test("buildInitialQueries with series source throws error when series missing", .tags(.unit))
+	func buildInitialQueries_withSeriesSource_throwsErrorWhenSeriesMissing() async throws {
 		let database = try initializeApproachDatabase(withSeries: .zero)
 
 		let filter = TrackableFilter(source: .series(UUID(0)))
 
-		await assertThrowsError(ofType: FetchableError.self) {
+		await #expect(throws: FetchableError.self) {
 			_ = try await database.read {
 				let (seriesRequest, _, _) = try filter.buildInitialQueries(db: $0)
 				return try seriesRequest?.fetchAll($0)
@@ -227,7 +242,8 @@ final class TrackableFiltersTests: XCTestCase {
 
 	// MARK: Game
 
-	func testBuildInitialQueries_WithGameSource_ReturnsExpectedSeries() async throws {
+	@Test("buildInitialQueries with game source returns nil series", .tags(.unit))
+	func buildInitialQueries_withGameSource_returnsNilSeries() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .game(UUID(0)))
@@ -237,10 +253,11 @@ final class TrackableFiltersTests: XCTestCase {
 			return try seriesRequest?.fetchAll($0)
 		}
 
-		XCTAssertNil(series)
+		#expect(series == nil)
 	}
 
-	func testBuildInitialQueries_WithGameSource_ReturnsExpectedGames() async throws {
+	@Test("buildInitialQueries with game source returns nil games", .tags(.unit))
+	func buildInitialQueries_withGameSource_returnsNilGames() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .game(UUID(0)))
@@ -250,10 +267,11 @@ final class TrackableFiltersTests: XCTestCase {
 			return try gamesRequest?.fetchAll($0)
 		}
 
-		XCTAssertNil(games)
+		#expect(games == nil)
 	}
 
-	func testBuildInitialQueries_WithGameSource_ReturnsExpectedFrames() async throws {
+	@Test("buildInitialQueries with game source returns expected frames", .tags(.unit))
+	func buildInitialQueries_withGameSource_returnsExpectedFrames() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .game(UUID(0)))
@@ -263,15 +281,16 @@ final class TrackableFiltersTests: XCTestCase {
 			return try framesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(frames, [frame1])
+		#expect(frames == [frame1])
 	}
 
-	func testBuildInitialQueries_WithGameSource_WhenGameMissing_ThrowsError() async throws {
+	@Test("buildInitialQueries with game source throws error when game missing", .tags(.unit))
+	func buildInitialQueries_withGameSource_throwsErrorWhenGameMissing() async throws {
 		let database = try initializeApproachDatabase(withGames: .zero)
 
 		let filter = TrackableFilter(source: .game(UUID(0)))
 
-		await assertThrowsError(ofType: FetchableError.self) {
+		await #expect(throws: FetchableError.self) {
 			_ = try await database.read {
 				let (seriesRequest, _, _) = try filter.buildInitialQueries(db: $0)
 				return try seriesRequest?.fetchAll($0)
@@ -283,7 +302,8 @@ final class TrackableFiltersTests: XCTestCase {
 
 	// MARK: Bowler
 
-	func testBuildTrackableQueries_WithBowlerSource_ReturnsExpectedSeries() async throws {
+	@Test("buildTrackableQueries with bowler source returns expected series", .tags(.unit))
+	func buildTrackableQueries_withBowlerSource_returnsExpectedSeries() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .bowler(UUID(0)))
@@ -293,10 +313,11 @@ final class TrackableFiltersTests: XCTestCase {
 			return try seriesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(series, [.init(id: UUID(0), numberOfGames: 1, total: 123, date: Date(timeIntervalSince1970: 123))])
+		#expect(series == [.init(id: UUID(0), numberOfGames: 1, total: 123, date: Date(timeIntervalSince1970: 123))])
 	}
 
-	func testBuildTrackableQueries_WithBowlerSource_ReturnsExpectedGames() async throws {
+	@Test("buildTrackableQueries with bowler source returns expected games", .tags(.unit))
+	func buildTrackableQueries_withBowlerSource_returnsExpectedGames() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .bowler(UUID(0)))
@@ -306,10 +327,20 @@ final class TrackableFiltersTests: XCTestCase {
 			return try gamesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(games, [.init(seriesId: UUID(0), id: UUID(0), index: 0, score: 123, date: Date(timeIntervalSince1970: 123), matchPlay: .init(id: UUID(0), result: .won))])
+		#expect(games == [
+			.init(
+				seriesId: UUID(0),
+				id: UUID(0),
+				index: 0,
+				score: 123,
+				date: Date(timeIntervalSince1970: 123),
+				matchPlay: .init(id: UUID(0), result: .won)
+			),
+		])
 	}
 
-	func testBuildTrackableQueries_WithBowlerSource_ReturnsExpectedFrames() async throws {
+	@Test("buildTrackableQueries with bowler source returns expected frames", .tags(.unit))
+	func buildTrackableQueries_withBowlerSource_returnsExpectedFrames() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .bowler(UUID(0)))
@@ -319,27 +350,25 @@ final class TrackableFiltersTests: XCTestCase {
 			return try framesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(
-			frames,
-			[
-				.init(
-					seriesId: UUID(0),
-					gameId: UUID(0),
-					gameIndex: 0,
-					index: 0,
-					rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil)],
-					date: Date(timeIntervalSince1970: 123)
-				),
-			]
-		)
+		#expect(frames == [
+			.init(
+				seriesId: UUID(0),
+				gameId: UUID(0),
+				gameIndex: 0,
+				index: 0,
+				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil)],
+				date: Date(timeIntervalSince1970: 123)
+			),
+		])
 	}
 
-	func testBuildTrackableQueries_WithBowlerSource_WhenBowlerMissing_ThrowsError() async throws {
+	@Test("buildTrackableQueries with bowler source throws error when bowler missing", .tags(.unit))
+	func buildTrackableQueries_withBowlerSource_whenBowlerMissing_throwsError() async throws {
 		let database = try initializeApproachDatabase(withBowlers: .zero)
 
 		let filter = TrackableFilter(source: .bowler(UUID(0)))
 
-		await assertThrowsError(ofType: FetchableError.self) {
+		await #expect(throws: FetchableError.self) {
 			_ = try await database.read {
 				let (seriesRequest, _, _) = try filter.buildTrackableQueries(db: $0)
 				return try seriesRequest?.fetchAll($0)
@@ -349,7 +378,8 @@ final class TrackableFiltersTests: XCTestCase {
 
 	// MARK: League
 
-	func testBuildTrackableQueries_WithLeagueSource_ReturnsExpectedSeries() async throws {
+	@Test("buildTrackableQueries with league source returns expected series", .tags(.unit))
+	func buildTrackableQueries_withLeagueSource_returnsExpectedSeries() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .league(UUID(0)))
@@ -359,10 +389,11 @@ final class TrackableFiltersTests: XCTestCase {
 			return try seriesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(series, [.init(id: UUID(0), numberOfGames: 1, total: 123, date: Date(timeIntervalSince1970: 123))])
+		#expect(series == [.init(id: UUID(0), numberOfGames: 1, total: 123, date: Date(timeIntervalSince1970: 123))])
 	}
 
-	func testBuildTrackableQueries_WithLeagueSource_ReturnsExpectedGames() async throws {
+	@Test("buildTrackableQueries with league source returns expected games", .tags(.unit))
+	func buildTrackableQueries_withLeagueSource_returnsExpectedGames() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .league(UUID(0)))
@@ -372,10 +403,20 @@ final class TrackableFiltersTests: XCTestCase {
 			return try gamesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(games, [.init(seriesId: UUID(0), id: UUID(0), index: 0, score: 123, date: Date(timeIntervalSince1970: 123), matchPlay: .init(id: UUID(0), result: .won))])
+		#expect(games == [
+			.init(
+				seriesId: UUID(0),
+				id: UUID(0),
+				index: 0,
+				score: 123,
+				date: Date(timeIntervalSince1970: 123),
+				matchPlay: .init(id: UUID(0), result: .won)
+			),
+		])
 	}
 
-	func testBuildTrackableQueries_WithLeagueSource_ReturnsExpectedFrames() async throws {
+	@Test("buildTrackableQueries with league source returns expected frames", .tags(.unit))
+	func buildTrackableQueries_withLeagueSource_returnsExpectedFrames() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .league(UUID(0)))
@@ -385,26 +426,25 @@ final class TrackableFiltersTests: XCTestCase {
 			return try framesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(
-			frames, [
-				.init(
-					seriesId: UUID(0),
-					gameId: UUID(0),
-					gameIndex: 0,
-					index: 0,
-					rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil)],
-					date: Date(timeIntervalSince1970: 123)
-				),
-			]
-		)
+		#expect(frames == [
+			.init(
+				seriesId: UUID(0),
+				gameId: UUID(0),
+				gameIndex: 0,
+				index: 0,
+				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil)],
+				date: Date(timeIntervalSince1970: 123)
+			),
+		])
 	}
 
-	func testBuildTrackableQueries_WithLeagueSource_WhenLeagueMissing_ThrowsError() async throws {
+	@Test("buildTrackableQueries with league source throws error when league missing", .tags(.unit))
+	func buildTrackableQueries_withLeagueSource_whenLeagueMissing_throwsError() async throws {
 		let database = try initializeApproachDatabase(withLeagues: .zero)
 
 		let filter = TrackableFilter(source: .league(UUID(0)))
 
-		await assertThrowsError(ofType: FetchableError.self) {
+		await #expect(throws: FetchableError.self) {
 			_ = try await database.read {
 				let (seriesRequest, _, _) = try filter.buildTrackableQueries(db: $0)
 				return try seriesRequest?.fetchAll($0)
@@ -414,7 +454,8 @@ final class TrackableFiltersTests: XCTestCase {
 
 	// MARK: Series
 
-	func testBuildTrackableQueries_WithSeriesSource_ReturnsExpectedSeries() async throws {
+	@Test("buildTrackableQueries with series source returns nil series", .tags(.unit))
+	func buildTrackableQueries_withSeriesSource_returnsNilSeries() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .series(UUID(0)))
@@ -424,10 +465,11 @@ final class TrackableFiltersTests: XCTestCase {
 			return try seriesRequest?.fetchAll($0)
 		}
 
-		XCTAssertNil(series)
+		#expect(series == nil)
 	}
 
-	func testBuildTrackableQueries_WithSeriesSource_ReturnsExpectedGames() async throws {
+	@Test("buildTrackableQueries with series source returns expected games", .tags(.unit))
+	func buildTrackableQueries_withSeriesSource_returnsExpectedGames() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .series(UUID(0)))
@@ -437,10 +479,20 @@ final class TrackableFiltersTests: XCTestCase {
 			return try gamesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(games, [.init(seriesId: UUID(0), id: UUID(0), index: 0, score: 123, date: Date(timeIntervalSince1970: 123), matchPlay: .init(id: UUID(0), result: .won))])
+		#expect(games == [
+			.init(
+				seriesId: UUID(0),
+				id: UUID(0),
+				index: 0,
+				score: 123,
+				date: Date(timeIntervalSince1970: 123),
+				matchPlay: .init(id: UUID(0), result: .won)
+			),
+		])
 	}
 
-	func testBuildTrackableQueries_WithSeriesSource_ReturnsExpectedFrames() async throws {
+	@Test("buildTrackableQueries with series source returns expected frames", .tags(.unit))
+	func buildTrackableQueries_withSeriesSource_returnsExpectedFrames() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .series(UUID(0)))
@@ -450,26 +502,25 @@ final class TrackableFiltersTests: XCTestCase {
 			return try framesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(
-			frames, [
-				.init(
-					seriesId: UUID(0),
-					gameId: UUID(0),
-					gameIndex: 0,
-					index: 0,
-					rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil)],
-					date: Date(timeIntervalSince1970: 123)
-				),
-			]
-		)
+		#expect(frames == [
+			.init(
+				seriesId: UUID(0),
+				gameId: UUID(0),
+				gameIndex: 0,
+				index: 0,
+				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil)],
+				date: Date(timeIntervalSince1970: 123)
+			),
+		])
 	}
 
-	func testBuildTrackableQueries_WithSeriesSource_WhenSeriesMissing_ThrowsError() async throws {
+	@Test("buildTrackableQueries with series source throws error when series missing", .tags(.unit))
+	func buildTrackableQueries_withSeriesSource_whenSeriesMissing_throwsError() async throws {
 		let database = try initializeApproachDatabase(withSeries: .zero)
 
 		let filter = TrackableFilter(source: .series(UUID(0)))
 
-		await assertThrowsError(ofType: FetchableError.self) {
+		await #expect(throws: FetchableError.self) {
 			_ = try await database.read {
 				let (seriesRequest, _, _) = try filter.buildTrackableQueries(db: $0)
 				return try seriesRequest?.fetchAll($0)
@@ -479,7 +530,8 @@ final class TrackableFiltersTests: XCTestCase {
 
 	// MARK: Game
 
-	func testBuildTrackableQueries_WithGameSource_ReturnsExpectedSeries() async throws {
+	@Test("buildTrackableQueries with game source returns nil series", .tags(.unit))
+	func buildTrackableQueries_withGameSource_returnsNilSeries() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .game(UUID(0)))
@@ -489,10 +541,11 @@ final class TrackableFiltersTests: XCTestCase {
 			return try seriesRequest?.fetchAll($0)
 		}
 
-		XCTAssertNil(series)
+		#expect(series == nil)
 	}
 
-	func testBuildTrackableQueries_WithGameSource_ReturnsExpectedGames() async throws {
+	@Test("buildTrackableQueries with game source returns nil games", .tags(.unit))
+	func buildTrackableQueries_withGameSource_returnsNilGames() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .game(UUID(0)))
@@ -502,10 +555,11 @@ final class TrackableFiltersTests: XCTestCase {
 			return try gamesRequest?.fetchAll($0)
 		}
 
-		XCTAssertNil(games)
+		#expect(games == nil)
 	}
 
-	func testBuildTrackableQueries_WithGameSource_ReturnsExpectedFrames() async throws {
+	@Test("buildTrackableQueries with game source returns expected frames", .tags(.unit))
+	func buildTrackableQueries_withGameSource_returnsExpectedFrames() async throws {
 		let database = try getDatabase()
 
 		let filter = TrackableFilter(source: .game(UUID(0)))
@@ -515,26 +569,25 @@ final class TrackableFiltersTests: XCTestCase {
 			return try framesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(
-			frames, [
-				.init(
-					seriesId: UUID(0),
-					gameId: UUID(0),
-					gameIndex: 0,
-					index: 0,
-					rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil)],
-					date: Date(timeIntervalSince1970: 123)
-				),
-			]
-		)
+		#expect(frames == [
+			.init(
+				seriesId: UUID(0),
+				gameId: UUID(0),
+				gameIndex: 0,
+				index: 0,
+				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil)],
+				date: Date(timeIntervalSince1970: 123)
+			),
+		])
 	}
 
-	func testBuildTrackableQueries_WithGameSource_WhenGameMissing_ThrowsError() async throws {
+	@Test("buildTrackableQueries with game source throws error when game missing", .tags(.unit))
+	func buildTrackableQueries_withGameSource_whenGameMissing_throwsError() async throws {
 		let database = try initializeApproachDatabase(withGames: .zero)
 
 		let filter = TrackableFilter(source: .game(UUID(0)))
 
-		await assertThrowsError(ofType: FetchableError.self) {
+		await #expect(throws: FetchableError.self) {
 			_ = try await database.read {
 				let (seriesRequest, _, _) = try filter.buildTrackableQueries(db: $0)
 				return try seriesRequest?.fetchAll($0)
