@@ -16,10 +16,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GamesEditorTopBar(
-	state: GamesEditorTopBarUiState,
-	onAction: (GamesEditorTopBarUiAction) -> Unit,
-) {
+fun GamesEditorTopBar(state: GamesEditorTopBarUiState, onAction: (GamesEditorTopBarUiAction) -> Unit) {
 	TopAppBar(
 		title = {
 			Text(

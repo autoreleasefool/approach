@@ -71,7 +71,6 @@ class SharingViewModel @Inject constructor(
 					.map { SharingData.Games(listOf(it), gamesSharingState) }
 			is SharingSource.Statistic -> flowOf(SharingData.Statistic)
 			is SharingSource.TeamSeries -> flowOf(SharingData.TeamSeries)
-
 		}
 	}
 		.flatMapLatest { it }
@@ -191,7 +190,7 @@ class SharingViewModel @Inject constructor(
 							.firstOrNull { existingGame -> existingGame.gameId == game.id }
 							?.isGameIncluded ?: true,
 					)
-				}
+				},
 			)
 		}
 	}

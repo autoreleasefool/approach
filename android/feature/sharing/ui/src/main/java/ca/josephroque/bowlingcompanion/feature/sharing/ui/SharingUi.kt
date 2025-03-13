@@ -24,7 +24,7 @@ sealed interface SharingUiState {
 	) : SharingUiState
 
 	data object SharingStatistic : SharingUiState
-	data object SharingTeamSeries: SharingUiState
+	data object SharingTeamSeries : SharingUiState
 
 	val sharingData: SharingData
 		get() = when (this) {
@@ -62,7 +62,7 @@ sealed interface SharingData {
 	) : SharingData
 
 	data object Statistic : SharingData
-	data object TeamSeries: SharingData
+	data object TeamSeries : SharingData
 }
 
 enum class SharingAppearance {

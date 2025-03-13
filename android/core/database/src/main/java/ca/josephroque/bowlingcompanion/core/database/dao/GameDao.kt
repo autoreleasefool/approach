@@ -146,7 +146,7 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 			JOIN bowlers ON bowlers.id = leagues.bowler_id
 			LEFT JOIN alleys AS alley ON alley.id = series.alley_id
 			WHERE games.id = :gameId
-		"""
+		""",
 	)
 	abstract fun getShareableGame(gameId: GameID): Flow<ShareableGameEntity>
 
