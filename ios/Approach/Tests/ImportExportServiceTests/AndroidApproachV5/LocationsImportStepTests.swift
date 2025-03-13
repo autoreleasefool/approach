@@ -43,7 +43,7 @@ struct LocationsImportStepTests {
 
 	@Test(
 		"Imports properties",
-		.tags(.unit)
+		.tags(.unit),
 		arguments: zip(
 			[
 				FromLocation(title: "Grandview Lanes", subtitle: "Vancouver", latitude: 49.265201, longitude: -123.069897),
