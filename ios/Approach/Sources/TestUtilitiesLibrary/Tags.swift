@@ -12,6 +12,7 @@ extension Tag {
 	@Tag public static var android: Self
 	@Tag public static var extensions: Self
 	@Tag public static var imports: Self
+	@Tag public static var statistics: Self
 	@Tag public static var strings: Self
 
 	// Test Kind

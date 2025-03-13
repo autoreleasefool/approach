@@ -1,10 +1,14 @@
 import Dependencies
 import ModelsLibrary
 @testable import StatisticsLibrary
-import XCTest
+import Testing
+import TestUtilitiesLibrary
 
-final class StrikesTests: XCTestCase {
-	func testAdjust_ByFramesWithStrike_Adjusts() {
+@Suite("Strikes Statistic", .tags(.library, .statistics))
+struct StrikesTests {
+
+	@Test("Adjust by frames with strike adjusts correctly", .tags(.unit))
+	func adjust_byFramesWithStrike_adjustsCorreclty() {
 		let statistic = create(
 			statistic: Statistics.Strikes.self,
 			adjustedByFrames: [
@@ -36,10 +40,11 @@ final class StrikesTests: XCTestCase {
 			]
 		)
 
-		AssertPercentage(statistic, hasNumerator: 1, withDenominator: 4, formattedAs: "25%")
+		expectPercentage(statistic, hasNumerator: 1, withDenominator: 4, formattedAs: "25%")
 	}
 
-	func testAdjust_ByFramesWithoutStrike_DoesNotAdjust() {
+	@Test("Adjust by frames without strike does not adjust", .tags(.unit))
+	func adjust_byFramesWithoutStrike_doesNotAdjust() {
 		let statistic = create(
 			statistic: Statistics.Strikes.self,
 			adjustedByFrames: [
@@ -59,16 +64,18 @@ final class StrikesTests: XCTestCase {
 			]
 		)
 
-		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 2, formattedAs: "0%")
+		expectPercentage(statistic, hasNumerator: 0, withDenominator: 2, formattedAs: "0%")
 	}
 
-	func testAdjustBySeries_DoesNothing() {
+	@Test("Adjust by series does nothing", .tags(.unit))
+	func adjust_bySeries_doesNothing() {
 		let statistic = create(statistic: Statistics.Strikes.self, adjustedBySeries: Series.TrackableEntry.mocks)
-		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")
+		expectPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")
 	}
 
-	func testAdjustByGame_DoesNothing() {
+	@Test("Adjust by game does nothing", .tags(.unit))
+	func adjust_byGame_doesNothing() {
 		let statistic = create(statistic: Statistics.Strikes.self, adjustedByGames: Game.TrackableEntry.mocks)
-		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")
+		expectPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")
 	}
 }

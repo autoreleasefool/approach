@@ -1,10 +1,14 @@
 import Dependencies
 import ModelsLibrary
 @testable import StatisticsLibrary
-import XCTest
+import Testing
+import TestUtilitiesLibrary
 
-final class SpareConversionsTests: XCTestCase {
-	func testAdjust_ByFramesWithSpare_Adjusts() {
+@Suite("SpareConversions Statistic", .tags(.library, .statistics))
+struct SpareConversionsTests {
+
+	@Test("Adjust by frames with spare adjusts correctly")
+	func adjust_byFramesWithSpare_adjustsCorrectly() {
 		let statistic = create(
 			statistic: Statistics.SpareConversions.self,
 			adjustedByFrames: [
@@ -58,10 +62,11 @@ final class SpareConversionsTests: XCTestCase {
 			]
 		)
 
-		AssertPercentage(statistic, hasNumerator: 3, withDenominator: 4, formattedAs: "75%")
+		expectPercentage(statistic, hasNumerator: 3, withDenominator: 4, formattedAs: "75%")
 	}
 
-	func testAdjust_ByFramesWithoutSpare_DoesNotAdjust() {
+	@Test("Adjust by frames without spare does not adjust")
+	func adjust_byFramesWithoutSpare_doesNotAdjust() {
 		let statistic = create(
 			statistic: Statistics.SpareConversions.self,
 			adjustedByFrames: [
@@ -82,10 +87,11 @@ final class SpareConversionsTests: XCTestCase {
 			]
 		)
 
-		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 1, formattedAs: "0%", overridingIsEmptyExpectation: true)
+		expectPercentage(statistic, hasNumerator: 0, withDenominator: 1, formattedAs: "0%", overridingIsEmptyExpectation: true)
 	}
 
-	func testAdjust_InLastFrame_ByFramesWithSpare_Adjusts() {
+	@Test("Adjust by frames with spareable adjusts correctly")
+	func adjust_inLastFrame_byFramesWithSpare_adjustsCorrectly() {
 		let statistic = create(
 			statistic: Statistics.SpareConversions.self,
 			adjustedByFrames: [
@@ -155,16 +161,18 @@ final class SpareConversionsTests: XCTestCase {
 			]
 		)
 
-		AssertPercentage(statistic, hasNumerator: 3, withDenominator: 5, formattedAs: "60%")
+		expectPercentage(statistic, hasNumerator: 3, withDenominator: 5, formattedAs: "60%")
 	}
 
-	func testAdjustBySeries_DoesNothing() {
+	@Test("Adjust by series does nothing")
+	func adjust_bySeries_doesNothing() {
 		let statistic = create(statistic: Statistics.SpareConversions.self, adjustedBySeries: Series.TrackableEntry.mocks)
-		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")
+		expectPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")
 	}
 
-	func testAdjustByGame_DoesNothing() {
+	@Test("Adjust by game does nothing")
+	func adjust_byGame_doesNothing() {
 		let statistic = create(statistic: Statistics.SpareConversions.self, adjustedByGames: Game.TrackableEntry.mocks)
-		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")
+		expectPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")
 	}
 }
