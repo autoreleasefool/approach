@@ -23,6 +23,7 @@ public struct Announcements: Reducer, Sendable {
 		@CasePathable
 		public enum Internal {
 			case showHalloweenAnnouncement
+			case showTenYearAnniversaryAnnouncement
 
 			case destination(PresentationAction<Destination.Action>)
 		}
@@ -35,6 +36,7 @@ public struct Announcements: Reducer, Sendable {
 	@Reducer(state: .equatable)
 	public enum Destination {
 		case halloween2024(Halloween2024Announcement)
+		case tenYearAnniversary(TenYearAnniversaryAnnouncement)
 	}
 
 	public init() {}
@@ -49,6 +51,8 @@ public struct Announcements: Reducer, Sendable {
 						// Check for announcements
 						if await Halloween2024Announcement.shouldShow() {
 							await send(.internal(.showHalloweenAnnouncement))
+						} else if await TenYearAnniversaryAnnouncement.shouldShow() {
+							await send(.internal(.showTenYearAnniversaryAnnouncement))
 						}
 					}
 				}
@@ -59,10 +63,17 @@ public struct Announcements: Reducer, Sendable {
 					state.destination = .halloween2024(Halloween2024Announcement.State())
 					return .none
 
+				case .showTenYearAnniversaryAnnouncement:
+					state.destination = .tenYearAnniversary(TenYearAnniversaryAnnouncement.State())
+					return .none
+
 				case .destination(.dismiss):
 					switch state.destination {
 					case .halloween2024:
 						return .run { _ in await Halloween2024Announcement.didDismiss() }
+
+					case .tenYearAnniversary:
+						return .run { _ in await TenYearAnniversaryAnnouncement.didDismiss() }
 
 					case .none:
 						return .none
@@ -70,7 +81,10 @@ public struct Announcements: Reducer, Sendable {
 
 				case .destination(.presented(.halloween2024(.delegate(.doNothing)))),
 						.destination(.presented(.halloween2024(.internal))),
-						.destination(.presented(.halloween2024(.view))):
+						.destination(.presented(.halloween2024(.view))),
+						.destination(.presented(.tenYearAnniversary(.delegate(.doNothing)))),
+						.destination(.presented(.tenYearAnniversary(.internal))),
+						.destination(.presented(.tenYearAnniversary(.view))):
 					return .none
 				}
 
@@ -94,6 +108,11 @@ public struct AnnouncementsViewModifier: ViewModifier {
 				item: $store.scope(state: \.destination?.halloween2024, action: \.internal.destination.halloween2024)
 			) {
 				Halloween2024AnnouncementView(store: $0)
+			}
+			.sheet(
+				item: $store.scope(state: \.destination?.tenYearAnniversary, action: \.internal.destination.tenYearAnniversary)
+			) {
+				TenYearAnniversaryAnnouncementView(store: $0)
 			}
 	}
 }
