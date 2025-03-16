@@ -11,12 +11,12 @@ extension Achievement {
 extension Achievement {
 	public struct Summary: Identifiable, Codable, Hashable, Sendable {
 		public let id: Achievement.ID
-		public let name: String
+		public let title: String
 		public let earnedAt: Date
 
-		public init(id: Achievement.ID, name: String, earnedAt: Date) {
+		public init(id: Achievement.ID, title: String, earnedAt: Date) {
 			self.id = id
-			self.name = name
+			self.title = title
 			self.earnedAt = earnedAt
 		}
 	}
@@ -27,12 +27,12 @@ extension Achievement {
 extension Achievement {
 	public struct Event: Identifiable, Codable, Hashable, Sendable {
 		public let id: Achievement.ID
-		public let name: String
+		public let title: String
 		public let isConsumed: Bool
 
-		public init(id: Achievement.ID, name: String, isConsumed: Bool) {
+		public init(id: Achievement.ID, title: String, isConsumed: Bool) {
 			self.id = id
-			self.name = name
+			self.title = title
 			self.isConsumed = isConsumed
 		}
 	}
