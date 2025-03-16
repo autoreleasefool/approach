@@ -1,10 +1,10 @@
 import ModelsLibrary
 
-extension EarnableBadges {
-	public struct Iconista: EarnableBadge {
+extension EarnableAchievements {
+	public struct Iconista: EarnableAchievement {
 		public static var title: String { "Iconista" }
 
-		public static func consume(from: inout [any ConsumableBadgeEvent]) -> [Iconista] {
+		public static func consume(from: inout [any ConsumableAchievementEvent]) -> [Iconista] {
 			let consumed = from.filter { type(of: $0).title == Events.AppIconsViewed.title }
 			guard !consumed.isEmpty else { return [] }
 			from.removeAll(where: { type(of: $0).title == Events.AppIconsViewed.title })
@@ -17,12 +17,12 @@ extension EarnableBadges {
 
 // MARK: Events
 
-extension EarnableBadges.Iconista {
+extension EarnableAchievements.Iconista {
 	public enum Events {}
 }
 
-extension EarnableBadges.Iconista.Events {
-	public struct AppIconsViewed: ConsumableBadgeEvent {
+extension EarnableAchievements.Iconista.Events {
+	public struct AppIconsViewed: ConsumableAchievementEvent {
 		public static var title: String { "AppIconsViewed" }
 
 		public init() {}

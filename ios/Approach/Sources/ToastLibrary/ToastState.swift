@@ -82,7 +82,7 @@ extension ToastState {
 	public enum Content {
 		case toast(SnackContent<Action>)
 		case hud(HUDContent<Action>)
-		case badge(BadgeContent)
+		case achievement(AchievementContent)
 	}
 }
 
@@ -100,7 +100,7 @@ public struct HUDContent<Action: ToastableAction> {
 	}
 }
 
-public struct BadgeContent: Equatable {
+public struct AchievementContent: Equatable {
 	public let title: String
 
 	public init(title: String) {
@@ -166,8 +166,8 @@ extension View {
 					} onDismiss: {
 						store?.send(.didDismiss)
 					}
-				case let .badge(content):
-					BadgeView(
+				case let .achievement(content):
+					AchievementView(
 						title: content.title
 					) {
 						store?.send(.didDismiss)
