@@ -1,7 +1,7 @@
 import AccessoriesOverviewFeature
+import AchievementsFeature
 import AnalyticsServiceInterface
 import AutomaticBackupsFeature
-import BadgesFeature
 import BowlersListFeature
 import ComposableArchitecture
 import FeatureActionLibrary
@@ -23,7 +23,7 @@ public struct TabbedContent: Reducer, Sendable {
 		public var statistics = StatisticsOverview.State()
 		public var settings = Settings.State()
 
-		public var badges = BadgesObserver.State()
+		public var achievements = AchievementsObserver.State()
 		public var backups = AutomaticBackups.State()
 
 		public init() {}
@@ -44,7 +44,7 @@ public struct TabbedContent: Reducer, Sendable {
 			case bowlersList(BowlersList.Action)
 			case settings(Settings.Action)
 			case statistics(StatisticsOverview.Action)
-			case badges(BadgesObserver.Action)
+			case achievements(AchievementsObserver.Action)
 			case backups(AutomaticBackups.Action)
 		}
 
@@ -84,8 +84,8 @@ public struct TabbedContent: Reducer, Sendable {
 			StatisticsOverview()
 		}
 
-		Scope(state: \.badges, action: \.internal.badges) {
-			BadgesObserver()
+		Scope(state: \.achievements, action: \.internal.achievements) {
+			AchievementsObserver()
 		}
 
 		Scope(state: \.backups, action: \.internal.backups) {
@@ -123,7 +123,7 @@ public struct TabbedContent: Reducer, Sendable {
 						.bowlersList(.view), .bowlersList(.internal), .bowlersList(.delegate(.doNothing)),
 						.settings(.view), .settings(.internal), .settings(.delegate(.doNothing)), .settings(.binding),
 						.statistics(.view), .statistics(.internal), .statistics(.delegate(.doNothing)),
-						.badges(.view), .badges(.internal), .badges(.delegate(.doNothing)),
+						.achievements(.view), .achievements(.internal), .achievements(.delegate(.doNothing)),
 						.backups(.view), .backups(.internal), .backups(.delegate(.doNothing)):
 					return .none
 				}

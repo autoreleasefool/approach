@@ -1,7 +1,7 @@
 import AssetsLibrary
 import SwiftUI
 
-struct BadgeView: View {
+struct AchievementView: View {
 	let title: String
 	let onTap: () -> Void
 

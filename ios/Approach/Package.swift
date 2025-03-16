@@ -11,6 +11,7 @@ let package = Package(
 	products: [
 		// MARK: - Features
 		.library(name: "AccessoriesOverviewFeature", targets: ["AccessoriesOverviewFeature"]),
+		.library(name: "AchievementsFeature", targets: ["AchievementsFeature"]),
 		.library(name: "AddressLookupFeature", targets: ["AddressLookupFeature"]),
 		.library(name: "AlleyEditorFeature", targets: ["AlleyEditorFeature"]),
 		.library(name: "AlleysListFeature", targets: ["AlleysListFeature"]),
@@ -19,7 +20,6 @@ let package = Package(
 		.library(name: "ArchiveListFeature", targets: ["ArchiveListFeature"]),
 		.library(name: "AutomaticBackupsFeature", targets: ["AutomaticBackupsFeature"]),
 		.library(name: "AvatarEditorFeature", targets: ["AvatarEditorFeature"]),
-		.library(name: "BadgesFeature", targets: ["BadgesFeature"]),
 		.library(name: "BowlerDetailsFeature", targets: ["BowlerDetailsFeature"]),
 		.library(name: "BowlerEditorFeature", targets: ["BowlerEditorFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
@@ -80,6 +80,8 @@ let package = Package(
 		// MARK: - Data Providers
 
 		// MARK: - Services
+		.library(name: "AchievementsService", targets: ["AchievementsService"]),
+		.library(name: "AchievementsServiceInterface", targets: ["AchievementsServiceInterface"]),
 		.library(name: "AddressLookupService", targets: ["AddressLookupService"]),
 		.library(name: "AddressLookupServiceInterface", targets: ["AddressLookupServiceInterface"]),
 		.library(name: "AnalyticsService", targets: ["AnalyticsService"]),
@@ -88,8 +90,6 @@ let package = Package(
 		.library(name: "AppIconServiceInterface", targets: ["AppIconServiceInterface"]),
 		.library(name: "AvatarService", targets: ["AvatarService"]),
 		.library(name: "AvatarServiceInterface", targets: ["AvatarServiceInterface"]),
-		.library(name: "BadgesService", targets: ["BadgesService"]),
-		.library(name: "BadgesServiceInterface", targets: ["BadgesServiceInterface"]),
 		.library(name: "CodableService", targets: ["CodableService"]),
 		.library(name: "CodableServiceInterface", targets: ["CodableServiceInterface"]),
 		.library(name: "DatabaseMockingService", targets: ["DatabaseMockingService"]),
@@ -120,8 +120,8 @@ let package = Package(
 		.library(name: "ZIPServiceInterface", targets: ["ZIPServiceInterface"]),
 
 		// MARK: - Libraries
+		.library(name: "AchievementsLibrary", targets: ["AchievementsLibrary"]),
 		.library(name: "AssetsLibrary", targets: ["AssetsLibrary"]),
-		.library(name: "BadgesLibrary", targets: ["BadgesLibrary"]),
 		.library(name: "ComposableExtensionsLibrary", targets: ["ComposableExtensionsLibrary"]),
 		.library(name: "ConstantsLibrary", targets: ["ConstantsLibrary"]),
 		.library(name: "DatabaseMigrationsLibrary", targets: ["DatabaseMigrationsLibrary"]),
@@ -188,6 +188,25 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AccessoriesOverviewFeature",
+				"TestUtilitiesLibrary",
+			]
+		),
+		.target(
+			name: "AchievementsFeature",
+			dependencies: [
+				"AchievementsServiceInterface",
+				"AnalyticsServiceInterface",
+				"FeatureActionLibrary",
+				"FeatureFlagsLibrary",
+				"LoggingServiceInterface",
+				"ToastLibrary",
+			]
+		),
+		.testTarget(
+			name: "AchievementsFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"AchievementsFeature",
 				"TestUtilitiesLibrary",
 			]
 		),
@@ -279,7 +298,7 @@ let package = Package(
 				.product(name: "TelemetryDeckAnalyticsPackageService", package: "swift-utilities"),
 				.product(name: "UserDefaultsPackageService", package: "swift-utilities"),
 				"AccessoriesOverviewFeature",
-				"BadgesFeature",
+				"AchievementsFeature",
 				"BowlersListFeature",
 				"LaunchServiceInterface",
 				"OnboardingFeature",
@@ -351,25 +370,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AvatarEditorFeature",
-				"TestUtilitiesLibrary",
-			]
-		),
-		.target(
-			name: "BadgesFeature",
-			dependencies: [
-				"AnalyticsServiceInterface",
-				"BadgesServiceInterface",
-				"FeatureActionLibrary",
-				"FeatureFlagsLibrary",
-				"LoggingServiceInterface",
-				"ToastLibrary",
-			]
-		),
-		.testTarget(
-			name: "BadgesFeatureTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"BadgesFeature",
 				"TestUtilitiesLibrary",
 			]
 		),
@@ -725,10 +725,10 @@ let package = Package(
 			name: "SettingsFeature",
 			dependencies: [
 				.product(name: "BundlePackageServiceInterface", package: "swift-utilities"),
+				"AchievementsServiceInterface",
 				"AppIconServiceInterface",
 				"ArchiveListFeature",
 				"AutomaticBackupsFeature",
-				"BadgesServiceInterface",
 				"DatabaseMockingServiceInterface",
 				"FeatureFlagsListFeature",
 				"ImportExportFeature",
@@ -1231,6 +1231,29 @@ let package = Package(
 
 		// MARK: - Services
 		.target(
+			name: "AchievementsService",
+			dependencies: [
+				"AchievementsServiceInterface",
+				"FeatureFlagsLibrary",
+			]
+		),
+		.target(
+			name: "AchievementsServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "DependenciesMacros", package: "swift-dependencies"),
+				"AchievementsLibrary",
+			]
+		),
+		.testTarget(
+			name: "AchievementsServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"AchievementsService",
+				"TestUtilitiesLibrary",
+			]
+		),
+		.target(
 			name: "AddressLookupService",
 			dependencies: [
 				"AddressLookupServiceInterface",
@@ -1311,29 +1334,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AvatarService",
-				"TestUtilitiesLibrary",
-			]
-		),
-		.target(
-			name: "BadgesService",
-			dependencies: [
-				"BadgesServiceInterface",
-				"FeatureFlagsLibrary",
-			]
-		),
-		.target(
-			name: "BadgesServiceInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				.product(name: "DependenciesMacros", package: "swift-dependencies"),
-				"BadgesLibrary",
-			]
-		),
-		.testTarget(
-			name: "BadgesServiceTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"BadgesService",
 				"TestUtilitiesLibrary",
 			]
 		),
@@ -1655,26 +1655,26 @@ let package = Package(
 
 		// MARK: - Libraries
 		.target(
+			name: "AchievementsLibrary",
+			dependencies: [
+				"ModelsLibrary",
+			]
+		),
+		.testTarget(
+			name: "AchievementsLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"AchievementsLibrary",
+				"TestUtilitiesLibrary",
+			]
+		),
+		.target(
 			name: "AssetsLibrary",
 			dependencies: [
 				.product(name: "SFSafeSymbols", package: "SFSafeSymbols"),
 			],
 			resources: [
 				.process("Resources"),
-			]
-		),
-		.target(
-			name: "BadgesLibrary",
-			dependencies: [
-				"ModelsLibrary",
-			]
-		),
-		.testTarget(
-			name: "BadgesLibraryTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"BadgesLibrary",
-				"TestUtilitiesLibrary",
 			]
 		),
 		.target(
