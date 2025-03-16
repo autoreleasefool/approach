@@ -1,7 +1,7 @@
 import AccessoriesOverviewFeature
+import AchievementsFeature
 import AssetsLibrary
 import AutomaticBackupsFeature
-import BadgesFeature
 import BowlersListFeature
 import ComposableArchitecture
 import FeatureActionLibrary
@@ -56,7 +56,7 @@ public struct TabbedContentView: View {
 		}
 		.tint(Asset.Colors.Action.default)
 		.task { await send(.didStartTask).finish() }
-		.observeBadges(store: store.scope(state: \.badges, action: \.internal.badges))
+		.observeAchievements(store: store.scope(state: \.achievements, action: \.internal.achievements))
 		.automaticBackups(store: store.scope(state: \.backups, action: \.internal.backups))
 		.toast(isPresented: $store.isHudVisible) {
 			ToastView("Loading")
