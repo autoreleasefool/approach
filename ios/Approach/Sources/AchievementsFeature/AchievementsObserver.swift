@@ -5,7 +5,7 @@
 //  Created by Joseph Roque on 2024-10-05.
 //
 
-import AchievementsServiceInterface
+import AchievementsRepositoryInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsLibrary
@@ -51,7 +51,7 @@ public struct AchievementsObserver: Reducer, Sendable {
 
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.uuid) var uuid
-	@Dependency(AchievementsService.self) var achievements
+	@Dependency(AchievementsRepository.self) var achievements
 	@Dependency(\.featureFlags) var featureFlags
 
 	public var body: some ReducerOf<Self> {

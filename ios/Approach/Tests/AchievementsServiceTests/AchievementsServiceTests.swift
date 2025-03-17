@@ -17,7 +17,7 @@ struct AchievementsServiceTests {
 	struct SendEventTests {
 		@Dependency(AchievementsService.self) var achievements
 
-		@Test("Does nothing when feature flag is disabled")
+		@Test("Does nothing when feature flag is disabled", .tags(.unit))
 		func doesNothing_whenFeatureFlagIsDisabled() async throws {
 			// Given an empty database
 			let db = try initializeApproachDatabase(withAchievementEvents: .zero, withAchievements: .zero)
@@ -36,7 +36,7 @@ struct AchievementsServiceTests {
 			#expect(eventsCount == 0)
 		}
 
-		@Test("Sends event when feature flag is enabled")
+		@Test("Sends event when feature flag is enabled", .tags(.unit))
 		func sendsEvent_whenFeatureFlagIsEnabled() async throws {
 			// Given an empty database
 			let db = try initializeApproachDatabase(withAchievementEvents: .zero, withAchievements: .zero)
@@ -56,7 +56,7 @@ struct AchievementsServiceTests {
 			#expect(eventsCount == 1)
 		}
 
-		@Test("Does nothing when event is invalid")
+		@Test("Does nothing when event is invalid", .tags(.unit))
 		func doesNothing_whenEventIsInvalid() async throws {
 			// Given an empty database
 			let db = try initializeApproachDatabase(withAchievementEvents: .zero, withAchievements: .zero)
