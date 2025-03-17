@@ -239,10 +239,14 @@ repositories = [ "Statistics" ]
 # Services
 
 [services.Achievements]
-libraries = [ "FeatureFlags" ]
+services = [ "Database" ]
+libraries = [ "DatabaseModels", "FeatureFlags" ]
+dependencies = [ "ErrorReportingClientPackageLibrary" ]
 [services.Achievements.interface]
 libraries = [ "Achievements" ]
 dependencies = [ "DependenciesMacros" ]
+[services.Achievements.tests]
+libraries = [ "TestDatabaseUtilities" ]
 
 [services.AddressLookup]
 [services.AddressLookup.interface]
