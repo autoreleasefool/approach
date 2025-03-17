@@ -19,8 +19,8 @@ features = [ "AlleysList", "GearList" ]
 dependencies = [ "Algorithms" ]
 
 [features.Achievements]
-services = [ "Achievements" ]
-libraries = [ "FeatureFlags", "Toast" ]
+repositories = [ "Achievements" ]
+libraries = [ "FeatureFlags", "Strings", "Toast" ]
 
 [features.AddressLookup]
 repositories = [ "Locations" ]
@@ -176,6 +176,12 @@ features = [ "StatisticsDetails" ]
 libraries = [ "Reordering" ]
 
 # Repositories
+
+[repositories.Achievements]
+libraries = [ "FeatureFlags" ]
+[repositories.Achievements.interface]
+libraries = [ "Achievements" ]
+dependencies = [ "DependenciesMacros" ]
 
 [repositories.Alleys]
 services = [ "RecentlyUsed" ]
