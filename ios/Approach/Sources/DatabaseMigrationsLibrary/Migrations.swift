@@ -38,6 +38,7 @@ public enum Migrations {
 			Migration20240322AddBowledOnDateToSeries.self,
 			Migration20240329ClearExtraRolledBalls.self,
 			Migration20241021CreateTeam.self,
+			Migration20250315CreateAchievements.self,
 		]
 	}
 }

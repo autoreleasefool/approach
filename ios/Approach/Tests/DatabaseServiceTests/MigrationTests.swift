@@ -42,6 +42,7 @@ struct DBMigrationTests {
 		"Migration20240322AddBowledOnDateToSeries",
 		"Migration20240329ClearExtraRolledBalls",
 		"Migration20241021CreateTeam",
+		"Migration20250315CreateAchievements",
 	]
 
 	@Test("identifier matches", .tags(.unit))
