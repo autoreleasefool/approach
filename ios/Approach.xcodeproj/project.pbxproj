@@ -20,6 +20,7 @@
 		CA439E5229E32A9900B09020 /* LeaguesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA439E5129E32A9900B09020 /* LeaguesRepository */; };
 		CA439E5429E3796A00B09020 /* SeriesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA439E5329E3796A00B09020 /* SeriesRepository */; };
 		CA4A66182B09F37E00DCD52B /* QuickLaunchRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA4A66172B09F37E00DCD52B /* QuickLaunchRepository */; };
+		CA4E0A3B2D87802800840E0A /* AchievementsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA4E0A3A2D87802800840E0A /* AchievementsService */; };
 		CA5901192A05A862000261C9 /* GearRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA5901182A05A862000261C9 /* GearRepository */; };
 		CA59011B2A05AD62000261C9 /* RecentlyUsedService in Frameworks */ = {isa = PBXBuildFile; productRef = CA59011A2A05AD62000261C9 /* RecentlyUsedService */; };
 		CA59011D2A05AD81000261C9 /* PreferenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CA59011C2A05AD81000261C9 /* PreferenceService */; };
@@ -121,6 +122,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */,
+				CA4E0A3B2D87802800840E0A /* AchievementsService in Frameworks */,
 				CA2FA1552A2559C3008341A5 /* NotificationsService in Frameworks */,
 				CAC51C1C2A4FFE8D00A99164 /* TestDatabaseUtilitiesLibrary in Frameworks */,
 				CA6CBA3B29EBBE4C00B3BAF7 /* LanesRepository in Frameworks */,
@@ -373,6 +375,7 @@
 				CAC7A9F72BFA61FE00F35921 /* ZIPService */,
 				CA7ED36D2CC9B68700A7828C /* HUDService */,
 				CA28CC962CD066EF00731AB1 /* CodableService */,
+				CA4E0A3A2D87802800840E0A /* AchievementsService */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -686,6 +689,10 @@
 		CA4A66172B09F37E00DCD52B /* QuickLaunchRepository */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = QuickLaunchRepository;
+		};
+		CA4E0A3A2D87802800840E0A /* AchievementsService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AchievementsService;
 		};
 		CA5901182A05A862000261C9 /* GearRepository */ = {
 			isa = XCSwiftPackageProductDependency;

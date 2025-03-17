@@ -4,8 +4,6 @@ import DependenciesMacros
 
 @DependencyClient
 public struct AchievementsService: Sendable {
-	public var observeNewAchievements: @Sendable () -> AsyncStream<EarnableAchievement> = { .never }
-	public var allEarnedAchievements: @Sendable () -> AsyncThrowingStream<[EarnableAchievement], Error> = { .never }
 	public var sendEvent: @Sendable (ConsumableAchievementEvent) async -> Void
 }
 
