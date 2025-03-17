@@ -1233,7 +1233,10 @@ let package = Package(
 		.target(
 			name: "AchievementsService",
 			dependencies: [
+				.product(name: "ErrorReportingClientPackageLibrary", package: "swift-utilities"),
 				"AchievementsServiceInterface",
+				"DatabaseModelsLibrary",
+				"DatabaseServiceInterface",
 				"FeatureFlagsLibrary",
 			]
 		),
@@ -1250,6 +1253,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AchievementsService",
+				"TestDatabaseUtilitiesLibrary",
 				"TestUtilitiesLibrary",
 			]
 		),
