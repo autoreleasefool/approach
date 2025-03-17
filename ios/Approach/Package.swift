@@ -48,6 +48,8 @@ let package = Package(
 		.library(name: "StatisticsWidgetsLayoutFeature", targets: ["StatisticsWidgetsLayoutFeature"]),
 
 		// MARK: - Repositories
+		.library(name: "AchievementsRepository", targets: ["AchievementsRepository"]),
+		.library(name: "AchievementsRepositoryInterface", targets: ["AchievementsRepositoryInterface"]),
 		.library(name: "AlleysRepository", targets: ["AlleysRepository"]),
 		.library(name: "AlleysRepositoryInterface", targets: ["AlleysRepositoryInterface"]),
 		.library(name: "BowlersRepository", targets: ["BowlersRepository"]),
@@ -194,11 +196,12 @@ let package = Package(
 		.target(
 			name: "AchievementsFeature",
 			dependencies: [
-				"AchievementsServiceInterface",
+				"AchievementsRepositoryInterface",
 				"AnalyticsServiceInterface",
 				"FeatureActionLibrary",
 				"FeatureFlagsLibrary",
 				"LoggingServiceInterface",
+				"StringsLibrary",
 				"ToastLibrary",
 			]
 		),
@@ -831,6 +834,35 @@ let package = Package(
 		),
 
 		// MARK: - Repositories
+		.target(
+			name: "AchievementsRepository",
+			dependencies: [
+				"AchievementsRepositoryInterface",
+				"DatabaseModelsLibrary",
+				"DatabaseServiceInterface",
+				"FeatureFlagsLibrary",
+				"RepositoryLibrary",
+			]
+		),
+		.target(
+			name: "AchievementsRepositoryInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "DependenciesMacros", package: "swift-dependencies"),
+				"AchievementsLibrary",
+			]
+		),
+		.testTarget(
+			name: "AchievementsRepositoryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				.product(name: "TestUtilitiesPackageLibrary", package: "swift-utilities"),
+				"AchievementsRepository",
+				"DatabaseService",
+				"TestDatabaseUtilitiesLibrary",
+				"TestUtilitiesLibrary",
+			]
+		),
 		.target(
 			name: "AlleysRepository",
 			dependencies: [
