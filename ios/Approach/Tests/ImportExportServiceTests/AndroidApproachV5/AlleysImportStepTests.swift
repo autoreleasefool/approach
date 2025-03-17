@@ -113,7 +113,7 @@ struct AlleysImportStepTests {
 	@Test(
 		"Imports mechanism",
 		.tags(.unit),
-		arguments: zip([nil, "DEDICATED", "INTERCHANGEABLE"], [nil] + Alley.Mechanism.allCases),
+		arguments: zip([nil, "DEDICATED", "INTERCHANGEABLE"], [nil] + Alley.Mechanism.allCases)
 	)
 	func importsMechanism(from: String?, to: Alley.Mechanism?) throws {
 		let alleyId = Alley.ID()
