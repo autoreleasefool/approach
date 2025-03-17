@@ -22,18 +22,18 @@ extension Achievement {
 	}
 }
 
-// MARK: Event
-
 extension Achievement {
-	public struct Event: Identifiable, Codable, Hashable, Sendable {
-		public let id: Achievement.ID
+	public struct Counted: Identifiable, Codable, Hashable, Sendable {
 		public let title: String
-		public let isConsumed: Bool
+		public let firstEarnedAt: Date?
+		public let count: Int
 
-		public init(id: Achievement.ID, title: String, isConsumed: Bool) {
-			self.id = id
+		public var id: String { title }
+
+		public init(title: String, firstEarnedAt: Date?, count: Int) {
 			self.title = title
-			self.isConsumed = isConsumed
+			self.firstEarnedAt = firstEarnedAt
+			self.count = count
 		}
 	}
 }
