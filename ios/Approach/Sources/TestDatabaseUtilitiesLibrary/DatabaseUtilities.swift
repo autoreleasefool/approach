@@ -23,6 +23,8 @@ public func initializeApproachDatabase(
 	withMatchPlays: InitialValue<MatchPlay.Database>? = nil,
 	withStatisticsWidgets: InitialValue<StatisticsWidget.Database>? = nil,
 	withBowlerPreferredGear: InitialValue<BowlerPreferredGear.Database>? = nil,
+	withAchievementEvents: InitialValue<AchievementEvent.Database>? = nil,
+	withAchievements: InitialValue<Achievement.Database>? = nil,
 	to db: (any DatabaseWriter)? = nil
 ) throws -> any DatabaseWriter {
 	let statisticsWidgets = withStatisticsWidgets
@@ -40,6 +42,8 @@ public func initializeApproachDatabase(
 	let gameLanes = coallesce(withGameLanes, ifHasAllOf: games, lanes)
 	let gameGear = coallesce(withGameGear, ifHasAllOf: games, gear)
 	let bowlerPreferredGear = coallesce(withBowlerPreferredGear, ifHasAllOf: bowlers, gear)
+	let achievementEvents = withAchievementEvents
+	let achievements = coallesce(withAchievements, ifHasOneOf: achievementEvents)
 
 	let dbQueue = try initializeDatabase(migrations: Migrations.approachMigrations, to: db) {
 		try insert(avatars: avatars, into: $0)
@@ -57,6 +61,8 @@ public func initializeApproachDatabase(
 		try insert(matchPlays: matchPlays, into: $0)
 		try insert(statisticsWidgets: statisticsWidgets, into: $0)
 		try insert(bowlerPreferredGear: bowlerPreferredGear, into: $0)
+		try insert(achievementEvents: achievementEvents, into: $0)
+		try insert(achievements: achievements, into: $0)
 	}
 
 	return dbQueue
