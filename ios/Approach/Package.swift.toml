@@ -182,6 +182,8 @@ libraries = [ "FeatureFlags" ]
 [repositories.Achievements.interface]
 libraries = [ "Achievements" ]
 dependencies = [ "DependenciesMacros" ]
+[repositories.Achievements.tests]
+dependencies = [ "ConcurrencyExtras" ]
 
 [repositories.Alleys]
 services = [ "RecentlyUsed" ]
