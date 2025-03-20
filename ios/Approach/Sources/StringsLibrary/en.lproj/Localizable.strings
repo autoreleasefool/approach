@@ -1,10 +1,10 @@
-/* Accessories */
+// MARK: - Accessories
 
 "accessory.title" = "Accessory";
 "accessory.overview.title" = "Accessories";
 "accessory.overview.showingLimit" = "Showing only %d most recent";
 
-/* Alleys */
+// MARK: - Alleys
 
 "alley.title" = "Alley";
 "alley.title.bowlingAlley" = "Bowling Alley";
@@ -36,13 +36,13 @@
 "alley.error.empty.message" = "You haven't added any alleys yet.";
 "alley.error.empty.filter.message" = "Try changing your filters or adding a new alley.";
 
-/* Address */
+// MARK: - Address
 
 "address.title" = "Address";
 "address.error.empty.title" = "No suggestions found";
 "address.error.notFound" = "We were unable to gather details for the chosen location. Please try again.";
 
-/* Bowlers */
+// MARK: - Bowlers
 
 "bowler.title" = "Bowler";
 "bowler.current" = "Current bowler";
@@ -53,7 +53,7 @@
 "bowler.error.empty.title" = "No bowlers found";
 "bowler.error.empty.message" = "You haven't added any bowlers yet. Try adding yourself to get started.";
 
-/* Opponents */
+// MARK: - Opponents
 
 "opponent.title" = "Opponent";
 "opponent.list.title" = "Opponents";
@@ -69,7 +69,7 @@
 "opponent.matches" = "Matches";
 "opponent.matches.none" = "No matches played. Try recording a match against this bowler in the game details.";
 
-/* Match Play */
+// MARK: - Match Play
 
 "matchPlay.title" = "Match Play";
 "matchPlay.summary.opponent.none" = "No opponent";
@@ -86,7 +86,7 @@
 "matchPlay.editor.fields.result.title" = "Outcome";
 "matchPlay.editor.fields.result.footer" = "Indicate your personal result. If you won, select '%@'";
 
-/* Gear */
+// MARK: - Gear
 
 "gear.title" = "Gear";
 "gear.list.title" = "Gear";
@@ -106,19 +106,19 @@
 "gear.error.empty.title" = "No gear found";
 "gear.error.empty.message" = "You haven't added any gear yet. Track usage stats for your shoes, balls, or more.";
 
-/* Bowling Balls */
+// MARK: - Bowling Balls
 
 "bowlingBall.title" = "Bowling Ball";
 "bowlingBall.list.title" = "Bowling Balls";
 
-/* Roll */
+// MARK: - Roll
 
 "roll.title" = "Ball %d";
 "roll.properties.ball.title" = "Ball rolled";
 "roll.properties.ball.noneSelected" = "None selected";
 "roll.properties.foul.title" = "Foul?";
 
-/* Lanes */
+// MARK: - Lanes
 
 "lane.title" = "Lane";
 "lane.list.title" = "Lanes";
@@ -131,7 +131,7 @@
 "lane.properties.position.noWall" = "No walls";
 "lane.editor.fields.position.help" = "You can mark which lanes have a wall to either the left or right, if this affects your game. Generally, only the first and last lanes in an alley should be marked as against any walls.";
 
-/* Leagues */
+// MARK: - Leagues
 
 "league.title" = "League";
 "league.list.title" = "Leagues";
@@ -160,7 +160,7 @@
 "league.error.empty.title" = "No leagues found";
 "league.error.empty.message" = "You haven't added any leagues or events yet. Track your progress week over week for each league you're in. See how you measure up in tournaments with events.";
 
-/* Series */
+// MARK: - Series
 
 "series.title" = "Series";
 "series.preBowl.title" = "Pre-Bowls";
@@ -208,7 +208,7 @@
 "series.error.empty.title" = "No series found";
 "series.error.empty.message" = "You haven't added a series yet. Create a new series every time you bowl to see your stats mapped accurately over time.";
 
-/* Games */
+// MARK: - Games
 
 "game.title" = "Game";
 "game.titleWithOrdinal" = "Game %d";
@@ -281,7 +281,7 @@
 
 "frame.editor.dragHint.message" = "Drag your finger across the pins to mark them as knocked down, or to reset them.";
 
-/* Statistics */
+// MARK: - Statistics
 
 "statistics.title" = "Statistics";
 "statistics.filter.title" = "Filter Statistics";
@@ -475,7 +475,7 @@
 "statistics.description.averagePinsLeftOnDeck" = "Average value of pins you've left standing at the end of frames per game";
 "statistics.description.firstRollAverage" = "Average value of pins knocked down on the first roll of a frame";
 
-/* Avatar */
+// MARK: - Avatar
 
 "avatar.editor.title" = "Edit avatar";
 "avatar.editor.kind.title" = "Kind";
@@ -492,7 +492,7 @@
 "avatar.editor.properties.backgroundColor.style.gradient" = "Gradient";
 "avatar.editor.properties.label.title" = "Label";
 
-/* Quick Launch */
+// MARK: - Quick Launch
 
 "quickLaunch.title" = "Quick Play";
 "quickLaunch.newSeries" = "New Series";
@@ -502,7 +502,7 @@
 "quickLaunch.bowlersList.tip.title" = "Quickly start a new series";
 "quickLaunch.bowlersList.tip.message" = "Use the button above to start a new series in your last played league.";
 
-/* Sharing */
+// MARK: - Sharing
 
 "sharing.title" = "Share";
 "sharing.tabs.title" = "Share Format";
@@ -544,7 +544,7 @@
 "sharing.scoreSheet.style.plain" = "Plain";
 "sharing.scoreSheet.style.pride" = "Pride";
 
-/* Widget */
+// MARK: - Widget
 
 "widget.builder.preview" = "Preview";
 "widget.builder.title" = "Create a Widget";
@@ -575,7 +575,7 @@
 "widget.help.error.description1" = "This is probably an unexpected error. First, try restarting the app.";
 "widget.help.error.description2" = "If that doesn't help, you can report the bug through the app settings and we'll do our best to help you resolve the problem.";
 
-/* Settings */
+// MARK: - Settings
 
 "settings.analytics.title" = "Analytics";
 "settings.analytics.info.paragraphOne" = "Approach collects anonymous analytics, such as the number of people using a feature, to improve the app. These analytics are never shared or sold.";
@@ -638,7 +638,7 @@
 "settings.archive.footer" = "An archive of your old data, hidden from the rest of the app.";
 "settings.title" = "Settings";
 
-/* Archive */
+// MARK: - Archive
 
 "archive.title" = "Archive";
 "archive.list.description" = "Here you will find all the bowlers, leagues, series, and games you've previously archived. They're never deleted, just hidden. You can always recover this data by swiping the items below.";
@@ -655,7 +655,7 @@
 "archive.alert.restoredSeries" = "Your series' data has been restored";
 "archive.alert.restoredGame" = "Your game's data has been restored";
 
-/* Ordering */
+// MARK: - Ordering
 
 "ordering.alphabetical" = "Alphabetical";
 "ordering.mostRecentlyUsed" = "Most Recently Used";
@@ -664,7 +664,7 @@
 "ordering.lowestToHighest" = "Lowest to Highest";
 "ordering.highestToLowest" = "Highest to Lowest";
 
-/* Onboarding */
+// MARK: - Onboarding
 
 "onboarding.header.welcomeTo" = "Welcome to a new";
 "onboarding.header.appName" = "Approach";
@@ -675,7 +675,8 @@
 "onboarding.logbook.name" = "Your Name";
 "onboarding.logbook.addBowler" = "Add Bowler";
 
-/* Import */
+// MARK: - Import
+
 "import.title" = "Importing";
 "import.description.approachAllowsExport" = "Approach allows to you export your data to a back up file for safety and security of your data.";
 "import.description.importBackupFiles" = "If you lose your data, you can restore your data from a back up file here.";
@@ -702,7 +703,7 @@
 "import.error.failedToImport" = "Approach couldn't find the file you imported. Please try again.";
 "import.error.failedToRestore" = "Approach couldn't restore to the latest backup. Please try again.";
 
-/* Export */
+// MARK: - Export
 
 "export.title" = "Exporting";
 "export.exportData" = "Export data";
@@ -713,7 +714,8 @@
 "export.lastExportedAt" = "You last exported your data on %@";
 "export.neverExported" = "You've never exported your data before.";
 
-/* Backups */
+// MARK: - Backups
+
 "backups.toast.success.message" = "Backup successful";
 "backups.error.failedToBackup.title" = "Backup failed";
 "backups.error.failedToBackup.subtitle" = "Something went wrong!";
@@ -744,7 +746,12 @@
 "backups.delete.title" = "Delete backup?";
 "backups.delete.message" = "Are you sure you want to delete this backup? It can't be restored later.";
 
-/* App */
+// MARK: - Achievements
+
+"achievements.earnable.iconista.title" = "Iconista";
+"achievements.earnable.tenYear.title" = "Ten Years";
+
+// MARK: - App
 
 "app.name" = "Approach";
 "app.tabs.accessories" = "Accessories";
@@ -769,7 +776,7 @@
 "app.icon.current" = "Current icon";
 "app.icon.tapToReset" = "Tap to Reset";
 
-/* Editor & Forms */
+// MARK: - Editor & Forms
 
 "editor.fields.details.title" = "Details";
 "editor.fields.details.name" = "Name";
@@ -785,13 +792,14 @@
 "picker.empty.title" = "No items found";
 "sortOrder.title" = "Sort Order";
 
-/* List */
+// MARK: - List
 
 "list.results" = "Results";
 "list..averages.showAverages" = "Show averages";
 "list.averages.allBowlers" = "All bowlers";
 
-/* Announcements */
+// MARK: - Announcements
+
 "announcement.halloween2024.title" = "Happy Halloween!";
 "announcement.halloween2024.message" = "Have a spooky time this Halloween season. Show your spirit by setting one of three new App Icons!";
 "announcement.halloween2024.openSettings" = "Open Settings";
@@ -802,7 +810,7 @@
 "announcement.startingBackups.description.toRestore.title" = "See more in Settings";
 "announcement.startingBackups.description.toRestore.description" = "To disable sync, or restore data, go to the settings.";
 
-/* Errors */
+// MARK: - Errors
 
 "error.generic.title" = "Something went wrong!";
 "error.loadingFailed" = "We couldn't load your data.";
@@ -826,7 +834,7 @@
 "errorReport.shareReport" = "Share report";
 "errorReport.emailBody" = "Errors:\n%@";
 
-/* Actions */
+// MARK: - Actions
 
 "action.apply" = "Apply";
 "action.filter" = "Filter";
@@ -857,7 +865,7 @@
 "action.reorder" = "Reorder";
 "action.finish" = "Finish";
 
-/* Other */
+// MARK: - Other
 
 "unknown" = "Unknown";
 "other" = "Other";
