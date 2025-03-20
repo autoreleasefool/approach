@@ -20,7 +20,7 @@ dependencies = [ "Algorithms" ]
 
 [features.Achievements]
 repositories = [ "Achievements" ]
-libraries = [ "FeatureFlags", "Strings", "Toast" ]
+libraries = [ "FeatureFlags", "Toast" ]
 
 [features.AddressLookup]
 repositories = [ "Locations" ]
@@ -298,8 +298,6 @@ libraries = [ "DatabaseMigrations", "DatabaseModels", "DateTime", "FeatureFlags"
 dependencies = [ "FileManagerPackageServiceInterface" ]
 [services.ImportExport.interface]
 dependencies = [ "DependenciesMacros" ]
-[services.ImportExport.tests]
-dependencies = [ "DependenciesTestSupport" ]
 [services.ImportExport.tests.resources]
 processed = [ "Resources" ]
 
@@ -329,8 +327,6 @@ dependencies = [ "Algorithms", "UserDefaultsPackageServiceInterface" ]
 [services.RecentlyUsed.interface]
 libraries = [ "Statistics" ]
 dependencies = [ "ComposableArchitecture" ]
-[services.RecentlyUsed.tests]
-dependencies = [ "DependenciesTestSupport" ]
 
 [services.Tips]
 dependencies = [ "UserDefaultsPackageServiceInterface" ]
@@ -345,7 +341,7 @@ dependencies = [ "DependenciesMacros" ]
 # Libraries
 
 [libraries.Achievements]
-libraries = [ "Models" ]
+libraries = [ "Strings" ]
 
 [libraries.Assets]
 skip_tests = true
@@ -598,7 +594,7 @@ libraries = [ "FeatureAction" ]
 dependencies = [ "ComposableArchitecture" ]
 
 [defaults.features.tests]
-dependencies = [ "SnapshotTesting" ]
+dependencies = [ "DependenciesTestSupport", "SnapshotTesting" ]
 libraries = [ "TestUtilities" ]
 
 [defaults.repositories]
@@ -612,14 +608,14 @@ dependencies = [ "Dependencies" ]
 [defaults.repositories.tests]
 services = [ "Database" ]
 libraries = [ "TestDatabaseUtilities", "TestUtilities" ]
-dependencies = [ "SnapshotTesting", "TestUtilitiesPackageLibrary" ]
+dependencies = [ "DependenciesTestSupport", "SnapshotTesting", "TestUtilitiesPackageLibrary" ]
 
 [defaults.services.interface]
 dependencies = [ "Dependencies" ]
 
 [defaults.services.tests]
 libraries = [ "TestUtilities" ]
-dependencies = [ "SnapshotTesting" ]
+dependencies = [ "DependenciesTestSupport", "SnapshotTesting" ]
 
 [defaults.libraries.tests]
 libraries = [ "TestUtilities" ]
