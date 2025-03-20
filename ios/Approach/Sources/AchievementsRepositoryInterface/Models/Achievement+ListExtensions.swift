@@ -7,3 +7,9 @@ extension Achievement.List {
 		EarnableAchievements.allCasesByTitle[title]!
 	}
 }
+
+extension Achievement.Summary {
+	public var achievement: EarnableAchievement.Type {
+		EarnableAchievements.allCasesByTitle[title]!
+	}
+}
