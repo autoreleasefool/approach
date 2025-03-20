@@ -188,6 +188,7 @@ let package = Package(
 		.testTarget(
 			name: "AccessoriesOverviewFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AccessoriesOverviewFeature",
 				"TestUtilitiesLibrary",
@@ -201,13 +202,13 @@ let package = Package(
 				"FeatureActionLibrary",
 				"FeatureFlagsLibrary",
 				"LoggingServiceInterface",
-				"StringsLibrary",
 				"ToastLibrary",
 			]
 		),
 		.testTarget(
 			name: "AchievementsFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AchievementsFeature",
 				"TestUtilitiesLibrary",
@@ -228,6 +229,7 @@ let package = Package(
 		.testTarget(
 			name: "AddressLookupFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AddressLookupFeature",
 				"TestUtilitiesLibrary",
@@ -246,6 +248,7 @@ let package = Package(
 		.testTarget(
 			name: "AlleyEditorFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AlleyEditorFeature",
 				"TestUtilitiesLibrary",
@@ -263,6 +266,7 @@ let package = Package(
 		.testTarget(
 			name: "AlleysListFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AlleysListFeature",
 				"TestUtilitiesLibrary",
@@ -282,6 +286,7 @@ let package = Package(
 		.testTarget(
 			name: "AnnouncementsFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AnnouncementsFeature",
 				"TestUtilitiesLibrary",
@@ -312,6 +317,7 @@ let package = Package(
 		.testTarget(
 			name: "AppFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AppFeature",
 				"TestUtilitiesLibrary",
@@ -331,6 +337,7 @@ let package = Package(
 		.testTarget(
 			name: "ArchiveListFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ArchiveListFeature",
 				"TestUtilitiesLibrary",
@@ -349,6 +356,7 @@ let package = Package(
 		.testTarget(
 			name: "AutomaticBackupsFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AutomaticBackupsFeature",
 				"TestUtilitiesLibrary",
@@ -371,6 +379,7 @@ let package = Package(
 		.testTarget(
 			name: "AvatarEditorFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AvatarEditorFeature",
 				"TestUtilitiesLibrary",
@@ -386,6 +395,7 @@ let package = Package(
 		.testTarget(
 			name: "BowlerDetailsFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"BowlerDetailsFeature",
 				"TestUtilitiesLibrary",
@@ -401,6 +411,7 @@ let package = Package(
 		.testTarget(
 			name: "BowlerEditorFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"BowlerEditorFeature",
 				"TestUtilitiesLibrary",
@@ -417,6 +428,7 @@ let package = Package(
 		.testTarget(
 			name: "BowlersListFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"BowlersListFeature",
 				"TestUtilitiesLibrary",
@@ -441,6 +453,7 @@ let package = Package(
 		.testTarget(
 			name: "ErrorsFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ErrorsFeature",
 				"TestUtilitiesLibrary",
@@ -459,6 +472,7 @@ let package = Package(
 		.testTarget(
 			name: "FeatureFlagsListFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"FeatureFlagsListFeature",
 				"TestUtilitiesLibrary",
@@ -473,6 +487,7 @@ let package = Package(
 		.testTarget(
 			name: "FormFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"FormFeature",
 				"TestUtilitiesLibrary",
@@ -493,6 +508,7 @@ let package = Package(
 		.testTarget(
 			name: "GamesEditorFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"GamesEditorFeature",
 				"TestUtilitiesLibrary",
@@ -509,6 +525,7 @@ let package = Package(
 		.testTarget(
 			name: "GamesListFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"GamesListFeature",
 				"TestUtilitiesLibrary",
@@ -527,6 +544,7 @@ let package = Package(
 		.testTarget(
 			name: "GearEditorFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"GearEditorFeature",
 				"TestUtilitiesLibrary",
@@ -544,6 +562,7 @@ let package = Package(
 		.testTarget(
 			name: "GearListFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"GearListFeature",
 				"TestUtilitiesLibrary",
@@ -562,6 +581,7 @@ let package = Package(
 		.testTarget(
 			name: "ImportExportFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ImportExportFeature",
 				"TestUtilitiesLibrary",
@@ -581,6 +601,7 @@ let package = Package(
 		.testTarget(
 			name: "LaneEditorFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LaneEditorFeature",
 				"TestUtilitiesLibrary",
@@ -600,6 +621,7 @@ let package = Package(
 		.testTarget(
 			name: "LeagueEditorFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LeagueEditorFeature",
 				"TestUtilitiesLibrary",
@@ -615,6 +637,7 @@ let package = Package(
 		.testTarget(
 			name: "LeaguesListFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LeaguesListFeature",
 				"TestUtilitiesLibrary",
@@ -635,6 +658,7 @@ let package = Package(
 		.testTarget(
 			name: "OnboardingFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"OnboardingFeature",
 				"TestUtilitiesLibrary",
@@ -651,6 +675,7 @@ let package = Package(
 		.testTarget(
 			name: "OpponentDetailsFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"OpponentDetailsFeature",
 				"TestUtilitiesLibrary",
@@ -670,6 +695,7 @@ let package = Package(
 		.testTarget(
 			name: "OpponentsListFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"OpponentsListFeature",
 				"TestUtilitiesLibrary",
@@ -685,6 +711,7 @@ let package = Package(
 		.testTarget(
 			name: "PaywallFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"PaywallFeature",
 				"TestUtilitiesLibrary",
@@ -703,6 +730,7 @@ let package = Package(
 		.testTarget(
 			name: "SeriesEditorFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SeriesEditorFeature",
 				"TestUtilitiesLibrary",
@@ -719,6 +747,7 @@ let package = Package(
 		.testTarget(
 			name: "SeriesListFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SeriesListFeature",
 				"TestUtilitiesLibrary",
@@ -742,6 +771,7 @@ let package = Package(
 		.testTarget(
 			name: "SettingsFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SettingsFeature",
 				"TestUtilitiesLibrary",
@@ -760,6 +790,7 @@ let package = Package(
 		.testTarget(
 			name: "SharingFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SharingFeature",
 				"TestUtilitiesLibrary",
@@ -778,6 +809,7 @@ let package = Package(
 		.testTarget(
 			name: "StatisticsDetailsFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"StatisticsDetailsFeature",
 				"TestUtilitiesLibrary",
@@ -792,6 +824,7 @@ let package = Package(
 		.testTarget(
 			name: "StatisticsOverviewFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"StatisticsOverviewFeature",
 				"TestUtilitiesLibrary",
@@ -812,6 +845,7 @@ let package = Package(
 		.testTarget(
 			name: "StatisticsWidgetEditorFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"StatisticsWidgetEditorFeature",
 				"TestUtilitiesLibrary",
@@ -827,6 +861,7 @@ let package = Package(
 		.testTarget(
 			name: "StatisticsWidgetsLayoutFeatureTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"StatisticsWidgetsLayoutFeature",
 				"TestUtilitiesLibrary",
@@ -850,11 +885,13 @@ let package = Package(
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "DependenciesMacros", package: "swift-dependencies"),
 				"AchievementsLibrary",
+				"ModelsLibrary",
 			]
 		),
 		.testTarget(
 			name: "AchievementsRepositoryTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				.product(name: "TestUtilitiesPackageLibrary", package: "swift-utilities"),
 				"AchievementsRepository",
@@ -883,6 +920,7 @@ let package = Package(
 		.testTarget(
 			name: "AlleysRepositoryTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				.product(name: "TestUtilitiesPackageLibrary", package: "swift-utilities"),
 				"AlleysRepository",
@@ -911,6 +949,7 @@ let package = Package(
 		.testTarget(
 			name: "BowlersRepositoryTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				.product(name: "TestUtilitiesPackageLibrary", package: "swift-utilities"),
 				"BowlersRepository",
@@ -940,6 +979,7 @@ let package = Package(
 		.testTarget(
 			name: "FramesRepositoryTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				.product(name: "TestUtilitiesPackageLibrary", package: "swift-utilities"),
 				"DatabaseService",
@@ -967,6 +1007,7 @@ let package = Package(
 		.testTarget(
 			name: "GamesRepositoryTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				.product(name: "TestUtilitiesPackageLibrary", package: "swift-utilities"),
 				"DatabaseService",
@@ -995,6 +1036,7 @@ let package = Package(
 		.testTarget(
 			name: "GearRepositoryTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				.product(name: "TestUtilitiesPackageLibrary", package: "swift-utilities"),
 				"DatabaseService",
@@ -1022,6 +1064,7 @@ let package = Package(
 		.testTarget(
 			name: "LanesRepositoryTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				.product(name: "TestUtilitiesPackageLibrary", package: "swift-utilities"),
 				"DatabaseService",
@@ -1050,6 +1093,7 @@ let package = Package(
 		.testTarget(
 			name: "LeaguesRepositoryTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				.product(name: "TestUtilitiesPackageLibrary", package: "swift-utilities"),
 				"DatabaseService",
@@ -1077,6 +1121,7 @@ let package = Package(
 		.testTarget(
 			name: "LocationsRepositoryTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				.product(name: "TestUtilitiesPackageLibrary", package: "swift-utilities"),
 				"DatabaseService",
@@ -1104,6 +1149,7 @@ let package = Package(
 		.testTarget(
 			name: "MatchPlaysRepositoryTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				.product(name: "TestUtilitiesPackageLibrary", package: "swift-utilities"),
 				"DatabaseService",
@@ -1133,6 +1179,7 @@ let package = Package(
 		.testTarget(
 			name: "QuickLaunchRepositoryTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				.product(name: "TestUtilitiesPackageLibrary", package: "swift-utilities"),
 				"DatabaseService",
@@ -1162,6 +1209,7 @@ let package = Package(
 		.testTarget(
 			name: "ScoresRepositoryTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				.product(name: "TestUtilitiesPackageLibrary", package: "swift-utilities"),
 				"DatabaseService",
@@ -1191,6 +1239,7 @@ let package = Package(
 		.testTarget(
 			name: "SeriesRepositoryTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				.product(name: "TestUtilitiesPackageLibrary", package: "swift-utilities"),
 				"DatabaseService",
@@ -1223,6 +1272,7 @@ let package = Package(
 		.testTarget(
 			name: "StatisticsRepositoryTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				.product(name: "TestUtilitiesPackageLibrary", package: "swift-utilities"),
 				"DatabaseService",
@@ -1249,6 +1299,7 @@ let package = Package(
 		.testTarget(
 			name: "StatisticsWidgetsRepositoryTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				.product(name: "TestUtilitiesPackageLibrary", package: "swift-utilities"),
 				"DatabaseService",
@@ -1283,6 +1334,7 @@ let package = Package(
 		.testTarget(
 			name: "AchievementsServiceTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AchievementsService",
 				"TestDatabaseUtilitiesLibrary",
@@ -1308,6 +1360,7 @@ let package = Package(
 		.testTarget(
 			name: "AddressLookupServiceTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AddressLookupService",
 				"TestUtilitiesLibrary",
@@ -1333,6 +1386,7 @@ let package = Package(
 		.testTarget(
 			name: "AnalyticsServiceTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AnalyticsService",
 				"TestUtilitiesLibrary",
@@ -1368,6 +1422,7 @@ let package = Package(
 		.testTarget(
 			name: "AvatarServiceTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AvatarService",
 				"TestUtilitiesLibrary",
@@ -1388,6 +1443,7 @@ let package = Package(
 		.testTarget(
 			name: "CodableServiceTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"CodableService",
 				"TestUtilitiesLibrary",
@@ -1425,6 +1481,7 @@ let package = Package(
 		.testTarget(
 			name: "DatabaseServiceTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DatabaseService",
 				"TestUtilitiesLibrary",
@@ -1445,6 +1502,7 @@ let package = Package(
 		.testTarget(
 			name: "EmailServiceTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"EmailService",
 				"TestUtilitiesLibrary",
@@ -1466,6 +1524,7 @@ let package = Package(
 		.testTarget(
 			name: "HUDServiceTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"HUDService",
 				"TestUtilitiesLibrary",
@@ -1527,6 +1586,7 @@ let package = Package(
 		.testTarget(
 			name: "LaunchServiceTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LaunchService",
 				"TestUtilitiesLibrary",
@@ -1547,6 +1607,7 @@ let package = Package(
 		.testTarget(
 			name: "LoggingServiceTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LoggingService",
 				"TestUtilitiesLibrary",
@@ -1567,6 +1628,7 @@ let package = Package(
 		.testTarget(
 			name: "NotificationsServiceTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"NotificationsService",
 				"TestUtilitiesLibrary",
@@ -1589,6 +1651,7 @@ let package = Package(
 		.testTarget(
 			name: "PreferenceServiceTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"PreferenceService",
 				"TestUtilitiesLibrary",
@@ -1612,6 +1675,7 @@ let package = Package(
 		.testTarget(
 			name: "ProductsServiceTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ProductsService",
 				"TestUtilitiesLibrary",
@@ -1660,6 +1724,7 @@ let package = Package(
 		.testTarget(
 			name: "TipsServiceTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"TestUtilitiesLibrary",
 				"TipsService",
@@ -1683,6 +1748,7 @@ let package = Package(
 		.testTarget(
 			name: "ZIPServiceTests",
 			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"TestUtilitiesLibrary",
 				"ZIPService",
@@ -1693,7 +1759,7 @@ let package = Package(
 		.target(
 			name: "AchievementsLibrary",
 			dependencies: [
-				"ModelsLibrary",
+				"StringsLibrary",
 			]
 		),
 		.testTarget(
