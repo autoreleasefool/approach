@@ -23,7 +23,7 @@ extension Achievement {
 }
 
 extension Achievement {
-	public struct Counted: Identifiable, Codable, Hashable, Sendable {
+	public struct List: Identifiable, Codable, Hashable, Sendable {
 		public let title: String
 		public let firstEarnedAt: Date?
 		public let count: Int
