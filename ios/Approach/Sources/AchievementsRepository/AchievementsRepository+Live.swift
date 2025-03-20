@@ -11,23 +11,59 @@ extension AchievementsRepository: DependencyKey {
 	public static var liveValue: Self {
 		AchievementsRepository(
 			list: {
+				@Dependency(\.featureFlags) var featureFlags
+				guard featureFlags.isFlagEnabled(.achievements) else { return .finished() }
+
 				@Dependency(DatabaseService.self) var database
 
-				return database.reader().observe {
-					try Achievement.Database
-						.all()
-						.annotated(
-							with: [
-								min(Achievement.Database.Columns.earnedAt).forKey("firstEarnedAt"),
-								count(Achievement.Database.Columns.id).forKey("count"),
-							]
-						)
-						.group(Achievement.Database.Columns.title)
-						.asRequest(of: Achievement.Counted.self)
-						.fetchAll($0)
-				}
+				let achievementsIndexedOrder = Dictionary(
+					uniqueKeysWithValues: EarnableAchievements.allCases.enumerated().map { index, achievement in
+						(achievement.title, index)
+					}
+				)
+
+				return database
+					.reader()
+					.observe {
+						try Achievement.Database
+							.all()
+							.annotated(
+								with: [
+									min(Achievement.Database.Columns.earnedAt).forKey("firstEarnedAt"),
+									count(Achievement.Database.Columns.id).forKey("count"),
+								]
+							)
+							.group(Achievement.Database.Columns.title)
+							.asRequest(of: Achievement.List.self)
+							.fetchAll($0)
+					}
+					.map {
+						$0.sorted {
+							achievementsIndexedOrder[$0.title] ?? Int.max < achievementsIndexedOrder[$1.title] ?? Int.max
+						}
+					}
+					.eraseToThrowingStream()
 			},
-			observeNewAchievements: { .finished }
+			observeNewAchievements: {
+				@Dependency(\.featureFlags) var featureFlags
+				guard featureFlags.isFlagEnabled(.achievements) else { return .finished }
+
+				@Dependency(DatabaseService.self) var database
+				@Dependency(\.date) var date
+
+				return database.reader()
+					.observe {
+						try Achievement.Database
+							.all()
+							.order(Achievement.Database.Columns.earnedAt.desc)
+							.filter(Achievement.Database.Columns.earnedAt > date.now)
+							.limit(1)
+							.asRequest(of: Achievement.Summary.self)
+							.fetchAll($0)
+					}
+					.compactMap { $0.first }
+					.eraseToStream()
+			}
 		)
 	}
 }
