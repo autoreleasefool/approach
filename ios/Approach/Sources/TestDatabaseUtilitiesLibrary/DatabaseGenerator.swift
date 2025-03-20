@@ -76,6 +76,18 @@ public func generatePopulatedDatabase(db: (any DatabaseWriter)? = nil) throws ->
 	let frames = generateFrames(forGames: games)
 	let matchPlays = generateMatchPlay(forGames: games)
 	let bowlerPreferredGear = generateBowlerPreferredGear(forBowlers: bowlers, withGear: gear)
+	let achievementEvents: [AchievementEvent.Database] = [
+		.init(id: UUID(0), title: "AppIconsViewed", isConsumed: true),
+		.init(id: UUID(1), title: "AppIconsViewed", isConsumed: true),
+		.init(id: UUID(2), title: "AppIconsViewed", isConsumed: false),
+		.init(id: UUID(3), title: "TenYearsBadgeClaimed", isConsumed: true),
+		.init(id: UUID(4), title: "TenYearsBadgeClaimed", isConsumed: false),
+	]
+	let achievements: [Achievement.Database] = [
+		.init(id: UUID(0), title: "Iconista", earnedAt: Date(timeIntervalSince1970: 1_662_512_400 /* September 6, 2022 */)),
+		.init(id: UUID(1), title: "Iconista", earnedAt: Date(timeIntervalSince1970: 1_694_221_200 /* September 8 ,2023 */)),
+		.init(id: UUID(2), title: "TenYears", earnedAt: Date(timeIntervalSince1970: 1_685_643_496 /* June 1, 2023 */)),
+	]
 
 	return try initializeApproachDatabase(
 		withAvatars: .custom(avatars),
@@ -92,6 +104,8 @@ public func generatePopulatedDatabase(db: (any DatabaseWriter)? = nil) throws ->
 		withFrames: .custom(frames),
 		withMatchPlays: .custom(matchPlays),
 		withBowlerPreferredGear: .custom(bowlerPreferredGear),
+		withAchievementEvents: .custom(achievementEvents),
+		withAchievements: .custom(achievements),
 		to: db
 	)
 }

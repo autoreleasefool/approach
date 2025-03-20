@@ -1,5 +1,3 @@
-import ModelsLibrary
-
 public protocol EarnableAchievement: Sendable {
 	static var title: String { get }
 
@@ -35,4 +33,8 @@ extension EarnableAchievements {
 		TenYears.self,
 		Iconista.self,
 	]
+
+	public static let allCasesByTitle: [String: EarnableAchievement.Type] = Dictionary(
+		uniqueKeysWithValues: allCases.map { ($0.title, $0) }
+	)
 }

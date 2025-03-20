@@ -63,8 +63,7 @@ public struct AchievementsObserver: Reducer, Sendable {
 					guard featureFlags.isFlagEnabled(.achievements) else { return .none }
 					return .run { send in
 						for await earned in achievements.observeNewAchievements() {
-							let title = type(of: earned).title
-							let toast: ToastState<AchievementAction> = ToastState(content: .achievement(.init(title: title)))
+							let toast: ToastState<AchievementAction> = ToastState(content: .achievement(.init(title: earned.title)))
 							await send(.internal(.didEarnAchievement(toast)))
 						}
 					}

@@ -30,4 +30,4 @@ extension Achievement.Database {
 
 extension Achievement.Summary: FetchableRecord {}
 
-extension Achievement.Counted: FetchableRecord {}
+extension Achievement.List: FetchableRecord {}

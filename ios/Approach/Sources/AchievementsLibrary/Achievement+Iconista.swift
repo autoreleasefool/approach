@@ -1,8 +1,8 @@
-import ModelsLibrary
+import StringsLibrary
 
 extension EarnableAchievements {
 	public struct Iconista: EarnableAchievement {
-		public static var title: String { "Iconista" }
+		public static var title: String { Strings.Achievements.Earnable.Iconista.title }
 
 		public static var isEnabled: Bool { false }
 		public static var showToastOnEarn: Bool { true }
