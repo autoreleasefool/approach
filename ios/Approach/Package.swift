@@ -891,6 +891,7 @@ let package = Package(
 		.testTarget(
 			name: "AchievementsRepositoryTests",
 			dependencies: [
+				.product(name: "ConcurrencyExtras", package: "swift-concurrency-extras"),
 				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				.product(name: "TestUtilitiesPackageLibrary", package: "swift-utilities"),

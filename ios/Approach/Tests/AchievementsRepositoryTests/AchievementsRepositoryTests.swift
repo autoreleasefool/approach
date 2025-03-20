@@ -1,5 +1,6 @@
 @testable import AchievementsRepository
 @testable import AchievementsRepositoryInterface
+import ConcurrencyExtras
 import DatabaseModelsLibrary
 import DatabaseServiceInterface
 import Dependencies
@@ -13,7 +14,7 @@ import Testing
 import TestUtilitiesLibrary
 import TestUtilitiesPackageLibrary
 
-@Suite("AchievementsRepository", .tags(.repository))
+@Suite("AchievementsRepository", .tags(.repository), .timeLimit(.minutes(1)))
 struct AchievementsRepositoryTests {
 
 	// MARK: list
@@ -132,39 +133,43 @@ struct AchievementsRepositoryTests {
 
 		@Test("Sends new achievements", .tags(.unit))
 		func sendsNewAchievements() async throws {
-			// Given an empty database
-			let db = try initializeApproachDatabase(withAchievementEvents: .zero, withAchievements: .zero)
+			try await withMainSerialExecutor {
+				// Given an empty database
+				let db = try initializeApproachDatabase(withAchievementEvents: .zero, withAchievements: .zero)
 
-			try await withDependencies {
-				$0.featureFlags.isEnabled = { _ in true }
-				$0[DatabaseService.self].reader = { @Sendable in db }
-				$0[AchievementsRepository.self] = .liveValue
-				$0.date = .constant(Date(timeIntervalSince1970: 122))
-			} operation: {
-				let achievement1 = Achievement.Database.mock(id: UUID(0), title: "Ten Years", earnedAt: Date(timeIntervalSince1970: 123))
-				let achievement2 = Achievement.Database.mock(id: UUID(1), title: "Ten Years", earnedAt: Date(timeIntervalSince1970: 456))
-				let expectedAchievements = [Achievement.Summary(achievement1), Achievement.Summary(achievement2)]
+				try await withDependencies {
+					$0.featureFlags.isEnabled = { _ in true }
+					$0[DatabaseService.self].reader = { @Sendable in db }
+					$0[AchievementsRepository.self] = .liveValue
+					$0.date = .constant(Date(timeIntervalSince1970: 122))
+				} operation: {
+					let achievement1 = Achievement.Database.mock(id: UUID(0), title: "Ten Years", earnedAt: Date(timeIntervalSince1970: 123))
+					let achievement2 = Achievement.Database.mock(id: UUID(1), title: "Ten Years", earnedAt: Date(timeIntervalSince1970: 456))
+					let expectedAchievements = [Achievement.Summary(achievement1), Achievement.Summary(achievement2)]
 
-				try await confirmation(expectedCount: 2) { receivesAchievement in
-					let task = Task {
-						var received: [Achievement.Summary] = []
+					try await confirmation(expectedCount: 2) { receivesAchievement in
+						let task = Task {
+							var received: [Achievement.Summary] = []
 
-						// Expect 2 achievements to be received
-						for await achievement in achievements.observeNewAchievements() {
-							#expect(expectedAchievements.contains(achievement))
-							receivesAchievement()
+							// Expect 2 achievements to be received
+							for await achievement in achievements.observeNewAchievements() {
+								#expect(expectedAchievements.contains(achievement))
+								receivesAchievement()
 
-							received.append(achievement)
-							if received.count == 2 {
-								break
+								received.append(achievement)
+								if received.count == 2 {
+									break
+								}
 							}
 						}
+
+						await Task.yield()
+
+						try await db.write { try achievement1.insert($0) }
+						try await db.write { try achievement2.insert($0) }
+
+						await task.value
 					}
-
-					try await db.write { try achievement1.insert($0) }
-					try await db.write { try achievement2.insert($0) }
-
-					await task.value
 				}
 			}
 		}
