@@ -22,12 +22,12 @@ public enum Strings {
   public static let supportEmail = Strings.tr("Localizable", "supportEmail", fallback: "approach@josephroque.ca")
   /// Tab
   public static let tab = Strings.tr("Localizable", "tab", fallback: "Tab")
-  /// Other
+  /// Unknown
   public static let unknown = Strings.tr("Localizable", "unknown", fallback: "Unknown")
   /// Yes
   public static let yes = Strings.tr("Localizable", "yes", fallback: "Yes")
   public enum Accessory {
-    /// Accessories
+    /// Accessory
     public static let title = Strings.tr("Localizable", "accessory.title", fallback: "Accessory")
     public enum Overview {
       /// Showing only %d most recent
@@ -38,10 +38,22 @@ public enum Strings {
       public static let title = Strings.tr("Localizable", "accessory.overview.title", fallback: "Accessories")
     }
   }
+  public enum Achievements {
+    public enum Earnable {
+      public enum Iconista {
+        /// Iconista
+        public static let title = Strings.tr("Localizable", "achievements.earnable.iconista.title", fallback: "Iconista")
+      }
+      public enum TenYear {
+        /// Ten Years
+        public static let title = Strings.tr("Localizable", "achievements.earnable.tenYear.title", fallback: "Ten Years")
+      }
+    }
+  }
   public enum Action {
     /// Add
     public static let add = Strings.tr("Localizable", "action.add", fallback: "Add")
-    /// Actions
+    /// Apply
     public static let apply = Strings.tr("Localizable", "action.apply", fallback: "Apply")
     /// Archive
     public static let archive = Strings.tr("Localizable", "action.archive", fallback: "Archive")
@@ -109,7 +121,7 @@ public enum Strings {
     }
   }
   public enum Alley {
-    /// Alleys
+    /// Alley
     public static let title = Strings.tr("Localizable", "alley.title", fallback: "Alley")
     public enum Editor {
       public enum Fields {
@@ -214,7 +226,7 @@ public enum Strings {
       public static let message = Strings.tr("Localizable", "announcement.halloween2024.message", fallback: "Have a spooky time this Halloween season. Show your spirit by setting one of three new App Icons!")
       /// Open Settings
       public static let openSettings = Strings.tr("Localizable", "announcement.halloween2024.openSettings", fallback: "Open Settings")
-      /// Announcements
+      /// Happy Halloween!
       public static let title = Strings.tr("Localizable", "announcement.halloween2024.title", fallback: "Happy Halloween!")
     }
     public enum StartingBackups {
@@ -237,7 +249,7 @@ public enum Strings {
     }
   }
   public enum App {
-    /// App
+    /// Approach
     public static let name = Strings.tr("Localizable", "app.name", fallback: "Approach")
     public enum Icon {
       /// Bisexual Pride
@@ -346,7 +358,7 @@ public enum Strings {
     public enum Editor {
       /// Preview
       public static let preview = Strings.tr("Localizable", "avatar.editor.preview", fallback: "Preview")
-      /// Avatar
+      /// Edit avatar
       public static let title = Strings.tr("Localizable", "avatar.editor.title", fallback: "Edit avatar")
       public enum Kind {
         /// Photo
@@ -475,7 +487,7 @@ public enum Strings {
     }
     public enum Toast {
       public enum Success {
-        /// Backups
+        /// Backup successful
         public static let message = Strings.tr("Localizable", "backups.toast.success.message", fallback: "Backup successful")
       }
     }
@@ -495,7 +507,7 @@ public enum Strings {
   public enum Bowler {
     /// Current bowler
     public static let current = Strings.tr("Localizable", "bowler.current", fallback: "Current bowler")
-    /// Bowlers
+    /// Bowler
     public static let title = Strings.tr("Localizable", "bowler.title", fallback: "Bowler")
     public enum Error {
       public enum Empty {
@@ -519,7 +531,7 @@ public enum Strings {
     }
   }
   public enum BowlingBall {
-    /// Bowling Balls
+    /// Bowling Ball
     public static let title = Strings.tr("Localizable", "bowlingBall.title", fallback: "Bowling Ball")
     public enum List {
       /// Bowling Balls
@@ -535,7 +547,7 @@ public enum Strings {
         public static let address = Strings.tr("Localizable", "editor.fields.details.address", fallback: "Address")
         /// Name
         public static let name = Strings.tr("Localizable", "editor.fields.details.name", fallback: "Name")
-        /// Editor & Forms
+        /// Details
         public static let title = Strings.tr("Localizable", "editor.fields.details.title", fallback: "Details")
       }
     }
@@ -544,7 +556,7 @@ public enum Strings {
     /// We couldn't load your data.
     public static let loadingFailed = Strings.tr("Localizable", "error.loadingFailed", fallback: "We couldn't load your data.")
     public enum Generic {
-      /// Errors
+      /// Something went wrong!
       public static let title = Strings.tr("Localizable", "error.generic.title", fallback: "Something went wrong!")
     }
     public enum Toast {
@@ -612,7 +624,7 @@ public enum Strings {
     }
     /// You've never exported your data before.
     public static let neverExported = Strings.tr("Localizable", "export.neverExported", fallback: "You've never exported your data before.")
-    /// Export
+    /// Exporting
     public static let title = Strings.tr("Localizable", "export.title", fallback: "Exporting")
     /// We recommend exporting your data regularly, in case of any unexpected circumstances causing you to lose your phone or data!
     public static let weRecommend = Strings.tr("Localizable", "export.weRecommend", fallback: "We recommend exporting your data regularly, in case of any unexpected circumstances causing you to lose your phone or data!")
@@ -658,7 +670,7 @@ public enum Strings {
     }
   }
   public enum Game {
-    /// Games
+    /// Game
     public static let title = Strings.tr("Localizable", "game.title", fallback: "Game")
     /// Game %d
     public static func titleWithOrdinal(_ p1: Int) -> String {
@@ -890,7 +902,7 @@ public enum Strings {
     }
   }
   public enum Import {
-    /// Import
+    /// Importing
     public static let title = Strings.tr("Localizable", "import.title", fallback: "Importing")
     public enum Action {
       /// Import data
@@ -960,7 +972,7 @@ public enum Strings {
     }
   }
   public enum Lane {
-    /// Lanes
+    /// Lane
     public static let title = Strings.tr("Localizable", "lane.title", fallback: "Lane")
     public enum Editor {
       public enum Fields {
@@ -998,7 +1010,7 @@ public enum Strings {
     }
   }
   public enum League {
-    /// Leagues
+    /// League
     public static let title = Strings.tr("Localizable", "league.title", fallback: "League")
     public enum Editor {
       public enum Fields {
@@ -1086,7 +1098,7 @@ public enum Strings {
     }
   }
   public enum List {
-    /// List
+    /// Results
     public static let results = Strings.tr("Localizable", "list.results", fallback: "Results")
     public enum Averages {
       /// Show averages
@@ -1153,7 +1165,7 @@ public enum Strings {
     public enum Header {
       /// Approach
       public static let appName = Strings.tr("Localizable", "onboarding.header.appName", fallback: "Approach")
-      /// Onboarding
+      /// Welcome to a new
       public static let welcomeTo = Strings.tr("Localizable", "onboarding.header.welcomeTo", fallback: "Welcome to a new")
     }
     public enum Logbook {
@@ -1178,7 +1190,7 @@ public enum Strings {
     public static let matches = Strings.tr("Localizable", "opponent.matches", fallback: "Matches")
     /// Record
     public static let record = Strings.tr("Localizable", "opponent.record", fallback: "Record")
-    /// Opponents
+    /// Opponent
     public static let title = Strings.tr("Localizable", "opponent.title", fallback: "Opponent")
     public enum Error {
       public enum Empty {
@@ -1212,7 +1224,7 @@ public enum Strings {
     }
   }
   public enum Ordering {
-    /// Ordering
+    /// Alphabetical
     public static let alphabetical = Strings.tr("Localizable", "ordering.alphabetical", fallback: "Alphabetical")
     /// Highest to Lowest
     public static let highestToLowest = Strings.tr("Localizable", "ordering.highestToLowest", fallback: "Highest to Lowest")
@@ -1240,7 +1252,7 @@ public enum Strings {
     public static let newSeries = Strings.tr("Localizable", "quickLaunch.newSeries", fallback: "New Series")
     /// Play Now
     public static let playNow = Strings.tr("Localizable", "quickLaunch.playNow", fallback: "Play Now")
-    /// Quick Launch
+    /// Quick Play
     public static let title = Strings.tr("Localizable", "quickLaunch.title", fallback: "Quick Play")
     public enum BowlersList {
       public enum Tip {
@@ -1258,7 +1270,7 @@ public enum Strings {
     }
   }
   public enum Roll {
-    /// Roll
+    /// Ball %d
     public static func title(_ p1: Int) -> String {
       return Strings.tr("Localizable", "roll.title", p1, fallback: "Ball %d")
     }
@@ -1449,7 +1461,7 @@ public enum Strings {
       public static let privacyPolicy = Strings.tr("Localizable", "settings.analytics.privacyPolicy", fallback: "Privacy Policy")
       /// Share anonymous analytics?
       public static let shareAnonymousAnalytics = Strings.tr("Localizable", "settings.analytics.shareAnonymousAnalytics", fallback: "Share anonymous analytics?")
-      /// Settings
+      /// Analytics
       public static let title = Strings.tr("Localizable", "settings.analytics.title", fallback: "Analytics")
       public enum Info {
         /// Approach collects anonymous analytics, such as the number of people using a feature, to improve the app. These analytics are never shared or sold.
@@ -1610,7 +1622,7 @@ public enum Strings {
     }
   }
   public enum Sharing {
-    /// Sharing
+    /// Share
     public static let title = Strings.tr("Localizable", "sharing.title", fallback: "Share")
     public enum Common {
       public enum ColorScheme {
@@ -2217,7 +2229,7 @@ public enum Strings {
   }
   public enum Widget {
     public enum Builder {
-      /// Widget
+      /// Preview
       public static let preview = Strings.tr("Localizable", "widget.builder.preview", fallback: "Preview")
       /// Statistic to Display
       public static let statistic = Strings.tr("Localizable", "widget.builder.statistic", fallback: "Statistic to Display")
