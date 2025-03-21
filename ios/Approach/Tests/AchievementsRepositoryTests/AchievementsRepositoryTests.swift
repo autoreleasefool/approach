@@ -8,7 +8,7 @@ import DependenciesTestSupport
 import FeatureFlagsPackageLibrary
 import Foundation
 import GRDB
-@testable import ModelsLibrary
+import ModelsLibrary
 import TestDatabaseUtilitiesLibrary
 import Testing
 import TestUtilitiesLibrary
