@@ -622,6 +622,8 @@
 "settings.featureFlags.matchRelease" = "Match flags to Release";
 "settings.featureFlags.matchTest" = "Match flags to Test";
 "settings.featureFlags.matchDevelopment" = "Match flags to Development";
+"settings.achievements.title" = "Badges";
+"settings.achievements.footer" = "Earn badges while you improve your bowling game.";
 "settings.statistics.title" = "Statistics";
 "settings.statistics.footer" = "Fine-tune your preferences when it comes to which statistics to show.";
 "settings.statistics.overall.title" = "Overall";

@@ -198,11 +198,8 @@ let package = Package(
 			name: "AchievementsFeature",
 			dependencies: [
 				"AchievementsRepositoryInterface",
-				"AnalyticsServiceInterface",
-				"FeatureActionLibrary",
+				"ErrorsFeature",
 				"FeatureFlagsLibrary",
-				"LoggingServiceInterface",
-				"ToastLibrary",
 			]
 		),
 		.testTarget(
@@ -306,7 +303,6 @@ let package = Package(
 				.product(name: "TelemetryDeckAnalyticsPackageService", package: "swift-utilities"),
 				.product(name: "UserDefaultsPackageService", package: "swift-utilities"),
 				"AccessoriesOverviewFeature",
-				"AchievementsFeature",
 				"BowlersListFeature",
 				"LaunchServiceInterface",
 				"OnboardingFeature",
@@ -757,6 +753,7 @@ let package = Package(
 			name: "SettingsFeature",
 			dependencies: [
 				.product(name: "BundlePackageServiceInterface", package: "swift-utilities"),
+				"AchievementsFeature",
 				"AchievementsServiceInterface",
 				"AppIconServiceInterface",
 				"ArchiveListFeature",
