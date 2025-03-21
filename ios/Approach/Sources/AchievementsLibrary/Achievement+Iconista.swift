@@ -1,7 +1,7 @@
 import StringsLibrary
 
 extension EarnableAchievements {
-	public struct Iconista: EarnableAchievement {
+	public struct Iconista: EarnableAchievement, Equatable {
 		public static var title: String { Strings.Achievements.Earnable.Iconista.title }
 
 		public static var isEnabled: Bool { false }
