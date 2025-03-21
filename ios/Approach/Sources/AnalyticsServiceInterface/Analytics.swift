@@ -8,6 +8,7 @@ public protocol GameSessionTrackableEvent: Sendable {
 }
 
 extension Analytics {
+	public enum Achievement {}
 	public enum Alley {}
 	public enum Announcement {}
 	public enum App {}
