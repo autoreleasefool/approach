@@ -9,6 +9,675 @@
     }
   ],
   "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AccessoriesOverviewFeature",
+          "name" : "AccessoriesOverviewFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AchievementsFeature",
+          "name" : "AchievementsFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AchievementsLibrary",
+          "name" : "AchievementsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AchievementsRepository",
+          "name" : "AchievementsRepository"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AchievementsRepositoryInterface",
+          "name" : "AchievementsRepositoryInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AchievementsService",
+          "name" : "AchievementsService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AchievementsServiceInterface",
+          "name" : "AchievementsServiceInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AddressLookupFeature",
+          "name" : "AddressLookupFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AddressLookupService",
+          "name" : "AddressLookupService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AddressLookupServiceInterface",
+          "name" : "AddressLookupServiceInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AlleyEditorFeature",
+          "name" : "AlleyEditorFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AlleysListFeature",
+          "name" : "AlleysListFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AlleysRepository",
+          "name" : "AlleysRepository"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AlleysRepositoryInterface",
+          "name" : "AlleysRepositoryInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AnalyticsService",
+          "name" : "AnalyticsService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AnalyticsServiceInterface",
+          "name" : "AnalyticsServiceInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AnnouncementsFeature",
+          "name" : "AnnouncementsFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AppFeature",
+          "name" : "AppFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AppIconService",
+          "name" : "AppIconService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AppIconServiceInterface",
+          "name" : "AppIconServiceInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ArchiveListFeature",
+          "name" : "ArchiveListFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AssetsLibrary",
+          "name" : "AssetsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AutomaticBackupsFeature",
+          "name" : "AutomaticBackupsFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AvatarEditorFeature",
+          "name" : "AvatarEditorFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AvatarService",
+          "name" : "AvatarService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "AvatarServiceInterface",
+          "name" : "AvatarServiceInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "BowlerDetailsFeature",
+          "name" : "BowlerDetailsFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "BowlerEditorFeature",
+          "name" : "BowlerEditorFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "BowlersListFeature",
+          "name" : "BowlersListFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "BowlersRepository",
+          "name" : "BowlersRepository"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "BowlersRepositoryInterface",
+          "name" : "BowlersRepositoryInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "CodableService",
+          "name" : "CodableService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "CodableServiceInterface",
+          "name" : "CodableServiceInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ComposableExtensionsLibrary",
+          "name" : "ComposableExtensionsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ConstantsLibrary",
+          "name" : "ConstantsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "DatabaseMigrationsLibrary",
+          "name" : "DatabaseMigrationsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "DatabaseModelsLibrary",
+          "name" : "DatabaseModelsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "DatabaseService",
+          "name" : "DatabaseService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "DatabaseServiceInterface",
+          "name" : "DatabaseServiceInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "DateTimeLibrary",
+          "name" : "DateTimeLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "EmailService",
+          "name" : "EmailService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "EmailServiceInterface",
+          "name" : "EmailServiceInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ErrorsFeature",
+          "name" : "ErrorsFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "FeatureActionLibrary",
+          "name" : "FeatureActionLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "FeatureFlagsLibrary",
+          "name" : "FeatureFlagsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "FeatureFlagsListFeature",
+          "name" : "FeatureFlagsListFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "FormFeature",
+          "name" : "FormFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "FramesRepository",
+          "name" : "FramesRepository"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "FramesRepositoryInterface",
+          "name" : "FramesRepositoryInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "GamesEditorFeature",
+          "name" : "GamesEditorFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "GamesListFeature",
+          "name" : "GamesListFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "GamesRepository",
+          "name" : "GamesRepository"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "GamesRepositoryInterface",
+          "name" : "GamesRepositoryInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "GearEditorFeature",
+          "name" : "GearEditorFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "GearListFeature",
+          "name" : "GearListFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "GearRepository",
+          "name" : "GearRepository"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "GearRepositoryInterface",
+          "name" : "GearRepositoryInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "HUDService",
+          "name" : "HUDService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "HUDServiceInterface",
+          "name" : "HUDServiceInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ImportExportFeature",
+          "name" : "ImportExportFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ImportExportService",
+          "name" : "ImportExportService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ImportExportServiceInterface",
+          "name" : "ImportExportServiceInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "LaneEditorFeature",
+          "name" : "LaneEditorFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "LanesRepository",
+          "name" : "LanesRepository"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "LanesRepositoryInterface",
+          "name" : "LanesRepositoryInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "LaunchService",
+          "name" : "LaunchService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "LaunchServiceInterface",
+          "name" : "LaunchServiceInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "LeagueEditorFeature",
+          "name" : "LeagueEditorFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "LeaguesListFeature",
+          "name" : "LeaguesListFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "LeaguesRepository",
+          "name" : "LeaguesRepository"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "LeaguesRepositoryInterface",
+          "name" : "LeaguesRepositoryInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ListContentLibrary",
+          "name" : "ListContentLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "LocationsRepository",
+          "name" : "LocationsRepository"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "LocationsRepositoryInterface",
+          "name" : "LocationsRepositoryInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "LoggingService",
+          "name" : "LoggingService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "LoggingServiceInterface",
+          "name" : "LoggingServiceInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "MatchPlaysRepository",
+          "name" : "MatchPlaysRepository"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "MatchPlaysRepositoryInterface",
+          "name" : "MatchPlaysRepositoryInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ModelsLibrary",
+          "name" : "ModelsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ModelsViewsLibrary",
+          "name" : "ModelsViewsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "NotificationsService",
+          "name" : "NotificationsService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "NotificationsServiceInterface",
+          "name" : "NotificationsServiceInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "OnboardingFeature",
+          "name" : "OnboardingFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "OpponentDetailsFeature",
+          "name" : "OpponentDetailsFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "OpponentsListFeature",
+          "name" : "OpponentsListFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "PaywallFeature",
+          "name" : "PaywallFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "PickableModelsLibrary",
+          "name" : "PickableModelsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "PreferenceService",
+          "name" : "PreferenceService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "PreferenceServiceInterface",
+          "name" : "PreferenceServiceInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ProductsLibrary",
+          "name" : "ProductsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ProductsService",
+          "name" : "ProductsService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ProductsServiceInterface",
+          "name" : "ProductsServiceInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "QuickLaunchRepository",
+          "name" : "QuickLaunchRepository"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "QuickLaunchRepositoryInterface",
+          "name" : "QuickLaunchRepositoryInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "RecentlyUsedService",
+          "name" : "RecentlyUsedService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "RecentlyUsedServiceInterface",
+          "name" : "RecentlyUsedServiceInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ReorderingLibrary",
+          "name" : "ReorderingLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "RepositoryLibrary",
+          "name" : "RepositoryLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ResourceListLibrary",
+          "name" : "ResourceListLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ResourcePickerLibrary",
+          "name" : "ResourcePickerLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ScoreKeeperLibrary",
+          "name" : "ScoreKeeperLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ScoreKeeperModelsLibrary",
+          "name" : "ScoreKeeperModelsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ScoreSheetLibrary",
+          "name" : "ScoreSheetLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ScoresRepository",
+          "name" : "ScoresRepository"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ScoresRepositoryInterface",
+          "name" : "ScoresRepositoryInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "SeriesEditorFeature",
+          "name" : "SeriesEditorFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "SeriesListFeature",
+          "name" : "SeriesListFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "SeriesRepository",
+          "name" : "SeriesRepository"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "SeriesRepositoryInterface",
+          "name" : "SeriesRepositoryInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "SettingsFeature",
+          "name" : "SettingsFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "SharingFeature",
+          "name" : "SharingFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "SortOrderLibrary",
+          "name" : "SortOrderLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "SortingLibrary",
+          "name" : "SortingLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "StatisticsChartsLibrary",
+          "name" : "StatisticsChartsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "StatisticsDetailsFeature",
+          "name" : "StatisticsDetailsFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "StatisticsLibrary",
+          "name" : "StatisticsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "StatisticsModelsLibrary",
+          "name" : "StatisticsModelsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "StatisticsOverviewFeature",
+          "name" : "StatisticsOverviewFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "StatisticsRepository",
+          "name" : "StatisticsRepository"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "StatisticsRepositoryInterface",
+          "name" : "StatisticsRepositoryInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "StatisticsWidgetEditorFeature",
+          "name" : "StatisticsWidgetEditorFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "StatisticsWidgetsLayoutFeature",
+          "name" : "StatisticsWidgetsLayoutFeature"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "StatisticsWidgetsLibrary",
+          "name" : "StatisticsWidgetsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "StatisticsWidgetsRepository",
+          "name" : "StatisticsWidgetsRepository"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "StatisticsWidgetsRepositoryInterface",
+          "name" : "StatisticsWidgetsRepositoryInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "StringsLibrary",
+          "name" : "StringsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "TipsLibrary",
+          "name" : "TipsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "TipsService",
+          "name" : "TipsService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "TipsServiceInterface",
+          "name" : "TipsServiceInterface"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ToastLibrary",
+          "name" : "ToastLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ViewsLibrary",
+          "name" : "ViewsLibrary"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ZIPService",
+          "name" : "ZIPService"
+        },
+        {
+          "containerPath" : "container:Approach",
+          "identifier" : "ZIPServiceInterface",
+          "name" : "ZIPServiceInterface"
+        }
+      ]
+    },
     "testTimeoutsEnabled" : true
   },
   "testTargets" : [
