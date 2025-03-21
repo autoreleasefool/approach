@@ -10,7 +10,7 @@ supported = [ "\"17.0\"" ]
 # Features
 
 [features.App]
-features = [ "AccessoriesOverview", "Achievements", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
+features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
 services = [ "Launch" ]
 dependencies = [ "AppInfoPackageService", "BundlePackageService", "FeatureFlagsPackageService", "FileManagerPackageService", "GRDBDatabasePackageService", "PasteboardPackageService", "SentryErrorReportingPackageService", "StoreReviewPackageService", "TelemetryDeckAnalyticsPackageService", "UserDefaultsPackageService" ]
 
@@ -19,8 +19,9 @@ features = [ "AlleysList", "GearList" ]
 dependencies = [ "Algorithms" ]
 
 [features.Achievements]
+features = [ "Errors" ]
 repositories = [ "Achievements" ]
-libraries = [ "FeatureFlags", "Toast" ]
+libraries = [ "FeatureFlags" ]
 
 [features.AddressLookup]
 repositories = [ "Locations" ]
@@ -149,7 +150,7 @@ features = [ "GamesList", "LeagueEditor" ]
 libraries = [ "SortOrder" ]
 
 [features.Settings]
-features = [ "ArchiveList", "AutomaticBackups", "FeatureFlagsList", "ImportExport", "OpponentsList" ]
+features = [ "Achievements", "ArchiveList", "AutomaticBackups", "FeatureFlagsList", "ImportExport", "OpponentsList" ]
 services = [ "Achievements", "AppIcon", "DatabaseMocking", "Products" ]
 dependencies = [ "BundlePackageServiceInterface" ]
 

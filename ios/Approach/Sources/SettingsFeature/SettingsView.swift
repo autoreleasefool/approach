@@ -1,3 +1,4 @@
+import AchievementsFeature
 import ArchiveListFeature
 import AssetsLibrary
 import AutomaticBackupsFeature
@@ -33,6 +34,10 @@ public struct SettingsView: View {
 			OpponentsSection(onTapOpponentsButton: { send(.didTapOpponents) })
 
 			StatisticsSection(onTapStatisticsButton: { send(.didTapStatistics) })
+
+			if store.isAchievementsEnabled {
+				AchievementsSection(onTapAchievementsButton: { send(.didTapAchievementsButton) })
+			}
 
 			DataSection(
 				isImportButtonVisible: store.isImportEnabled,
@@ -95,6 +100,7 @@ extension View {
 			.export(store.scope(state: \.destination?.export, action: \.internal.destination.export))
 			.import(store.scope(state: \.destination?.import, action: \.internal.destination.import))
 			.backups(store.scope(state: \.destination?.backups, action: \.internal.destination.backups))
+			.achievementsList(store.scope(state: \.destination?.achievements, action: \.internal.destination.achievements))
 			.alert(store.scope(state: \.destination?.alert, action: \.internal.destination.alert))
 	}
 
@@ -149,6 +155,12 @@ extension View {
 	fileprivate func statisticsSettings(_ store: Binding<StoreOf<StatisticsSettings>?>) -> some View {
 		navigationDestination(item: store) {
 			StatisticsSettingsView(store: $0)
+		}
+	}
+
+	fileprivate func achievementsList(_ store: Binding<StoreOf<AchievementsList>?>) -> some View {
+		navigationDestination(item: store) {
+			AchievementsListView(store: $0)
 		}
 	}
 }

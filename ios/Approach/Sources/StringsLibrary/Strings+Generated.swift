@@ -1452,6 +1452,12 @@ public enum Strings {
   public enum Settings {
     /// Settings
     public static let title = Strings.tr("Localizable", "settings.title", fallback: "Settings")
+    public enum Achievements {
+      /// Earn badges while you improve your bowling game.
+      public static let footer = Strings.tr("Localizable", "settings.achievements.footer", fallback: "Earn badges while you improve your bowling game.")
+      /// Badges
+      public static let title = Strings.tr("Localizable", "settings.achievements.title", fallback: "Badges")
+    }
     public enum Acknowledgements {
       /// Acknowledgements
       public static let title = Strings.tr("Localizable", "settings.acknowledgements.title", fallback: "Acknowledgements")

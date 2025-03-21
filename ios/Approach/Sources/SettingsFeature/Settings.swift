@@ -1,3 +1,4 @@
+import AchievementsFeature
 import AnalyticsServiceInterface
 import AppIconServiceInterface
 import AppInfoPackageServiceInterface
@@ -42,6 +43,7 @@ public struct Settings: Reducer, Sendable {
 		public let isImportEnabled: Bool
 		public let isAutomaticBackupsEnabled: Bool
 		public let isDeveloperOptionsEnabled: Bool
+		public let isAchievementsEnabled: Bool
 
 		public var daysSinceLastBackup: DaysSince
 		public var daysSinceLastExport: DaysSince
@@ -52,6 +54,7 @@ public struct Settings: Reducer, Sendable {
 			self.isImportEnabled = featureFlags.isFlagEnabled(.dataImport)
 			self.isAutomaticBackupsEnabled = featureFlags.isFlagEnabled(.automaticBackups)
 			self.isDeveloperOptionsEnabled = featureFlags.isFlagEnabled(.developerOptions)
+			self.isAchievementsEnabled = featureFlags.isFlagEnabled(.achievements)
 
 			@Dependency(\.appInfo) var appInfo
 			self.appVersion = appInfo.getFullAppVersion()
@@ -97,6 +100,7 @@ public struct Settings: Reducer, Sendable {
 			case didTapExportButton
 			case didTapBackupsButton
 			case didTapForceCrashButton
+			case didTapAchievementsButton
 		}
 		@CasePathable
 		public enum Delegate { case doNothing }
@@ -116,6 +120,7 @@ public struct Settings: Reducer, Sendable {
 
 	@Reducer(state: .equatable)
 	public enum Destination {
+		case achievements(AchievementsList)
 		case archive(ArchiveList)
 		case appIcon(AppIconList)
 		case backups(BackupsList)
@@ -238,6 +243,10 @@ public struct Settings: Reducer, Sendable {
 				case .didTapBackupsButton:
 					state.destination = .backups(BackupsList.State())
 					return .none
+
+				case .didTapAchievementsButton:
+					state.destination = .achievements(AchievementsList.State())
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -265,7 +274,9 @@ public struct Settings: Reducer, Sendable {
 						.destination(.presented(.analytics(.delegate(.doNothing)))),
 						.destination(.presented(.export(.delegate(.doNothing)))),
 						.destination(.presented(.import(.delegate(.doNothing)))),
-						.destination(.presented(.backups(.delegate(.doNothing)))):
+						.destination(.presented(.backups(.delegate(.doNothing)))),
+						.destination(.presented(.achievements(.delegate(.doNothing)))):
+
 					return .none
 
 				case .destination(.dismiss):
@@ -274,7 +285,7 @@ public struct Settings: Reducer, Sendable {
 						return .run { _ in export.cleanUp() }
 					case .appIcon:
 						return refreshAppIcon()
-					case .analytics, .archive, .featureFlags, .opponentsList, .statistics, .alert, .none, .import:
+					case .analytics, .archive, .featureFlags, .opponentsList, .statistics, .alert, .none, .import, .achievements:
 						return .none
 					}
 
@@ -291,6 +302,7 @@ public struct Settings: Reducer, Sendable {
 						.destination(.presented(.import(.binding))),
 						.destination(.presented(.backups(.internal))), .destination(.presented(.backups(.view))),
 						.destination(.presented(.backups(.binding))),
+						.destination(.presented(.achievements(.internal))), .destination(.presented(.achievements(.view))),
 						.destination(.presented(.alert(.didTapDismissButton))):
 					return .none
 				}
