@@ -56,6 +56,7 @@ public struct AppIconList: Reducer, Sendable {
 
 	@Dependency(AchievementsService.self) var achievements
 	@Dependency(AppIconService.self) var appIcon
+	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in
@@ -68,7 +69,7 @@ public struct AppIconList: Reducer, Sendable {
 				case .didFirstAppear:
 					return .merge(
 						fetchCurrentAppIcon(),
-						.run { _ in await achievements.sendEvent(EarnableAchievements.Iconista.Events.AppIconsViewed()) }
+						.run { _ in await achievements.sendEvent(EarnableAchievements.Iconista.Events.AppIconsViewed(id: uuid())) }
 					)
 
 				case let .didTapIcon(icon):

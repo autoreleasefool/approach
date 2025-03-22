@@ -6,9 +6,11 @@
 //
 
 import AchievementsRepositoryInterface
+import AnalyticsServiceInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsLibrary
+import ModelsLibrary
 import SwiftUI
 import ToastLibrary
 
@@ -33,6 +35,7 @@ public struct AchievementsObserver: Reducer, Sendable {
 		@CasePathable
 		public enum Internal {
 			case showNextAchievement
+			case achievementEarned(Achievement.Summary)
 			case didEarnAchievement(ToastState<AchievementAction>)
 			case achievementToast(PresentationAction<AchievementAction>)
 		}
@@ -61,8 +64,11 @@ public struct AchievementsObserver: Reducer, Sendable {
 				switch viewAction {
 				case .didStartTask:
 					guard featureFlags.isFlagEnabled(.achievements) else { return .none }
+
 					return .run { send in
 						for await earned in achievements.observeNewAchievements() {
+							await send(.internal(.achievementEarned(earned)))
+
 							guard earned.achievement.showToastOnEarn else { continue }
 							let toast: ToastState<AchievementAction> = ToastState(content: .achievement(.init(title: earned.title)))
 							await send(.internal(.didEarnAchievement(toast)))
@@ -74,6 +80,9 @@ public struct AchievementsObserver: Reducer, Sendable {
 				switch internalAction {
 				case .showNextAchievement:
 					return showNextAchievement(state: &state)
+
+				case .achievementEarned:
+					return .none
 
 				case let .didEarnAchievement(achievement):
 					state.achievementsQueue.insert(achievement, at: 0)
@@ -100,6 +109,15 @@ public struct AchievementsObserver: Reducer, Sendable {
 
 			case .delegate:
 				return .none
+			}
+		}
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.achievementEarned(earned)):
+				return Analytics.Achievement.Earned(achievement: earned.title)
+			default:
+				return nil
 			}
 		}
 	}
