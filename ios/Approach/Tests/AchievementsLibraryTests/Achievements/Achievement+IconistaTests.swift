@@ -1,4 +1,5 @@
 @testable import AchievementsLibrary
+import Foundation
 import Testing
 import TestUtilitiesLibrary
 
@@ -7,24 +8,25 @@ struct IconistaTests {
 
 	@Test("Consumes expected events", .tags(.unit))
 	func consumesExpectedEvents() {
-		var events: [any ConsumableAchievementEvent] = [
-			EarnableAchievements.Iconista.Events.AppIconsViewed(),
-			EarnableAchievements.TenYears.Events.TenYearsBadgeClaimed(),
-			EarnableAchievements.Iconista.Events.AppIconsViewed(),
+		let iconistaId1 = UUID()
+		let iconistaId2 = UUID()
+		let tenYearsId = UUID()
+		let events: [any ConsumableAchievementEvent] = [
+			EarnableAchievements.Iconista.Events.AppIconsViewed(id: iconistaId1),
+			EarnableAchievements.TenYears.Events.TenYearsBadgeClaimed(id: tenYearsId),
+			EarnableAchievements.Iconista.Events.AppIconsViewed(id: iconistaId2),
 		]
 
-		let expectedEvents = [
-			EarnableAchievements.TenYears.Events.TenYearsBadgeClaimed(),
-		].map { $0.title }
+		let expectedConsumed = Set([iconistaId1, iconistaId2])
 
 		let expectedEarned = [
 			EarnableAchievements.Iconista(),
 			EarnableAchievements.Iconista(),
 		]
 
-		let earned = EarnableAchievements.Iconista.consume(from: &events)
+		let (consumed, earned) = EarnableAchievements.Iconista.consume(from: events)
 
-		#expect(events.map { $0.title } == expectedEvents)
+		#expect(consumed == expectedConsumed)
 		#expect(earned == expectedEarned)
 	}
 
@@ -33,7 +35,17 @@ struct IconistaTests {
 		let allEvents = EarnableAchievements.Iconista.events.map { $0.title }
 
 		#expect(allEvents == [
-			EarnableAchievements.Iconista.Events.AppIconsViewed().title,
+			EarnableAchievements.Iconista.Events.AppIconsViewed.title,
 		])
+	}
+
+	@Test("Events are findable by title", .tags(.unit))
+	func eventsAreFindableByTitle() {
+		let allEvents = EarnableAchievements.Iconista.events
+		let allEventsTitles = allEvents.map { $0.title }
+
+		for title in allEventsTitles {
+			#expect(EarnableAchievements.Iconista.eventsByTitle[title] != nil)
+		}
 	}
 }

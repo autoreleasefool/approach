@@ -1,3 +1,4 @@
+import Foundation
 import StringsLibrary
 
 extension EarnableAchievements {
@@ -8,15 +9,22 @@ extension EarnableAchievements {
 		public static var showToastOnEarn: Bool { true }
 		public static var isVisibleBeforeEarned: Bool { true }
 
-		public static var events: [any ConsumableAchievementEvent.Type] {
-			[Events.AppIconsViewed.self]
-		}
+		public static let events: [ConsumableAchievementEvent.Type] = [
+			Events.AppIconsViewed.self,
+		]
 
-		public static func consume(from: inout [any ConsumableAchievementEvent]) -> [Iconista] {
-			let consumed = from.filter { type(of: $0).title == Events.AppIconsViewed.title }
-			guard !consumed.isEmpty else { return [] }
-			from.removeAll(where: { type(of: $0).title == Events.AppIconsViewed.title })
-			return consumed.map { _ in Iconista() }
+		public static let eventsByTitle: [String: any ConsumableAchievementEvent.Type] = Dictionary(
+			uniqueKeysWithValues: events.map { ($0.title, $0) }
+		)
+
+		public static func consume(
+			from: [any ConsumableAchievementEvent]
+		) -> (consumed: Set<UUID>, earned: [Iconista]) {
+			let consumed = from.compactMap { event in
+				type(of: event) == Events.AppIconsViewed.self ? event.id : nil
+			}
+
+			return (Set(consumed), consumed.map { _ in .init() })
 		}
 
 		public init() {}
@@ -31,6 +39,10 @@ extension EarnableAchievements.Iconista {
 
 extension EarnableAchievements.Iconista.Events {
 	public struct AppIconsViewed: ConsumableAchievementEvent {
-		public init() {}
+		public let id: UUID
+
+		public init(id: UUID) {
+			self.id = id
+		}
 	}
 }

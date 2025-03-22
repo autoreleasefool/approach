@@ -1,3 +1,4 @@
+import Foundation
 import StringsLibrary
 
 extension EarnableAchievements {
@@ -8,15 +9,22 @@ extension EarnableAchievements {
 		public static var showToastOnEarn: Bool { false }
 		public static var isVisibleBeforeEarned: Bool { false }
 
-		public static var events: [any ConsumableAchievementEvent.Type] {
-			[Events.TenYearsBadgeClaimed.self]
-		}
+		public static let events: [ConsumableAchievementEvent.Type] = [
+			Events.TenYearsBadgeClaimed.self,
+		]
 
-		public static func consume(from: inout [any ConsumableAchievementEvent]) -> [TenYears] {
-			let consumed = from.filter { type(of: $0).title == Events.TenYearsBadgeClaimed.title }
-			guard !consumed.isEmpty else { return [] }
-			from.removeAll(where: { type(of: $0).title == Events.TenYearsBadgeClaimed.title })
-			return consumed.map { _ in TenYears() }
+		public static let eventsByTitle: [String: ConsumableAchievementEvent.Type] = Dictionary(
+			uniqueKeysWithValues: events.map { ($0.title, $0) }
+		)
+
+		public static func consume(
+			from: [any ConsumableAchievementEvent]
+		) -> (consumed: Set<UUID>, earned: [TenYears]) {
+			let consumed = from.compactMap { event in
+				type(of: event) == Events.TenYearsBadgeClaimed.self ? event.id : nil
+			}
+
+			return (Set(consumed), consumed.map { _ in .init() })
 		}
 
 		public init() {}
@@ -31,6 +39,10 @@ extension EarnableAchievements.TenYears {
 
 extension EarnableAchievements.TenYears.Events {
 	public struct TenYearsBadgeClaimed: ConsumableAchievementEvent {
-		public init() {}
+		public let id: UUID
+
+		public init(id: UUID) {
+			self.id = id
+		}
 	}
 }
