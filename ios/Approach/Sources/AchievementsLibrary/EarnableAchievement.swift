@@ -1,3 +1,5 @@
+import Foundation
+
 public protocol EarnableAchievement: Sendable {
 	static var title: String { get }
 
@@ -5,19 +7,18 @@ public protocol EarnableAchievement: Sendable {
 	static var showToastOnEarn: Bool { get }
 	static var isVisibleBeforeEarned: Bool { get }
 
-	static var events: [ConsumableAchievementEvent.Type] { get }
-	static func consume(from: inout [ConsumableAchievementEvent]) -> [Self]
+	static var events: [any ConsumableAchievementEvent.Type] { get }
+	static var eventsByTitle: [String: any ConsumableAchievementEvent.Type] { get }
+	static func consume(from: [any ConsumableAchievementEvent]) -> (consumed: Set<UUID>, earned: [Self])
 
 	init()
 }
 
 public protocol ConsumableAchievementEvent: Sendable {
 	static var title: String { get }
-	var title: String { get }
-}
+	var id: UUID { get }
 
-extension ConsumableAchievementEvent {
-	public var title: String { Self.title }
+	init(id: UUID)
 }
 
 extension ConsumableAchievementEvent {
