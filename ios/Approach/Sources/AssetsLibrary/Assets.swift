@@ -262,6 +262,10 @@ public enum Asset: Sendable {
     }
   }
   public enum Media {
+    public enum Achievements {
+      public static let approach = ImageAsset(name: "Achievements/Approach")
+      public static let tenYears = ImageAsset(name: "Achievements/TenYears")
+    }
     public enum Charts {
       public static let error = ImageAsset(name: "Charts/Error")
       public static let noData = ImageAsset(name: "Charts/NoData")
