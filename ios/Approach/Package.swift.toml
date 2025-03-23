@@ -22,6 +22,7 @@ dependencies = [ "Algorithms" ]
 features = [ "Errors" ]
 repositories = [ "Achievements" ]
 libraries = [ "FeatureFlags" ]
+dependencies = [ "Algorithms" ]
 
 [features.AddressLookup]
 repositories = [ "Locations" ]
@@ -344,7 +345,7 @@ dependencies = [ "DependenciesMacros" ]
 # Libraries
 
 [libraries.Achievements]
-libraries = [ "Strings" ]
+libraries = [ "Assets", "Strings" ]
 
 [libraries.Assets]
 skip_tests = true
