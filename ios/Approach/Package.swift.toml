@@ -22,7 +22,7 @@ dependencies = [ "Algorithms" ]
 features = [ "Errors" ]
 repositories = [ "Achievements" ]
 libraries = [ "FeatureFlags" ]
-dependencies = [ "Algorithms" ]
+dependencies = [ "Algorithms", "Sticker" ]
 
 [features.AddressLookup]
 repositories = [ "Locations" ]
@@ -493,6 +493,7 @@ Sentry = { url = "https://github.com/getsentry/sentry-cocoa.git", from = "8.48.0
 SFSafeSymbols = { url = "https://github.com/SFSafeSymbols/SFSafeSymbols.git", from = "6.2.0" }
 Sharing = { url = "https://github.com/pointfreeco/swift-sharing.git", from = "2.4.0" }
 SnapshotTesting = { url = "https://github.com/pointfreeco/swift-snapshot-testing.git", from = "1.18.3" }
+Sticker = { url = "https://github.com/bpisano/Sticker.git", from = "1.4.0" }
 SwiftUtilities = { url = "https://github.com/autoreleasefool/swift-utilities.git", from = "3.0.0" }
 ToastUI = { url = "https://github.com/quanshousio/ToastUI.git", from = "4.0.0" }
 XCTestDynamicOverlay = { url = "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from = "1.5.2" }
@@ -569,6 +570,8 @@ dep_ref = "Sharing"
 [dependencies.SnapshotTesting]
 dep_ref = "SnapshotTesting"
 suitable_for_dependents_matching = "\\w+Tests$"
+[dependencies.Sticker]
+dep_ref = "Sticker"
 [dependencies.StoreReviewPackageService]
 dep_ref = "SwiftUtilities"
 [dependencies.StoreReviewPackageServiceInterface]
