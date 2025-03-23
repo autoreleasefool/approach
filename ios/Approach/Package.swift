@@ -197,6 +197,7 @@ let package = Package(
 		.target(
 			name: "AchievementsFeature",
 			dependencies: [
+				.product(name: "Algorithms", package: "swift-algorithms"),
 				"AchievementsRepositoryInterface",
 				"ErrorsFeature",
 				"FeatureFlagsLibrary",
@@ -1757,6 +1758,7 @@ let package = Package(
 		.target(
 			name: "AchievementsLibrary",
 			dependencies: [
+				"AssetsLibrary",
 				"StringsLibrary",
 			]
 		),

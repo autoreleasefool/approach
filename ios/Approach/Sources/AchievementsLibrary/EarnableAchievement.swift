@@ -1,7 +1,10 @@
+import AssetsLibrary
 import Foundation
+import SwiftUI
 
 public protocol EarnableAchievement: Sendable {
 	static var title: String { get }
+	static var icon: Image { get }
 
 	static var isEnabled: Bool { get }
 	static var showToastOnEarn: Bool { get }

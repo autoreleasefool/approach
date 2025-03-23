@@ -1,13 +1,16 @@
+import AssetsLibrary
 import Foundation
 import StringsLibrary
+import SwiftUI
 
 extension EarnableAchievements {
 	public struct TenYears: EarnableAchievement, Equatable {
 		public static var title: String { Strings.Achievements.Earnable.TenYear.title }
+		public static var icon: Image { Asset.Media.Achievements.tenYears.swiftUIImage }
 
 		public static var isEnabled: Bool { true }
 		public static var showToastOnEarn: Bool { false }
-		public static var isVisibleBeforeEarned: Bool { false }
+		public static var isVisibleBeforeEarned: Bool { true }
 
 		public static let events: [ConsumableAchievementEvent.Type] = [
 			Events.TenYearsBadgeClaimed.self,
