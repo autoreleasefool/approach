@@ -1,5 +1,5 @@
 {
-  "originHash" : "69866feb45d5df5f1f895998e4fafb6a338280d6eb15c402920752c6805dd823",
+  "originHash" : "6c3abd7ba563d7d232ecb7127581f9f14a6ca9b66ed5971a06749735193d1ba7",
   "pins" : [
     {
       "identity" : "combine-schedulers",
@@ -35,6 +35,15 @@
       "state" : {
         "revision" : "3dd282d3269b061853a3b3bcd23a509d2aa166ce",
         "version" : "6.2.0"
+      }
+    },
+    {
+      "identity" : "sticker",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/bpisano/Sticker.git",
+      "state" : {
+        "revision" : "301b9e0fb802c01edb2ed25695b3ba62e9c61da3",
+        "version" : "1.4.0"
       }
     },
     {
