@@ -49,6 +49,16 @@ public enum Strings {
         public static let title = Strings.tr("Localizable", "achievements.earnable.tenYear.title", fallback: "Ten Years")
       }
     }
+    public enum List {
+      /// Badges
+      public static let title = Strings.tr("Localizable", "achievements.list.title", fallback: "Badges")
+      public enum Header {
+        /// Check back later for more information.
+        public static let checkBack = Strings.tr("Localizable", "achievements.list.header.checkBack", fallback: "Check back later for more information.")
+        /// Soon you'll be able to earn badges while improving your bowling game.
+        public static let soon = Strings.tr("Localizable", "achievements.list.header.soon", fallback: "Soon you'll be able to earn badges while improving your bowling game.")
+      }
+    }
   }
   public enum Action {
     /// Add
@@ -245,6 +255,20 @@ public enum Strings {
           /// See more in Settings
           public static let title = Strings.tr("Localizable", "announcement.startingBackups.description.toRestore.title", fallback: "See more in Settings")
         }
+      }
+    }
+    public enum TenYears {
+      /// Approach is turning 10!
+      public static let title = Strings.tr("Localizable", "announcement.tenYears.title", fallback: "Approach is turning 10!")
+      public enum Action {
+        /// Claim Badge
+        public static let claimBadge = Strings.tr("Localizable", "announcement.tenYears.action.claimBadge", fallback: "Claim Badge")
+      }
+      public enum Description {
+        /// From Bowling Companion to Approach, it's been 10 years since its launch.
+        public static let fromBowlingCompanionToApproach = Strings.tr("Localizable", "announcement.tenYears.description.fromBowlingCompanionToApproach", fallback: "From Bowling Companion to Approach, it's been 10 years since its launch.")
+        /// I hope you've enjoyed using Approach as much as I've enjoyed building it.
+        public static let hopeYouveEnjoyed = Strings.tr("Localizable", "announcement.tenYears.description.hopeYouveEnjoyed", fallback: "I hope you've enjoyed using Approach as much as I've enjoyed building it.")
       }
     }
   }

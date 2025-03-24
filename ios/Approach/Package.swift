@@ -277,10 +277,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "SwiftUIExtensionsPackageLibrary", package: "swift-utilities"),
 				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
-				"AnalyticsServiceInterface",
-				"FeatureActionLibrary",
-				"LoggingServiceInterface",
-				"ViewsLibrary",
+				"AchievementsFeature",
 			]
 		),
 		.testTarget(

@@ -41,7 +41,7 @@ libraries = [ "FeatureFlags", "ResourceList" ]
 dependencies = [ "ExtensionsPackageLibrary" ]
 
 [features.Announcements]
-libraries = [ "Views" ]
+features = [ "Achievements" ]
 dependencies = [ "SwiftUIExtensionsPackageLibrary", "UserDefaultsPackageServiceInterface" ]
 
 [features.ArchiveList]
