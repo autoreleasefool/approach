@@ -76,6 +76,11 @@ public struct Settings: Reducer, Sendable {
 			self.destination = .backups(BackupsList.State())
 			return .none
 		}
+
+		public mutating func showAchievementsList() -> Effect<Settings.Action> {
+			self.destination = .achievements(AchievementsList.State())
+			return .none
+		}
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
