@@ -750,6 +750,9 @@
 
 // MARK: - Achievements
 
+"achievements.list.title" = "Badges";
+"achievements.list.header.soon" = "Soon you'll be able to earn badges while improving your bowling game.";
+"achievements.list.header.checkBack" = "Check back later for more information.";
 "achievements.earnable.iconista.title" = "Iconista";
 "achievements.earnable.tenYear.title" = "Ten Years";
 
@@ -811,6 +814,10 @@
 "announcement.startingBackups.description.automaticSyncing.description" = "Your data will automatically begin syncing in case of data or device loss.";
 "announcement.startingBackups.description.toRestore.title" = "See more in Settings";
 "announcement.startingBackups.description.toRestore.description" = "To disable sync, or restore data, go to the settings.";
+"announcement.tenYears.title" = "Approach is turning 10!";
+"announcement.tenYears.description.fromBowlingCompanionToApproach" = "From Bowling Companion to Approach, it's been 10 years since its launch.";
+"announcement.tenYears.description.hopeYouveEnjoyed" = "I hope you've enjoyed using Approach as much as I've enjoyed building it.";
+"announcement.tenYears.action.claimBadge" = "Claim Badge";
 
 // MARK: - Errors
 

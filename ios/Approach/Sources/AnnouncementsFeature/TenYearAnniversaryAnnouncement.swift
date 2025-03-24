@@ -1,8 +1,14 @@
+import AchievementsFeature
+import AchievementsLibrary
+import AchievementsServiceInterface
+import AppInfoPackageServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
+import FeatureFlagsLibrary
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsPackageLibrary
 import UserDefaultsPackageServiceInterface
 import ViewsLibrary
 
@@ -14,6 +20,7 @@ public struct TenYearAnniversaryAnnouncement: Reducer, Sendable {
 	public enum Action: FeatureAction, ViewAction {
 		@CasePathable
 		public enum View {
+			case didFirstAppear
 			case didTapClaimButton
 		}
 		@CasePathable
@@ -26,13 +33,20 @@ public struct TenYearAnniversaryAnnouncement: Reducer, Sendable {
 		case `internal`(Internal)
 	}
 
+	@Dependency(AchievementsService.self) var achievements
 	@Dependency(\.dismiss) var dismiss
+	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { _, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .didFirstAppear:
+					return .run { _ in
+						await achievements.sendEvent(EarnableAchievements.TenYears.Events.TenYearsBadgeClaimed(id: uuid()))
+					}
+
 				case .didTapClaimButton:
 					return .run { _ in await dismiss() }
 				}
@@ -52,12 +66,16 @@ extension TenYearAnniversaryAnnouncement {
 	public static func shouldShow() async -> Bool {
 		@Dependency(\.date) var date
 		@Dependency(\.userDefaults) var userDefaults
+		@Dependency(\.featureFlags) var featureFlags
+		@Dependency(\.appInfo) var appInfo
 
 		// Date is after April 1, 2025
 		let isAfterApril1 = date() > Date(timeIntervalSince1970: 1_743_480_000)
-		let isDismissed = userDefaults.bool(forKey: IS_DISMISSED_KEY) ?? false
+		let isNotDismissed = !(userDefaults.bool(forKey: IS_DISMISSED_KEY) ?? false)
+		let isFeatureEnabled = featureFlags.isFlagEnabled(.achievements)
+		let isNotFirstLaunch = appInfo.getNumberOfSessions() > 1
 
-		return isAfterApril1 && !isDismissed
+		return isAfterApril1 && isNotDismissed && isFeatureEnabled && isNotFirstLaunch
 	}
 
 	public static func didDismiss() async {
@@ -72,36 +90,94 @@ extension TenYearAnniversaryAnnouncement {
 struct TenYearAnniversaryAnnouncementView: View {
 	let store: StoreOf<TenYearAnniversaryAnnouncement>
 
+	@State private var contentSize: CGSize = CGSize(width: 0, height: 100)
+
 	init(store: StoreOf<TenYearAnniversaryAnnouncement>) {
 		self.store = store
 	}
 
 	var body: some View {
-		VStack(spacing: 0) {
-			Text("Approach is turning 10!")
-				.font(.headline)
-				.multilineTextAlignment(.center)
+		ZStack {
+			background
 
-			Text("I hope you've enjoyed bowling with Approach as much as I've enjoyed building it.")
-				.font(.body)
-				.multilineTextAlignment(.leading)
-
-			Image(systemSymbol: .trophy)
-				.resizable()
-				.scaledToFit()
-				.frame(width: .extraExtraLargeIcon)
-				.padding(.vertical, .standardSpacing)
-
-			Spacer()
-
-			Button { send(.didTapClaimButton) } label: {
-				Text("Claim Badge")
-					.frame(maxWidth: .infinity)
+			VStack(spacing: 0) {
+				title
+				heroImage
+				description
+				action
 			}
-			.modifier(PrimaryButton())
-			.padding(.bottom, .smallSpacing)
+			.padding(.standardSpacing)
+			.measure(key: ContentSizeKey.self, to: $contentSize)
 		}
-		.padding()
-		.presentationDetents([.medium, .large])
+		.onFirstAppear { send(.didFirstAppear) }
+		.presentationDetents([.height(contentSize.height)])
 	}
+
+	private var background: some View {
+		Asset.Media.Onboarding.background.swiftUIImage
+			.resizable(resizingMode: .tile)
+			.ignoresSafeArea(.all)
+			.opacity(0.2)
+	}
+
+	private var title: some View {
+		Text(Strings.Announcement.TenYears.title)
+			.font(.title.bold())
+			.multilineTextAlignment(.center)
+			.padding(.smallSpacing)
+			.background(textBackground)
+			.padding(.bottom, .largeSpacing)
+	}
+
+	private var heroImage: some View {
+		FloatingImage(
+			image: Asset.Media.Achievements.tenYears
+		)
+		.frame(maxWidth: .infinity, minHeight: 128, maxHeight: 192)
+		.padding(.bottom, .standardSpacing)
+	}
+
+	private var description: some View {
+		VStack(spacing: .tinySpacing) {
+			Group {
+				Text(Strings.Announcement.TenYears.Description.fromBowlingCompanionToApproach)
+					.font(.body.bold())
+				+ Text(" \(Strings.Announcement.TenYears.Description.hopeYouveEnjoyed)")
+					.font(.body)
+			}
+			.multilineTextAlignment(.center)
+		}
+		.padding(.standardSpacing)
+		.background(textBackground)
+		.padding(.bottom, .standardSpacing)
+	}
+
+	private var action: some View {
+		Button { send(.didTapClaimButton) } label: {
+			Text(Strings.Announcement.TenYears.Action.claimBadge)
+				.frame(maxWidth: .infinity)
+		}
+		.modifier(PrimaryButton())
+		.padding(.bottom, .smallSpacing)
+	}
+
+	private var textBackground: some View {
+		RoundedRectangle(cornerRadius: .standardRadius)
+			.fill(.background.opacity(0.8))
+			.blur(radius: .smallRadius)
+	}
+}
+
+private struct ContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
+
+#Preview {
+	Text("")
+		.sheet(isPresented: .constant(true)) {
+			TenYearAnniversaryAnnouncementView(
+				store: Store(
+					initialState: .init(),
+					reducer: { TenYearAnniversaryAnnouncement() }
+				)
+			)
+		}
 }
