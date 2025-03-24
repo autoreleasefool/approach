@@ -15,7 +15,10 @@ import ViewsLibrary
 public struct AchievementsList: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
+		public var achievements: IdentifiedArrayOf<Achievement.List> = []
 		public var list: [GridRow] = []
+
+		@Presents public var details: AchievementDetails.State?
 
 		public var errors: Errors<ErrorID>.State = .init()
 
@@ -32,6 +35,7 @@ public struct AchievementsList: Reducer, Sendable {
 		@CasePathable
 		public enum Internal {
 			case didLoadAchievements(Result<[Achievement.List], Error>)
+			case details(PresentationAction<AchievementDetails.Action>)
 			case errors(Errors<ErrorID>.Action)
 		}
 		@CasePathable
@@ -80,6 +84,8 @@ public struct AchievementsList: Reducer, Sendable {
 					}
 
 				case let .didTapAchievement(id):
+					guard let achievement = state.achievements[id: id] else { return .none }
+					state.details = .init(achievement: achievement)
 					return .none
 				}
 
@@ -89,10 +95,13 @@ public struct AchievementsList: Reducer, Sendable {
 					let earnedAchievements = Dictionary(
 						uniqueKeysWithValues: achievements.map { ($0.title, $0) }
 					)
+
 					let achievementsList = EarnableAchievements.allCases
 						.filter {
 							$0.isEnabled && ($0.isVisibleBeforeEarned || earnedAchievements[$0.title] != nil)
 						}
+
+					let gridRows = achievementsList
 						.chunks(ofCount: 3)
 						.map {
 							let first = resolveAchievementCount(achievement: $0[0], earnedAchievements: earnedAchievements)
@@ -110,13 +119,20 @@ public struct AchievementsList: Reducer, Sendable {
 							)
 						}
 
-					state.list = achievementsList
+					state.achievements = IdentifiedArray(uniqueElements: achievementsList.compactMap { earnedAchievements[$0.title] })
+					state.list = gridRows
 					return .none
 
 				case let .didLoadAchievements(.failure(error)):
 					return state.errors
 						.enqueue(.failedToLoadAchievements, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
 						.map { .internal(.errors($0)) }
+
+				case .details(.presented(.delegate(.doNothing))):
+					return .none
+
+				case .details(.dismiss), .details(.presented(.internal)), .details(.presented(.view)):
+					return .none
 
 				case .errors(.delegate(.doNothing)), .errors(.internal), .errors(.view):
 					return .none
@@ -125,6 +141,9 @@ public struct AchievementsList: Reducer, Sendable {
 			case .delegate:
 				return .none
 			}
+		}
+		.ifLet(\.$details, action: \.internal.details) {
+			AchievementDetails()
 		}
 
 		AnalyticsReducer<State, Action> { _, action in
@@ -165,7 +184,8 @@ public struct AchievementsList: Reducer, Sendable {
 
 @ViewAction(for: AchievementsList.self)
 public struct AchievementsListView: View {
-	public let store: StoreOf<AchievementsList>
+	@Bindable public var store: StoreOf<AchievementsList>
+
 	let columns = [
 		GridItem(.flexible(), spacing: .standardSpacing),
 		GridItem(.flexible(), spacing: .standardSpacing),
@@ -178,6 +198,8 @@ public struct AchievementsListView: View {
 
 	public var body: some View {
 		ScrollView {
+			header
+
 			LazyVGrid(columns: columns) {
 				ForEach(store.list) { row in
 					achievementListItem(for: row.first)
@@ -193,15 +215,55 @@ public struct AchievementsListView: View {
 			}
 			.padding(.horizontal, .standardSpacing)
 		}
+		.navigationTitle(Strings.Achievements.List.title)
 		.onAppear { send(.onAppear) }
 		.task { await send(.didStartTask).finish() }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.sheet(item: $store.scope(state: \.details, action: \.internal.details)) { store in
+			AchievementDetailsView(store: store)
+		}
+	}
+
+	private var header: some View {
+		VStack(spacing: 0) {
+			Group {
+				Text(Strings.Achievements.List.Header.soon)
+					.font(.body.bold())
+				+ Text(" \(Strings.Achievements.List.Header.checkBack)")
+					.font(.body)
+			}
+			.frame(maxWidth: .infinity, alignment: .leading)
+		}
+		.padding(.horizontal, .standardSpacing)
 	}
 
 	private func achievementListItem(for achievement: Achievement.List) -> some View {
 		Button { send(.didTapAchievement(achievement.id)) } label: {
-			AchievementListItem(achievement: achievement, isMoveable: false)
+			AchievementListItem(achievement: achievement)
 		}
 		.buttonStyle(.plain)
+	}
+}
+
+// MARK: - Preview
+
+#Preview {
+	NavigationStack {
+		AchievementsListView(
+			store: Store(
+				initialState: .init(),
+				reducer: { AchievementsList() },
+				withDependencies: {
+					$0[AchievementsRepository.self].list = { @Sendable in
+						AsyncThrowingStream {
+							[
+								Achievement.List(title: "Ten Years", firstEarnedAt: Date(), count: 1),
+								Achievement.List(title: "Iconista", firstEarnedAt: Date(), count: 2),
+							]
+						}
+					}
+				}
+			)
+		)
 	}
 }
