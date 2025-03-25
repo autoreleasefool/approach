@@ -74,8 +74,9 @@ extension TenYearAnniversaryAnnouncement {
 		let isNotDismissed = !(userDefaults.bool(forKey: IS_DISMISSED_KEY) ?? false)
 		let isFeatureEnabled = featureFlags.isFlagEnabled(.achievements)
 		let isNotFirstLaunch = appInfo.getNumberOfSessions() > 1
+		let isOneWeekSinceFirstLaunch = appInfo.getInstallDate().daysSince(.now) >= .days(7)
 
-		return isAfterApril1 && isNotDismissed && isFeatureEnabled && isNotFirstLaunch
+		return isAfterApril1 && isNotDismissed && isFeatureEnabled && isNotFirstLaunch && isOneWeekSinceFirstLaunch
 	}
 
 	public static func didDismiss() async {
