@@ -102,14 +102,18 @@ struct TenYearAnniversaryAnnouncementView: View {
 			background
 
 			VStack(spacing: 0) {
-				title
-				heroImage
-				description
+				ScrollView {
+					title
+					heroImage
+					description
+				}
+				.fixedSize(horizontal: false, vertical: true)
 				action
 			}
 			.padding(.standardSpacing)
 			.measure(key: ContentSizeKey.self, to: $contentSize)
 		}
+		.dynamicTypeSize(...DynamicTypeSize.xxLarge)
 		.onFirstAppear { send(.didFirstAppear) }
 		.presentationDetents([.height(contentSize.height)])
 	}
