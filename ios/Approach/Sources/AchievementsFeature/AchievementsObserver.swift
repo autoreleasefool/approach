@@ -20,6 +20,9 @@ public struct AchievementsObserver: Reducer, Sendable {
 	public struct State: Equatable {
 		public var achievementsQueue: [ToastState<AchievementAction>] = []
 
+		@Shared(.unseenAchievements)
+		public var unseenAchievements: Int = 0
+
 		@Presents public var achievementToast: ToastState<AchievementAction>?
 
 		public init() {}
@@ -82,6 +85,7 @@ public struct AchievementsObserver: Reducer, Sendable {
 					return showNextAchievement(state: &state)
 
 				case .achievementEarned:
+					state.$unseenAchievements.withLock { $0 += 1 }
 					return .none
 
 				case let .didEarnAchievement(achievement):

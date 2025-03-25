@@ -21,6 +21,7 @@ dependencies = [ "Algorithms" ]
 [features.Achievements]
 features = [ "Errors" ]
 repositories = [ "Achievements" ]
+services = [ "Achievements" ]
 libraries = [ "FeatureFlags" ]
 dependencies = [ "Algorithms", "Sticker" ]
 
@@ -152,7 +153,7 @@ libraries = [ "SortOrder" ]
 
 [features.Settings]
 features = [ "Achievements", "ArchiveList", "AutomaticBackups", "FeatureFlagsList", "ImportExport", "OpponentsList" ]
-services = [ "Achievements", "AppIcon", "DatabaseMocking", "Products" ]
+services = [ "AppIcon", "DatabaseMocking", "Products" ]
 dependencies = [ "BundlePackageServiceInterface" ]
 
 [features.Sharing]
@@ -180,6 +181,7 @@ libraries = [ "Reordering" ]
 # Repositories
 
 [repositories.Achievements]
+services = [ "Preference" ]
 libraries = [ "FeatureFlags" ]
 [repositories.Achievements.interface]
 libraries = [ "Achievements" ]

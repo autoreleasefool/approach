@@ -5,6 +5,9 @@ public enum PreferenceKey: String, Sendable {
 	case appDidCompleteOnboarding                   // default: false
 	case appDidMigrateToSwiftUtilities              // default: false
 
+	// MARK: - Achievements
+	case unseenAchievements                         // default: 0
+
 	// MARK: - Game
 
 	case gameShouldNotifyEditorChanges              // default: true
