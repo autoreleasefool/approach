@@ -1,5 +1,5 @@
 {
-  "originHash" : "a370f11b1ce977660f92e38be51b4828a84c8df909a356db740995ad01b4507f",
+  "originHash" : "1b73fd173beced708340f4bc63d550943c127dae229b7fb1bea17ec12270d76f",
   "pins" : [
     {
       "identity" : "combine-schedulers",
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-algorithms.git",
       "state" : {
-        "revision" : "f6919dfc309e7f1b56224378b11e28bab5bccc42",
-        "version" : "1.2.0"
+        "revision" : "87e50f483c54e6efd60e885f7f5aa946cee68023",
+        "version" : "1.2.1"
       }
     },
     {
