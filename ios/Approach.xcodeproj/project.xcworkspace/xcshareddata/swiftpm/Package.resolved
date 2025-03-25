@@ -38,15 +38,6 @@
       }
     },
     {
-      "identity" : "sticker",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/bpisano/Sticker.git",
-      "state" : {
-        "revision" : "301b9e0fb802c01edb2ed25695b3ba62e9c61da3",
-        "version" : "1.4.0"
-      }
-    },
-    {
       "identity" : "swift-algorithms",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-algorithms.git",

@@ -1,7 +1,6 @@
 import AchievementsLibrary
 import AssetsLibrary
 import ModelsLibrary
-import Sticker
 import SwiftUI
 
 struct AchievementListItem: View {
