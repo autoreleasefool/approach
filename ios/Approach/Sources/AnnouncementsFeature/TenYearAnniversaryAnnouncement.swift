@@ -140,14 +140,13 @@ struct TenYearAnniversaryAnnouncementView: View {
 
 	private var description: some View {
 		VStack(spacing: .tinySpacing) {
-			Group {
-				Text(Strings.Announcement.TenYears.Description.fromBowlingCompanionToApproach)
-					.font(.body.bold())
-				+ Text(" \(Strings.Announcement.TenYears.Description.hopeYouveEnjoyed)")
-					.font(.body)
-			}
-			.multilineTextAlignment(.center)
+			Text(Strings.Announcement.TenYears.Description.fromBowlingCompanionToApproach)
+				.font(.body.bold())
+			+ Text(" \(Strings.Announcement.TenYears.Description.hopeYouveEnjoyed)")
+				.font(.body)
 		}
+		.multilineTextAlignment(.center)
+		.fixedSize(horizontal: false, vertical: true)
 		.padding(.standardSpacing)
 		.background(textBackground)
 		.padding(.bottom, .standardSpacing)
