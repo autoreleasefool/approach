@@ -36,7 +36,10 @@ public struct SettingsView: View {
 			StatisticsSection(onTapStatisticsButton: { send(.didTapStatistics) })
 
 			if store.isAchievementsEnabled {
-				AchievementsSection(onTapAchievementsButton: { send(.didTapAchievementsButton) })
+				AchievementsSection(
+					unseenCount: store.unseenAchievements,
+					onTapAchievementsButton: { send(.didTapAchievementsButton) }
+				)
 			}
 
 			DataSection(

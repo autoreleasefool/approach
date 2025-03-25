@@ -201,6 +201,7 @@ let package = Package(
 				.product(name: "Algorithms", package: "swift-algorithms"),
 				.product(name: "Sticker", package: "Sticker"),
 				"AchievementsRepositoryInterface",
+				"AchievementsServiceInterface",
 				"ErrorsFeature",
 				"FeatureFlagsLibrary",
 			]
@@ -754,7 +755,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "BundlePackageServiceInterface", package: "swift-utilities"),
 				"AchievementsFeature",
-				"AchievementsServiceInterface",
 				"AppIconServiceInterface",
 				"ArchiveListFeature",
 				"AutomaticBackupsFeature",
@@ -873,6 +873,7 @@ let package = Package(
 				"DatabaseModelsLibrary",
 				"DatabaseServiceInterface",
 				"FeatureFlagsLibrary",
+				"PreferenceServiceInterface",
 				"RepositoryLibrary",
 			]
 		),
