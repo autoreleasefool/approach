@@ -168,7 +168,7 @@ let package = Package(
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "1.1.1"),
 		.package(url: "https://github.com/pointfreeco/swift-sharing.git", from: "2.3.3"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.18.1"),
-		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "1.4.3"),
+		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "1.5.2"),
 		.package(url: "https://github.com/quanshousio/ToastUI.git", from: "4.0.0"),
 		.package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", from: "6.2.0"),
 		.package(url: "https://github.com/weichsel/ZIPFoundation.git", from: "0.9.19"),
