@@ -157,7 +157,7 @@ let package = Package(
 	],
 	dependencies: [
 		.package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.1"),
-		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.0"),
+		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.3"),
 		.package(url: "https://github.com/apple/swift-collections.git", from: "1.1.4"),
 		.package(url: "https://github.com/autoreleasefool/swift-utilities.git", from: "3.0.0"),
 		.package(url: "https://github.com/getsentry/sentry-cocoa.git", from: "8.48.0"),
