@@ -3,7 +3,7 @@ import LoggingServiceInterface
 
 extension LoggingService: DependencyKey {
 	public static var liveValue: Self {
-		return LoggingService(
+		LoggingService(
 			initialize: {},
 			log: { _, _ in },
 			fetchLogData: { throw ServiceError.fileNotFound }
