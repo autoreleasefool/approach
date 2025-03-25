@@ -1,4 +1,5 @@
 import AchievementsFeature
+import AchievementsRepositoryInterface
 import AnalyticsServiceInterface
 import AppIconServiceInterface
 import AppInfoPackageServiceInterface
@@ -31,6 +32,9 @@ public struct Settings: Reducer, Sendable {
 
 		public var isLoadingAppIcon: Bool = true
 		public var currentAppIcon: AppIcon?
+
+		@Shared(.unseenAchievements)
+		public var unseenAchievements: Int = 0
 
 		public var isShowingBugReportEmail: Bool = false
 		public var isShowingSendFeedbackEmail: Bool = false
