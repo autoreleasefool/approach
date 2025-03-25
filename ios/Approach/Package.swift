@@ -166,7 +166,7 @@ let package = Package(
 		.package(url: "https://github.com/pointfreeco/swift-concurrency-extras.git", from: "1.3.1"),
 		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.8.1"),
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "1.1.1"),
-		.package(url: "https://github.com/pointfreeco/swift-sharing.git", from: "2.1.0"),
+		.package(url: "https://github.com/pointfreeco/swift-sharing.git", from: "2.3.3"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.7"),
 		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "1.4.3"),
 		.package(url: "https://github.com/quanshousio/ToastUI.git", from: "4.0.0"),
