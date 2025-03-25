@@ -164,7 +164,7 @@ let package = Package(
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "7.4.0"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.18.0"),
 		.package(url: "https://github.com/pointfreeco/swift-concurrency-extras.git", from: "1.3.1"),
-		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.6.3"),
+		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.8.1"),
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "1.1.0"),
 		.package(url: "https://github.com/pointfreeco/swift-sharing.git", from: "2.1.0"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.7"),
