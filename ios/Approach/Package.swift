@@ -162,7 +162,6 @@ let package = Package(
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.3"),
 		.package(url: "https://github.com/apple/swift-collections.git", from: "1.1.4"),
 		.package(url: "https://github.com/autoreleasefool/swift-utilities.git", from: "3.0.0"),
-		.package(url: "https://github.com/bpisano/Sticker.git", from: "1.4.0"),
 		.package(url: "https://github.com/getsentry/sentry-cocoa.git", from: "8.48.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "7.4.1"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.19.0"),
@@ -199,7 +198,6 @@ let package = Package(
 			name: "AchievementsFeature",
 			dependencies: [
 				.product(name: "Algorithms", package: "swift-algorithms"),
-				.product(name: "Sticker", package: "Sticker"),
 				"AchievementsRepositoryInterface",
 				"AchievementsServiceInterface",
 				"ErrorsFeature",
@@ -873,17 +871,16 @@ let package = Package(
 				"DatabaseModelsLibrary",
 				"DatabaseServiceInterface",
 				"FeatureFlagsLibrary",
-				"PreferenceServiceInterface",
 				"RepositoryLibrary",
 			]
 		),
 		.target(
 			name: "AchievementsRepositoryInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				.product(name: "DependenciesMacros", package: "swift-dependencies"),
+				.product(name: "Sharing", package: "swift-sharing"),
 				"AchievementsLibrary",
 				"ModelsLibrary",
+				"PreferenceServiceInterface",
 			]
 		),
 		.testTarget(
