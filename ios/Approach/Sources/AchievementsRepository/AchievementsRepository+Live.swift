@@ -50,13 +50,14 @@ extension AchievementsRepository: DependencyKey {
 
 				@Dependency(DatabaseService.self) var database
 				@Dependency(\.date) var date
+				let startDate = date.now
 
 				return database.reader()
 					.observe {
 						try Achievement.Database
 							.all()
 							.order(Achievement.Database.Columns.earnedAt.desc)
-							.filter(Achievement.Database.Columns.earnedAt > date.now)
+							.filter(Achievement.Database.Columns.earnedAt > startDate)
 							.limit(1)
 							.asRequest(of: Achievement.Summary.self)
 							.fetchAll($0)
