@@ -1,6 +1,8 @@
 package ca.josephroque.bowlingcompanion.core.database.di
 
 import ca.josephroque.bowlingcompanion.core.database.ApproachDatabase
+import ca.josephroque.bowlingcompanion.core.database.dao.AchievementDao
+import ca.josephroque.bowlingcompanion.core.database.dao.AchievementEventDao
 import ca.josephroque.bowlingcompanion.core.database.dao.AlleyDao
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.dao.CheckpointDao
@@ -62,6 +64,12 @@ object DaosModule {
 
 	@Provides
 	fun providesLaneDao(database: ApproachDatabase): LaneDao = database.laneDao()
+
+	@Provides
+	fun providesAchievementDao(database: ApproachDatabase): AchievementDao = database.achievementDao()
+
+	@Provides
+	fun providesAchievementEventDao(database: ApproachDatabase): AchievementEventDao = database.achievementEventDao()
 
 	@Provides
 	fun providesLegacyIDMappingDao(database: ApproachDatabase): LegacyIDMappingDao = database.legacyIDMappingDao()
