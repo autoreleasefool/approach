@@ -6,6 +6,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import ca.josephroque.bowlingcompanion.core.database.dao.AchievementDao
+import ca.josephroque.bowlingcompanion.core.database.dao.AchievementEventDao
 import ca.josephroque.bowlingcompanion.core.database.dao.AlleyDao
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.dao.CheckpointDao
@@ -24,6 +26,8 @@ import ca.josephroque.bowlingcompanion.core.database.dao.TeamSeriesDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunnerDao
 import ca.josephroque.bowlingcompanion.core.database.legacy.dao.LegacyIDMappingDao
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyIDMappingEntity
+import ca.josephroque.bowlingcompanion.core.database.model.AchievementEntity
+import ca.josephroque.bowlingcompanion.core.database.model.AchievementEventEntity
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyEntity
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerPreferredGearCrossRef
@@ -53,12 +57,13 @@ const val DATABASE_SHM_NAME = "$DATABASE_NAME-shm"
 const val DATABASE_WAL_NAME = "$DATABASE_NAME-wal"
 
 @Database(
-	version = 5,
+	version = 6,
 	autoMigrations = [
 		AutoMigration(from = 1, to = 2),
 		AutoMigration(from = 2, to = 3),
 		AutoMigration(from = 3, to = 4),
 		AutoMigration(from = 4, to = 5),
+		AutoMigration(from = 5, to = 6),
 	],
 	entities = [
 		BowlerEntity::class,
@@ -81,6 +86,8 @@ const val DATABASE_WAL_NAME = "$DATABASE_NAME-wal"
 		StatisticsWidgetEntity::class,
 		TeamSeriesEntity::class,
 		TeamSeriesSeriesCrossRef::class,
+		AchievementEventEntity::class,
+		AchievementEntity::class,
 	],
 )
 @TypeConverters(
@@ -102,6 +109,9 @@ abstract class ApproachDatabase : RoomDatabase() {
 	abstract fun alleyDao(): AlleyDao
 	abstract fun laneDao(): LaneDao
 	abstract fun teamSeriesDao(): TeamSeriesDao
+
+	abstract fun achievementDao(): AchievementDao
+	abstract fun achievementEventDao(): AchievementEventDao
 
 	abstract fun statisticsDao(): StatisticsDao
 	abstract fun statisticsWidgetDao(): StatisticsWidgetDao
