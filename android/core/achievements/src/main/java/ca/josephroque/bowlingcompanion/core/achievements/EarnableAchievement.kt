@@ -9,7 +9,9 @@ interface EarnableAchievement {
 	val id: EarnableAchievementID
 	val events: List<ConsumableAchievementEvent>
 
-	fun consume(events: List<ConsumableAchievementEvent>): Pair<List<EarnableAchievement>, List<ConsumableAchievementEvent>> {
+	fun consume(
+		events: List<ConsumableAchievementEvent>,
+	): Pair<List<EarnableAchievement>, List<ConsumableAchievementEvent>> {
 		val consumed = events.filter { it in this.events }
 		return Pair(consumed.map { this }, consumed)
 	}
@@ -38,7 +40,7 @@ enum class EarnableAchievementID(
 	@StringRes val titleResourceId: Int,
 	@DrawableRes val iconResourceId: Int,
 	val isEnabled: Boolean,
-	val isShownOnEarn: Boolean = true
+	val isShownOnEarn: Boolean = true,
 ) {
 	APPROACH(
 		titleResourceId = R.string.achievement_title_approach,
@@ -53,5 +55,4 @@ enum class EarnableAchievementID(
 		isEnabled = true,
 		isShownOnEarn = false,
 	),
-	;
 }
