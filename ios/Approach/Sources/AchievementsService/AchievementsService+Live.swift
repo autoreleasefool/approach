@@ -58,6 +58,10 @@ private actor EarnedAchievementTracker {
 			_ = try database.writer().write {
 				try newEvent.insert($0)
 
+				guard !earnedAchievements.isEmpty else {
+					return
+				}
+
 				try AchievementEvent.Database
 					.filter(consumed.contains(AchievementEvent.Database.Columns.id))
 					.updateAll($0, AchievementEvent.Database.Columns.isConsumed.set(to: true))
