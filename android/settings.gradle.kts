@@ -21,6 +21,7 @@ rootProject.name = "Approach"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
+include(":core:achievements")
 include(":core:analytics")
 include(":core:charts")
 include(":core:common")
