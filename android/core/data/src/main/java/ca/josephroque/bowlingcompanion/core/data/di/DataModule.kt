@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.di
 
+import ca.josephroque.bowlingcompanion.core.data.repository.AchievementsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.AcknowledgementsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
@@ -9,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.MatchPlaysRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstAchievementsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstAcknowledgementsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstAlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstBowlersRepository
@@ -87,6 +89,9 @@ interface DataModule {
 
 	@Binds
 	fun bindsScoresRepository(scoresRepository: OfflineFirstScoresRepository): ScoresRepository
+
+	@Binds
+	fun bindsAchievementsRepository(achievementsRepository: OfflineFirstAchievementsRepository): AchievementsRepository
 
 	@Binds
 	fun bindsAcknowledgementsRepository(

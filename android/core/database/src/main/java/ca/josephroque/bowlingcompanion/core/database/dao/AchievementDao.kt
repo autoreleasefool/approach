@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.core.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import ca.josephroque.bowlingcompanion.core.database.model.AchievementCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.AchievementEntity
@@ -20,7 +21,7 @@ abstract class AchievementDao {
 				count(achievements.id) AS count
 			FROM achievements
 			GROUP BY achievements.title
-		"""
+		""",
 	)
 	abstract fun getEarnedAchievements(): Flow<List<AchievementListItem>>
 
@@ -34,10 +35,10 @@ abstract class AchievementDao {
 			WHERE achievements.earned_at >= :startDate
 			ORDER BY achievements.earned_at DESC
 			LIMIT 1
-		"""
+		""",
 	)
 	abstract fun getLatestAchievement(startDate: Instant): Flow<Achievement>
 
-	@Insert(entity = AchievementEntity::class)
-	abstract fun insertAchievement(achievement: AchievementCreateEntity)
+	@Insert(entity = AchievementEntity::class, onConflict = OnConflictStrategy.REPLACE)
+	abstract fun insertAll(achievements: List<AchievementCreateEntity>)
 }

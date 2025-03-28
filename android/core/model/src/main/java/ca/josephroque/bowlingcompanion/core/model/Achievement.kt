@@ -1,9 +1,9 @@
 package ca.josephroque.bowlingcompanion.core.model
 
 import android.os.Parcelable
+import java.util.UUID
 import kotlinx.datetime.Instant
 import kotlinx.parcelize.Parcelize
-import java.util.UUID
 
 @JvmInline
 @Parcelize

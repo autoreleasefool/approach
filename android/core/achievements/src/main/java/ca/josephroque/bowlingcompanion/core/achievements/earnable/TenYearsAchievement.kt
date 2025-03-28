@@ -9,7 +9,9 @@ object TenYearsAchievement : EarnableAchievement {
 	override val events: List<ConsumableAchievementEvent>
 		get() = listOf(BadgeClaimed)
 
-	override fun consume(events: List<ConsumableAchievementEvent>): Pair<List<EarnableAchievement>, List<ConsumableAchievementEvent>> {
+	override fun consume(
+		events: List<ConsumableAchievementEvent>,
+	): Pair<List<EarnableAchievement>, List<ConsumableAchievementEvent>> {
 		val consumed = events.filter { it in this.events }
 		return Pair(consumed.map { this }, consumed)
 	}

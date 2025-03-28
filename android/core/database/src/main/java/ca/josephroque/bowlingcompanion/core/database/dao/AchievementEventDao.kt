@@ -20,7 +20,7 @@ abstract class AchievementEventDao {
 			WHERE
 				events.is_consumed = 0
 				AND events.title IN (:titles)
-		"""
+		""",
 	)
 	abstract fun getUnconsumedEvents(titles: List<String>): List<AchievementEvent>
 
@@ -29,7 +29,7 @@ abstract class AchievementEventDao {
 			UPDATE achievement_events
 			SET is_consumed = 1
 			WHERE id IN (:ids)
-		"""
+		""",
 	)
 	abstract fun consumeEvents(ids: List<AchievementEventID>)
 
