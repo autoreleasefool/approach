@@ -3,8 +3,10 @@ package ca.josephroque.bowlingcompanion
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.achievements.AchievementEarned
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.app.AppLaunched
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.app.AppTabSwitched
+import ca.josephroque.bowlingcompanion.core.data.repository.AchievementsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
@@ -17,9 +19,11 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
+	private val achievementsRepository: AchievementsRepository,
 	private val analyticsClient: AnalyticsClient,
 	private val gamesRepository: GamesRepository,
 	private val userDataRepository: UserDataRepository,
@@ -49,6 +53,17 @@ class MainActivityViewModel @Inject constructor(
 			initialValue = MainActivityUiState.Loading,
 		)
 
+	init {
+		viewModelScope.launch {
+			achievementsRepository.getLatestAchievement(Clock.System.now())
+				.collect { latestAchievement ->
+					analyticsClient.trackEvent(AchievementEarned(latestAchievement.title))
+
+					// TODO: Add a dialog to display the achievement
+				}
+		}
+	}
+
 	fun didFirstLaunch() {
 		if (isLaunchComplete.value) return
 
@@ -70,14 +85,4 @@ class MainActivityViewModel @Inject constructor(
 	fun didChangeTab(destination: TopLevelDestination) {
 		analyticsClient.trackEvent(AppTabSwitched(destination.name))
 	}
-}
-
-sealed interface MainActivityUiState {
-	data object Loading : MainActivityUiState
-	data class Success(val appState: ApproachAppUiState, val isLaunchComplete: Boolean) : MainActivityUiState
-}
-
-internal fun MainActivityUiState.isLaunchComplete(): Boolean = when (this) {
-	MainActivityUiState.Loading -> false
-	is MainActivityUiState.Success -> this.isLaunchComplete
 }
