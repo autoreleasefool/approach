@@ -26,7 +26,6 @@ fun SeriesDetailsTopBar(
 ) {
 	MediumTopAppBar(
 		scrollBehavior = scrollBehavior,
-		colors = TopAppBarDefaults.topAppBarColors(),
 		title = {
 			Text(
 				text = state.seriesDate?.simpleFormat() ?: "",

@@ -16,7 +16,6 @@ import ca.josephroque.bowlingcompanion.feature.settings.ui.R
 fun AnalyticsSettingsTopBar(onAction: (AnalyticsSettingsUiAction) -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
-		colors = TopAppBarDefaults.topAppBarColors(),
 		title = {
 			Text(
 				text = stringResource(R.string.analytics_settings_title),

@@ -26,7 +26,6 @@ fun GamesEditorTopBar(state: GamesEditorTopBarUiState, onAction: (GamesEditorTop
 				),
 			)
 		},
-		colors = TopAppBarDefaults.topAppBarColors(),
 		navigationIcon = { BackButton(onClick = { onAction(GamesEditorTopBarUiAction.BackClicked) }) },
 		actions = {
 			if (state.isSharingButtonVisible) {

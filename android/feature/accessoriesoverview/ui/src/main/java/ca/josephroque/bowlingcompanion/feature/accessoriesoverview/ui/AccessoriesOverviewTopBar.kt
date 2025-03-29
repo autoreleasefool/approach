@@ -26,7 +26,6 @@ fun AccessoriesTopBar(
 ) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
-		colors = TopAppBarDefaults.topAppBarColors(),
 		title = {
 			Text(
 				text = stringResource(R.string.accessory_list_title),

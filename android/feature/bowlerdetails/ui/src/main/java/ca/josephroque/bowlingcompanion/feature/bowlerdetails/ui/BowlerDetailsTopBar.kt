@@ -29,7 +29,6 @@ fun BowlerDetailsTopBar(
 	scrollBehavior: TopAppBarScrollBehavior,
 ) {
 	MediumTopAppBar(
-		colors = TopAppBarDefaults.topAppBarColors(),
 		title = {
 			Text(
 				text = state.bowlerName,

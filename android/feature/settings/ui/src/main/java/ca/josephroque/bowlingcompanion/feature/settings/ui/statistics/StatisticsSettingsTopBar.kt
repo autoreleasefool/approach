@@ -16,7 +16,6 @@ import ca.josephroque.bowlingcompanion.feature.settings.ui.R
 fun StatisticsSettingsTopBar(onAction: (StatisticsSettingsUiAction) -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
-		colors = TopAppBarDefaults.topAppBarColors(),
 		title = {
 			Text(
 				text = stringResource(R.string.statistics_settings_title),

@@ -19,7 +19,6 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 fun OpponentsListTopBar(onAction: (OpponentsListUiAction) -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
-		colors = TopAppBarDefaults.topAppBarColors(),
 		title = {
 			Text(
 				text = stringResource(R.string.opponent_list_title),
