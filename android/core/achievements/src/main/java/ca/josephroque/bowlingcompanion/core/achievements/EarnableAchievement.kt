@@ -4,6 +4,9 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import ca.josephroque.bowlingcompanion.core.achievements.earnable.ApproachAchievement
 import ca.josephroque.bowlingcompanion.core.achievements.earnable.TenYearsAchievement
+import ca.josephroque.bowlingcompanion.core.common.utils.enumValueOfOrNull
+import ca.josephroque.bowlingcompanion.core.model.Achievement
+import ca.josephroque.bowlingcompanion.core.model.AchievementListItem
 
 interface EarnableAchievement {
 	val id: EarnableAchievementID
@@ -22,6 +25,11 @@ interface EarnableAchievement {
 			TenYearsAchievement,
 		)
 
+		fun fromTitle(title: String): EarnableAchievement? =
+			enumValueOfOrNull<EarnableAchievementID>(title)?.let {
+				fromId(it)
+			}
+
 		fun fromId(id: EarnableAchievementID): EarnableAchievement? {
 			return all.firstOrNull { it.id == id }
 		}
@@ -31,6 +39,9 @@ interface EarnableAchievement {
 		}
 	}
 }
+
+fun Achievement.earnable() = EarnableAchievement.fromTitle(title)
+fun AchievementListItem.earnable() = EarnableAchievement.fromTitle(title)
 
 interface ConsumableAchievementEvent {
 	val title: String

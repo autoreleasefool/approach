@@ -1,3 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<string name="achievements_list_title">Badges</string>
+	<string name="achievements_list_header_soon">Soon you\'ll be able to earn badges while improving your bowling game.</string>
+	<string name="achievements_list_header_checkBack">Check back later for more details!</string>
+
+	<string name="achievements_list_item_locked">Locked</string>
+	<string name="achievements_list_item_first_earned">First earned %1$s</string>
+
+	<plurals name="achievements_list_item_earned_count">
+		<item quantity="one">Earned %1$d time</item>
+		<item quantity="other">Earned %1$d times</item>
+	</plurals>
 </resources>

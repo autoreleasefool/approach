@@ -3,6 +3,8 @@ package ca.josephroque.bowlingcompanion.navigation.graph
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
+import ca.josephroque.bowlingcompanion.feature.achievementslist.navigation.achievementsListScreen
+import ca.josephroque.bowlingcompanion.feature.achievementslist.navigation.navigateToAchievementsList
 import ca.josephroque.bowlingcompanion.feature.archives.navigation.archivesList
 import ca.josephroque.bowlingcompanion.feature.archives.navigation.navigateToArchivesList
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.navigateToBowlerForm
@@ -38,7 +40,7 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
 		openDataImportSettings = navController::navigateToDataImport,
 		openArchives = navController::navigateToArchivesList,
 		openFeatureFlags = navController::navigateToFeatureFlagsList,
-		openAchievements = { TODO("openAchievements") },
+		openAchievements = navController::navigateToAchievementsList,
 	)
 	dataExportScreen(
 		onBackPressed = navController::popBackStack,
@@ -72,6 +74,9 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
 		onBackPressed = navController::popBackStack,
 	)
 	featureFlagsList(
+		onBackPressed = navController::popBackStack,
+	)
+	achievementsListScreen(
 		onBackPressed = navController::popBackStack,
 	)
 }

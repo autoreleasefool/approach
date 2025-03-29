@@ -10,4 +10,6 @@ android {
 dependencies {
 	implementation(projects.core.achievements)
 	implementation(projects.feature.achievementslist.ui)
+
+	implementation(libs.kotlinx.datetime)
 }
