@@ -9,4 +9,7 @@ android {
 
 dependencies {
 	implementation(projects.core.achievements)
+	implementation(projects.core.common)
+
+	implementation(libs.kotlinx.datetime)
 }

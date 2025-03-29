@@ -26,6 +26,9 @@ sealed class Route(val route: String) {
 	// Accessories
 	data object AccessoriesOverview : Route("accessories_overview")
 
+	// Achievements
+	data object AchievementsList : Route("achievements_list")
+
 	// Acknowledgements
 	data object Acknowledgements : Route("acknowledgements")
 	data object AcknowledgementDetails : Route("acknowledgement/{acknowledgement}") {
