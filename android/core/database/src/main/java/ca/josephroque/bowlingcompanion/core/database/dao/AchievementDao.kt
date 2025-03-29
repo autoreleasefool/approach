@@ -37,7 +37,7 @@ abstract class AchievementDao {
 			LIMIT 1
 		""",
 	)
-	abstract fun getLatestAchievement(startDate: Instant): Flow<Achievement>
+	abstract fun getLatestAchievement(startDate: Instant): Flow<Achievement?>
 
 	@Insert(entity = AchievementEntity::class, onConflict = OnConflictStrategy.REPLACE)
 	abstract fun insertAll(achievements: List<AchievementCreateEntity>)

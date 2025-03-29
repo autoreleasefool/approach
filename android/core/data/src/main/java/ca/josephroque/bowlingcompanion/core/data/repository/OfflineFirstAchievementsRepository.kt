@@ -43,7 +43,7 @@ class OfflineFirstAchievementsRepository @Inject constructor(
 			}
 	}
 
-	override fun getLatestAchievement(startDate: Instant): Flow<Achievement> {
+	override fun getLatestAchievement(startDate: Instant): Flow<Achievement?> {
 		return achievementDao.getLatestAchievement(startDate)
 	}
 

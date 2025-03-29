@@ -9,6 +9,8 @@ import ca.josephroque.bowlingcompanion.core.analytics.trackable.app.AppTabSwitch
 import ca.josephroque.bowlingcompanion.core.data.repository.AchievementsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
+import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
 import ca.josephroque.bowlingcompanion.ui.ApproachAppUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +18,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -27,6 +30,7 @@ class MainActivityViewModel @Inject constructor(
 	private val analyticsClient: AnalyticsClient,
 	private val gamesRepository: GamesRepository,
 	private val userDataRepository: UserDataRepository,
+	private var featureFlagsClient: FeatureFlagsClient,
 ) : ViewModel() {
 	private val isLaunchComplete: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
@@ -54,13 +58,16 @@ class MainActivityViewModel @Inject constructor(
 		)
 
 	init {
-		viewModelScope.launch {
-			achievementsRepository.getLatestAchievement(Clock.System.now())
-				.collect { latestAchievement ->
-					analyticsClient.trackEvent(AchievementEarned(latestAchievement.title))
+		if (featureFlagsClient.isEnabled(FeatureFlag.ACHIEVEMENTS)) {
+			viewModelScope.launch {
+				achievementsRepository.getLatestAchievement(Clock.System.now())
+					.filterNotNull()
+					.collect { latestAchievement ->
+						analyticsClient.trackEvent(AchievementEarned(latestAchievement.title))
 
-					// TODO: Add a dialog to display the achievement
-				}
+						// TODO: Add a dialog to display the achievement
+					}
+			}
 		}
 	}
 
