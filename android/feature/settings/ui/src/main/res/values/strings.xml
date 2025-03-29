@@ -11,6 +11,8 @@
 	<string name="settings_item_opponents_description">Logs of all your past opponents and a record of your match play</string>
 	<string name="settings_item_statistics_title">Statistics</string>
 	<string name="settings_item_statistics_description">Fine-tune your preferences when it comes to which statistics to show</string>
+	<string name="settings_item_achievements_title">Badges</string>
+	<string name="settings_item_achievements_description">Earn badges while you improve your bowling game</string>
 
 	<string name="settings_item_archives_title">Archives</string>
 	<string name="settings_item_archives_description">An archive of your old data, hidden from the rest of the app</string>
