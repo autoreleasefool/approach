@@ -8,7 +8,7 @@ import kotlinx.datetime.Instant
 
 interface AchievementsRepository {
 	fun getEarnedAchievements(): Flow<List<AchievementListItem>>
-	fun getLatestAchievement(startDate: Instant): Flow<Achievement>
+	fun getLatestAchievement(startDate: Instant): Flow<Achievement?>
 
 	suspend fun insertEvent(event: ConsumableAchievementEvent)
 }
