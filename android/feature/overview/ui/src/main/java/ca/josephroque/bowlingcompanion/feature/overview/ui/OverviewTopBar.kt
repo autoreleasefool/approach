@@ -29,7 +29,6 @@ fun OverviewTopBar(
 ) {
 	CenterAlignedTopAppBar(
 		scrollBehavior = scrollBehavior,
-		colors = TopAppBarDefaults.topAppBarColors(),
 		title = {
 			Text(
 				text = stringResource(R.string.overview_title),

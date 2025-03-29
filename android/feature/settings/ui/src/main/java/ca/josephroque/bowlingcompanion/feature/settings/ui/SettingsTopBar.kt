@@ -14,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 fun SettingsTopBar(scrollBehavior: TopAppBarScrollBehavior) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
-		colors = TopAppBarDefaults.topAppBarColors(),
 		title = {
 			Text(
 				text = stringResource(R.string.settings_title),

@@ -20,7 +20,6 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 fun AlleysListTopBar(onAction: (AlleysListUiAction) -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
-		colors = TopAppBarDefaults.topAppBarColors(),
 		title = {
 			Text(
 				text = stringResource(R.string.alley_list_title),

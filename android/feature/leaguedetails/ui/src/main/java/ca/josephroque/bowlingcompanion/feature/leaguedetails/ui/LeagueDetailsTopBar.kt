@@ -31,7 +31,6 @@ fun LeagueDetailsTopBar(
 	scrollBehavior: TopAppBarScrollBehavior,
 ) {
 	MediumTopAppBar(
-		colors = TopAppBarDefaults.topAppBarColors(),
 		scrollBehavior = scrollBehavior,
 		title = {
 			Text(

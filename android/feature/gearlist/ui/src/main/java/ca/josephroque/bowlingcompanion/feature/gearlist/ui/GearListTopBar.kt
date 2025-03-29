@@ -31,7 +31,6 @@ fun GearListTopBar(
 ) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
-		colors = TopAppBarDefaults.topAppBarColors(),
 		title = {
 			Text(
 				text = stringResource(R.string.gear_list_title),
