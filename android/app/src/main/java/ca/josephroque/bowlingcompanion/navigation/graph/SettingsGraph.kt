@@ -38,6 +38,7 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
 		openDataImportSettings = navController::navigateToDataImport,
 		openArchives = navController::navigateToArchivesList,
 		openFeatureFlags = navController::navigateToFeatureFlagsList,
+		openAchievements = { TODO("openAchievements") },
 	)
 	dataExportScreen(
 		onBackPressed = navController::popBackStack,

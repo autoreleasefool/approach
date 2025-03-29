@@ -15,6 +15,7 @@ fun NavGraphBuilder.settingsScreen(
 	openDataExportSettings: () -> Unit,
 	openArchives: () -> Unit,
 	openFeatureFlags: () -> Unit,
+	openAchievements: () -> Unit,
 ) {
 	composable(
 		route = Route.Settings.route,
@@ -29,6 +30,7 @@ fun NavGraphBuilder.settingsScreen(
 			openDataExportSettings = openDataExportSettings,
 			openArchives = openArchives,
 			openFeatureFlags = openFeatureFlags,
+			openAchievements = openAchievements,
 		)
 	}
 }

@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.settings
 
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.achievements.AchievementListViewed
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.settings.ReportedBug
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.settings.SentFeedback
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.settings.ViewedAcknowledgements
@@ -38,6 +39,7 @@ class SettingsViewModel @Inject constructor(
 			isDataImportsEnabled = featureFlagsClient.isEnabled(FeatureFlag.DATA_IMPORT),
 			isDataExportsEnabled = featureFlagsClient.isEnabled(FeatureFlag.DATA_EXPORT),
 			isDevelopmentModeEnabled = featureFlagsClient.isEnabled(FeatureFlag.DEVELOPER_MODE),
+			isAchievementsEnabled = featureFlagsClient.isEnabled(FeatureFlag.ACHIEVEMENTS),
 			versionName = systemInfoService.versionName,
 			versionCode = systemInfoService.versionCode,
 		),
@@ -72,6 +74,7 @@ class SettingsViewModel @Inject constructor(
 			SettingsUiAction.ReportBugClicked -> showBugReport()
 			SettingsUiAction.FeatureFlagsClicked -> showFeatureFlags()
 			SettingsUiAction.ForceCrashClicked -> forceCrash()
+			SettingsUiAction.AchievementsClicked -> showAchievements()
 		}
 	}
 
@@ -92,6 +95,11 @@ class SettingsViewModel @Inject constructor(
 	private fun showArchives() {
 		sendEvent(SettingsScreenEvent.NavigateToArchives)
 		analyticsClient.trackEvent(ViewedArchived)
+	}
+
+	private fun showAchievements() {
+		sendEvent(SettingsScreenEvent.NavigateToAchievements)
+		analyticsClient.trackEvent(AchievementListViewed)
 	}
 
 	private fun showFeatureFlags() {

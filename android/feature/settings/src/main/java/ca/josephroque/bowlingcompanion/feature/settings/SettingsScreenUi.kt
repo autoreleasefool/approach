@@ -23,4 +23,5 @@ sealed interface SettingsScreenEvent {
 	data object NavigateToDeveloperSettings : SettingsScreenEvent
 	data object NavigateToArchives : SettingsScreenEvent
 	data object NavigateToFeatureFlags : SettingsScreenEvent
+	data object NavigateToAchievements : SettingsScreenEvent
 }
