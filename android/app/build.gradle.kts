@@ -64,6 +64,7 @@ dependencies {
 	implementation(projects.core.navigation)
 	implementation(projects.core.statistics)
 	implementation(projects.feature.accessoriesoverview)
+	implementation(projects.feature.achievementslist)
 	implementation(projects.feature.alleyform)
 	implementation(projects.feature.alleyslist)
 	implementation(projects.feature.archives)
