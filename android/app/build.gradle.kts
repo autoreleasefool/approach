@@ -68,6 +68,7 @@ dependencies {
 	implementation(projects.feature.achievementslist)
 	implementation(projects.feature.alleyform)
 	implementation(projects.feature.alleyslist)
+	implementation(projects.feature.announcements)
 	implementation(projects.feature.archives)
 	implementation(projects.feature.avatarform)
 	implementation(projects.feature.bowlerdetails)

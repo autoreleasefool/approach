@@ -55,6 +55,8 @@
             <option value="$PROJECT_DIR$/feature/alleyform/ui" />
             <option value="$PROJECT_DIR$/feature/alleyslist" />
             <option value="$PROJECT_DIR$/feature/alleyslist/ui" />
+            <option value="$PROJECT_DIR$/feature/announcements" />
+            <option value="$PROJECT_DIR$/feature/announcements/ui" />
             <option value="$PROJECT_DIR$/feature/archives" />
             <option value="$PROJECT_DIR$/feature/archives/ui" />
             <option value="$PROJECT_DIR$/feature/avatarform" />
@@ -125,7 +127,6 @@
             <option value="$PROJECT_DIR$/feature/teamslist/ui" />
           </set>
         </option>
-        <option name="resolveExternalAnnotations" value="false" />
       </GradleProjectSettings>
     </option>
   </component>
