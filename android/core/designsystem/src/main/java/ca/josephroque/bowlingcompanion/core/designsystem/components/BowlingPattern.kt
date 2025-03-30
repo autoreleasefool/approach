@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.onboarding.ui.components
+package ca.josephroque.bowlingcompanion.core.designsystem.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -22,15 +22,16 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toBitmap
-import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
+import ca.josephroque.bowlingcompanion.core.designsystem.R
 
 @Composable
-fun OnboardingBackground(modifier: Modifier = Modifier) {
-	Box(modifier = modifier.fillMaxSize()) {
+fun BowlingPattern(modifier: Modifier = Modifier, alpha: Float = 0.4f) {
+	Box(modifier = modifier) {
 		val resources = LocalContext.current.resources
 		val isDarkTheme = isSystemInDarkTheme()
 
@@ -44,9 +45,9 @@ fun OnboardingBackground(modifier: Modifier = Modifier) {
 			val tint = ResourcesCompat.getColor(
 				resources,
 				if (isDarkTheme) {
-					ca.josephroque.bowlingcompanion.core.designsystem.R.color.white
+					R.color.white
 				} else {
-					ca.josephroque.bowlingcompanion.core.designsystem.R.color.black
+					R.color.black
 				},
 				null,
 			)
@@ -64,14 +65,19 @@ fun OnboardingBackground(modifier: Modifier = Modifier) {
 		Box(
 			modifier = Modifier
 				.fillMaxSize()
-				.alpha(0.4f)
+				.alpha(alpha)
 				.background(brush),
 		)
 	}
 }
 
 @Composable
-fun ReadableContent(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+fun ReadableContent(
+	modifier: Modifier = Modifier,
+	effectHeight: Dp = 32.dp,
+	color: Color = colorResource(R.color.bowling_pattern_background),
+	content: @Composable () -> Unit
+) {
 	val density = LocalDensity.current
 	var height by remember { mutableStateOf(0.dp) }
 
@@ -86,13 +92,13 @@ fun ReadableContent(modifier: Modifier = Modifier, content: @Composable () -> Un
 				} else {
 					Brush.verticalGradient(
 						0f to Color.Transparent,
-						(16.dp / height.value).value to colorResource(R.color.container),
-						1f - (16.dp / height.value).value to colorResource(R.color.container),
+						(effectHeight / 2 / height.value).value to color,
+						1f - (effectHeight / 2 / height.value).value to color,
 						1f to Color.Transparent,
 					)
 				},
 			)
-			.padding(vertical = 32.dp)
+			.padding(vertical = effectHeight)
 			.onSizeChanged { size ->
 				height = with(density) { size.height.toDp() }
 			},

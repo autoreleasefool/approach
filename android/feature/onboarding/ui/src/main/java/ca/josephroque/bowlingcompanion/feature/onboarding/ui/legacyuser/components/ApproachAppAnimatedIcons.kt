@@ -4,11 +4,12 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import ca.josephroque.bowlingcompanion.feature.onboarding.ui.components.OnboardingBackground
+import ca.josephroque.bowlingcompanion.core.designsystem.components.BowlingPattern
 
 @Composable
 fun ApproachAppAnimatedIcons(isVisible: Boolean, modifier: Modifier = Modifier) {
@@ -31,6 +32,6 @@ fun AnimatedIcons(visibleState: MutableTransitionState<Boolean>, modifier: Modif
 		enter = slideInVertically(initialOffsetY = { it / 2 }) + fadeIn(),
 		modifier = modifier,
 	) {
-		OnboardingBackground()
+		BowlingPattern(modifier = Modifier.fillMaxSize())
 	}
 }
