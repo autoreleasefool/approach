@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
-import ca.josephroque.bowlingcompanion.feature.onboarding.ui.components.ReadableContent
+import ca.josephroque.bowlingcompanion.core.designsystem.components.ReadableContent
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.AppNameChangeUiAction
 
 @Composable

@@ -49,4 +49,6 @@
 
 	<color name="destructive">#E73838</color>
 
+	<color name="bowling_pattern_background">#FFFFFF</color>
+
 </resources>

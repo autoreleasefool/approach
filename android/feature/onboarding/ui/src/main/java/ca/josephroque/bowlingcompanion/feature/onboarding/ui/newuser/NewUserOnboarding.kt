@@ -30,8 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
-import ca.josephroque.bowlingcompanion.feature.onboarding.ui.components.OnboardingBackground
-import ca.josephroque.bowlingcompanion.feature.onboarding.ui.components.ReadableContent
+import ca.josephroque.bowlingcompanion.core.designsystem.components.BowlingPattern
+import ca.josephroque.bowlingcompanion.core.designsystem.components.ReadableContent
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.components.Logbook
 
 @Composable
@@ -50,7 +50,7 @@ fun NewUserOnboarding(
 			visibleState = visibleState,
 			enter = slideInVertically { it / 2 } + fadeIn(),
 		) {
-			OnboardingBackground()
+			BowlingPattern(modifier = Modifier.fillMaxSize())
 			AppDescription(onAction = onAction)
 		}
 
