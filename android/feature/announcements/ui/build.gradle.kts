@@ -6,3 +6,7 @@ plugins {
 android {
 	namespace = "ca.josephroque.bowlingcompanion.feature.announcements.ui"
 }
+
+dependencies {
+	implementation(projects.core.achievements)
+}
