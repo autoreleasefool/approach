@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+	<string name="announcement_ten_years_title">Approach is turning 10!</string>
+	<string name="announcement_ten_years_description_from_bowling_companion">From Bowling Companion to Approach, it\'s been 10 years since its launch.</string>
+	<string name="announcement_ten_years_description_hope_you_enjoyed">I hope you\'ve enjoyed using Approach as much as I\'ve enjoyed building it.</string>
+	<string name="announcement_ten_years_claim_badge">Claim Badge</string>
 </resources>
