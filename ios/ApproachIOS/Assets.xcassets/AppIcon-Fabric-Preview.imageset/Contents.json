@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "Fabric@0.5x.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

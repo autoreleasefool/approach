@@ -53,8 +53,8 @@ public enum Strings {
       /// Badges
       public static let title = Strings.tr("Localizable", "achievements.list.title", fallback: "Badges")
       public enum Header {
-        /// Check back later for more information.
-        public static let checkBack = Strings.tr("Localizable", "achievements.list.header.checkBack", fallback: "Check back later for more information.")
+        /// Check back later for more details!
+        public static let checkBack = Strings.tr("Localizable", "achievements.list.header.checkBack", fallback: "Check back later for more details!")
         /// Soon you'll be able to earn badges while improving your bowling game.
         public static let soon = Strings.tr("Localizable", "achievements.list.header.soon", fallback: "Soon you'll be able to earn badges while improving your bowling game.")
       }
@@ -288,6 +288,8 @@ public enum Strings {
       public static let dark = Strings.tr("Localizable", "app.icon.dark", fallback: "Dark")
       /// Devil Horns
       public static let devilHorns = Strings.tr("Localizable", "app.icon.devilHorns", fallback: "Devil Horns")
+      /// Fabric
+      public static let fabric = Strings.tr("Localizable", "app.icon.fabric", fallback: "Fabric")
       /// Pride
       public static let pride = Strings.tr("Localizable", "app.icon.pride", fallback: "Pride")
       /// Primary
