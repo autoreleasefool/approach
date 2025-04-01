@@ -209,6 +209,7 @@ extension AppIcon: CustomStringConvertible {
 		case .christmas: Strings.App.Icon.christmas
 		case .dark: Strings.App.Icon.dark
 		case .devilHorns: Strings.App.Icon.devilHorns
+		case .fabric: Strings.App.Icon.fabric
 		case .pride: Strings.App.Icon.pride
 		case .primary: Strings.App.Icon.primary
 		case .purple: Strings.App.Icon.purple
@@ -221,7 +222,7 @@ extension AppIcon: CustomStringConvertible {
 extension AppIcon {
 	public var isProRequired: Bool {
 		switch self {
-		case .primary, .purple, .dark,
+		case .primary, .purple, .dark, .fabric,
 				.bisexual, .pride, .trans,
 				.christmas,
 				.candyCorn, .devilHorns, .witchHat:
