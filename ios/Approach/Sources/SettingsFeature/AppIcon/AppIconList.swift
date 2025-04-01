@@ -15,6 +15,7 @@ import SwiftUIExtensionsPackageLibrary
 public struct AppIconList: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
+		public var availableAppIcons: Set<AppIcon> = []
 		public var isLoadingAppIcon = true
 		public var currentAppIcon: AppIcon?
 		@Presents var alert: AlertState<Action.Alert>?
@@ -43,6 +44,7 @@ public struct AppIconList: Reducer, Sendable {
 		public enum Delegate { case doNothing }
 		@CasePathable
 		public enum Internal {
+			case didLoadAvailableAppIcons(Set<AppIcon>)
 			case didUpdateIcon(Result<Never, Error>)
 			case didFetchIcon(Result<AppIcon?, Error>)
 			case alert(PresentationAction<Alert>)
@@ -69,6 +71,7 @@ public struct AppIconList: Reducer, Sendable {
 				case .didFirstAppear:
 					return .merge(
 						fetchCurrentAppIcon(),
+						.run { send in await send(.internal(.didLoadAvailableAppIcons(appIcon.availableAppIcons()))) },
 						.run { _ in await achievements.sendEvent(EarnableAchievements.Iconista.Events.AppIconsViewed(id: uuid())) }
 					)
 
@@ -103,6 +106,10 @@ public struct AppIconList: Reducer, Sendable {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .didLoadAvailableAppIcons(icons):
+					state.availableAppIcons = icons
+					return .none
+
 				case let .didFetchIcon(.success(icon)):
 					state.isLoadingAppIcon = false
 					state.currentAppIcon = icon
@@ -172,7 +179,7 @@ public struct AppIconListView: View {
 			ForEach(AppIcon.Category.allCases) { category in
 				Section(String(describing: category)) {
 					ForEach(category.matchingIcons) { icon in
-						if icon.isProRequired && !store.isPurchasesEnabled {
+						if (icon.isProRequired && !store.isPurchasesEnabled) || !store.availableAppIcons.contains(icon) {
 							EmptyView()
 						} else {
 							Button { send(.didTapIcon(icon)) } label: {

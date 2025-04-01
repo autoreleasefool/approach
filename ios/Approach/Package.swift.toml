@@ -272,6 +272,8 @@ dependencies = [ "AnalyticsPackageServiceInterface", "ComposableArchitecture", "
 
 [services.AppIcon]
 skip_tests = true
+services = [ "Achievements" ]
+libraries = [ "FeatureFlags" ]
 [services.AppIcon.interface]
 libraries = [ "Assets" ]
 
