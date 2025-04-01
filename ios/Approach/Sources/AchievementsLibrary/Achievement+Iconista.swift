@@ -5,7 +5,7 @@ import SwiftUI
 
 extension EarnableAchievements {
 	public struct Iconista: EarnableAchievement, Equatable {
-		public static var title: String { Strings.Achievements.Earnable.Iconista.title }
+		public static var displayName: String { Strings.Achievements.Earnable.Iconista.title }
 		public static var icon: Image { Asset.Media.Achievements.approach.swiftUIImage }
 
 		public static var isEnabled: Bool { false }

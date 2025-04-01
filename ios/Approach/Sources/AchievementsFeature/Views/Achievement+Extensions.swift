@@ -7,4 +7,8 @@ extension Achievement.List {
 	var icon: Image {
 		achievement.icon
 	}
+
+	var displayName: String {
+		achievement.displayName
+	}
 }

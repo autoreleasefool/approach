@@ -13,7 +13,7 @@ struct AchievementListItem: View {
 				isEnabled: false
 			)
 
-			Text(achievement.title)
+			Text(achievement.displayName)
 				.font(.headline)
 
 			if let firstEarnedAt = achievement.firstEarnedAt {

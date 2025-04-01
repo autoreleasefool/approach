@@ -5,7 +5,7 @@ import SwiftUI
 
 extension EarnableAchievements {
 	public struct TenYears: EarnableAchievement, Equatable {
-		public static var title: String { Strings.Achievements.Earnable.TenYear.title }
+		public static var displayName: String { Strings.Achievements.Earnable.TenYear.title }
 		public static var icon: Image { Asset.Media.Achievements.tenYears.swiftUIImage }
 
 		public static var isEnabled: Bool { true }
