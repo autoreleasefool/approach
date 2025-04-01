@@ -4,6 +4,7 @@ import SwiftUI
 
 public protocol EarnableAchievement: Sendable {
 	static var title: String { get }
+	static var displayName: String { get }
 	static var icon: Image { get }
 
 	static var isEnabled: Bool { get }
@@ -15,6 +16,10 @@ public protocol EarnableAchievement: Sendable {
 	static func consume(from: [any ConsumableAchievementEvent]) -> (consumed: Set<UUID>, earned: [Self])
 
 	init()
+}
+
+extension EarnableAchievement {
+	public static var title: String { String(describing: self) }
 }
 
 public protocol ConsumableAchievementEvent: Sendable {

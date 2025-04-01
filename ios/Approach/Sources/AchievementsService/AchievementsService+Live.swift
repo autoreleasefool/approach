@@ -18,6 +18,23 @@ extension AchievementsService: DependencyKey {
 				guard featureFlags.isFlagEnabled(.achievements) else { return }
 
 				await achievementTracker.sendEvent(event)
+			},
+			hasEarnedAchievement: { achievementType in
+				@Dependency(DatabaseService.self) var database
+
+				do {
+					return try database.reader().read {
+						// GRDB does not expose a `contains` predicate for us in this case
+						// swiftlint:disable:next contains_over_filter_is_empty
+						try Achievement.Database
+							.filter(Achievement.Database.Columns.title == achievementType.title)
+							.isEmpty($0)
+					} == false
+				} catch {
+					@Dependency(\.errors) var errors
+					errors.captureError(error)
+					return false
+				}
 			}
 		)
 	}
@@ -34,6 +51,8 @@ private actor EarnedAchievementTracker {
 			.first(where: { $0.events.contains { type(of: event) == $0 } }) else {
 			return
 		}
+
+		guard achievement.isEnabled else { return }
 
 		let relevantEvents = achievement.events.map { $0.title }
 
