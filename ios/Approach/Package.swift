@@ -1391,7 +1391,9 @@ let package = Package(
 		.target(
 			name: "AppIconService",
 			dependencies: [
+				"AchievementsServiceInterface",
 				"AppIconServiceInterface",
+				"FeatureFlagsLibrary",
 			]
 		),
 		.target(
