@@ -30,7 +30,7 @@ struct AchievementsServiceTests {
 				$0[DatabaseService.self].writer = { @Sendable in db }
 				$0[AchievementsService.self] = .liveValue
 			} operation: {
-				await achievements.sendEvent(EarnableAchievements.Iconista.Events.AppIconsViewed(id: UUID(0)))
+				await achievements.sendEvent(EarnableAchievements.TenYears.Events.TenYearsBadgeClaimed(id: UUID(0)))
 			}
 
 			// Does not insert any records
@@ -56,7 +56,7 @@ struct AchievementsServiceTests {
 				$0[DatabaseService.self].writer = { @Sendable in db }
 				$0[AchievementsService.self] = .liveValue
 			} operation: {
-				await achievements.sendEvent(EarnableAchievements.Iconista.Events.AppIconsViewed(id: UUID(0)))
+				await achievements.sendEvent(EarnableAchievements.TenYears.Events.TenYearsBadgeClaimed(id: UUID(0)))
 			}
 
 			// Inserts a record
@@ -98,7 +98,7 @@ struct AchievementsServiceTests {
 				$0[DatabaseService.self].writer = { @Sendable in db }
 				$0[AchievementsService.self] = .liveValue
 			} operation: {
-				await achievements.sendEvent(EarnableAchievements.Iconista.Events.AppIconsViewed(id: UUID(0)))
+				await achievements.sendEvent(EarnableAchievements.TenYears.Events.TenYearsBadgeClaimed(id: UUID(0)))
 			}
 
 			// Consumes the event
@@ -108,7 +108,7 @@ struct AchievementsServiceTests {
 			// Creates an achievement
 			let achievement = try await db.read { try Achievement.Database.fetchOne($0) }
 			#expect(achievement != nil)
-			#expect(achievement?.title == "Iconista")
+			#expect(achievement?.title == "TenYears")
 		}
 	}
 }
