@@ -3,8 +3,8 @@ package ca.josephroque.bowlingcompanion.core.common.system
 import android.content.Context
 import android.os.Build
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.datetime.Instant
 import javax.inject.Inject
+import kotlinx.datetime.Instant
 
 class LiveSystemInfoService @Inject constructor(@ApplicationContext private val context: Context) :
 	SystemInfoService {

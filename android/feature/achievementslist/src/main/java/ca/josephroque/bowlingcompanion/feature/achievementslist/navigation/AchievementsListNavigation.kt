@@ -11,9 +11,7 @@ fun NavController.navigateToAchievementsList(navOptions: NavOptions? = null) {
 	this.navigate(Route.AchievementsList.route, navOptions)
 }
 
-fun NavGraphBuilder.achievementsListScreen(
-	onBackPressed: () -> Unit,
-) {
+fun NavGraphBuilder.achievementsListScreen(onBackPressed: () -> Unit) {
 	composable(
 		route = Route.AchievementsList.route,
 	) {

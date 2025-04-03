@@ -76,7 +76,7 @@ fun ReadableContent(
 	modifier: Modifier = Modifier,
 	effectHeight: Dp = 32.dp,
 	color: Color = colorResource(R.color.bowling_pattern_background),
-	content: @Composable () -> Unit
+	content: @Composable () -> Unit,
 ) {
 	val density = LocalDensity.current
 	var height by remember { mutableStateOf(0.dp) }

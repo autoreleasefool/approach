@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
@@ -32,15 +31,12 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.ReadableCont
 import ca.josephroque.bowlingcompanion.feature.announcements.ui.R
 
 @Composable
-fun TenYearsAnnouncement(
-	onAction: (TenYearsAnnouncementUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun TenYearsAnnouncement(onAction: (TenYearsAnnouncementUiAction) -> Unit, modifier: Modifier = Modifier) {
 	Card(modifier = modifier) {
 		Box {
 			BowlingPattern(
 				alpha = 0.3f,
-				modifier = Modifier.matchParentSize()
+				modifier = Modifier.matchParentSize(),
 			)
 
 			Column(
@@ -63,7 +59,7 @@ private fun AnnouncementDescription() {
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,
 		verticalArrangement = Arrangement.spacedBy(4.dp),
-		modifier = Modifier.verticalScroll(rememberScrollState())
+		modifier = Modifier.verticalScroll(rememberScrollState()),
 	) {
 		ReadableContent(
 			effectHeight = 8.dp,
@@ -80,7 +76,7 @@ private fun AnnouncementDescription() {
 			contentDescription = null,
 			modifier = Modifier
 				.widthIn(max = 120.dp)
-				.aspectRatio(1f)
+				.aspectRatio(1f),
 		)
 
 		ReadableContent(
@@ -92,8 +88,8 @@ private fun AnnouncementDescription() {
 					append(
 						AnnotatedString(
 							text = stringResource(R.string.announcement_ten_years_description_from_bowling_companion),
-							spanStyle = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold).toSpanStyle()
-						)
+							spanStyle = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold).toSpanStyle(),
+						),
 					)
 
 					withStyle(MaterialTheme.typography.bodyMedium.toSpanStyle()) {
@@ -103,8 +99,8 @@ private fun AnnouncementDescription() {
 					append(
 						AnnotatedString(
 							text = stringResource(R.string.announcement_ten_years_description_hope_you_enjoyed),
-							spanStyle = MaterialTheme.typography.bodyMedium.toSpanStyle()
-						)
+							spanStyle = MaterialTheme.typography.bodyMedium.toSpanStyle(),
+						),
 					)
 				},
 				textAlign = TextAlign.Center,
@@ -118,7 +114,7 @@ private fun AnnouncementDescription() {
 fun TenYearsAnnouncementPreview() {
 	Dialog(onDismissRequest = {}) {
 		TenYearsAnnouncement(
-			onAction = {}
+			onAction = {},
 		)
 	}
 }

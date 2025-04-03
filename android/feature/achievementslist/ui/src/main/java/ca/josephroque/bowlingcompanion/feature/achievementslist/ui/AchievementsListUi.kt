@@ -8,7 +8,7 @@ data class AchievementsListUiState(
 )
 
 sealed interface AchievementsListTopBarUiAction {
-	data object BackClicked: AchievementsListTopBarUiAction
+	data object BackClicked : AchievementsListTopBarUiAction
 }
 
 sealed interface AchievementsListUiAction {

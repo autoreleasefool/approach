@@ -1,17 +1,16 @@
 package ca.josephroque.bowlingcompanion.feature.announcements.provider
 
 import ca.josephroque.bowlingcompanion.core.common.system.SystemInfoService
-import ca.josephroque.bowlingcompanion.core.data.repository.AchievementsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import ca.josephroque.bowlingcompanion.feature.announcements.ui.AnnouncementUiState
 import ca.josephroque.bowlingcompanion.feature.announcements.ui.tenyears.TenYearsAnnouncementUiState
+import javax.inject.Inject
+import kotlin.time.Duration.Companion.days
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import javax.inject.Inject
-import kotlin.time.Duration.Companion.days
 
 class LiveAnnouncementsProvider @Inject constructor(
 	private val featureFlagsClient: FeatureFlagsClient,

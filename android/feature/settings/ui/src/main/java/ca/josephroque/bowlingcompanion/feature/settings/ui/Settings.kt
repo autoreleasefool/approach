@@ -118,7 +118,7 @@ private fun MainSection(isAchievementsEnabled: Boolean, onAction: (SettingsUiAct
 
 	if (isAchievementsEnabled) {
 		NavigationItem(
-			titleResourceId =R.string.settings_item_achievements_title,
+			titleResourceId = R.string.settings_item_achievements_title,
 			descriptionResourceId = R.string.settings_item_achievements_description,
 			onClick = { onAction(SettingsUiAction.AchievementsClicked) },
 		)

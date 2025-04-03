@@ -10,14 +10,13 @@ import ca.josephroque.bowlingcompanion.feature.announcements.ui.AnnouncementUiAc
 import ca.josephroque.bowlingcompanion.feature.announcements.ui.AnnouncementUiState
 import ca.josephroque.bowlingcompanion.feature.announcements.ui.tenyears.TenYearsAnnouncementUiAction
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class AnnouncementViewModel @Inject constructor(
@@ -35,7 +34,7 @@ class AnnouncementViewModel @Inject constructor(
 		.stateIn(
 			viewModelScope,
 			started = SharingStarted.WhileSubscribed(5_000),
-			initialValue = AnnouncementDialogUiState.NoAnnouncement
+			initialValue = AnnouncementDialogUiState.NoAnnouncement,
 		)
 
 	init {

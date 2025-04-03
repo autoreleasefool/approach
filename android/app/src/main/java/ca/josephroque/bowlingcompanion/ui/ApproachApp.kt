@@ -53,7 +53,7 @@ fun ApproachApp(
 		onNavigateToAchievements = {
 			appState.navigateToTopLevelDestination(TopLevelDestination.SETTINGS_OVERVIEW)
 			appState.navController.navigateToAchievementsList()
-	  },
+		},
 	)
 
 	ModalBottomSheetLayout(
