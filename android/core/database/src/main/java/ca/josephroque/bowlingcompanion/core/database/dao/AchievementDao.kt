@@ -39,6 +39,16 @@ abstract class AchievementDao {
 	)
 	abstract fun getLatestAchievement(startDate: Instant): Flow<Achievement?>
 
+	@Query(
+		"""
+			SELECT
+				COUNT(achievements.id) > 0
+			FROM achievements
+			WHERE achievements.title = :title
+		""",
+	)
+	abstract fun hasEarnedAchievement(title: String): Boolean
+
 	@Insert(entity = AchievementEntity::class, onConflict = OnConflictStrategy.REPLACE)
 	abstract fun insertAll(achievements: List<AchievementCreateEntity>)
 }

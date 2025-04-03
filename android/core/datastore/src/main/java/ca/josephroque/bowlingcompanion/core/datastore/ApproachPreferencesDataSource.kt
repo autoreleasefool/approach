@@ -26,6 +26,7 @@ class ApproachPreferencesDataSource @Inject constructor(
 				isOpponentMigrationComplete = it.isOpponentMigrationComplete,
 				isLegacyMigrationComplete = it.isLegacyMigrationComplete,
 				hasOpenedAccessoriesTab = it.hasOpenedAccessoriesTab,
+				isTenYearsAnnouncementDismissed = it.isTenYearsAnnouncementDismissed,
 				userAnalyticsId =
 				if (it.userAnalyticsId.isNullOrBlank()) null else UUID.fromString(it.userAnalyticsId),
 				analyticsOptIn = when (it.analyticsOptIn) {
@@ -88,6 +89,14 @@ class ApproachPreferencesDataSource @Inject constructor(
 		userPreferences.updateData {
 			it.copy {
 				this.hasOpenedAccessoriesTab = hasOpenedAccessoriesTab
+			}
+		}
+	}
+
+	suspend fun setTenYearsAnnouncementDismissed(isTenYearsAnnouncementDismissed: Boolean) {
+		userPreferences.updateData {
+			it.copy {
+				this.isTenYearsAnnouncementDismissed = isTenYearsAnnouncementDismissed
 			}
 		}
 	}

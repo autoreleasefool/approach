@@ -47,6 +47,10 @@ class OfflineFirstAchievementsRepository @Inject constructor(
 		return achievementDao.getLatestAchievement(startDate)
 	}
 
+	override suspend fun hasEarnedAchievement(achievement: EarnableAchievement): Boolean {
+		return achievementDao.hasEarnedAchievement(achievement.id.name)
+	}
+
 	override suspend fun insertEvent(event: ConsumableAchievementEvent) = withContext(ioDispatcher) {
 		eventLock.withLock {
 			val achievement = EarnableAchievement.fromEvent(event) ?: return@withLock
