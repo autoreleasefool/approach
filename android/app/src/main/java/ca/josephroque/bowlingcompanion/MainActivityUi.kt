@@ -7,6 +7,9 @@ sealed interface MainActivityUiState {
 	data class Success(val appState: ApproachAppUiState, val isLaunchComplete: Boolean) : MainActivityUiState
 }
 
+@Suppress("unused")
+sealed interface MainActivityUiAction
+
 internal fun MainActivityUiState.isLaunchComplete(): Boolean = when (this) {
 	MainActivityUiState.Loading -> false
 	is MainActivityUiState.Success -> this.isLaunchComplete

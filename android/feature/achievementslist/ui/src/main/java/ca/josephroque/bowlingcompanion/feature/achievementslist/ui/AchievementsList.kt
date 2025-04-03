@@ -27,14 +27,14 @@ fun AchievementsList(
 ) {
 	LazyVerticalGrid(
 		columns = GridCells.Adaptive(minSize = 128.dp),
-		modifier = modifier,
+		modifier = modifier.padding(horizontal = 16.dp),
 	) {
 		item(
 			span = { GridItemSpan(maxLineSpan) },
 		) {
 			Column(
-				modifier = Modifier.padding(16.dp),
 				verticalArrangement = Arrangement.spacedBy(4.dp),
+				modifier = Modifier.padding(bottom = 16.dp),
 			) {
 				Text(
 					text = stringResource(R.string.achievements_list_header_checkBack),

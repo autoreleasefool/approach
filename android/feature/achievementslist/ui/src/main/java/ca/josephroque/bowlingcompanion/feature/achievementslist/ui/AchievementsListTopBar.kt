@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 @Composable
 fun AchievementsListTopBar(
 	onAction: (AchievementsListTopBarUiAction) -> Unit,
-	scrollBehavior: TopAppBarScrollBehavior
+	scrollBehavior: TopAppBarScrollBehavior,
 ) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
@@ -25,6 +25,6 @@ fun AchievementsListTopBar(
 		},
 		navigationIcon = {
 			BackButton(onClick = { onAction(AchievementsListTopBarUiAction.BackClicked) })
-		}
+		},
 	)
 }

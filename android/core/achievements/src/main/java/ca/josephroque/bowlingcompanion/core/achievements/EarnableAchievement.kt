@@ -25,10 +25,9 @@ interface EarnableAchievement {
 			TenYearsAchievement,
 		)
 
-		fun fromTitle(title: String): EarnableAchievement? =
-			enumValueOfOrNull<EarnableAchievementID>(title)?.let {
-				fromId(it)
-			}
+		fun fromTitle(title: String): EarnableAchievement? = enumValueOfOrNull<EarnableAchievementID>(title)?.let {
+			fromId(it)
+		}
 
 		fun fromId(id: EarnableAchievementID): EarnableAchievement? {
 			return all.firstOrNull { it.id == id }

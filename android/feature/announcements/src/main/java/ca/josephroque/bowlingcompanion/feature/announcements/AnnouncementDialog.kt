@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 fun AnnouncementDialog(
 	onNavigateToAchievements: () -> Unit,
 	modifier: Modifier = Modifier,
-	viewModel: AnnouncementViewModel = hiltViewModel()
+	viewModel: AnnouncementViewModel = hiltViewModel(),
 ) {
 	val announcementDialogState by viewModel.uiState.collectAsStateWithLifecycle()
 

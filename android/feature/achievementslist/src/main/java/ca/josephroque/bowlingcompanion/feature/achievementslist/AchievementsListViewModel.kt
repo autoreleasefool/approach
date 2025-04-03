@@ -3,16 +3,15 @@ package ca.josephroque.bowlingcompanion.feature.achievementslist
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.AchievementsRepository
-import ca.josephroque.bowlingcompanion.core.model.AchievementID
 import ca.josephroque.bowlingcompanion.core.model.AchievementListItem
 import ca.josephroque.bowlingcompanion.feature.achievementslist.ui.AchievementsListTopBarUiAction
 import ca.josephroque.bowlingcompanion.feature.achievementslist.ui.AchievementsListUiAction
 import ca.josephroque.bowlingcompanion.feature.achievementslist.ui.AchievementsListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
 @HiltViewModel
 class AchievementsListViewModel @Inject constructor(
@@ -54,6 +53,6 @@ class AchievementsListViewModel @Inject constructor(
 	}
 
 	private fun showAchievementDetails(achievement: AchievementListItem) {
-		TODO("Show achievement details")
+		// TODO: Show achievement details
 	}
 }

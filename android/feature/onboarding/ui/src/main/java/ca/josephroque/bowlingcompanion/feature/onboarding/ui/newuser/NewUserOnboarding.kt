@@ -29,9 +29,9 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
 import ca.josephroque.bowlingcompanion.core.designsystem.components.BowlingPattern
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ReadableContent
+import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.components.Logbook
 
 @Composable
