@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.common.system
 import android.content.Context
 import android.os.Build
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.datetime.Instant
 import javax.inject.Inject
 
 class LiveSystemInfoService @Inject constructor(@ApplicationContext private val context: Context) :
@@ -17,4 +18,7 @@ class LiveSystemInfoService @Inject constructor(@ApplicationContext private val 
 			@Suppress("DEPRECATION")
 			context.packageManager.getPackageInfo(context.packageName, 0).versionCode.toString()
 		}
+
+	override val firstInstallTime: Instant
+		get() = Instant.fromEpochMilliseconds(context.packageManager.getPackageInfo(context.packageName, 0).firstInstallTime)
 }

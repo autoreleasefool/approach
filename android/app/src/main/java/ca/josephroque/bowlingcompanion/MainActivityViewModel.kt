@@ -30,7 +30,7 @@ class MainActivityViewModel @Inject constructor(
 	private val analyticsClient: AnalyticsClient,
 	private val gamesRepository: GamesRepository,
 	private val userDataRepository: UserDataRepository,
-	private var featureFlagsClient: FeatureFlagsClient,
+	private val featureFlagsClient: FeatureFlagsClient,
 ) : ViewModel() {
 	private val isLaunchComplete: MutableStateFlow<Boolean> = MutableStateFlow(false)
 

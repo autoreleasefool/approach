@@ -40,13 +40,11 @@ fun TenYearsAnnouncement(
 		Box {
 			BowlingPattern(
 				alpha = 0.3f,
-				modifier = Modifier
-					.matchParentSize()
-					.offset(y = (-12).dp)
+				modifier = Modifier.matchParentSize()
 			)
 
 			Column(
-				modifier = Modifier.padding(8.dp),
+				modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
 				verticalArrangement = Arrangement.spacedBy(8.dp),
 				horizontalAlignment = Alignment.CenterHorizontally,
 			) {

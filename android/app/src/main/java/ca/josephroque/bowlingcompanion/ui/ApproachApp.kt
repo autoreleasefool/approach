@@ -37,6 +37,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ApproachNavigationBarItem
+import ca.josephroque.bowlingcompanion.feature.achievementslist.navigation.navigateToAchievementsList
+import ca.josephroque.bowlingcompanion.feature.announcements.AnnouncementDialog
 import ca.josephroque.bowlingcompanion.navigation.ApproachNavHost
 import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
 
@@ -47,6 +49,13 @@ fun ApproachApp(
 	onTabChanged: (TopLevelDestination) -> Unit,
 	appState: ApproachAppState,
 ) {
+	AnnouncementDialog(
+		onNavigateToAchievements = {
+			appState.navigateToTopLevelDestination(TopLevelDestination.SETTINGS_OVERVIEW)
+			appState.navController.navigateToAchievementsList()
+	  },
+	)
+
 	ModalBottomSheetLayout(
 		sheetShape = RoundedCornerShapeWithOffset(
 			offset = Offset(0f, WindowInsets.statusBars.getTop(LocalDensity.current).toFloat()),

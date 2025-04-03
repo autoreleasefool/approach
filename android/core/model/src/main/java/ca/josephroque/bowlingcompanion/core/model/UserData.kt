@@ -9,6 +9,9 @@ data class UserData(
 	val isLegacyMigrationComplete: Boolean,
 	val hasOpenedAccessoriesTab: Boolean,
 
+	// Announcements
+	val isTenYearsAnnouncementDismissed: Boolean,
+
 	// Analytics
 	val userAnalyticsId: UUID?,
 	val analyticsOptIn: AnalyticsOptInStatus,

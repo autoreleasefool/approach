@@ -36,6 +36,10 @@ class OfflineFirstUserDataRepository @Inject constructor(
 		approachPreferencesDataSource.setHasOpenedAccessoriesTab(true)
 	}
 
+	override suspend fun didDismissTenYearsAnnouncement() {
+		approachPreferencesDataSource.setTenYearsAnnouncementDismissed(true)
+	}
+
 	override suspend fun setUserAnalyticsID(id: UUID) {
 		approachPreferencesDataSource.setUserAnalyticsID(id)
 	}

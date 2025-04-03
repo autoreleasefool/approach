@@ -19,6 +19,8 @@ interface UserDataRepository {
 	suspend fun didCompleteLegacyMigration()
 	suspend fun didOpenAccessoriesTab()
 
+	suspend fun didDismissTenYearsAnnouncement()
+
 	suspend fun setUserAnalyticsID(id: UUID)
 	suspend fun setAnalyticsOptInStatus(status: AnalyticsOptInStatus)
 
