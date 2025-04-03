@@ -26,7 +26,7 @@ struct AchievementsRepositoryTests {
 		@Test("Lists all achievements", .tags(.unit))
 		func listAllAchievements() async throws {
 			// Given a database with achievements
-			let achievement1 = Achievement.Database.mock(id: UUID(0), title: "Ten Years", earnedAt: Date(timeIntervalSince1970: 123))
+			let achievement1 = Achievement.Database.mock(id: UUID(0), title: "TenYears", earnedAt: Date(timeIntervalSince1970: 123))
 			let achievement2 = Achievement.Database.mock(id: UUID(1), title: "Iconista", earnedAt: Date(timeIntervalSince1970: 456))
 			let db = try initializeApproachDatabase(withAchievements: .custom([achievement1, achievement2]))
 
@@ -43,7 +43,7 @@ struct AchievementsRepositoryTests {
 			let fetched = try await iterator.next()
 
 			let expectedAchievements = [
-				Achievement.List(title: "Ten Years", firstEarnedAt: Date(timeIntervalSince1970: 123), count: 1),
+				Achievement.List(title: "TenYears", firstEarnedAt: Date(timeIntervalSince1970: 123), count: 1),
 				Achievement.List(title: "Iconista", firstEarnedAt: Date(timeIntervalSince1970: 456), count: 1),
 			]
 
@@ -54,9 +54,9 @@ struct AchievementsRepositoryTests {
 		@Test("Correctly counts achievements earned multiple times", .tags(.unit))
 		func correctlyCountsAchievementsEarnedMultipleTimes() async throws {
 			// Given a database with achievements
-			let achievement1 = Achievement.Database.mock(id: UUID(0), title: "Ten Years", earnedAt: Date(timeIntervalSince1970: 123))
-			let achievement2 = Achievement.Database.mock(id: UUID(1), title: "Ten Years", earnedAt: Date(timeIntervalSince1970: 456))
-			let achievement3 = Achievement.Database.mock(id: UUID(2), title: "Ten Years", earnedAt: Date(timeIntervalSince1970: 789))
+			let achievement1 = Achievement.Database.mock(id: UUID(0), title: "TenYears", earnedAt: Date(timeIntervalSince1970: 123))
+			let achievement2 = Achievement.Database.mock(id: UUID(1), title: "TenYears", earnedAt: Date(timeIntervalSince1970: 456))
+			let achievement3 = Achievement.Database.mock(id: UUID(2), title: "TenYears", earnedAt: Date(timeIntervalSince1970: 789))
 			let db = try initializeApproachDatabase(withAchievements: .custom([achievement1, achievement2, achievement3]))
 
 			// Listing the achievements
@@ -72,7 +72,7 @@ struct AchievementsRepositoryTests {
 			let fetched = try await iterator.next()
 
 			let expectedAchievements = [
-				Achievement.List(title: "Ten Years", firstEarnedAt: Date(timeIntervalSince1970: 123), count: 3),
+				Achievement.List(title: "TenYears", firstEarnedAt: Date(timeIntervalSince1970: 123), count: 3),
 			]
 
 			// Returns all the achievements
@@ -82,9 +82,9 @@ struct AchievementsRepositoryTests {
 		@Test("Returns correct firstEarnedDate for achievements earned multiple times", .tags(.unit))
 		func correctFirstEarnedDate_forAchievementsEarnedMultipleTimes() async throws {
 			// Given a database with achievements
-			let achievement1 = Achievement.Database.mock(id: UUID(0), title: "Ten Years", earnedAt: Date(timeIntervalSince1970: 456))
-			let achievement2 = Achievement.Database.mock(id: UUID(1), title: "Ten Years", earnedAt: Date(timeIntervalSince1970: 123))
-			let achievement3 = Achievement.Database.mock(id: UUID(2), title: "Ten Years", earnedAt: Date(timeIntervalSince1970: 789))
+			let achievement1 = Achievement.Database.mock(id: UUID(0), title: "TenYears", earnedAt: Date(timeIntervalSince1970: 456))
+			let achievement2 = Achievement.Database.mock(id: UUID(1), title: "TenYears", earnedAt: Date(timeIntervalSince1970: 123))
+			let achievement3 = Achievement.Database.mock(id: UUID(2), title: "TenYears", earnedAt: Date(timeIntervalSince1970: 789))
 			let db = try initializeApproachDatabase(withAchievements: .custom([achievement1, achievement2, achievement3]))
 
 			// Listing the achievements
@@ -100,7 +100,7 @@ struct AchievementsRepositoryTests {
 			let fetched = try await iterator.next()
 
 			let expectedAchievements = [
-				Achievement.List(title: "Ten Years", firstEarnedAt: Date(timeIntervalSince1970: 123), count: 3),
+				Achievement.List(title: "TenYears", firstEarnedAt: Date(timeIntervalSince1970: 123), count: 3),
 			]
 
 			// Returns all the achievements
@@ -143,8 +143,8 @@ struct AchievementsRepositoryTests {
 					$0[AchievementsRepository.self] = .liveValue
 					$0.date = .constant(Date(timeIntervalSince1970: 122))
 				} operation: {
-					let achievement1 = Achievement.Database.mock(id: UUID(0), title: "Ten Years", earnedAt: Date(timeIntervalSince1970: 123))
-					let achievement2 = Achievement.Database.mock(id: UUID(1), title: "Ten Years", earnedAt: Date(timeIntervalSince1970: 456))
+					let achievement1 = Achievement.Database.mock(id: UUID(0), title: "TenYears", earnedAt: Date(timeIntervalSince1970: 123))
+					let achievement2 = Achievement.Database.mock(id: UUID(1), title: "TenYears", earnedAt: Date(timeIntervalSince1970: 456))
 					let expectedAchievements = [Achievement.Summary(achievement1), Achievement.Summary(achievement2)]
 
 					try await confirmation(expectedCount: 2) { receivesAchievement in
@@ -177,8 +177,8 @@ struct AchievementsRepositoryTests {
 		@Test("Does not report existing achievements", .tags(.unit))
 		func doesNotReportExistingAchievements() async throws {
 			// Given a database with existing achievements
-			let achievement1 = Achievement.Database.mock(id: UUID(0), title: "Ten Years", earnedAt: Date(timeIntervalSince1970: 123))
-			let achievement2 = Achievement.Database.mock(id: UUID(1), title: "Ten Years", earnedAt: Date(timeIntervalSince1970: 456))
+			let achievement1 = Achievement.Database.mock(id: UUID(0), title: "TenYears", earnedAt: Date(timeIntervalSince1970: 123))
+			let achievement2 = Achievement.Database.mock(id: UUID(1), title: "TenYears", earnedAt: Date(timeIntervalSince1970: 456))
 			let expectedAchievements = [Achievement.Summary(achievement2)]
 
 			let db = try initializeApproachDatabase(withAchievements: .custom([achievement1]))

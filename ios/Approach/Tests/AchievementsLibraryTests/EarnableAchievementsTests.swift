@@ -42,11 +42,13 @@ struct EarnableAchievementsTests {
 			.filter { $0.isVisibleBeforeEarned }
 			.map { $0.title }
 
-		let expectedAchievements = [
+		let expectedAchievements: [EarnableAchievement.Type] = [
+			EarnableAchievements.TenYears.self,
 			EarnableAchievements.Iconista.self,
-		].map { $0.title }
+		]
+		let expectedAchievementTitles = expectedAchievements.map { $0.title }
 
-		#expect(visibleAchievements == expectedAchievements)
+		#expect(visibleAchievements == expectedAchievementTitles)
 	}
 
 	@Test("Achievements are not shown on earn", .tags(.unit))
