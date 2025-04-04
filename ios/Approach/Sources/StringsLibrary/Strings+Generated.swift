@@ -50,6 +50,10 @@ public enum Strings {
       }
     }
     public enum List {
+      /// Plural format key: "%#@earnedCount@"
+      public static func earnedCount(_ p1: Int) -> String {
+        return Strings.tr("Localizable", "achievements.list.earnedCount", p1, fallback: "Plural format key: \"%#@earnedCount@\"")
+      }
       /// Badges
       public static let title = Strings.tr("Localizable", "achievements.list.title", fallback: "Badges")
       public enum Header {
