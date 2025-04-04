@@ -1,6 +1,7 @@
 import AchievementsLibrary
 import AssetsLibrary
 import ModelsLibrary
+import StringsLibrary
 import SwiftUI
 
 struct AchievementListItem: View {
@@ -17,8 +18,13 @@ struct AchievementListItem: View {
 				.font(.headline)
 
 			if let firstEarnedAt = achievement.firstEarnedAt {
-				Text(firstEarnedAt.formatted(date: .numeric, time: .omitted))
-					.font(.caption)
+				VStack(spacing: .tinySpacing) {
+					Text(firstEarnedAt.formatted(date: .numeric, time: .omitted))
+						.font(.caption)
+					
+					Text(Strings.Achievements.List.earnedCount(achievement.count))
+						.font(.caption)
+				}
 			}
 		}
 		.opacity(achievement.firstEarnedAt == nil ? 0.5 : 1)

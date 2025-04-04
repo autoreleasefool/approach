@@ -100,5 +100,21 @@
 			<string>Add %d lanes</string>
 		</dict>
 	</dict>
+	<key>achievements.list.earnedCount</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@earnedCount@</string>
+		<key>earnedCount</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Earned %d time</string>
+			<key>other</key>
+			<string>Earned %d times</string>
+		</dict>
+	</dict>
 </dict>
 </plist>
