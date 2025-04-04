@@ -15,7 +15,7 @@ extension FeatureFlag {
 	public static let highestScorePossible = Self(name: "highestScorePossible", introduced: "2024-08-14", stage: .development)
 	public static let automaticBackups = Self(name: "automaticBackups", introduced: "2024-10-05", stage: .development)
 	public static let crossPlatformImports = Self(name: "crossPlatformImports", introduced: "2024-10-17", stage: .release)
-	public static let achievements = Self(name: "achievements", introduced: "2025-03-15", stage: .development)
+	public static let achievements = Self(name: "achievements", introduced: "2025-03-15", stage: .release)
 	// swiftlint:enable line_length
 
 	public static let allFlags: [Self] = [
