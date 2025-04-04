@@ -82,10 +82,8 @@ class OfflineFirstAchievementsRepository @Inject constructor(
 				}
 			}
 
+			achievementEventDao.insertEvent(newEvent.toCreateEntity())
 			achievementEventDao.consumeEvents(consumedEvents.map { it.id })
-			if (!consumedEvents.contains(newEvent)) {
-				achievementEventDao.insertEvent(newEvent.toCreateEntity())
-			}
 		}
 	}
 }
