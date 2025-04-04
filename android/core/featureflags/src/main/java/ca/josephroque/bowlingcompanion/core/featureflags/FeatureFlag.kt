@@ -21,7 +21,7 @@ enum class FeatureFlag(
 	override val rolloutStage: RolloutStage,
 	override val isOverridable: Boolean = true,
 ) : Feature {
-	ACHIEVEMENTS("Achievements", "2025-03-26", RolloutStage.DEVELOPMENT),
+	ACHIEVEMENTS("Achievements", "2025-03-26", RolloutStage.RELEASE),
 	DEVELOPER_MODE("DevelopmentMode", "2024-08-23", RolloutStage.DEVELOPMENT, isOverridable = false),
 	DATA_EXPORT("DataExport", "2023-10-12", RolloutStage.RELEASE),
 	DATA_IMPORT("DataImport", "2023-10-13", RolloutStage.RELEASE),
