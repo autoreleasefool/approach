@@ -13,7 +13,7 @@ android {
 }
 
 secrets {
-	defaultPropertiesFileName = "default.secrets.properties"
+	defaultPropertiesFileName = "secrets.default.properties"
 	propertiesFileName = "secrets.properties"
 }
 

@@ -5,6 +5,8 @@ plugins {
 	id("approach.android.application.compose")
 	id("approach.android.room")
 	id("approach.android.hilt")
+
+	id("io.sentry.android.gradle") version "5.3.0"
 	id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 	alias(libs.plugins.gradle.versions)
 	alias(libs.plugins.ktlint)
@@ -119,8 +121,13 @@ configurations.configureEach {
 }
 
 secrets {
-	defaultPropertiesFileName = "default.secrets.properties"
+	defaultPropertiesFileName = "secrets.default.properties"
 	propertiesFileName = "secrets.properties"
+}
+
+sentry {
+	includeProguardMapping.set(true)
+	autoUploadProguardMapping.set(true)
 }
 
 // FIXME: Move to Gradle Convention Plugin
