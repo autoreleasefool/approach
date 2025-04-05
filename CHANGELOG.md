@@ -8,10 +8,15 @@
 - Chore: Adjusted icon color and sizing
 ```
 
-## Android 4.4.2b339
+## Android 4.5.0b340
 
 ```
-- Fix: Stepper correctly increments and decrements
+- Feat: Achievements, and 10 Year Anniversary Announcement
+- Feat: High score possible can be determined for a game
+- Fix: Archived games no longer affect series
+- Fix: Archive list better displays games
+- Fix: Fixed
+- Fix: Reduced overall app size
 ```
 
 ---
@@ -251,6 +256,12 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.4.2b339
+
+```
+- Fix: Stepper correctly increments and decrements
+```
 
 ## Android 4.4.1b338
 
