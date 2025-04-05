@@ -21,7 +21,7 @@ struct AchievementListItem: View {
 				VStack(spacing: .tinySpacing) {
 					Text(firstEarnedAt.formatted(date: .numeric, time: .omitted))
 						.font(.caption)
-					
+
 					Text(Strings.Achievements.List.earnedCount(achievement.count))
 						.font(.caption)
 				}

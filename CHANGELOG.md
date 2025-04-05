@@ -15,7 +15,6 @@
 - Feat: High score possible can be determined for a game
 - Fix: Archived games no longer affect series
 - Fix: Archive list better displays games
-- Fix: Fixed
 - Fix: Reduced overall app size
 ```
 
