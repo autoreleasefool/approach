@@ -47,7 +47,8 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*,
 			.relativeToRootProject("compose-reports")
 			.let(reportsDestination::set)
 
-		stabilityConfigurationFile =
+		stabilityConfigurationFiles = listOf(
 			rootProject.layout.projectDirectory.file("compose_compiler_config.conf")
+		)
 	}
 }
