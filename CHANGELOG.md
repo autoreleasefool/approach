@@ -1,9 +1,11 @@
 # Most recent version
 
-## iOS 1.11.1b34
+## iOS 1.12.0b35
 
 ```
-- Fix: Upgrade GRDB to 7.3.0 to resolve DB issues.
+- Feat: Achievements, and 10 Year Anniversary Announcement
+- Chore: Migrated to Swift 6.1
+- Chore: Adjusted icon color and sizing
 ```
 
 ## Android 4.4.2b339
@@ -15,6 +17,12 @@
 ---
 
 # Legacy iOS Versions
+
+## iOS 1.11.1b34
+
+```
+- Fix: Upgrade GRDB to 7.3.0 to resolve DB issues.
+```
 
 ## iOS 1.11.0b33
 
