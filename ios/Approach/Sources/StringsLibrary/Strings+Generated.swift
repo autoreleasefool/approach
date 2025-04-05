@@ -1531,8 +1531,8 @@ public enum Strings {
       public static func appVersion(_ p1: Any, _ p2: Any) -> String {
         return Strings.tr("Localizable", "settings.appInfo.appVersion", String(describing: p1), String(describing: p2), fallback: "%@ (%@)")
       }
-      /// © 2022-2024, Joseph Roque
-      public static let copyright = Strings.tr("Localizable", "settings.appInfo.copyright", fallback: "© 2022-2024, Joseph Roque")
+      /// © 2022-2025, Joseph Roque
+      public static let copyright = Strings.tr("Localizable", "settings.appInfo.copyright", fallback: "© 2022-2025, Joseph Roque")
       /// App Info
       public static let title = Strings.tr("Localizable", "settings.appInfo.title", fallback: "App Info")
       /// Version
