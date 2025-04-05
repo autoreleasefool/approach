@@ -4,6 +4,10 @@
 
 ### API Keys
 
-Rename `Debug.sample.xcconfig` to `Debug.xcconfig` and `Release.sample.xcconfig` to `Release.xcconfig`. For the values, you can either leave them as `DISABLE` while developing, or get new API keys from the sources:
+Rename:
+
+- `Secrets.default.xcconfig` to `Secrets.xcconfig`
+
+For debugging, you can leave the values blank. To create a release build, you will need real values.
 
 - [TelemetryDeck](https://telemetrydeck.com/)
