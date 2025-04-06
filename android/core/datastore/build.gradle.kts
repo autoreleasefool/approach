@@ -5,6 +5,10 @@ plugins {
 }
 
 android {
+	defaultConfig {
+		consumerProguardFiles("consumer-proguard-rules.pro")
+	}
+
 	namespace = "ca.josephroque.bowlingcompanion.core.datastore"
 }
 
