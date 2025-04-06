@@ -8,6 +8,7 @@ Rename:
 
 - `secrets.default.properties` to `secrets.properties`
 - `sentry.default.properties` to `sentry.properties`
+- `keystore.default.properties` to `keystore.properties`
 
 For debugging, you can leave the values blank. To create a release build, you will need real values.
 

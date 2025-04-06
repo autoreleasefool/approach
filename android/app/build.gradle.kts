@@ -1,4 +1,6 @@
 import ca.josephroque.bowlingcompanion.ApproachBuildType
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
 	id("approach.android.application")
@@ -12,6 +14,11 @@ plugins {
 	alias(libs.plugins.ktlint)
 	id("com.spotify.ruler")
 }
+
+// Load keystore properties
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 android {
 	namespace = "ca.josephroque.bowlingcompanion"
@@ -34,6 +41,15 @@ android {
 		manifestPlaceholders["telemetryDeckAppId"] = ""
 	}
 
+	signingConfigs {
+		create("release") {
+			keyAlias = keystoreProperties["keyAlias"] as String
+			keyPassword = keystoreProperties["keyPassword"] as String
+			storeFile = file(keystoreProperties["storeFile"] as String)
+			storePassword = keystoreProperties["storePassword"] as String
+		}
+	}
+
 	buildTypes {
 		debug {
 			applicationIdSuffix = ApproachBuildType.DEBUG.applicationIdSuffix
@@ -43,6 +59,7 @@ android {
 			isShrinkResources = true
 			applicationIdSuffix = ApproachBuildType.RELEASE.applicationIdSuffix
 			proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+			signingConfig = signingConfigs.getByName("release")
 		}
 	}
 	compileOptions {

@@ -18,6 +18,11 @@ build/
 local.properties
 secrets.properties
 sentry.properties
+keystore.properties
+
+# Signing Configs
+*.jks
+*.keystore
 
 # Eclipse project files
 .classpath
