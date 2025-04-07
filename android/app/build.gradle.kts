@@ -45,6 +45,9 @@ android {
 
 	signingConfigs {
 		create("release") {
+			if (keystoreProperties.isEmpty) {
+				return@create
+			}
 			keyAlias = keystoreProperties["keyAlias"] as String
 			keyPassword = keystoreProperties["keyPassword"] as String
 			storeFile = file(keystoreProperties["storeFile"] as String)
