@@ -18,7 +18,9 @@ plugins {
 // Load keystore properties
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties = Properties()
-keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+if (keystorePropertiesFile.exists()) {
+	keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
 
 android {
 	namespace = "ca.josephroque.bowlingcompanion"
