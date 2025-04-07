@@ -8,14 +8,11 @@
 - Chore: Adjusted icon color and sizing
 ```
 
-## Android 4.5.0b340
+## Android 4.5.1b341
 
 ```
-- Feat: Achievements, and 10 Year Anniversary Announcement
-- Feat: High score possible can be determined for a game
-- Fix: Archived games no longer affect series
-- Fix: Archive list better displays games
-- Fix: Reduced overall app size
+Fix: De-obfuscated crash reports for Sentry
+Fix: Proguard no longer mangles datastore classes
 ```
 
 ---
@@ -255,6 +252,16 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.5.0b340
+
+```
+- Feat: Achievements, and 10 Year Anniversary Announcement
+- Feat: High score possible can be determined for a game
+- Fix: Archived games no longer affect series
+- Fix: Archive list better displays games
+- Fix: Reduced overall app size
+```
 
 ## Android 4.4.2b339
 
