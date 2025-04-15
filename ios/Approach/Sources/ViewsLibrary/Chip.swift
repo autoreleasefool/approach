@@ -36,6 +36,7 @@ public struct Chip: View {
 				.lineLimit(0)
 				.font(size.font)
 				.foregroundColor(style.foreground)
+				.minimumScaleFactor(0.5)
 
 			if let accessory {
 				Spacer()

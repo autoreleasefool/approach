@@ -21,3 +21,25 @@ struct ChipButton: View {
 		.buttonStyle(.borderless)
 	}
 }
+
+#Preview {
+	HStack {
+		ChipButton(
+			icon: .star,
+			title: "Star",
+			isOn: .constant(false)
+		)
+
+		ChipButton(
+			icon: .star,
+			title: "Star",
+			isOn: .constant(false)
+		)
+
+		ChipButton(
+			icon: .star,
+			title: "Star",
+			isOn: .constant(false)
+		)
+	}
+}

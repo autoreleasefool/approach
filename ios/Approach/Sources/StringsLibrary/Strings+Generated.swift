@@ -1712,6 +1712,20 @@ public enum Strings {
           /// Games
           public static let title = Strings.tr("Localizable", "sharing.game.details.games.title", fallback: "Games")
         }
+        public enum Layout {
+          /// Choose a better shaped layout for sharing on social media
+          public static let description = Strings.tr("Localizable", "sharing.game.details.layout.description", fallback: "Choose a better shaped layout for sharing on social media")
+          /// Horizontal
+          public static let horizontal = Strings.tr("Localizable", "sharing.game.details.layout.horizontal", fallback: "Horizontal")
+          /// Rectangular
+          public static let rectangular = Strings.tr("Localizable", "sharing.game.details.layout.rectangular", fallback: "Rectangular")
+          /// Layout
+          public static let title = Strings.tr("Localizable", "sharing.game.details.layout.title", fallback: "Layout")
+        }
+        public enum SelectedGame {
+          /// Game
+          public static let title = Strings.tr("Localizable", "sharing.game.details.selectedGame.title", fallback: "Game")
+        }
       }
     }
     public enum ScoreSheet {

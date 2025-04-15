@@ -775,6 +775,7 @@ let package = Package(
 		.target(
 			name: "SharingFeature",
 			dependencies: [
+				.product(name: "Algorithms", package: "swift-algorithms"),
 				"GamesRepositoryInterface",
 				"ScoreSheetLibrary",
 				"ScoresRepositoryInterface",

@@ -1,3 +1,4 @@
+import Algorithms
 import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
@@ -21,21 +22,26 @@ public struct GamesSharing: Reducer, Sendable {
 		public var series: Series.Shareable?
 		public var games: [Game.Shareable]?
 		public var scores: [Game.ID: ScoredGame] = [:]
+		public var selectedGame: Game.ID?
+		public var layout: Layout = .horizontal
 		public var isGameIncluded: IdentifiedArrayOf<GameWithInclude> = []
 		public var isShowingGameTitles: Bool = true
 		public var isShowingSeriesDetails: Bool = true
 		public var isShowingSeriesDate: Bool = true
 		public var isShowingBowlerName: Bool = false
 		public var isShowingLeagueName: Bool = false
-		public var style: ShareableGamesImage.Configuration.Style = .plain
+		public var style: ShareableGamesImage.Style = .plain
 
 		public var displayScale: CGFloat = .zero
 		public var preferredAppearance: Appearance = .dark
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		var configuration: ShareableGamesImage.Configuration? {
+		var horizontalConfiguration: HorizontalShareableGamesImage.Configuration? {
+			guard layout == .horizontal else { return nil }
+
 			guard let games, games.count == scores.count else { return nil }
+
 			return .init(
 				scores: games
 					.compactMap { scores[$0.id] }
@@ -47,6 +53,22 @@ public struct GamesSharing: Reducer, Sendable {
 				date: isShowingSeriesDate ? series?.date : nil,
 				total: isShowingSeriesDetails ? series?.total : nil,
 				style: style,
+				displayScale: displayScale,
+				colorScheme: preferredAppearance.colorScheme
+			)
+		}
+
+		var verticalConfiguration: VerticalShareableGameImage.Configuration? {
+			guard layout == .rectangular else { return nil }
+
+			guard let selectedGame, let game = scores[selectedGame] else { return nil }
+
+			return .init(
+				score: game,
+				style: style,
+				bowlerName: isShowingBowlerName ? series?.bowlerName : nil,
+				leagueName: isShowingLeagueName ? series?.leagueName : nil,
+				date: isShowingSeriesDate ? series?.date : nil,
 				displayScale: displayScale,
 				colorScheme: preferredAppearance.colorScheme
 			)
@@ -91,13 +113,21 @@ public struct GamesSharing: Reducer, Sendable {
 
 	public enum CancelID: Hashable, Sendable {
 		case scoreKeeper
-		case imageRenderer
+		case verticalImageRenderer
+		case horizontalImageRenderer
 	}
 
 	public struct GameWithInclude: Identifiable, Equatable {
 		public let id: Game.ID
 		public let ordinal: Int
 		public var isIncluded: Bool
+	}
+
+	public enum Layout: CaseIterable, Identifiable, Hashable, Sendable {
+		case horizontal
+		case rectangular
+
+		public var id: Self { self }
 	}
 
 	public init() {}
@@ -153,6 +183,7 @@ public struct GamesSharing: Reducer, Sendable {
 
 					case let .loadGamesResponse(.success(games)):
 						state.games = games
+						state.selectedGame = games.first?.id
 						state.isGameIncluded = games
 							.map { GameWithInclude(id: $0.id, ordinal: $0.index + 1, isIncluded: true) }
 							.eraseToIdentifiedArray()
@@ -193,16 +224,41 @@ public struct GamesSharing: Reducer, Sendable {
 				}
 			}
 		}
-		.onChange(of: \.configuration) { _, configuration in
+		.onChange(of: \.verticalConfiguration) { _, verticalConfiguration in
 			Reduce<State, Action> { _, _ in
 				.run { @MainActor send in
-					guard let configuration else {  return }
+					guard let verticalConfiguration else { return }
 					let imageRenderer = ImageRenderer(
-						content: ShareableGamesImage(configuration: configuration)
-							.frame(minWidth: 900)
-							.environment(\.colorScheme, configuration.colorScheme)
+						content: VerticalShareableGameImage(configuration: verticalConfiguration)
+							.frame(minWidth: 900, minHeight: 400)
+							.background(.red)
+							.environment(\.colorScheme, verticalConfiguration.colorScheme)
 					)
-					imageRenderer.scale = configuration.displayScale
+					imageRenderer.scale = verticalConfiguration.displayScale
+
+					guard let image = imageRenderer.uiImage else {
+						return
+					}
+
+					guard !Task.isCancelled else { return }
+
+					try? image.pngData()?.write(to: FileManager.default.temporaryDirectory.appendingPathComponent("image.png"))
+
+					send(.delegate(.imageRendered(image)))
+				}
+				.cancellable(id: CancelID.verticalImageRenderer, cancelInFlight: true)
+			}
+		}
+		.onChange(of: \.horizontalConfiguration) { _, horizontalConfiguration in
+			Reduce<State, Action> { _, _ in
+				.run { @MainActor send in
+					guard let horizontalConfiguration else {  return }
+					let imageRenderer = ImageRenderer(
+						content: HorizontalShareableGamesImage(configuration: horizontalConfiguration)
+							.frame(minWidth: 900)
+							.environment(\.colorScheme, horizontalConfiguration.colorScheme)
+					)
+					imageRenderer.scale = horizontalConfiguration.displayScale
 
 					guard let image = imageRenderer.uiImage else {
 						return
@@ -212,7 +268,7 @@ public struct GamesSharing: Reducer, Sendable {
 
 					send(.delegate(.imageRendered(image)))
 				}
-				.cancellable(id: CancelID.imageRenderer, cancelInFlight: true)
+				.cancellable(id: CancelID.horizontalImageRenderer, cancelInFlight: true)
 			}
 		}
 
@@ -259,33 +315,19 @@ public struct GamesSharingView: View {
 
 	private var detailsSection: some View {
 		Section {
+			let buttons: [Buttons] = switch store.layout {
+			case .horizontal: [.date, .summary, .league, .bowler]
+			case .rectangular: [.date, .league, .bowler]
+			}
+			let buttonRows: [[Buttons]] = buttons.chunks(ofCount: 2).map { Array($0) }
+
 			Grid(horizontalSpacing: .smallSpacing, verticalSpacing: .smallSpacing) {
-				GridRow {
-					ChipButton(
-						icon: .calendar,
-						title: Strings.Sharing.Game.Details.date,
-						isOn: $store.isShowingSeriesDate.animation(.easeInOut(duration: 0.2))
-					)
-
-					ChipButton(
-						icon: .listDash,
-						title: Strings.Sharing.Game.Details.scoreSummary,
-						isOn: $store.isShowingSeriesDetails.animation(.easeInOut(duration: 0.2))
-					)
-				}
-
-				GridRow {
-					ChipButton(
-						icon: .personFill,
-						title: Strings.Sharing.Game.Details.bowlerName,
-						isOn: $store.isShowingBowlerName.animation(.easeInOut(duration: 0.2))
-					)
-
-					ChipButton(
-						icon: .repeat,
-						title: Strings.Sharing.Game.Details.leagueName,
-						isOn: $store.isShowingLeagueName.animation(.easeInOut(duration: 0.2))
-					)
+				ForEach(buttonRows, id: \.first?.id) { row in
+					GridRow {
+						ForEach(row, id: \.id) { type in
+							button(for: type)
+						}
+					}
 				}
 			}
 		}
@@ -294,28 +336,122 @@ public struct GamesSharingView: View {
 		.listRowBackground(Color.clear)
 	}
 
+	// MARK: Buttons
+
+	enum Buttons: Identifiable, Hashable {
+		case date
+		case summary
+		case bowler
+		case league
+
+		var id: Self { self }
+	}
+
+	@ViewBuilder
+	private func button(for type: Buttons) -> some View {
+		switch type {
+		case .date: dateButton
+		case .summary: summaryButton
+		case .bowler: bowlerButton
+		case .league: leagueButton
+		}
+	}
+
+	private var dateButton: some View {
+		ChipButton(
+			icon: .calendar,
+			title: Strings.Sharing.Game.Details.date,
+			isOn: $store.isShowingSeriesDate.animation(.easeInOut(duration: 0.2))
+		)
+	}
+
+	private var summaryButton: some View {
+		ChipButton(
+			icon: .listDash,
+			title: Strings.Sharing.Game.Details.scoreSummary,
+			isOn: $store.isShowingSeriesDetails.animation(.easeInOut(duration: 0.2))
+		)
+	}
+
+	private var bowlerButton: some View {
+		ChipButton(
+			icon: .personFill,
+			title: Strings.Sharing.Game.Details.bowlerName,
+			isOn: $store.isShowingBowlerName.animation(.easeInOut(duration: 0.2))
+		)
+	}
+
+	private var leagueButton: some View {
+		ChipButton(
+			icon: .repeat,
+			title: Strings.Sharing.Game.Details.leagueName,
+			isOn: $store.isShowingLeagueName.animation(.easeInOut(duration: 0.2))
+		)
+	}
+
+	// MARK: Games
+
 	private var gamesSection: some View {
 		Section {
-			DisclosureGroup {
-				ForEach($store.isGameIncluded) { $isIncluded in
-					Toggle(
-						Strings.Game.titleWithOrdinal(isIncluded.ordinal),
-						isOn: $isIncluded.isIncluded
-					)
-				}
-			} label: {
-				Text(Strings.Sharing.Game.Details.Games.title)
+			switch store.layout {
+			case .horizontal:
+				gamesSelection
+			case .rectangular:
+				gamePicker
 			}
 		}
 	}
 
+	private var gamesSelection: some View {
+		DisclosureGroup {
+			ForEach($store.isGameIncluded) { $isIncluded in
+				Toggle(
+					Strings.Game.titleWithOrdinal(isIncluded.ordinal),
+					isOn: $isIncluded.isIncluded
+				)
+			}
+		} label: {
+			Text(Strings.Sharing.Game.Details.Games.title)
+		}
+	}
+
+	private var gamePicker: some View {
+		Picker(
+			Strings.Sharing.Game.Details.SelectedGame.title,
+			selection: $store.selectedGame
+		) {
+			ForEach(store.games ?? []) { game in
+				Text(Strings.Game.titleWithOrdinal(game.index + 1))
+					.tag(game.id)
+			}
+		}
+	}
+
+	// MARK: Appearance
+
 	private var appearanceSection: some View {
 		Section(Strings.Sharing.Game.Details.Appearance.title) {
+			VStack(alignment: .leading) {
+				Picker(
+					Strings.Sharing.Game.Details.Layout.title,
+					selection: $store.layout
+				) {
+					ForEach(GamesSharing.Layout.allCases) { layout in
+						Text(layout.title)
+							.tag(layout)
+					}
+				}
+
+				Text(Strings.Sharing.Game.Details.Layout.description)
+					.font(.caption)
+					.frame(maxWidth: .infinity, alignment: .leading)
+			}
+
 			Picker(
 				Strings.Sharing.Game.Details.ColorPalette.title,
 				selection: $store.style
 			) {
-				ForEach(ShareableGamesImage.Configuration.Style.allCases) { style in
+				ForEach(ShareableGamesImage.Style.allCases) { style in
 					Text(style.title)
 						.tag(style)
 				}
@@ -326,11 +462,31 @@ public struct GamesSharingView: View {
 	}
 }
 
-extension ShareableGamesImage.Configuration.Style {
+// MARK: - Strings
+
+extension ShareableGamesImage.Style {
 	var title: String {
 		switch self {
 		case .grayscale: Strings.Sharing.Game.Details.ColorPalette.grayscale
 		case .plain: Strings.Sharing.Game.Details.ColorPalette.plain
 		}
 	}
+}
+
+extension GamesSharing.Layout {
+	var title: String {
+		switch self {
+		case .horizontal: Strings.Sharing.Game.Details.Layout.horizontal
+		case .rectangular: Strings.Sharing.Game.Details.Layout.rectangular
+		}
+	}
+}
+
+// MARK: - Preview
+
+#Preview {
+	GamesSharingView(store: Store(
+		initialState: GamesSharing.State(seriesId: UUID()),
+		reducer: { GamesSharing() }
+	))
 }

@@ -534,6 +534,11 @@
 "sharing.game.details.scoreSummary" = "Summary";
 "sharing.game.details.bowlerName" = "Bowler";
 "sharing.game.details.leagueName" = "League";
+"sharing.game.details.layout.title" = "Layout";
+"sharing.game.details.layout.description" = "Choose a better shaped layout for sharing on social media";
+"sharing.game.details.layout.horizontal" = "Horizontal";
+"sharing.game.details.layout.rectangular" = "Rectangular";
+"sharing.game.details.selectedGame.title" = "Game";
 "sharing.common.colorScheme.title" = "Appearance";
 "sharing.common.colorScheme.light" = "Light";
 "sharing.common.colorScheme.dark" = "Dark";
