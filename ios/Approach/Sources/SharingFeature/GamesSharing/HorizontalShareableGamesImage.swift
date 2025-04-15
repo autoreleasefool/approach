@@ -94,17 +94,18 @@ public struct HorizontalShareableGamesImage: View {
 				}
 			}
 
-			tagline
+			tagline(baseScoreSheetConfiguration)
 		}
 		.background(baseScoreSheetConfiguration.background)
 		.environment(\.sizeCategory, .extraLarge)
 	}
 
-	private var tagline: some View {
+	private func tagline(_ configuration: ScoreSheet.Configuration) -> some View {
 		Text(Strings.Sharing.Common.Watermark.madeWithApproach)
-			.font(.system(size: 8))
+			.font(.caption)
 			.monospaced()
 			.padding(.smallSpacing)
+			.foregroundColor(configuration.foreground)
 			.frame(maxWidth: .infinity, alignment: .trailing)
 	}
 }
