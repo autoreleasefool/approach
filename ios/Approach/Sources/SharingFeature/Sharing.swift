@@ -241,8 +241,10 @@ public struct SharingView: View {
 		.navigationTitle(Strings.Sharing.title)
 		.navigationBarTitleDisplayMode(.inline)
 		.toolbar {
-			ToolbarItem(placement: .navigationBarLeading) {
-				Button(Strings.Action.done) { send(.didTapDoneButton) }
+			if store.preview?.preview == nil || !store.isPreviewingImage {
+				ToolbarItem(placement: .navigationBarLeading) {
+					Button(Strings.Action.done) { send(.didTapDoneButton) }
+				}
 			}
 		}
 		.onAppear { send(.onAppear) }
