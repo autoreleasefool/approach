@@ -45,48 +45,51 @@ public struct VerticalShareableGameImage: View {
 			Grid(alignment: .topTrailing, horizontalSpacing: 0, verticalSpacing: 0) {
 				rowViews(
 					forFrames: Array(configuration.score.frames[0...2]),
-					isTopRounded: true,
-					rollWidth: availableWidth / 3
-				)
-
-				Divider().frame(height: 2)
-
-				rowViews(
-					forFrames: Array(configuration.score.frames[3...5]),
-					isTopRounded: false,
-					rollWidth: availableWidth / 3
-				)
-
-				Divider().frame(height: 2)
-
-				rowViews(
-					forFrames: Array(configuration.score.frames[6...8]),
-					isTopRounded: false,
 					rollWidth: availableWidth / 3
 				)
 
 				Divider()
-					.frame(height: 2)
+					.frame(height: 3)
+					.background(scoreSheetConfiguration.border)
+
+				rowViews(
+					forFrames: Array(configuration.score.frames[3...5]),
+					rollWidth: availableWidth / 3
+				)
+
+				Divider()
+					.frame(height: 3)
+					.background(scoreSheetConfiguration.border)
+
+				rowViews(
+					forFrames: Array(configuration.score.frames[6...8]),
+					rollWidth: availableWidth / 3
+				)
+
+				Divider()
+					.frame(height: 3)
+					.background(scoreSheetConfiguration.border)
 					.measure(key: FrameRowSizeKey.self, to: $frameRowSize)
 
 				GridRow {
 					RailView(frame: configuration.score.frames[9])
 						.gridCellColumns(Frame.NUMBER_OF_ROLLS)
+						.measure(key: LastRailSizeKey.self, to: $lastRailSize)
 				}
-				.measure(key: LastRailSizeKey.self, to: $lastRailSize)
 
 				GridRow {
 					rollViews(forFrame: configuration.score.frames[9], width: availableWidth / 3)
+						.measure(key: LastRollSizeKey.self, to: $lastRollSize)
 				}
-				.measure(key: LastRollSizeKey.self, to: $lastRollSize)
 
 				GridRow {
 					FrameView(frame: configuration.score.frames[9])
 						.gridCellColumns(Frame.NUMBER_OF_ROLLS)
-						.roundCorners(bottomLeading: true)
 						.measure(key: LastFrameSizeKey.self, to: $lastFrameSize)
 				}
 			}
+			.background(scoreSheetConfiguration.background)
+			.roundCorners(topLeading: true, topTrailing: true, bottomLeading: true, bottomTrailing: true)
 			.fixedSize(horizontal: true, vertical: false)
 			.overlay(alignment: .bottomTrailing) {
 				FinalScoreView(score: configuration.score.score ?? 0, width: frameRowSize.width - lastFrameSize.width)
@@ -115,20 +118,12 @@ public struct VerticalShareableGameImage: View {
 	@ViewBuilder
 	private func rowViews(
 		forFrames frames: [ScoredFrame],
-		isTopRounded: Bool,
 		rollWidth: CGFloat
 	) -> some View {
 		GridRow {
 			ForEach(frames) { frame in
-				let isFirstFrame = frame.index == frames.first?.index
-				let isLastFrame = frame.index == frames.last?.index
-
 				RailView(frame: frame)
 					.gridCellColumns(Frame.NUMBER_OF_ROLLS)
-					.roundCorners(
-						topLeading: isTopRounded && isFirstFrame,
-						topTrailing: isTopRounded && isLastFrame,
-					)
 			}
 		}
 
@@ -148,7 +143,7 @@ public struct VerticalShareableGameImage: View {
 
 	private var tagline: some View {
 		Text(Strings.Sharing.Common.Watermark.madeWithApproach)
-			.font(.system(size: 8))
+			.font(.caption)
 			.monospaced()
 			.foregroundColor(configuration.labelForeground)
 			.padding(.smallSpacing)
@@ -262,7 +257,7 @@ extension ScoredFrame: Identifiable {
 
 // MARK: - Preview
 
-#Preview(traits: .sizeThatFitsLayout) {
+#Preview {
 	VerticalShareableGameImage(configuration: VerticalShareableGameImage.Configuration(
 		score: ScoredGame(
 			id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
@@ -286,4 +281,5 @@ extension ScoredFrame: Identifiable {
 		displayScale: 1.0,
 		colorScheme: .dark,
 	))
+	.frame(minWidth: 900)
 }

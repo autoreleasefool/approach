@@ -90,7 +90,7 @@ public struct ShareableSeriesImage: View {
 
 	private var tagline: some View {
 		Text(Strings.Sharing.Common.Watermark.madeWithApproach)
-			.font(.system(size: 8))
+			.font(.caption2)
 			.monospaced()
 	}
 
