@@ -103,7 +103,7 @@ public struct VerticalShareableGameImage: View {
 		.padding(.standardSpacing)
 		.background(configuration.imageBackground)
 		.environment(\.scoreSheetConfiguration, scoreSheetConfiguration)
-		.environment(\.sizeCategory, .extraExtraLarge)
+		.environment(\.sizeCategory, .accessibilityLarge)
 	}
 
 	private func rollViews(forFrame frame: ScoredFrame, width: CGFloat) -> some View {

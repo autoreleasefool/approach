@@ -57,6 +57,7 @@ public struct ShareableSeriesImage: View {
 		.overlay(seriesDetails, alignment: .bottomLeading)
 		.background(chart)
 		.background(colorScheme == .dark ? .black : .white)
+		.environment(\.sizeCategory, .extraLarge)
 	}
 
 	private var seriesDetails: some View {

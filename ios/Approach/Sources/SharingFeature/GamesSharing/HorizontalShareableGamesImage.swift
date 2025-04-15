@@ -97,6 +97,7 @@ public struct HorizontalShareableGamesImage: View {
 			tagline
 		}
 		.background(baseScoreSheetConfiguration.background)
+		.environment(\.sizeCategory, .extraLarge)
 	}
 
 	private var tagline: some View {
