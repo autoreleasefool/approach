@@ -30,16 +30,16 @@ public struct Sharing: Reducer, Sendable {
 			switch source {
 			case let .series(seriesId):
 				seriesSharing = .init(seriesId: seriesId)
-				gamesSharing = .init(seriesId: seriesId)
+				gamesSharing = .init(seriesId: seriesId, gameId: nil)
 				tabs = [.series, .games]
 				selectedTab = .series
 			case let .statistic(source, statistic):
 				statisticsSharing = .init(source: source, statistic: statistic)
 				tabs = [.statistic]
 				selectedTab = .statistic
-			case let .games(seriesId):
+			case let .games(seriesId, gameId):
 				seriesSharing = .init(seriesId: seriesId)
-				gamesSharing = .init(seriesId: seriesId)
+				gamesSharing = .init(seriesId: seriesId, gameId: gameId)
 				tabs = [.series, .games]
 				selectedTab = .games
 			}
@@ -72,7 +72,7 @@ public struct Sharing: Reducer, Sendable {
 	}
 
 	public enum Source: Equatable {
-		case games(Series.ID)
+		case games(Series.ID, Game.ID)
 		case series(Series.ID)
 		case statistic(StatisticsWidget.Source?, statistic: String?)
 	}

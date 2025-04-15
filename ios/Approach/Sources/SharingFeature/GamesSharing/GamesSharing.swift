@@ -74,8 +74,10 @@ public struct GamesSharing: Reducer, Sendable {
 			)
 		}
 
-		public init(seriesId: Series.ID) {
+		public init(seriesId: Series.ID, gameId: Game.ID?) {
 			self.seriesId = seriesId
+			self.selectedGame = gameId
+			self.layout = gameId == nil ? .horizontal : .rectangular
 		}
 	}
 
@@ -184,6 +186,7 @@ public struct GamesSharing: Reducer, Sendable {
 					case let .loadGamesResponse(.success(games)):
 						state.games = games
 						state.selectedGame = games.first?.id
+						state.layout = games.count > 1 ? .horizontal : .rectangular
 						state.isGameIncluded = games
 							.map { GameWithInclude(id: $0.id, ordinal: $0.index + 1, isIncluded: true) }
 							.eraseToIdentifiedArray()
@@ -486,7 +489,7 @@ extension GamesSharing.Layout {
 
 #Preview {
 	GamesSharingView(store: Store(
-		initialState: GamesSharing.State(seriesId: UUID()),
+		initialState: GamesSharing.State(seriesId: UUID(), gameId: UUID()),
 		reducer: { GamesSharing() }
 	))
 }
