@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.BowlerSortOrder
+import ca.josephroque.bowlingcompanion.core.model.GameInProgress
 import ca.josephroque.bowlingcompanion.core.model.TeamListItem
 import ca.josephroque.bowlingcompanion.core.model.TeamSortOrder
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
@@ -61,7 +62,7 @@ class OverviewViewModel @Inject constructor(
 	private val featureFlagsClient: FeatureFlagsClient,
 ) : ApproachViewModel<OverviewScreenEvent>() {
 	private val selectedTab = MutableStateFlow(OverviewTab.BOWLERS)
-	private val isGameInProgressSnackBarVisible: MutableStateFlow<Boolean> = MutableStateFlow(false)
+	private val gameInProgressToResume = MutableStateFlow<GameInProgress?>(null)
 
 	private val teamToDelete: MutableStateFlow<TeamListItem?> = MutableStateFlow(null)
 	private val isTeamSortOrderMenuExpanded = MutableStateFlow(false)
@@ -183,12 +184,12 @@ class OverviewViewModel @Inject constructor(
 	val uiState: StateFlow<OverviewScreenUiState> = combine(
 		overviewUiState,
 		topBarUiState,
-		isGameInProgressSnackBarVisible,
-	) { overview, topBar, isGameInProgressSnackBarVisible ->
+		gameInProgressToResume,
+	) { overview, topBar, gameInProgressToResume ->
 		OverviewScreenUiState.Loaded(
 			overview = overview,
 			topBar = topBar,
-			isGameInProgressSnackBarVisible = isGameInProgressSnackBarVisible,
+			isGameInProgressSnackBarVisible = gameInProgressToResume != null,
 		)
 	}.stateIn(
 		scope = viewModelScope,
@@ -316,8 +317,7 @@ class OverviewViewModel @Inject constructor(
 
 	private fun checkForGameInProgress() {
 		viewModelScope.launch {
-			val isGameInProgress = gamesRepository.isGameInProgress()
-			isGameInProgressSnackBarVisible.value = isGameInProgress
+			gameInProgressToResume.value = gamesRepository.getGameInProgress()
 		}
 	}
 
@@ -356,7 +356,7 @@ class OverviewViewModel @Inject constructor(
 	}
 
 	private fun dismissGameInProgressSnackBar() {
-		isGameInProgressSnackBarVisible.value = false
+		gameInProgressToResume.value = null
 		viewModelScope.launch {
 			userDataRepository.dismissLatestGameInEditor()
 		}
@@ -364,7 +364,7 @@ class OverviewViewModel @Inject constructor(
 
 	private fun resumeGameInProgress() {
 		viewModelScope.launch {
-			val game = gamesRepository.getGameInProgress() ?: return@launch
+			val game = gameInProgressToResume.value ?: return@launch
 			sendEvent(OverviewScreenEvent.ResumeGame(game.teamSeriesId, game.seriesIds, game.currentGameId))
 		}
 	}
