@@ -27,7 +27,6 @@ interface GamesRepository {
 	fun getGamesFromSeries(series: List<SeriesID>, gameIndex: Int): Flow<List<GameListItemBySeries>>
 	fun getShareableGame(gameId: GameID): Flow<ShareableGame>
 
-	suspend fun isGameInProgress(): Boolean
 	suspend fun getGameInProgress(): GameInProgress?
 
 	suspend fun setGameScoringMethod(gameId: GameID, scoringMethod: GameScoringMethod, score: Int)

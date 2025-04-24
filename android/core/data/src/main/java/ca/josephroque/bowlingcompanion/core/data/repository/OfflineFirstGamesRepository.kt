@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GearDao
+import ca.josephroque.bowlingcompanion.core.database.dao.SeriesDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.model.GameGearCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.GameLaneCrossRef
@@ -40,6 +41,7 @@ import kotlinx.datetime.minus
 class OfflineFirstGamesRepository @Inject constructor(
 	private val bowlerDao: BowlerDao,
 	private val gameDao: GameDao,
+	private val seriesDao: SeriesDao,
 	private val gearDao: GearDao,
 	private val framesRepository: FramesRepository,
 	private val userDataRepository: UserDataRepository,
@@ -69,8 +71,6 @@ class OfflineFirstGamesRepository @Inject constructor(
 	override fun getShareableGame(gameId: GameID): Flow<ShareableGame> = gameDao.getShareableGame(gameId)
 		.map { it.asModel() }
 
-	override suspend fun isGameInProgress(): Boolean = getGameInProgress() != null
-
 	override suspend fun getGameInProgress(): GameInProgress? {
 		val userData = userDataRepository.userData.first()
 		val latestGameIdStr = userData.latestGameInEditor
@@ -82,8 +82,15 @@ class OfflineFirstGamesRepository @Inject constructor(
 		val latestSeriesIds = latestSeriesIdsStr.map { SeriesID.fromString(it) }
 		val latestTeamSeriesId = latestTeamSeriesIdStr?.let { TeamSeriesID.fromString(it) }
 
-		val frames = framesRepository.getFrames(latestGameId).first()
-		if (frames.isGameFinished()) return null
+		val lastSeriesId = latestSeriesIds.lastOrNull() ?: return null
+		val lastSeriesGameId = gameDao.getGameIds(lastSeriesId).first().lastOrNull() ?: return null
+
+		// If user was on the last game, check if it was finished, and skip returning if it was
+		if (latestGameId == lastSeriesGameId) {
+			val frames = framesRepository.getFrames(lastSeriesGameId).first()
+			if (frames.isGameFinished()) return null
+		}
+
 		return GameInProgress(
 			teamSeriesId = latestTeamSeriesId,
 			seriesIds = latestSeriesIds,

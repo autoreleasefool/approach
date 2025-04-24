@@ -29,6 +29,7 @@ import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.Frame
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameID
@@ -804,8 +805,24 @@ class GamesEditorViewModel @Inject constructor(
 	private fun dismissLatestGameInEditor() {
 		// TODO: Do we need to use @ApplicationScope here
 		scope.launch {
-			userDataRepository.dismissLatestGameInEditor()
+			if (isFinishedRecording()) {
+				userDataRepository.dismissLatestGameInEditor()
+			}
 		}
+	}
+
+	private suspend fun isFinishedRecording(): Boolean {
+		val gameDetails = gameDetailsState.value
+		val isLastGame = gameDetails.seriesGameIds.lastOrNull() == gameDetails.gameId
+		val isLastSeries = series.value.lastOrNull() == currentSeriesId()
+
+		if (!isLastGame || !isLastSeries) return false
+
+		val gameScore = gamesEditorState.value.scoreSheet.game?.frames ?: return false
+		val lastFrame = gameScore.lastOrNull() ?: return false
+
+		val isGameFinished = lastFrame.rolls.size == Frame.NUMBER_OF_ROLLS && lastFrame.display != null
+		return isGameFinished
 	}
 
 	private fun dismissDragHint() {
