@@ -820,6 +820,9 @@
 "announcement.tenYears.description.fromBowlingCompanionToApproach" = "From Bowling Companion to Approach, it's been 10 years since its launch.";
 "announcement.tenYears.description.hopeYouveEnjoyed" = "I hope you've enjoyed using Approach as much as I've enjoyed building it.";
 "announcement.tenYears.action.claimBadge" = "Claim Badge";
+"announcement.whatsNew.title" = "What's New in\nApproach";
+"announcement.whatsNew.v1.shareToSocialMedia.title" = "Share to Social Media";
+"announcement.whatsNew.v1.shareToSocialMedia.description" = "A new option to share games with a narrower layout so they fit better on the screen when sharing to social media.";
 
 // MARK: - Errors
 
@@ -875,6 +878,7 @@
 "action.share" = "Share";
 "action.reorder" = "Reorder";
 "action.finish" = "Finish";
+"action.continue" = "Continue";
 
 // MARK: - Other
 

@@ -73,6 +73,8 @@ public enum Strings {
     public static let archive = Strings.tr("Localizable", "action.archive", fallback: "Archive")
     /// Cancel
     public static let cancel = Strings.tr("Localizable", "action.cancel", fallback: "Cancel")
+    /// Continue
+    public static let `continue` = Strings.tr("Localizable", "action.continue", fallback: "Continue")
     /// Delete
     public static let delete = Strings.tr("Localizable", "action.delete", fallback: "Delete")
     /// Deselect all
@@ -265,6 +267,19 @@ public enum Strings {
         public static let fromBowlingCompanionToApproach = Strings.tr("Localizable", "announcement.tenYears.description.fromBowlingCompanionToApproach", fallback: "From Bowling Companion to Approach, it's been 10 years since its launch.")
         /// I hope you've enjoyed using Approach as much as I've enjoyed building it.
         public static let hopeYouveEnjoyed = Strings.tr("Localizable", "announcement.tenYears.description.hopeYouveEnjoyed", fallback: "I hope you've enjoyed using Approach as much as I've enjoyed building it.")
+      }
+    }
+    public enum WhatsNew {
+      /// What's New in
+      /// Approach
+      public static let title = Strings.tr("Localizable", "announcement.whatsNew.title", fallback: "What's New in\nApproach")
+      public enum V1 {
+        public enum ShareToSocialMedia {
+          /// A new option to share games with a narrower layout so they fit better on the screen when sharing to social media.
+          public static let description = Strings.tr("Localizable", "announcement.whatsNew.v1.shareToSocialMedia.description", fallback: "A new option to share games with a narrower layout so they fit better on the screen when sharing to social media.")
+          /// Share to Social Media
+          public static let title = Strings.tr("Localizable", "announcement.whatsNew.v1.shareToSocialMedia.title", fallback: "Share to Social Media")
+        }
       }
     }
   }
