@@ -811,10 +811,6 @@
 
 // MARK: - Announcements
 
-"announcement.halloween2024.title" = "Happy Halloween!";
-"announcement.halloween2024.message" = "Have a spooky time this Halloween season. Show your spirit by setting one of three new App Icons!";
-"announcement.halloween2024.openSettings" = "Open Settings";
-
 "announcement.startingBackups.title" = "Automatic Backups";
 "announcement.startingBackups.description.automaticSyncing.title" = "Approach now supports iCloud";
 "announcement.startingBackups.description.automaticSyncing.description" = "Your data will automatically begin syncing in case of data or device loss.";

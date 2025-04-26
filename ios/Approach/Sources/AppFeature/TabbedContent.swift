@@ -111,11 +111,6 @@ public struct TabbedContent: Reducer, Sendable {
 					return .none
 
 				// swiftlint:disable:next line_length
-				case .bowlersList(.internal(.announcements(.internal(.destination(.presented(.halloween2024(.view(.didTapOpenIconSettingsButton)))))))):
-					state.selectedTab = .settings
-					return state.settings.showAppIconList().map { .internal(.settings($0)) }
-
-				// swiftlint:disable:next line_length
 				case .bowlersList(.internal(.announcements(.internal(.destination(.presented(.tenYearAnniversary(.view(.didTapClaimButton)))))))):
 					state.selectedTab = .settings
 					return state.settings.showAchievementsList().map { .internal(.settings($0)) }

@@ -235,14 +235,6 @@ public enum Strings {
     }
   }
   public enum Announcement {
-    public enum Halloween2024 {
-      /// Have a spooky time this Halloween season. Show your spirit by setting one of three new App Icons!
-      public static let message = Strings.tr("Localizable", "announcement.halloween2024.message", fallback: "Have a spooky time this Halloween season. Show your spirit by setting one of three new App Icons!")
-      /// Open Settings
-      public static let openSettings = Strings.tr("Localizable", "announcement.halloween2024.openSettings", fallback: "Open Settings")
-      /// Happy Halloween!
-      public static let title = Strings.tr("Localizable", "announcement.halloween2024.title", fallback: "Happy Halloween!")
-    }
     public enum StartingBackups {
       /// Automatic Backups
       public static let title = Strings.tr("Localizable", "announcement.startingBackups.title", fallback: "Automatic Backups")
