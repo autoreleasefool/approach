@@ -6,6 +6,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -16,6 +17,6 @@ fun ShareButton(onClick: () -> Unit) {
 			.fillMaxWidth()
 			.padding(horizontal = 16.dp),
 	) {
-		Text("Share")
+		Text(stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_share))
 	}
 }

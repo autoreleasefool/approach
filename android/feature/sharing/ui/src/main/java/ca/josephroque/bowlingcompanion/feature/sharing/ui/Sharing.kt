@@ -52,8 +52,6 @@ fun Sharing(state: SharingUiState, onAction: (SharingUiAction) -> Unit, modifier
 				.clip(RoundedCornerShape(16.dp)),
 		)
 
-		rememberCaptureController()
-
 		ShareButton {
 			val capture = captureController.captureAsync()
 			onAction(SharingUiAction.ShareButtonClicked(capture))
