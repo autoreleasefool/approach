@@ -21,7 +21,7 @@ import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingAppearance
 
 @Composable
-fun ShareableGamesImage(
+fun HorizontalShareableGamesImage(
 	games: List<ShareableGame>,
 	configuration: GamesSharingConfigurationUiState,
 	modifier: Modifier = Modifier,
@@ -57,11 +57,11 @@ private class AppearancePreviewParameterProvider : PreviewParameterProvider<Shar
 
 @Preview
 @Composable
-private fun ShareableGamesImagePreview(
+private fun HorizontalShareableGamesImagePreview(
 	@PreviewParameter(AppearancePreviewParameterProvider::class) appearance: SharingAppearance,
 ) {
 	Surface {
-		ShareableGamesImage(
+		HorizontalShareableGamesImage(
 			games = emptyList(),
 			configuration = GamesSharingConfigurationUiState(
 				appearance = appearance,
