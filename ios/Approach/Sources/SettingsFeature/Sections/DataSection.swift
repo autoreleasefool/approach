@@ -5,7 +5,6 @@ import StringsLibrary
 import SwiftUI
 
 struct DataSection: View {
-	let isImportButtonVisible: Bool
 	let isBackupsButtonVisible: Bool
 	let daysSinceLastBackup: DaysSince
 	let daysSinceLastExport: DaysSince
@@ -15,10 +14,8 @@ struct DataSection: View {
 
 	var body: some View {
 		Section(Strings.Settings.Data.title) {
-			if isImportButtonVisible {
-				Button(Strings.Settings.Data.import, action: onTapImportButton)
-					.buttonStyle(.navigation)
-			}
+			Button(Strings.Settings.Data.import, action: onTapImportButton)
+				.buttonStyle(.navigation)
 
 			Button(action: onTapExportButton) {
 				HStack {
@@ -50,7 +47,6 @@ struct DataSection: View {
 #Preview {
 	List {
 		DataSection(
-			isImportButtonVisible: true,
 			isBackupsButtonVisible: true,
 			daysSinceLastBackup: .days(15),
 			daysSinceLastExport: .never,

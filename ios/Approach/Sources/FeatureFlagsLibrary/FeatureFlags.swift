@@ -9,7 +9,6 @@ extension FeatureFlag {
 	public static let alleyAndGearAverages = Self(name: "alleyAndGearAverages", introduced: "2023-09-12", stage: .development)
 	public static let proSubscription = Self(name: "proSubscription", introduced: "2023-08-08", stage: .development)
 	public static let purchases = Self(name: "purchase", introduced: "2023-09-15", stage: .disabled)
-	public static let dataImport = Self(name: "dataImport", introduced: "2023-09-17", stage: .release)
 	public static let photoAvatars = Self(name: "photoAvatars", introduced: "2024-07-05", stage: .development)
 	public static let bowlerDetails = Self(name: "bowlerDetails", introduced: "2024-07-05", stage: .development)
 	public static let highestScorePossible = Self(name: "highestScorePossible", introduced: "2024-08-14", stage: .development)
@@ -24,7 +23,6 @@ extension FeatureFlag {
 		.automaticBackups,
 		.bowlerDetails,
 		.crossPlatformImports,
-		.dataImport,
 		.developerOptions,
 		.highestScorePossible,
 		.opponentDetails,

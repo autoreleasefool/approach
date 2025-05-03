@@ -44,7 +44,6 @@ public struct Settings: Reducer, Sendable {
 		public let appName: String
 		public let appVersion: String
 
-		public let isImportEnabled: Bool
 		public let isAutomaticBackupsEnabled: Bool
 		public let isDeveloperOptionsEnabled: Bool
 		public let isAchievementsEnabled: Bool
@@ -55,7 +54,6 @@ public struct Settings: Reducer, Sendable {
 		public init() {
 			@Dependency(\.featureFlags) var featureFlags
 			self.isShowingDeveloperOptions = featureFlags.isFlagEnabled(.developerOptions)
-			self.isImportEnabled = featureFlags.isFlagEnabled(.dataImport)
 			self.isAutomaticBackupsEnabled = featureFlags.isFlagEnabled(.automaticBackups)
 			self.isDeveloperOptionsEnabled = featureFlags.isFlagEnabled(.developerOptions)
 			self.isAchievementsEnabled = featureFlags.isFlagEnabled(.achievements)

@@ -43,7 +43,6 @@ public struct SettingsView: View {
 			}
 
 			DataSection(
-				isImportButtonVisible: store.isImportEnabled,
 				isBackupsButtonVisible: store.isAutomaticBackupsEnabled,
 				daysSinceLastBackup: store.daysSinceLastBackup,
 				daysSinceLastExport: store.daysSinceLastExport,
