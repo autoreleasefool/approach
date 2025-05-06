@@ -27,7 +27,6 @@
 		CA59011D2A05AD81000261C9 /* PreferenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CA59011C2A05AD81000261C9 /* PreferenceService */; };
 		CA5952BB2A1FF51D0002494C /* StatisticsRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA5952BA2A1FF51D0002494C /* StatisticsRepository */; };
 		CA626E272A821846002BCC13 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA626E262A821846002BCC13 /* StoreKit.framework */; };
-		CA626E292A821B9A002BCC13 /* ProductsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA626E282A821B9A002BCC13 /* ProductsService */; };
 		CA626E2B2A836881002BCC13 /* Configuration.storekit in Resources */ = {isa = PBXBuildFile; fileRef = CA626E2A2A836881002BCC13 /* Configuration.storekit */; };
 		CA626E2F2A842032002BCC13 /* TipsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA626E2E2A842032002BCC13 /* TipsService */; };
 		CA632F5829BD26E200272ADB /* GameEditorPreviewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA632F5729BD26E200272ADB /* GameEditorPreviewApp.swift */; };
@@ -134,7 +133,6 @@
 				CA439E5429E3796A00B09020 /* SeriesRepository in Frameworks */,
 				CA28CC972CD066EF00731AB1 /* CodableService in Frameworks */,
 				CA8847382A587D1D001AA48F /* AppIconService in Frameworks */,
-				CA626E292A821B9A002BCC13 /* ProductsService in Frameworks */,
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
 				CA2B78212AABC9EC0044487E /* ScoresRepository in Frameworks */,
 				CA439E5229E32A9900B09020 /* LeaguesRepository in Frameworks */,
@@ -370,7 +368,6 @@
 				CA9C5D7C2A8C032100E484E2 /* LoggingService */,
 				CAA668BD2A8F29A800DF3E75 /* EmailService */,
 				CA2B78202AABC9EC0044487E /* ScoresRepository */,
-				CA626E282A821B9A002BCC13 /* ProductsService */,
 				CAC458A22AB838C500898C16 /* ImportExportService */,
 				CA4A66172B09F37E00DCD52B /* QuickLaunchRepository */,
 				CA30F8E12B2670A100A80543 /* LaunchService */,
@@ -413,7 +410,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1620;
+				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					CA632F5429BD26E200272ADB = {
 						CreatedOnToolsVersion = 14.2;
@@ -716,10 +713,6 @@
 		CA5952BA2A1FF51D0002494C /* StatisticsRepository */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = StatisticsRepository;
-		};
-		CA626E282A821B9A002BCC13 /* ProductsService */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ProductsService;
 		};
 		CA626E2E2A842032002BCC13 /* TipsService */ = {
 			isa = XCSwiftPackageProductDependency;

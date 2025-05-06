@@ -37,7 +37,6 @@ let package = Package(
 		.library(name: "OnboardingFeature", targets: ["OnboardingFeature"]),
 		.library(name: "OpponentDetailsFeature", targets: ["OpponentDetailsFeature"]),
 		.library(name: "OpponentsListFeature", targets: ["OpponentsListFeature"]),
-		.library(name: "PaywallFeature", targets: ["PaywallFeature"]),
 		.library(name: "SeriesEditorFeature", targets: ["SeriesEditorFeature"]),
 		.library(name: "SeriesListFeature", targets: ["SeriesListFeature"]),
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
@@ -112,8 +111,6 @@ let package = Package(
 		.library(name: "NotificationsServiceInterface", targets: ["NotificationsServiceInterface"]),
 		.library(name: "PreferenceService", targets: ["PreferenceService"]),
 		.library(name: "PreferenceServiceInterface", targets: ["PreferenceServiceInterface"]),
-		.library(name: "ProductsService", targets: ["ProductsService"]),
-		.library(name: "ProductsServiceInterface", targets: ["ProductsServiceInterface"]),
 		.library(name: "RecentlyUsedService", targets: ["RecentlyUsedService"]),
 		.library(name: "RecentlyUsedServiceInterface", targets: ["RecentlyUsedServiceInterface"]),
 		.library(name: "TipsService", targets: ["TipsService"]),
@@ -135,7 +132,6 @@ let package = Package(
 		.library(name: "ModelsLibrary", targets: ["ModelsLibrary"]),
 		.library(name: "ModelsViewsLibrary", targets: ["ModelsViewsLibrary"]),
 		.library(name: "PickableModelsLibrary", targets: ["PickableModelsLibrary"]),
-		.library(name: "ProductsLibrary", targets: ["ProductsLibrary"]),
 		.library(name: "ReorderingLibrary", targets: ["ReorderingLibrary"]),
 		.library(name: "RepositoryLibrary", targets: ["RepositoryLibrary"]),
 		.library(name: "ResourceListLibrary", targets: ["ResourceListLibrary"]),
@@ -697,22 +693,6 @@ let package = Package(
 			]
 		),
 		.target(
-			name: "PaywallFeature",
-			dependencies: [
-				"ErrorsFeature",
-				"ProductsServiceInterface",
-			]
-		),
-		.testTarget(
-			name: "PaywallFeatureTests",
-			dependencies: [
-				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"PaywallFeature",
-				"TestUtilitiesLibrary",
-			]
-		),
-		.target(
 			name: "SeriesEditorFeature",
 			dependencies: [
 				"AlleysRepositoryInterface",
@@ -760,7 +740,6 @@ let package = Package(
 				"FeatureFlagsListFeature",
 				"ImportExportFeature",
 				"OpponentsListFeature",
-				"ProductsServiceInterface",
 			]
 		),
 		.testTarget(
@@ -1573,7 +1552,6 @@ let package = Package(
 				"FeatureFlagsLibrary",
 				"LaunchServiceInterface",
 				"PreferenceServiceInterface",
-				"ProductsServiceInterface",
 			]
 		),
 		.target(
@@ -1653,30 +1631,6 @@ let package = Package(
 				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"PreferenceService",
-				"TestUtilitiesLibrary",
-			]
-		),
-		.target(
-			name: "ProductsService",
-			dependencies: [
-				.product(name: "BundlePackageServiceInterface", package: "swift-utilities"),
-				"ConstantsLibrary",
-				"ProductsServiceInterface",
-			]
-		),
-		.target(
-			name: "ProductsServiceInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				"ProductsLibrary",
-			]
-		),
-		.testTarget(
-			name: "ProductsServiceTests",
-			dependencies: [
-				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"ProductsService",
 				"TestUtilitiesLibrary",
 			]
 		),
@@ -1900,10 +1854,6 @@ let package = Package(
 				"PickableModelsLibrary",
 				"TestUtilitiesLibrary",
 			]
-		),
-		.target(
-			name: "ProductsLibrary",
-			dependencies: []
 		),
 		.target(
 			name: "ReorderingLibrary",

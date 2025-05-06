@@ -138,10 +138,6 @@ repositories = [ "Bowlers" ]
 libraries = [ "Views" ]
 dependencies = [ "ExtensionsPackageLibrary", "SwiftUIExtensionsPackageLibrary" ]
 
-[features.Paywall]
-features = [ "Errors" ]
-services = [ "Products" ]
-
 [features.SeriesEditor]
 features = [ "Form" ]
 repositories = [ "Alleys", "Series" ]
@@ -153,7 +149,7 @@ libraries = [ "SortOrder" ]
 
 [features.Settings]
 features = [ "Achievements", "ArchiveList", "AutomaticBackups", "FeatureFlagsList", "ImportExport", "OpponentsList" ]
-services = [ "AppIcon", "DatabaseMocking", "Products" ]
+services = [ "AppIcon", "DatabaseMocking" ]
 dependencies = [ "BundlePackageServiceInterface" ]
 
 [features.Sharing]
@@ -311,7 +307,7 @@ dependencies = [ "DependenciesMacros" ]
 processed = [ "Resources" ]
 
 [services.Launch]
-services = [ "Analytics", "Preference", "Products" ]
+services = [ "Analytics", "Preference" ]
 libraries = [ "FeatureFlags" ]
 dependencies = [ "AppInfoPackageServiceInterface", "StoreReviewPackageServiceInterface", "UserDefaultsPackageServiceInterface" ]
 
@@ -323,12 +319,6 @@ dependencies = [ "AppInfoPackageServiceInterface", "StoreReviewPackageServiceInt
 dependencies = [ "UserDefaultsPackageServiceInterface" ]
 [services.Preference.interface]
 dependencies = [ "DependenciesMacros"]
-
-[services.Products]
-libraries = [ "Constants" ]
-dependencies = [ "BundlePackageServiceInterface" ]
-[services.Products.interface]
-libraries = [ "Products" ]
 
 [services.RecentlyUsed]
 services = [ "Codable" ]
@@ -404,9 +394,6 @@ libraries = [ "Assets", "Models", "Strings" ]
 
 [libraries.PickableModels]
 libraries = [ "Models", "ResourcePicker" ]
-
-[libraries.Products]
-skip_tests = true
 
 [libraries.Reordering]
 libraries = [ "FeatureAction" ]

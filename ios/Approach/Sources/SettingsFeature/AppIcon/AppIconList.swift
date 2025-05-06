@@ -6,7 +6,6 @@ import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsLibrary
-import ProductsServiceInterface
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsPackageLibrary
@@ -19,17 +18,6 @@ public struct AppIconList: Reducer, Sendable {
 		public var isLoadingAppIcon = true
 		public var currentAppIcon: AppIcon?
 		@Presents var alert: AlertState<Action.Alert>?
-
-		public let isPurchasesEnabled: Bool
-		public var isProEnabled: Bool
-
-		init() {
-			@Dependency(\.featureFlags) var featureFlags
-			self.isPurchasesEnabled = featureFlags.isFlagEnabled(.purchases)
-
-			@Dependency(ProductsService.self) var products
-			self.isProEnabled = products.peekIsAvailable(.proSubscription)
-		}
 	}
 
 	public enum Action: FeatureAction, ViewAction {
@@ -179,7 +167,7 @@ public struct AppIconListView: View {
 			ForEach(AppIcon.Category.allCases) { category in
 				Section(String(describing: category)) {
 					ForEach(category.matchingIcons) { icon in
-						if (icon.isProRequired && !store.isPurchasesEnabled) || !store.availableAppIcons.contains(icon) {
+						if !store.availableAppIcons.contains(icon) {
 							EmptyView()
 						} else {
 							Button { send(.didTapIcon(icon)) } label: {
