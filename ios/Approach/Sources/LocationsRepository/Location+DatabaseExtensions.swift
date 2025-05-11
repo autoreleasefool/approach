@@ -7,7 +7,7 @@ extension Location.Summary: PersistableRecord {}
 
 extension Location.Edit: PersistableRecord, FetchableRecord {
 	public static let databaseTableName = Location.Database.databaseTableName
-	typealias Columns = Location.Database.Columns
+	public typealias Columns = Location.Database.Columns
 
 	public func encode(to container: inout PersistenceContainer) throws {
 		container[Columns.id] = id

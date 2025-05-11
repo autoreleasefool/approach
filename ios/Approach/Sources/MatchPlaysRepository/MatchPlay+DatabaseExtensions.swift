@@ -7,7 +7,7 @@ import ModelsLibrary
 
 extension MatchPlay.Edit: PersistableRecord, FetchableRecord {
 	public static let databaseTableName = MatchPlay.Database.databaseTableName
-	typealias Columns = MatchPlay.Database.Columns
+	public typealias Columns = MatchPlay.Database.Columns
 
 	public func encode(to container: inout PersistenceContainer) throws {
 		container[Columns.gameId] = gameId

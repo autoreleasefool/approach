@@ -6,7 +6,7 @@ import ModelsLibrary
 
 extension Alley.Edit: PersistableRecord, FetchableRecord {
 	public static let databaseTableName = Alley.Database.databaseTableName
-	typealias Columns = Alley.Database.Columns
+	public typealias Columns = Alley.Database.Columns
 
 	public func encode(to container: inout PersistenceContainer) throws {
 		container[Columns.id] = id

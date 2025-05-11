@@ -8,7 +8,7 @@ import SeriesRepositoryInterface
 
 extension Series.Edit: FetchableRecord, PersistableRecord {
 	public static let databaseTableName = Series.Database.databaseTableName
-	typealias Columns = Series.Database.Columns
+	public typealias Columns = Series.Database.Columns
 
 	public func encode(to container: inout PersistenceContainer) throws {
 		container[Columns.leagueId] = leagueId
@@ -25,7 +25,7 @@ extension Series.Edit: FetchableRecord, PersistableRecord {
 
 extension Series.Create: PersistableRecord {
 	public static let databaseTableName = Series.Database.databaseTableName
-	typealias Columns = Series.Database.Columns
+	public typealias Columns = Series.Database.Columns
 
 	public func encode(to container: inout PersistenceContainer) throws {
 		container[Columns.leagueId] = leagueId

@@ -7,7 +7,7 @@ import ModelsLibrary
 
 extension League.Edit: FetchableRecord, PersistableRecord {
 	public static let databaseTableName = League.Database.databaseTableName
-	typealias Columns = League.Database.Columns
+	public typealias Columns = League.Database.Columns
 
 	public func encode(to container: inout PersistenceContainer) throws {
 		container[Columns.id] = id
@@ -23,7 +23,7 @@ extension League.Edit: FetchableRecord, PersistableRecord {
 
 extension League.Create: PersistableRecord {
 	public static let databaseTableName = League.Database.databaseTableName
-	typealias Columns = League.Database.Columns
+	public typealias Columns = League.Database.Columns
 
 	public func encode(to container: inout PersistenceContainer) throws {
 		container[Columns.bowlerId] = bowlerId
