@@ -116,7 +116,7 @@ extension BowlersRepository: DependencyKey {
 				@Dependency(DatabaseService.self) var database
 
 				return try await database.reader().read {
-					let seriesAlias = TableAlias()
+					let seriesAlias = TableAlias<Series.Database>()
 
 					// FIXME: filter out games that have leagues/series/games with excludeFromStatistics
 					let allMatches = Bowler.Database.matchesAsOpponent
@@ -137,7 +137,7 @@ extension BowlersRepository: DependencyKey {
 							MatchPlay.Database.Columns.result
 						))
 						.joining(required: Game.Database.series.aliased(seriesAlias))
-						.order(seriesAlias[Series.Database.Columns.date.desc])
+						.order { _ in seriesAlias.date.desc }
 						.forKey("matchesAgainst")
 
 					let gamesPlayed = allMatches

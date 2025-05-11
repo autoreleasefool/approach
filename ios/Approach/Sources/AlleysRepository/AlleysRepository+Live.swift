@@ -84,7 +84,7 @@ extension AlleysRepository: DependencyKey {
 			edit: { id in
 				@Dependency(DatabaseService.self) var database
 
-				let lanesAlias = TableAlias(name: "lanes")
+				let lanesAlias = TableAlias<Lane.Database>(name: "lanes")
 				return try await database.reader().read {
 					try Alley.Database
 						.filter(Alley.Database.Columns.id == id)

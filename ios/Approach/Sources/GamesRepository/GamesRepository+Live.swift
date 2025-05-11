@@ -129,7 +129,7 @@ extension GamesRepository: DependencyKey {
 				@Dependency(DatabaseService.self) var database
 
 				return database.reader().observe {
-					let seriesAlias = TableAlias()
+					let seriesAlias = TableAlias<Series.Database>()
 					return try Game.Database
 						.all()
 						.isNotArchived()
@@ -139,7 +139,7 @@ extension GamesRepository: DependencyKey {
 								.select(MatchPlay.Database.Columns.opponentScore, MatchPlay.Database.Columns.result)
 						)
 						.joining(required: Game.Database.series.aliased(seriesAlias))
-						.order(seriesAlias[Series.Database.Columns.date.desc])
+						.order { _ in seriesAlias.date.desc }
 						.asRequest(of: Game.ListMatch.self)
 						.fetchAll($0)
 				}
