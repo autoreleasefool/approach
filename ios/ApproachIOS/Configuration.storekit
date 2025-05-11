@@ -1,15 +1,134 @@
 {
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
   "identifier" : "0E3E835B",
   "nonRenewingSubscriptions" : [
 
   ],
   "products" : [
-
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "6745503143",
+      "localizations" : [
+        {
+          "description" : "A fantastic tip to support development",
+          "displayName" : "Fantastic Tip",
+          "locale" : "en_CA"
+        }
+      ],
+      "productID" : "tip_fantastic",
+      "referenceName" : "Fantastic Tip",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "3.99",
+      "familyShareable" : false,
+      "internalID" : "6745502803",
+      "localizations" : [
+        {
+          "description" : "A generous tip to support development",
+          "displayName" : "Generous Tip",
+          "locale" : "en_CA"
+        }
+      ],
+      "productID" : "tip_generous",
+      "referenceName" : "Generous Tip",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "6745502837",
+      "localizations" : [
+        {
+          "description" : "A kind tip to support development",
+          "displayName" : "Kind Tip",
+          "locale" : "en_CA"
+        }
+      ],
+      "productID" : "tip_kind",
+      "referenceName" : "Kind Tip",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "24.99",
+      "familyShareable" : false,
+      "internalID" : "6745503077",
+      "localizations" : [
+        {
+          "description" : "An outstanding tip to support development",
+          "displayName" : "Outstanding Tip",
+          "locale" : "en_CA"
+        }
+      ],
+      "productID" : "tip_outstanding",
+      "referenceName" : "Outstanding Tip",
+      "type" : "Consumable"
+    }
   ],
   "settings" : {
     "_applicationInternalID" : "6453685981",
     "_developerTeamID" : "3UBRXR267C",
-    "_lastSynchronizedDate" : 713255045.61805403
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 768207643.31683695,
+    "_locale" : "en_CA",
+    "_storefront" : "CAN",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
   },
   "subscriptionGroups" : [
     {
@@ -26,12 +145,12 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "19.99",
+          "displayPrice" : "24.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "6459227258",
           "introductoryOffer" : {
-            "internalID" : "1C6EF6BB",
+            "internalID" : "A16945C5",
             "numberOfPeriods" : 1,
             "paymentMode" : "free",
             "subscriptionPeriod" : "P2W"
@@ -47,7 +166,10 @@
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Annual, $19.99, 2-weeks free",
           "subscriptionGroupID" : "21371148",
-          "type" : "RecurringSubscription"
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
         },
         {
           "adHocOffers" : [
@@ -56,12 +178,12 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "1.99",
+          "displayPrice" : "2.99",
           "familyShareable" : false,
           "groupNumber" : 2,
           "internalID" : "6459355618",
           "introductoryOffer" : {
-            "internalID" : "46ABF54F",
+            "internalID" : "450D638F",
             "numberOfPeriods" : 1,
             "paymentMode" : "free",
             "subscriptionPeriod" : "P2W"
@@ -77,13 +199,16 @@
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Monthly, $2.99, 2-weeks free",
           "subscriptionGroupID" : "21371148",
-          "type" : "RecurringSubscription"
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
         }
       ]
     }
   ],
   "version" : {
-    "major" : 2,
+    "major" : 4,
     "minor" : 0
   }
 }
