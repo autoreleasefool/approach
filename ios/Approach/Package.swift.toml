@@ -483,7 +483,7 @@ GRDB = { url = "https://github.com/groue/GRDB.swift.git", from = "7.4.1" }
 IdentifiedCollections = { url = "https://github.com/pointfreeco/swift-identified-collections.git", from = "1.1.1" }
 Sentry = { url = "https://github.com/getsentry/sentry-cocoa.git", from = "8.50.1" }
 SFSafeSymbols = { url = "https://github.com/SFSafeSymbols/SFSafeSymbols.git", from = "6.2.0" }
-Sharing = { url = "https://github.com/pointfreeco/swift-sharing.git", from = "2.4.0" }
+Sharing = { url = "https://github.com/pointfreeco/swift-sharing.git", from = "2.5.2" }
 SnapshotTesting = { url = "https://github.com/pointfreeco/swift-snapshot-testing.git", from = "1.18.3" }
 SwiftUtilities = { url = "https://github.com/autoreleasefool/swift-utilities.git", from = "3.0.0" }
 ToastUI = { url = "https://github.com/quanshousio/ToastUI.git", from = "4.0.0" }
