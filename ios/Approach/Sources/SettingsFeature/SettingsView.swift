@@ -31,9 +31,11 @@ public struct SettingsView: View {
 				)
 			}
 
-			OpponentsSection(onTapOpponentsButton: { send(.didTapOpponents) })
-
-			StatisticsSection(onTapStatisticsButton: { send(.didTapStatistics) })
+			ContentSection(
+				onTapOpponentsButton: { send(.didTapOpponents) },
+				onTapStatisticsButton: { send(.didTapStatistics)
+				}
+			)
 
 			if store.isAchievementsEnabled {
 				AchievementsSection(
@@ -51,14 +53,14 @@ public struct SettingsView: View {
 				onTapBackupsButton: { send(.didTapBackupsButton) }
 			)
 
+			ArchiveSection(onTapArchiveButton: { send(.didTapArchive) })
+
 			if !store.isLoadingAppIcon {
 				AppIconSection(
 					appIconImage: store.appIconImage,
 					onTapAppIconButton: { send(.didTapAppIcon) }
 				)
 			}
-
-			ArchiveSection(onTapArchiveButton: { send(.didTapArchive) })
 
 			HelpSection(
 				isForceCrashButtonVisible: store.isDeveloperOptionsEnabled,
@@ -174,5 +176,16 @@ extension Settings.State {
 		} else {
 			return AppIcon.primary.image ?? UIImage()
 		}
+	}
+}
+
+#Preview {
+	NavigationStack {
+		SettingsView(
+			store: Store(
+				initialState: Settings.State(),
+				reducer: { Settings() }
+			)
+		)
 	}
 }
