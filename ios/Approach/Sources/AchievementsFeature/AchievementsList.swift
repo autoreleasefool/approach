@@ -88,9 +88,6 @@ public struct AchievementsList: Reducer, Sendable {
 					}
 
 				case .didTapAchievement:
-					// guard let _ = state.achievements[id: id] else { return .none }
-					// TODO: Show the AchievementDetails
-					// state.details = .init(achievement: achievement)
 					return .none
 				}
 

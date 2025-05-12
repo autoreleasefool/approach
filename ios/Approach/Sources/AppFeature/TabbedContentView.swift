@@ -20,7 +20,6 @@ public struct TabbedContentView: View {
 	}
 
 	public var body: some View {
-		// FIXME: create sidebar for ipad size devices
 		TabView(selection: $store.selectedTab) {
 			NavigationStack {
 				BowlersListView(

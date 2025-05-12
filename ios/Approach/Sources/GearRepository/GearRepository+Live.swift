@@ -112,7 +112,6 @@ extension GearRepository: DependencyKey {
 				@Dependency(DatabaseService.self) var database
 
 				try await database.writer().write {
-					// FIXME: Rather than deleting all associations, should only add new/remove old
 					try BowlerPreferredGear.Database
 						.filter(BowlerPreferredGear.Database.Columns.bowlerId == bowler)
 						.deleteAll($0)

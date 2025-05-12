@@ -226,7 +226,6 @@ extension GamesRepository: DependencyKey {
 				try await database.writer().write {
 					try game.update($0)
 
-					// FIXME: Rather than deleting all associations, should only add new/remove old
 					try GameGear.Database
 						.filter(GameGear.Database.Columns.gameId == game.id)
 						.deleteAll($0)
@@ -235,7 +234,6 @@ extension GamesRepository: DependencyKey {
 						try gameGear.insert($0)
 					}
 
-					// FIXME: Rather than deleting all associations, should only add new/remove old
 					try GameLane.Database
 						.filter(GameLane.Database.Columns.gameId == game.id)
 						.deleteAll($0)

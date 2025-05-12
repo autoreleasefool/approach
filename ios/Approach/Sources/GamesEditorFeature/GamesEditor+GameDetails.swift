@@ -121,7 +121,6 @@ extension GamesEditor {
 }
 
 extension GamesEditor.State {
-	// FIXME: Should not be generating indices from array of game ids, indices should be loaded
 	var currentBowlerGames: IdentifiedArrayOf<Game.Indexed> {
 		.init(
 			uniqueElements: bowlerGameIds[currentBowlerId]?
