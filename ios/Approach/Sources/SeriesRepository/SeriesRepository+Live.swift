@@ -16,7 +16,7 @@ extension SeriesRepository: DependencyKey {
 					var request = Series.Database
 						.all()
 						.isNotArchived()
-						.bowled(inLeague: league)
+						.filter { $0.leagueId == league }
 						.annotated(
 							with: Series.Database.games
 								.isNotArchived()
@@ -59,7 +59,7 @@ extension SeriesRepository: DependencyKey {
 						.all()
 						.isNotArchived()
 						.orderByDate()
-						.bowled(inLeague: league)
+						.filter { $0.leagueId == league }
 						.asRequest(of: Series.Summary.self)
 						.fetchAll($0)
 				}
@@ -72,7 +72,7 @@ extension SeriesRepository: DependencyKey {
 						.all()
 						.isNotArchived()
 						.orderByDate()
-						.bowled(inLeague: league)
+						.filter { $0.leagueId == league }
 						.filter(Series.Database.Columns.preBowl == Series.PreBowl.preBowl)
 						.filter(Series.Database.Columns.appliedDate == nil)
 						.asRequest(of: Series.Summary.self)
@@ -95,9 +95,9 @@ extension SeriesRepository: DependencyKey {
 				return try await database.reader().read {
 					try Series.Database
 						.all()
+						.filter { $0.leagueId == league }
 						.isNotArchived()
 						.orderByDate()
-						.bowled(inLeague: league)
 						.asRequest(of: Series.GameHost.self)
 						.fetchOneGuaranteed($0)
 				}

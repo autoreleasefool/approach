@@ -63,11 +63,6 @@ extension DerivableRequest<Series.Database> {
 		order(sql: "\(Series.Database.Columns.coalescedDate) DESC")
 	}
 
-	public func bowled(inLeague: League.ID) -> Self {
-		let league = Series.Database.Columns.leagueId
-		return filter(league == inLeague)
-	}
-
 	public func isIncludedInStatistics() -> Self {
 		let excludeFromStatistics = Series.Database.Columns.excludeFromStatistics
 		return self

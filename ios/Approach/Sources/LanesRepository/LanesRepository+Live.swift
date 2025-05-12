@@ -14,7 +14,7 @@ extension LanesRepository: DependencyKey {
 				return database.reader().observe {
 					try Lane.Database
 						.all()
-						.filter(byAlley: alley)
+						.filter { alley == nil || $0.alleyId == alley }
 						.orderByLabel()
 						.asRequest(of: Lane.Summary.self)
 						.fetchAll($0)
@@ -26,8 +26,8 @@ extension LanesRepository: DependencyKey {
 				return try await database.reader().read {
 					try Lane.Database
 						.all()
+						.filter { $0.alleyId == alley }
 						.orderByLabel()
-						.filter(byAlley: alley)
 						.asRequest(of: Lane.Edit.self)
 						.fetchAll($0)
 				}

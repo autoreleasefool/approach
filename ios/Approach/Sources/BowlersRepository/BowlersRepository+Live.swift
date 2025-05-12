@@ -28,9 +28,9 @@ extension BowlersRepository: DependencyKey {
 
 					return try Bowler.Database
 						.all()
-						.filter(byKind: .playable)
+						.filter { $0.kind == Bowler.Kind.playable }
 						.isNotArchived()
-						.orderByName()
+						.order { $0.name.collating(.localizedCaseInsensitiveCompare) }
 						.annotated(with: averageScore)
 						.asRequest(of: Bowler.List.self)
 						.fetchAll($0)
@@ -50,9 +50,9 @@ extension BowlersRepository: DependencyKey {
 				let bowlers = database.reader().observe {
 					try Bowler.Database
 						.all()
-						.filter(byKind: kind)
+						.filter { kind == nil || $0.kind == kind }
 						.isNotArchived()
-						.orderByName()
+						.order { $0.name.collating(.localizedCaseInsensitiveCompare) }
 						.asRequest(of: Bowler.Summary.self)
 						.fetchAll($0)
 				}
@@ -87,7 +87,7 @@ extension BowlersRepository: DependencyKey {
 					try Bowler.Database
 						.all()
 						.isNotArchived()
-						.orderByName()
+						.order { $0.name.collating(.localizedCaseInsensitiveCompare) }
 						.asRequest(of: Bowler.Opponent.self)
 						.fetchAll($0)
 				}

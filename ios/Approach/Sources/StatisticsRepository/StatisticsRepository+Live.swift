@@ -203,8 +203,9 @@ extension StatisticsRepository: DependencyKey {
 
 				return try await database.reader().read {
 					let bowlers = try Bowler.Database
+						.all()
 						.limit(2)
-						.filter(byKind: .playable)
+						.filter { $0.kind == Bowler.Kind.playable }
 						.asRequest(of: Bowler.Summary.self)
 						.fetchAll($0)
 
@@ -378,7 +379,7 @@ extension StatisticsRepository: DependencyKey {
 				return try await database.reader().read {
 					let bowlers = try Bowler.Database
 						.limit(2)
-						.filter(byKind: .playable)
+						.filter { $0.kind == Bowler.Kind.playable }
 						.asRequest(of: Bowler.Summary.self)
 						.fetchAll($0)
 

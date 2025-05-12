@@ -17,10 +17,10 @@ extension LeaguesRepository: DependencyKey {
 		) -> QueryInterfaceRequest<League.Database> {
 			League.Database
 				.all()
-				.bowled(byBowler: bowledBy)
-				.filter(byRecurrence: withRecurrence)
+				.filter { $0.bowlerId == bowledBy }
+				.filter { withRecurrence == nil || $0.recurrence == withRecurrence }
 				.isNotArchived()
-				.orderByName()
+				.order { $0.name.collating(.localizedCaseInsensitiveCompare) }
 		}
 
 		return Self(

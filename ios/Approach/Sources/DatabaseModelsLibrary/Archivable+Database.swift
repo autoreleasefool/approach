@@ -2,18 +2,17 @@ import GRDB
 import ModelsLibrary
 
 extension DerivableRequest where RowDecoder: Archivable {
+	static var archivedOn: Column { Column("archivedOn") }
+
 	public func isArchived() -> Self {
-		let archivedOn = Column("archivedOn")
-		return filter(archivedOn != nil)
+		filter(Self.archivedOn != nil)
 	}
 
 	public func isNotArchived() -> Self {
-		let archivedOn = Column("archivedOn")
-		return filter(archivedOn == nil)
+		filter(Self.archivedOn == nil)
 	}
 
 	public func orderByArchivedDate() -> Self {
-		let archivedOn = Column("archivedOn")
-		return order(archivedOn.desc)
+		order(Self.archivedOn.desc)
 	}
 }

@@ -25,7 +25,7 @@ extension AlleysRepository: DependencyKey {
 
 					return try Alley.Database
 						.all()
-						.orderByName()
+						.order { $0.name.collating(.localizedCaseInsensitiveCompare) }
 						.filter(material, pinFall, mechanism, pinBase)
 						.including(optional: Alley.Database.location)
 						.annotated(with: averageScore)
@@ -47,7 +47,7 @@ extension AlleysRepository: DependencyKey {
 				let alleys = database.reader().observe {
 					try Alley.Database
 						.all()
-						.orderByName()
+						.order { $0.name.collating(.localizedCaseInsensitiveCompare) }
 						.including(optional: Alley.Database.location)
 						.asRequest(of: Alley.Summary.self)
 						.fetchAll($0)
@@ -62,7 +62,7 @@ extension AlleysRepository: DependencyKey {
 				let alleys = database.reader().observe {
 					try Alley.Database
 						.all()
-						.orderByName()
+						.order { $0.name.collating(.localizedCaseInsensitiveCompare) }
 						.including(optional: Alley.Database.location)
 						.asRequest(of: Alley.Summary.self)
 						.fetchAll($0)

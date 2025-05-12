@@ -26,8 +26,8 @@ extension StatisticsWidgetsRepository: DependencyKey {
 				return database.reader().observe {
 					try StatisticsWidget.Database
 						.all()
-						.orderByPriority()
 						.filter(byContext: context)
+						.order(\.priority.asc)
 						.asRequest(of: StatisticsWidget.Configuration.self)
 						.fetchAll($0)
 				}

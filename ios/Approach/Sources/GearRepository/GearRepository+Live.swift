@@ -33,9 +33,9 @@ extension GearRepository: DependencyKey {
 				let gear = database.reader().observe {
 					try Gear.Database
 						.all()
-						.orderByName()
-						.filter(byKind: kind)
-						.owned(byBowler: owner)
+						.filter { kind == nil || $0.kind == kind }
+						.filter { owner == nil || $0.bowlerId == owner }
+						.order { $0.name.collating(.localizedCaseInsensitiveCompare) }
 						.includingSummaryProperties()
 						.asRequest(of: Gear.Summary.self)
 						.fetchAll($0)
@@ -53,7 +53,7 @@ extension GearRepository: DependencyKey {
 							Gear.Database.bowlerPreferredGear
 								.filter(BowlerPreferredGear.Database.Columns.bowlerId == bowler).isEmpty == false
 						)
-						.orderByName()
+						.order { $0.name.collating(.localizedCaseInsensitiveCompare) }
 						.includingSummaryProperties()
 						.asRequest(of: Gear.Summary.self)
 						.fetchAll($0)
@@ -65,8 +65,8 @@ extension GearRepository: DependencyKey {
 				let gear = database.reader().observe {
 					try Gear.Database
 						.all()
-						.filter(byKind: kind)
-						.orderByName()
+						.filter { kind == nil || $0.kind == kind }
+						.order { $0.name.collating(.localizedCaseInsensitiveCompare) }
 						.includingSummaryProperties()
 						.asRequest(of: Gear.Summary.self)
 						.fetchAll($0)

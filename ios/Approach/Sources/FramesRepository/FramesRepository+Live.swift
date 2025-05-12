@@ -15,8 +15,8 @@ extension FramesRepository: DependencyKey {
 				return database.reader().observe {
 					try Frame.Database
 						.all()
-						.filter(byGame: game)
-						.orderByIndex()
+						.filter { $0.gameId == game }
+						.order(\.index)
 						.including(
 							optional: Frame.Database
 								.bowlingBall0
@@ -44,8 +44,8 @@ extension FramesRepository: DependencyKey {
 				return database.reader().observe {
 					try Frame.Database
 						.all()
-						.filter(byGame: game)
-						.orderByIndex()
+						.filter { $0.gameId == game }
+						.order(\.index)
 						.select(
 							Frame.Database.Columns.roll0,
 							Frame.Database.Columns.roll1,

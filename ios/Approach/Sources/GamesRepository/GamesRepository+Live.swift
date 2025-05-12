@@ -17,7 +17,7 @@ extension GamesRepository: DependencyKey {
 			case .byIndex:
 				return Game.Database
 					.all()
-					.filter(bySeries: forSeries)
+					.filter { $0.seriesId == forSeries }
 					.isNotArchived()
 					.order(Game.Database.Columns.index.asc)
 			}
@@ -172,8 +172,8 @@ extension GamesRepository: DependencyKey {
 
 					return try share(
 						request: Game.Database
-							.filter(Game.Database.Columns.seriesId == seriesId)
-							.orderByIndex()
+							.filter { $0.seriesId == seriesId }
+							.order(\.index)
 					)
 					.fetchAll($0)
 				}
@@ -265,8 +265,8 @@ extension GamesRepository: DependencyKey {
 						)
 
 					let gamesForSeries = try Game.Database
-						.filter(Game.Database.Columns.seriesId == game.seriesId)
-						.orderByIndex()
+						.filter { $0.seriesId == game.seriesId }
+						.order(\.index)
 						.isNotArchived()
 						.fetchAll($0)
 						.map(\.id)

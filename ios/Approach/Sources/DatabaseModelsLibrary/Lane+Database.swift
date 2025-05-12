@@ -35,12 +35,6 @@ extension DerivableRequest<Lane.Database> {
 		// Source: https://stackoverflow.com/a/5189719
 		order(sql: "\(Lane.Database.Columns.label.name) * 1")
 	}
-
-	public func filter(byAlley: Alley.ID?) -> Self {
-		guard let byAlley else { return self }
-		let alley = Lane.Database.Columns.alleyId
-		return filter(alley == byAlley)
-	}
 }
 
 extension Lane.Database {

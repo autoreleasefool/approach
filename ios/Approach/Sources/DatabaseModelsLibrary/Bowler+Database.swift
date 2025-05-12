@@ -38,19 +38,6 @@ extension Bowler.Database {
 	}
 }
 
-extension DerivableRequest<Bowler.Database> {
-	public func orderByName() -> Self {
-		let name = Bowler.Database.Columns.name
-		return order(name.collating(.localizedCaseInsensitiveCompare))
-	}
-
-	public func filter(byKind: Bowler.Kind?) -> Self {
-		guard let byKind else { return self }
-		let kind = Bowler.Database.Columns.kind
-		return filter(kind == byKind)
-	}
-}
-
 extension Bowler.Summary: FetchableRecord {}
 
 extension Bowler.Opponent: FetchableRecord {}

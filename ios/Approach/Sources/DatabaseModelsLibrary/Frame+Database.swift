@@ -54,13 +54,3 @@ extension Frame.Database {
 		public static let ball2 = Column(CodingKeys.ball2)
 	}
 }
-
-extension DerivableRequest<Frame.Database> {
-	public func orderByIndex() -> Self {
-		order(Frame.Database.Columns.index)
-	}
-
-	public func filter(byGame: Game.ID) -> Self {
-		filter(Frame.Database.Columns.gameId == byGame)
-	}
-}

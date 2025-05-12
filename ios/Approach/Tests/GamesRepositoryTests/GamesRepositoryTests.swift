@@ -1223,7 +1223,7 @@ final class GamesRepositoryTests: XCTestCase {
 		}
 
 		// Updates the indexes
-		let games = try await db.read { try Game.Database.all().orderByIndex().fetchAll($0) }
+		let games = try await db.read { try Game.Database.all().order(\.index).fetchAll($0) }
 		XCTAssertEqual(games.map(\.id), [game2.id, game4.id, game1.id, game3.id])
 		XCTAssertEqual(games.map(\.index), [0, 1, 2, 3])
 	}
@@ -1248,7 +1248,7 @@ final class GamesRepositoryTests: XCTestCase {
 		}
 
 		// Leaves data unchanged
-		let games = try await db.read { try Game.Database.all().orderByIndex().fetchAll($0) }
+		let games = try await db.read { try Game.Database.all().order(\.index).fetchAll($0) }
 		XCTAssertEqual(games, [game1, game2, game3, game4])
 		XCTAssertEqual(games.map(\.index), [0, 1, 2, 4])
 	}
@@ -1273,7 +1273,7 @@ final class GamesRepositoryTests: XCTestCase {
 		}
 
 		// Leaves data unchanged
-		let games = try await db.read { try Game.Database.all().orderByIndex().fetchAll($0) }
+		let games = try await db.read { try Game.Database.all().order(\.index).fetchAll($0) }
 		XCTAssertEqual(games, [game1, game2, game3, game4])
 		XCTAssertEqual(games.map(\.index), [0, 1, 2, 4])
 	}
@@ -1298,7 +1298,7 @@ final class GamesRepositoryTests: XCTestCase {
 		}
 
 		// Leaves data unchanged
-		let games = try await db.read { try Game.Database.all().orderByIndex().fetchAll($0) }
+		let games = try await db.read { try Game.Database.all().order(\.index).fetchAll($0) }
 		XCTAssertEqual(games, [game1, game2, game3, game4])
 		XCTAssertEqual(games.map(\.index), [0, 1, 2, 4])
 	}
@@ -1327,7 +1327,7 @@ final class GamesRepositoryTests: XCTestCase {
 		}
 
 		// Locks stale games
-		let games = try await db.read { try Game.Database.all().orderByIndex().fetchAll($0) }
+		let games = try await db.read { try Game.Database.all().order(\.index).fetchAll($0) }
 //		XCTAssertEqual(games, [game1, game2, game3, game4])
 		XCTAssertEqual(games.map(\.locked), [.locked, .locked, .open, .locked])
 	}
@@ -1355,7 +1355,7 @@ final class GamesRepositoryTests: XCTestCase {
 		}
 
 		// Leaves data unchanged
-		let games = try await db.read { try Game.Database.all().orderByIndex().fetchAll($0) }
+		let games = try await db.read { try Game.Database.all().order(\.index).fetchAll($0) }
 		XCTAssertEqual(games, [game1, game2, game3, game4])
 		XCTAssertEqual(games.map(\.locked), [.open, .locked, .open, .locked])
 	}

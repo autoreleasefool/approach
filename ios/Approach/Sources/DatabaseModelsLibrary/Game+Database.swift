@@ -61,15 +61,6 @@ extension Game.Database {
 }
 
 extension DerivableRequest<Game.Database> {
-	public func orderByIndex() -> Self {
-		order(Game.Database.Columns.index)
-	}
-
-	public func filter(bySeries: Series.ID) -> Self {
-		let seriesId = Game.Database.Columns.seriesId
-		return filter(seriesId == bySeries)
-	}
-
 	public func trackable(includingExcluded: Bool) -> Self {
 		let request = self
 			.filter(Game.Database.Columns.score > 0)
