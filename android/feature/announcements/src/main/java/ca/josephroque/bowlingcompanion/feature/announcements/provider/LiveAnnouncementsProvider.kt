@@ -19,6 +19,11 @@ class LiveAnnouncementsProvider @Inject constructor(
 ) : AnnouncementsProvider {
 
 	override suspend fun getNextAnnouncement(): AnnouncementUiState? {
+		val userData = userDataRepository.userData.first()
+		if (!userData.isOnboardingComplete) {
+			return null
+		}
+
 		return when {
 			shouldShowTenYearsAnnouncement() -> AnnouncementUiState.TenYears(TenYearsAnnouncementUiState)
 			else -> null
