@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.common.filesystem.FileManager
 import ca.josephroque.bowlingcompanion.core.common.system.SystemInfoService
 import ca.josephroque.bowlingcompanion.core.common.utils.runWithMinimumDuration
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
+import ca.josephroque.bowlingcompanion.core.data.migration.MigrationResult
 import ca.josephroque.bowlingcompanion.core.data.migration.MigrationService
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
@@ -189,12 +190,18 @@ class OnboardingViewModel @Inject constructor(
 
 		viewModelScope.launch {
 			try {
-				runWithMinimumDuration(1_000) {
+				val result = runWithMinimumDuration(1_000) {
 					migrationService.migrateDefaultLegacyDatabase()
 				}
 
 				userDataRepository.didCompleteLegacyMigration()
-				analyticsClient.trackEvent(AppLegacyMigrationCompleted)
+
+				analyticsClient.trackEvent(AppLegacyMigrationCompleted(
+					didRequireIssue589Backup = when (result) {
+						MigrationResult.Success -> false
+						is MigrationResult.SuccessWithWarnings -> result.didCreateIssue589Backup
+					}
+				))
 
 				if (bowlersRepository.hasOpponents()) {
 					sendEvent(OnboardingScreenEvent.MigrateOpponents)

@@ -10,6 +10,9 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.common.filesystem.FileManager
 import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.database.ApproachDatabase
+import ca.josephroque.bowlingcompanion.core.database.DATABASE_NAME
+import ca.josephroque.bowlingcompanion.core.database.DATABASE_SHM_NAME
+import ca.josephroque.bowlingcompanion.core.database.DATABASE_WAL_NAME
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.dao.FrameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
@@ -64,6 +67,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
 class SQLiteMigrationService @Inject constructor(
@@ -94,6 +98,20 @@ class SQLiteMigrationService @Inject constructor(
 		)
 	}
 
+	private val potentiallyValidDatabaseBackupDestination: File
+		get() {
+			val currentDate = Clock.System.now().toLocalDate()
+			return fileManager.exportsDir
+				.resolve("potentially_valid_$currentDate.db")
+
+		}
+
+	private val databaseFiles = listOf(
+		fileManager.getDatabasePath(DATABASE_NAME),
+		fileManager.getDatabasePath(DATABASE_SHM_NAME),
+		fileManager.getDatabasePath(DATABASE_WAL_NAME),
+	)
+
 	override suspend fun getDatabaseType(name: String): DatabaseType? {
 		context.openOrCreateDatabase(name, Context.MODE_PRIVATE, null).use { db ->
 			db.rawQuery(
@@ -120,13 +138,29 @@ class SQLiteMigrationService @Inject constructor(
 		return null
 	}
 
-	override suspend fun migrateDefaultLegacyDatabase() {
+	override suspend fun migrateDefaultLegacyDatabase(): MigrationResult =
 		migrateDatabase(LegacyDatabaseHelper.DATABASE_NAME)
-	}
 
-	override suspend fun migrateDatabase(name: String) = withContext(ioDispatcher) {
+	override suspend fun migrateDatabase(name: String): MigrationResult = withContext(ioDispatcher) {
+		var result: MigrationResult = MigrationResult.Success
+
 		// Forces the database to be re-opened and re-rerun migrations
 		ApproachDatabase.close()
+
+		// Due to #589 we might have accidentally created some valid data before the migration.
+		// Just in case, so we don't lose this data, we create a zipped backup
+		if (databaseFiles.any { it.exists() }) {
+			val destinationFile = potentiallyValidDatabaseBackupDestination
+			destinationFile.parentFile?.mkdirs()
+			fileManager.zipFiles(
+				destinationFile,
+				databaseFiles,
+			)
+
+			result = MigrationResult.SuccessWithWarnings(
+				didCreateIssue589Backup = true,
+			)
+		}
 
 		LegacyDatabaseHelper.getInstance(context, name).let { dbHelper ->
 			dbHelper.readableDatabase.use { db ->
@@ -144,6 +178,7 @@ class SQLiteMigrationService @Inject constructor(
 		}
 
 		LegacyDatabaseHelper.closeInstance()
+		result
 	}
 
 	private suspend fun migrateTeams(db: SQLiteDatabase) {
