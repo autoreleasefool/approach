@@ -21,7 +21,10 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.datetime.Clock
 
 @HiltViewModel
@@ -33,6 +36,9 @@ class MainActivityViewModel @Inject constructor(
 	private val featureFlagsClient: FeatureFlagsClient,
 ) : ViewModel() {
 	private val isLaunchComplete: MutableStateFlow<Boolean> = MutableStateFlow(false)
+	private val observingAchievementsLock = Mutex()
+	private var isObservingAchievements = false
+
 
 	val mainActivityUiState = combine(
 		userDataRepository.userData,
@@ -60,12 +66,16 @@ class MainActivityViewModel @Inject constructor(
 	init {
 		if (featureFlagsClient.isEnabled(FeatureFlag.ACHIEVEMENTS)) {
 			viewModelScope.launch {
-				achievementsRepository.getLatestAchievement(Clock.System.now())
-					.filterNotNull()
-					.collect { latestAchievement ->
-						analyticsClient.trackEvent(AchievementEarned(latestAchievement.title))
+				userDataRepository.userData
+					.collect { userData ->
+						if (!userData.isOnboardingComplete) return@collect
 
-						// TODO: Add a dialog to display the achievement
+						observingAchievementsLock.withLock {
+							if (isObservingAchievements) return@withLock
+							isObservingAchievements = true
+
+							startObservingAchievements()
+						}
 					}
 			}
 		}
@@ -91,5 +101,17 @@ class MainActivityViewModel @Inject constructor(
 
 	fun didChangeTab(destination: TopLevelDestination) {
 		analyticsClient.trackEvent(AppTabSwitched(destination.name))
+	}
+
+	private fun startObservingAchievements() {
+		viewModelScope.launch {
+			achievementsRepository.getLatestAchievement(Clock.System.now())
+				.filterNotNull()
+				.collect { latestAchievement ->
+					analyticsClient.trackEvent(AchievementEarned(latestAchievement.title))
+
+					// TODO: Add a dialog to display the achievement
+				}
+		}
 	}
 }
