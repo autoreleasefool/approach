@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+if [ "${CONFIGURATION}" != "Release" ]; then
+	echo "warning: Skipping uploading symbols to Sentry for non-Release build"
+	exit 0
+fi
+
+# This script is responsable to upload debug symbols and source context for Sentry.
+if which sentry-cli >/dev/null; then
+	export SENTRY_ORG=approach-bowling
+	export SENTRY_PROJECT=approach-for-ios
+	ERROR=$(sentry-cli debug-files upload --include-sources "$DWARF_DSYM_FOLDER_PATH" 2>&1 >/dev/null)
+	if [ ! $? -eq 0 ]; then
+		echo "warning: sentry-cli - $ERROR"
+	fi
+else
+	echo "warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases"
+fi

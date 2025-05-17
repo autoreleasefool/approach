@@ -740,13 +740,6 @@
     {
       "target" : {
         "containerPath" : "container:Approach",
-        "identifier" : "ProductsServiceTests",
-        "name" : "ProductsServiceTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:Approach",
         "identifier" : "ListContentLibraryTests",
         "name" : "ListContentLibraryTests"
       }
@@ -784,13 +777,6 @@
         "containerPath" : "container:Approach",
         "identifier" : "GamesListFeatureTests",
         "name" : "GamesListFeatureTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:Approach",
-        "identifier" : "PaywallFeatureTests",
-        "name" : "PaywallFeatureTests"
       }
     },
     {

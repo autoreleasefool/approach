@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+if [ "${ENABLE_PREVIEWS}" = "YES" ]; then
+	echo "Skipping swiftlint when running previews"
+	exit 0
+fi
+
+export PATH="$PATH:/opt/homebrew/bin"
+
+if which swiftlint > /dev/null; then
+	swiftlint
+else
+	echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
+fi
