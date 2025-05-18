@@ -103,7 +103,6 @@ class SQLiteMigrationService @Inject constructor(
 			val currentDate = Clock.System.now().toLocalDate()
 			return fileManager.exportsDir
 				.resolve("potentially_valid_$currentDate.db")
-
 		}
 
 	private val databaseFiles = listOf(

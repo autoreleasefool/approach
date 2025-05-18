@@ -196,12 +196,14 @@ class OnboardingViewModel @Inject constructor(
 
 				userDataRepository.didCompleteLegacyMigration()
 
-				analyticsClient.trackEvent(AppLegacyMigrationCompleted(
-					didRequireIssue589Backup = when (result) {
-						MigrationResult.Success -> false
-						is MigrationResult.SuccessWithWarnings -> result.didCreateIssue589Backup
-					}
-				))
+				analyticsClient.trackEvent(
+					AppLegacyMigrationCompleted(
+						didRequireIssue589Backup = when (result) {
+							MigrationResult.Success -> false
+							is MigrationResult.SuccessWithWarnings -> result.didCreateIssue589Backup
+						},
+					),
+				)
 
 				if (bowlersRepository.hasOpponents()) {
 					sendEvent(OnboardingScreenEvent.MigrateOpponents)

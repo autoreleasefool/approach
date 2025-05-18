@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -38,7 +37,6 @@ class MainActivityViewModel @Inject constructor(
 	private val isLaunchComplete: MutableStateFlow<Boolean> = MutableStateFlow(false)
 	private val observingAchievementsLock = Mutex()
 	private var isObservingAchievements = false
-
 
 	val mainActivityUiState = combine(
 		userDataRepository.userData,
