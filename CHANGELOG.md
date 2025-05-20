@@ -8,11 +8,11 @@
 - Chore: Adjusted icon color and sizing
 ```
 
-## Android 4.5.1b341
+## Android 4.5.2
 
 ```
-Fix: De-obfuscated crash reports for Sentry
-Fix: Proguard no longer mangles datastore classes
+- Fix: Migrating from 5 Pin Bowling Companion to Approach is working again. Issue was due to the Approach database being opened, then closed before migration.
+- Fix: Resuming a multi-bowler series is now possible
 ```
 
 ---
@@ -252,6 +252,13 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.5.1b341
+
+```
+Fix: De-obfuscated crash reports for Sentry
+Fix: Proguard no longer mangles datastore classes
+```
 
 ## Android 4.5.0b340
 
