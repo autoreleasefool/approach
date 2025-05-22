@@ -328,7 +328,7 @@ private struct ShareImageButton: View {
 		HStack(alignment: .center, spacing: .standardSpacing) {
 			Spacer()
 
-			Image(systemSymbol: .squareAndArrowUp)
+			Image(systemName: "square.and.arrow.up")
 				.resizable()
 				.scaledToFit()
 				.frame(width: .smallIcon, height: .smallIcon)

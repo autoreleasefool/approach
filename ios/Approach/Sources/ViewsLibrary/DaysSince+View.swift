@@ -5,15 +5,15 @@ import SwiftUI
 extension DaysSince {
 	public static let daysSinceWarningCutoff = 14
 
-	public func warningSymbol(threshold: Int = Self.daysSinceWarningCutoff) -> (SFSymbol, Color) {
+	public func warningImage(threshold: Int = Self.daysSinceWarningCutoff) -> (systemImage: String, Color) {
 		switch self {
 		case .never:
-			(.exclamationmarkTriangleFill, Asset.Colors.Error.default.swiftUIColor)
+			("exclamationmark.triangle.fill", Asset.Colors.Error.default.swiftUIColor)
 		case let .days(days):
 			if days >= threshold {
-				(.exclamationmarkTriangle, Asset.Colors.Warning.default.swiftUIColor)
+				("exclamationmark.triangle", Asset.Colors.Warning.default.swiftUIColor)
 			} else {
-				(.checkmarkIcloud, Asset.Colors.Success.default.swiftUIColor)
+				("checkmark.icloud", Asset.Colors.Success.default.swiftUIColor)
 			}
 		}
 	}

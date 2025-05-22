@@ -12,7 +12,7 @@ public struct SortButton: View {
 
 	public var body: some View {
 		Button(action: perform) {
-			Image(systemSymbol: isActive ? .arrowUpArrowDownSquareFill : .arrowUpArrowDownSquare)
+			Image(systemName: isActive ? "arrow.up.arrow.down.square.fill" : "arrow.up.arrow.down.square")
 		}
 	}
 }

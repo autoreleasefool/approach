@@ -68,19 +68,19 @@ extension Alley {
 				LazyVGrid(columns: Self.columns, spacing: 0) {
 					Group {
 						if let material {
-							Image(systemSymbol: material.systemSymbol)
+							Image(systemName: material.systemImage)
 								.resizable()
 						}
 						if let pinFall {
-							Image(systemSymbol: pinFall.systemSymbol)
+							Image(systemName: pinFall.systemImage)
 								.resizable()
 						}
 						if let mechanism {
-							Image(systemSymbol: mechanism.systemSymbol)
+							Image(systemName: mechanism.systemImage)
 								.resizable()
 						}
 						if let pinBase {
-							Image(systemSymbol: pinBase.systemSymbol)
+							Image(systemName: pinBase.systemImage)
 								.resizable()
 						}
 					}
@@ -95,38 +95,38 @@ extension Alley {
 }
 
 extension Alley.Material {
-	public var systemSymbol: SFSymbol {
+	public var systemImage: String {
 		switch self {
-		case .synthetic: return .sCircle
-		case .wood: return .wCircle
+		case .synthetic: "s.circle"
+		case .wood: "w.circle"
 		}
 	}
 }
 
 extension Alley.PinFall {
-	public var systemSymbol: SFSymbol {
+	public var systemImage: String {
 		switch self {
-		case .freefall: return .figureFall
-		case .strings: return .linesMeasurementHorizontal
+		case .freefall: "figure.fall"
+		case .strings: "lines.measurement.horizontal"
 		}
 	}
 }
 
 extension Alley.Mechanism {
-	public var systemSymbol: SFSymbol {
+	public var systemImage: String {
 		switch self {
-		case .dedicated: return ._5Circle
-		case .interchangeable: return ._10Circle
+		case .dedicated: "5.circle"
+		case .interchangeable: "10.circle"
 		}
 	}
 }
 
 extension Alley.PinBase {
-	public var systemSymbol: SFSymbol {
+	public var systemImage: String {
 		switch self {
-		case .black: return .capsulePortraitBottomhalfFilled
-		case .white: return .capsulePortrait
-		case .other: return .capsulePortraitRighthalfFilled
+		case .black: "capsule.portrait.bottomhalf.filled"
+		case .white: "capsule.portrait"
+		case .other: "capsule.portrait.righthalf.filled"
 		}
 	}
 }

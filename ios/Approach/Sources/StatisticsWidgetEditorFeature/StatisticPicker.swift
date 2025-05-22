@@ -91,7 +91,7 @@ public struct StatisticPickerView: View {
 					ForEach(group.statistics, id: \.self) { statistic in
 						Button { send(.didTapStatistic(statistic)) } label: {
 							HStack(alignment: .center, spacing: .standardSpacing) {
-								Image(systemSymbol: store.selectedStatistic == statistic ? .checkmarkCircleFill : .circle)
+								Image(systemName: store.selectedStatistic == statistic ? "checkmark.circle.fill" : "circle")
 									.resizable()
 									.frame(width: .smallIcon, height: .smallIcon)
 									.foregroundColor(Asset.Colors.Action.default)

@@ -43,7 +43,7 @@ public struct AccessoriesOverviewView: View {
 					Button(Strings.Alley.List.add) { send(.didTapAddAlley) }
 					Button(Strings.Gear.List.add) { send(.didTapAddGear) }
 				} label: {
-					Image(systemSymbol: .plus)
+					Image(systemName: "plus")
 				}
 			}
 		}
@@ -88,7 +88,7 @@ public struct AccessoriesOverviewView: View {
 						ForEach(row.group) { kind in
 							Button { send(.didTapGearKind(kind)) } label: {
 								HStack {
-									Image(systemSymbol: kind.systemSymbol)
+									Image(systemName: kind.systemImage)
 										.scaledToFit()
 										.frame(width: .smallIcon, height: .smallIcon)
 									Text(kind.pluralDescription)

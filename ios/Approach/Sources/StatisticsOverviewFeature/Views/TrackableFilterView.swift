@@ -20,7 +20,7 @@ public struct TrackableFilterView: View {
 
 	public var body: some View {
 		HStack(alignment: sources.subtitles.isEmpty ? .center : .top, spacing: 0) {
-			Image(systemSymbol: configuration.primarySymbol)
+			Image(systemName: configuration.primarySystemImage)
 				.resizable()
 				.scaledToFit()
 				.frame(width: .extraTinyIcon, height: .extraTinyIcon)
@@ -63,7 +63,7 @@ public struct TrackableFilterView: View {
 
 extension TrackableFilterView {
 	struct Configuration {
-		let primarySymbol: SFSymbol
+		let primarySystemImage: String
 		let background: Color
 		let foreground: Color
 	}
@@ -74,25 +74,25 @@ extension TrackableFilter.Source {
 		switch self {
 		case .bowler:
 			TrackableFilterView.Configuration(
-				primarySymbol: .personFill,
+				primarySystemImage: "person.fill",
 				background: Asset.Colors.TrackableFilters.bowler.swiftUIColor,
 				foreground: Asset.Colors.TrackableFilters.Text.onBowler.swiftUIColor
 			)
 		case .league:
 			TrackableFilterView.Configuration(
-				primarySymbol: .listBullet,
+				primarySystemImage: "list.bullet",
 				background: Asset.Colors.TrackableFilters.league.swiftUIColor,
 				foreground: Asset.Colors.TrackableFilters.Text.onLeague.swiftUIColor
 			)
 		case .series:
 			TrackableFilterView.Configuration(
-				primarySymbol: .calendar,
+				primarySystemImage: "calendar",
 				background: Asset.Colors.TrackableFilters.series.swiftUIColor,
 				foreground: Asset.Colors.TrackableFilters.Text.onSeries.swiftUIColor
 			)
 		case .game:
 			TrackableFilterView.Configuration(
-				primarySymbol: .numbersign,
+				primarySystemImage: "numbersign",
 				background: Asset.Colors.TrackableFilters.game.swiftUIColor,
 				foreground: Asset.Colors.TrackableFilters.Text.onGame.swiftUIColor
 			)

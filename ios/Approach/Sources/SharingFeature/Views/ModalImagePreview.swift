@@ -68,7 +68,7 @@ private struct CloseButton: View {
 
 	var body: some View {
 		Button(action: action) {
-			Image(systemSymbol: .xmarkCircle)
+			Image(systemName: "xmark.circle")
 				.resizable()
 				.scaledToFit()
 				.frame(width: .smallIcon, height: .smallIcon)

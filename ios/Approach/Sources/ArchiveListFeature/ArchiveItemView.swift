@@ -8,7 +8,7 @@ public struct ArchiveItemView: View {
 
 	public var body: some View {
 		HStack {
-			Image(systemSymbol: item.id.icon)
+			Image(systemName: item.id.systemImage)
 
 			VStack(alignment: .leading) {
 				Text(item.title)
@@ -26,12 +26,12 @@ public struct ArchiveItemView: View {
 }
 
 extension ArchiveItemID {
-	var icon: SFSymbol {
+	var systemImage: String {
 		switch self {
-		case .bowler: return .personFill
-		case .league: return .repeat
-		case .series: return .calendar
-		case .game: return .figureBowling
+		case .bowler: "person.fill"
+		case .league: "repeat"
+		case .series: "calendar"
+		case .game: "figure.bowling"
 		}
 	}
 }

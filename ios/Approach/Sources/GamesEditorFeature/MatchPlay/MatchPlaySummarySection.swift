@@ -12,7 +12,7 @@ public struct MatchPlaySummarySection: View {
 		Section(Strings.MatchPlay.title) {
 			NavigationButton(action: action) {
 				HStack(spacing: .standardSpacing) {
-					Image(systemSymbol: matchPlay?.opponent == nil ? .person2Slash : .personFill)
+					Image(systemName: matchPlay?.opponent == nil ? "person.2.slash" : "person.fill")
 						.resizable()
 						.scaledToFit()
 						.frame(width: .smallIcon, height: .smallIcon)
@@ -30,7 +30,7 @@ public struct MatchPlaySummarySection: View {
 
 					Spacer()
 
-					Image(systemSymbol: matchPlay?.result?.systemSymbol ?? .squareSlash)
+					Image(systemName: matchPlay?.result?.systemImage ?? "square.slash")
 						.resizable()
 						.scaledToFit()
 						.foregroundColor(matchPlay?.result?.foregroundColor)
@@ -50,11 +50,11 @@ public struct MatchPlaySummarySection: View {
 }
 
 extension MatchPlay.Result {
-	var systemSymbol: SFSymbol {
+	var systemImage: String {
 		switch self {
-		case .lost: return .lSquare
-		case .won: return .wSquare
-		case .tied: return .tSquare
+		case .lost: "l.square"
+		case .won: "w.square"
+		case .tied: "t.square"
 		}
 	}
 

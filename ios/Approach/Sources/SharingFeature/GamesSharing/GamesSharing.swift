@@ -362,7 +362,7 @@ public struct GamesSharingView: View {
 
 	private var dateButton: some View {
 		ChipButton(
-			icon: .calendar,
+			systemImage: "calendar",
 			title: Strings.Sharing.Game.Details.date,
 			isOn: $store.isShowingSeriesDate.animation(.easeInOut(duration: 0.2))
 		)
@@ -370,7 +370,7 @@ public struct GamesSharingView: View {
 
 	private var summaryButton: some View {
 		ChipButton(
-			icon: .listDash,
+			systemImage: "list.dash",
 			title: Strings.Sharing.Game.Details.scoreSummary,
 			isOn: $store.isShowingSeriesDetails.animation(.easeInOut(duration: 0.2))
 		)
@@ -378,7 +378,7 @@ public struct GamesSharingView: View {
 
 	private var bowlerButton: some View {
 		ChipButton(
-			icon: .personFill,
+			systemImage: "person.fill",
 			title: Strings.Sharing.Game.Details.bowlerName,
 			isOn: $store.isShowingBowlerName.animation(.easeInOut(duration: 0.2))
 		)
@@ -386,7 +386,7 @@ public struct GamesSharingView: View {
 
 	private var leagueButton: some View {
 		ChipButton(
-			icon: .repeat,
+			systemImage: "repeat",
 			title: Strings.Sharing.Game.Details.leagueName,
 			isOn: $store.isShowingLeagueName.animation(.easeInOut(duration: 0.2))
 		)

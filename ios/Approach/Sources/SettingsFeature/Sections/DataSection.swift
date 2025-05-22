@@ -19,9 +19,9 @@ struct DataSection: View {
 
 			Button(action: onTapExportButton) {
 				HStack {
-					let (warningSymbol, warningSymbolColor) = daysSinceLastExport.warningSymbol()
-					Image(systemSymbol: warningSymbol)
-						.foregroundStyle(warningSymbolColor)
+					let (warningImage, warningImageColor) = daysSinceLastExport.warningImage()
+					Image(systemName: warningImage)
+						.foregroundStyle(warningImageColor)
 
 					Text(Strings.Settings.Data.export)
 				}
@@ -31,9 +31,9 @@ struct DataSection: View {
 			if isBackupsButtonVisible {
 				Button(action: onTapBackupsButton) {
 					HStack {
-						let (warningSymbol, warningSymbolColor) = daysSinceLastBackup.warningSymbol()
-						Image(systemSymbol: warningSymbol)
-							.foregroundStyle(warningSymbolColor)
+						let (warningImage, warningImageColor) = daysSinceLastBackup.warningImage()
+						Image(systemName: warningImage)
+							.foregroundStyle(warningImageColor)
 
 						Text(Strings.Settings.Data.automaticBackups)
 					}

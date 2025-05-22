@@ -11,7 +11,7 @@ struct BackupFileView: View {
 
 	var body: some View {
 		HStack(spacing: .standardSpacing) {
-			Image(systemSymbol: .checkmarkIcloud)
+			Image(systemName: "checkmark.icloud")
 				.resizable()
 				.scaledToFit()
 				.frame(maxWidth: .smallIcon, maxHeight: .smallIcon)

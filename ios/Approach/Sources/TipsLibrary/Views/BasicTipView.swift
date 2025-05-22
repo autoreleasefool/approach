@@ -35,7 +35,7 @@ public struct BasicTipView: View {
 
 			if isDismissable {
 				Button(action: onDismiss) {
-					Image(systemSymbol: .xmark)
+					Image(systemName: "xmark")
 						.resizable()
 						.scaledToFit()
 						.frame(width: .extraTinyIcon, height: .extraTinyIcon, alignment: .topTrailing)

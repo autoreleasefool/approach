@@ -5,15 +5,15 @@ struct HUDView: View {
 	let title: String
 	let message: String?
 	let action: String?
-	let icon: SFSymbol?
+	let systemImage: String?
 	let style: ToastStyle
 	let onAction: () -> Void
 	let onDismiss: () -> Void
 
 	var body: some View {
 		VStack(spacing: 0) {
-			if let icon {
-				Image(systemSymbol: icon)
+			if let systemImage {
+				Image(systemName: systemImage)
 					.resizable()
 					.scaledToFit()
 					.frame(width: .extraLargeIcon, height: .extraLargeIcon)

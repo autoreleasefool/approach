@@ -5,7 +5,7 @@ struct ScoreSheetLabel: View {
 	@Environment(\.colorScheme) private var colorScheme
 
 	struct Item: Identifiable, Equatable {
-		let symbol: SFSymbol
+		let systemImage: String
 		let title: String
 
 		var id: String { title }
@@ -21,7 +21,7 @@ struct ScoreSheetLabel: View {
 
 	var body: some View {
 		HStack(spacing: style.spacing) {
-			Image(systemSymbol: item.symbol)
+			Image(systemName: item.systemImage)
 				.resizable()
 				.scaledToFit()
 				.frame(width: style.iconSize, height: style.iconSize)

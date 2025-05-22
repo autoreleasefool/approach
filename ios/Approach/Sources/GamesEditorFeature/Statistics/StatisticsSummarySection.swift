@@ -11,7 +11,7 @@ public struct StatisticsSummarySection: View {
 		Section {
 			Grid {
 				GridRow {
-					Image(systemSymbol: .chartLineUptrendXyaxis)
+					Image(systemName: "chart.line.uptrend.xyaxis")
 						.resizable()
 						.scaledToFit()
 						.frame(width: .smallIcon, height: .smallIcon)

@@ -168,10 +168,10 @@ public struct SectionResourceListView<
 			Spacer()
 			Button(action: perform) {
 				if editMode == .inactive {
-					Label(Strings.Action.reorder, systemSymbol: .arrowUpAndDownSquare)
+					Label(Strings.Action.reorder, systemImage: "arrow.up.and.down.square")
 						.font(.caption)
 				} else if editMode == .active {
-					Label(Strings.Action.finish, systemSymbol: .checkmarkCircle)
+					Label(Strings.Action.finish, systemImage: "checkmark.circle")
 						.font(.caption)
 				}
 			}

@@ -89,13 +89,13 @@ extension ToastState {
 public struct HUDContent<Action: ToastableAction> {
 	public let title: String
 	public let message: String?
-	public let icon: SFSymbol?
+	public let systemImage: String?
 	public let button: ToastState<Action>.Button?
 
-	public init(title: String, message: String? = nil, icon: SFSymbol?, button: ToastState<Action>.Button? = nil) {
+	public init(title: String, message: String? = nil, systemImage: String?, button: ToastState<Action>.Button? = nil) {
 		self.title = title
 		self.message = message
-		self.icon = icon
+		self.systemImage = systemImage
 		self.button = button
 	}
 }
@@ -110,12 +110,12 @@ public struct AchievementContent: Equatable {
 
 public struct SnackContent<Action: ToastableAction> {
 	public let message: String
-	public let icon: SFSymbol?
+	public let systemImage: String?
 	public let button: ToastState<Action>.Button?
 
-	public init(message: String, icon: SFSymbol? = nil, button: ToastState<Action>.Button? = nil) {
+	public init(message: String, systemImage: String? = nil, button: ToastState<Action>.Button? = nil) {
 		self.message = message
-		self.icon = icon
+		self.systemImage = systemImage
 		self.button = button
 	}
 }
@@ -158,7 +158,7 @@ extension View {
 						title: content.title,
 						message: content.message,
 						action: content.button?.title,
-						icon: content.icon,
+						systemImage: content.systemImage,
 						style: toastState?.style ?? .primary
 					) {
 						guard let action = content.button?.action else { return }

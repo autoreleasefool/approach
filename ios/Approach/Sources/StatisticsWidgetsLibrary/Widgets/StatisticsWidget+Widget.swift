@@ -148,7 +148,7 @@ extension StatisticsWidget {
 
 		private var whatDoesThisMeanFooter: some View {
 			HStack(spacing: .standardSpacing) {
-				Image(systemSymbol: .questionmarkCircle)
+				Image(systemName: "questionmark.circle")
 					.resizable()
 					.scaledToFit()
 					.foregroundColor(.white)

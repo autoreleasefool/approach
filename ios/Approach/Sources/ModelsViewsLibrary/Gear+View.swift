@@ -33,19 +33,19 @@ extension Gear {
 
 				Spacer()
 
-				Image(systemSymbol: kind.systemSymbol)
+				Image(systemName: kind.systemImage)
 			}
 		}
 	}
 }
 
 extension Gear.Kind {
-	public var systemSymbol: SFSymbol {
+	public var systemImage: String {
 		switch self {
-		case .bowlingBall: return .poweroutletTypeH
-		case .shoes: return .shoeprintsFill
-		case .towel: return .squareSplitBottomrightquarter
-		case .other: return .questionmarkApp
+		case .bowlingBall: "poweroutlet.type.h"
+		case .shoes: "shoeprints.fill"
+		case .towel: "square.split.bottomrightquarter"
+		case .other: "questionmark.app"
 		}
 	}
 }

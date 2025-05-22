@@ -3,20 +3,20 @@ import SwiftUI
 
 public struct Chip: View {
 	public let title: String
-	public let icon: SFSymbol?
+	public let systemImage: String?
 	public let accessory: Accessory?
 	public let size: Sizing
 	public let style: Style
 
 	public init(
 		title: String,
-		icon: SFSymbol? = nil,
+		systemImage: String? = nil,
 		accessory: Accessory? = nil,
 		size: Sizing? = nil,
 		style: Style
 	) {
 		self.title = title
-		self.icon = icon
+		self.systemImage = systemImage
 		self.accessory = accessory
 		self.size = size ?? .standard
 		self.style = style
@@ -24,8 +24,8 @@ public struct Chip: View {
 
 	public var body: some View {
 		HStack(alignment: .center) {
-			if let icon {
-				Image(systemSymbol: icon)
+			if let systemImage {
+				Image(systemName: systemImage)
 					.resizable()
 					.frame(width: size.icon, height: size.icon)
 					.padding(.trailing, .smallSpacing)
@@ -41,7 +41,7 @@ public struct Chip: View {
 			if let accessory {
 				Spacer()
 
-				Image(systemSymbol: accessory.systemSymbol)
+				Image(systemName: accessory.systemImage)
 					.resizable()
 					.frame(width: size.icon, height: size.icon)
 					.padding(.leading, .smallSpacing)
@@ -62,10 +62,10 @@ extension Chip {
 		case radioBox
 		case radioBoxSelected
 
-		var systemSymbol: SFSymbol {
+		var systemImage: String {
 			switch self {
-			case .radioBox: .circle
-			case .radioBoxSelected: .checkmarkCircleFill
+			case .radioBox: "circle"
+			case .radioBoxSelected: "checkmark.circle.fill"
 			}
 		}
 	}
@@ -130,8 +130,8 @@ extension Chip {
 		VStack {
 			Chip(title: "Title", style: style)
 			Chip(title: "Title", accessory: .radioBoxSelected, style: style)
-			Chip(title: "Title", icon: .person, accessory: .radioBoxSelected, style: style)
-			Chip(title: "Title", icon: .personFill, accessory: .radioBoxSelected, style: style)
+			Chip(title: "Title", systemImage: "person", accessory: .radioBoxSelected, style: style)
+			Chip(title: "Title", systemImage: "person.fill", accessory: .radioBoxSelected, style: style)
 		}
 	}
 }

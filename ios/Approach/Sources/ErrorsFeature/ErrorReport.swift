@@ -149,7 +149,7 @@ public struct ErrorReportView: View {
 				Button {
 					send(.didTapDismissButton)
 				} label: {
-					Image(systemSymbol: .xmark)
+					Image(systemName: "xmark")
 						.resizable()
 						.scaledToFit()
 						.frame(width: .extraTinyIcon, height: .extraTinyIcon)
@@ -179,7 +179,7 @@ public struct ErrorReportView: View {
 
 							HStack {
 								Spacer()
-								Image(systemSymbol: .squareOnSquare)
+								Image(systemName: "square.on.square")
 									.resizable()
 									.scaledToFit()
 									.frame(width: .tinyIcon)

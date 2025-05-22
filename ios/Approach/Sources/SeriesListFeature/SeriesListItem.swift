@@ -27,7 +27,7 @@ public struct SeriesListItem: View {
 
 			VStack(spacing: .standardSpacing) {
 				HStack {
-					Image(systemSymbol: .calendar)
+					Image(systemName: "calendar")
 						.resizable()
 						.frame(width: .smallIcon, height: .smallIcon)
 						.padding(.trailing, .standardSpacing)
@@ -44,7 +44,7 @@ public struct SeriesListItem: View {
 
 					Spacer()
 
-					Image(systemSymbol: .chevronForward)
+					Image(systemName: "chevron.forward")
 						.scaledToFit()
 						.frame(width: .tinyIcon, height: .tinyIcon)
 				}

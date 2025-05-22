@@ -40,7 +40,7 @@ public struct MoveableWidget: View {
 								.fill(Asset.Colors.Destructive.default.swiftUIColor)
 								.frame(width: .smallerIcon, height: .smallerIcon)
 
-							Image(systemSymbol: .xmark)
+							Image(systemName: "xmark")
 								.resizable()
 								.scaledToFit()
 								.frame(width: .tinyIcon, height: .tinyIcon)

@@ -210,12 +210,12 @@ extension VerticalShareableGameImage {
 
 			let subtitles: [ScoreSheetLabel.Item] = if date != nil {
 				[
-					bowlerName.flatMap { ScoreSheetLabel.Item(symbol: .person, title: $0) },
-					leagueName.flatMap { ScoreSheetLabel.Item(symbol: .repeat, title: $0) },
+					bowlerName.flatMap { ScoreSheetLabel.Item(systemImage: "person", title: $0) },
+					leagueName.flatMap { ScoreSheetLabel.Item(systemImage: "repeat", title: $0) },
 				].compactMap { $0 }
 			} else if leagueName != nil {
 				[
-					bowlerName.flatMap { ScoreSheetLabel.Item(symbol: .person, title: $0) }
+					bowlerName.flatMap { ScoreSheetLabel.Item(systemImage: "person", title: $0) }
 				].compactMap { $0 }
 			} else {
 				[]

@@ -168,7 +168,6 @@ let package = Package(
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.18.3"),
 		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "1.5.2"),
 		.package(url: "https://github.com/quanshousio/ToastUI.git", from: "4.0.0"),
-		.package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", from: "6.2.0"),
 		.package(url: "https://github.com/weichsel/ZIPFoundation.git", from: "0.9.19"),
 	],
 	targets: [
@@ -1726,9 +1725,7 @@ let package = Package(
 		),
 		.target(
 			name: "AssetsLibrary",
-			dependencies: [
-				.product(name: "SFSafeSymbols", package: "SFSafeSymbols"),
-			],
+			dependencies: [],
 			resources: [
 				.process("Resources"),
 			]

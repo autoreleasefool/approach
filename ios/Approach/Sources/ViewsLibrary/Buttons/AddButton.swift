@@ -10,7 +10,7 @@ public struct AddButton: View {
 
 	public var body: some View {
 		Button(action: perform) {
-			Image(systemSymbol: .plus)
+			Image(systemName: "plus")
 		}
 	}
 }

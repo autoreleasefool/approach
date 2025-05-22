@@ -334,10 +334,10 @@ public struct BackupsListView: View {
 
 			Section {
 				HStack {
-					let (warningSymbol, warningSymbolColor) = store.daysSinceLastBackup.warningSymbol()
+					let (warningImage, warningImageColor) = store.daysSinceLastBackup.warningImage()
 
-					Image(systemSymbol: warningSymbol)
-						.foregroundStyle(warningSymbolColor)
+					Image(systemName: warningImage)
+						.foregroundStyle(warningImageColor)
 
 					switch store.daysSinceLastBackup {
 					case .never:

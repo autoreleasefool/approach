@@ -17,7 +17,7 @@ public struct ShortTipView: View {
 				.font(.caption)
 				.frame(maxWidth: .infinity, alignment: .leading)
 			Button(action: onDismiss) {
-				Image(systemSymbol: .xmark)
+				Image(systemName: "xmark")
 					.resizable()
 					.scaledToFit()
 					.frame(width: .smallIcon, height: .smallSpacing)

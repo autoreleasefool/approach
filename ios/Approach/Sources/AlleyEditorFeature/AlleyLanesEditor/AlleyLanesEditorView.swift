@@ -35,11 +35,11 @@ public struct AlleyLanesEditorView: View {
 
 			Section {
 				Button { send(.didTapAddLaneButton) } label: {
-					Label(Strings.Lane.List.add, systemSymbol: .plusSquare)
+					Label(Strings.Lane.List.add, systemImage: "plus.square")
 				}
 
 				Button { send(.didTapAddMultipleLanesButton) } label: {
-					Label(Strings.Lane.List.addMultiple, systemSymbol: .plusSquareOnSquare)
+					Label(Strings.Lane.List.addMultiple, systemImage: "plus.square.on.square")
 				}
 			}
 		}

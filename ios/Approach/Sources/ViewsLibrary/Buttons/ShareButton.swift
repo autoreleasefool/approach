@@ -10,7 +10,7 @@ public struct ShareButton: View {
 
 	public var body: some View {
 		Button(action: perform) {
-			Image(systemSymbol: .squareAndArrowUp)
+			Image(systemName: "square.and.arrow.up")
 		}
 	}
 }

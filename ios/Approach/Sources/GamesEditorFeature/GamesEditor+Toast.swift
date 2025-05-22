@@ -37,7 +37,7 @@ extension ToastState where Action == GamesEditor.ToastAction {
 				HUDContent(
 					title: Strings.Game.Editor.locked,
 					message: Strings.Game.Editor.Locked.message,
-					icon: .lock,
+					systemImage: "lock",
 					button: .init(
 						title: Strings.Game.Editor.Locked.unlock,
 						action: .unlockGame
@@ -52,7 +52,7 @@ extension ToastState where Action == GamesEditor.ToastAction {
 		ToastState(
 			content: .toast(SnackContent(
 				message: Strings.Game.Editor.Fields.StrikeOut.ifYouStrikeOut(withFinalScore),
-				icon: .infoCircle
+				systemImage: "info.circle"
 			)),
 			duration: 4.0,
 			style: .primary

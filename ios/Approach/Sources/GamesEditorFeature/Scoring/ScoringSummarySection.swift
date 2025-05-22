@@ -14,7 +14,7 @@ public struct ScoringSummarySection: View {
 				Grid {
 					GridRow {
 						HStack {
-							Image(systemSymbol: scoringMethod.systemSymbol)
+							Image(systemName: scoringMethod.systemImage)
 								.resizable()
 								.scaledToFit()
 								.frame(width: .smallIcon, height: .smallIcon)
@@ -54,17 +54,17 @@ public struct ScoringSummarySection: View {
 }
 
 extension Game.ScoringMethod: CustomStringConvertible {
-	var systemSymbol: SFSymbol {
+	var systemImage: String {
 		switch self {
-		case .manual: return .handPointUpLeft
-		case .byFrame: return .figureBowling
+		case .manual: "hand.point.up.left"
+		case .byFrame: "figure.bowling"
 		}
 	}
 
 	public var description: String {
 		switch self {
-		case .manual: return Strings.Game.Editor.Fields.ScoringMethod.manual
-		case .byFrame: return Strings.Game.Editor.Fields.ScoringMethod.byFrame
+		case .manual: Strings.Game.Editor.Fields.ScoringMethod.manual
+		case .byFrame: Strings.Game.Editor.Fields.ScoringMethod.byFrame
 		}
 	}
 }

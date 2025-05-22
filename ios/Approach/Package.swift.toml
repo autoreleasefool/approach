@@ -344,7 +344,6 @@ libraries = [ "Assets", "Strings" ]
 
 [libraries.Assets]
 skip_tests = true
-dependencies = [ "SFSafeSymbols" ]
 [libraries.Assets.resources]
 processed = [ "Resources" ]
 
@@ -482,7 +481,6 @@ Dependencies = { url = "https://github.com/pointfreeco/swift-dependencies.git", 
 GRDB = { url = "https://github.com/groue/GRDB.swift.git", from = "7.5.0" }
 IdentifiedCollections = { url = "https://github.com/pointfreeco/swift-identified-collections.git", from = "1.1.1" }
 Sentry = { url = "https://github.com/getsentry/sentry-cocoa.git", from = "8.50.1" }
-SFSafeSymbols = { url = "https://github.com/SFSafeSymbols/SFSafeSymbols.git", from = "6.2.0" }
 Sharing = { url = "https://github.com/pointfreeco/swift-sharing.git", from = "2.5.2" }
 SnapshotTesting = { url = "https://github.com/pointfreeco/swift-snapshot-testing.git", from = "1.18.3" }
 SwiftUtilities = { url = "https://github.com/autoreleasefool/swift-utilities.git", from = "3.1.0" }
@@ -554,8 +552,6 @@ dep_ref = "SwiftUtilities"
 dep_ref = "Sentry"
 [dependencies.SentryErrorReportingPackageService]
 dep_ref = "SwiftUtilities"
-[dependencies.SFSafeSymbols]
-dep_ref = "SFSafeSymbols"
 [dependencies.Sharing]
 dep_ref = "Sharing"
 [dependencies.SnapshotTesting]

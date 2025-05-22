@@ -23,7 +23,7 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable & 
 						store.send(.view(.didTapResource(resource)))
 					} label: {
 						HStack(alignment: .center, spacing: .standardSpacing) {
-							Image(systemSymbol: store.selected.contains(resource.id) ? .checkmarkCircleFill : .circle)
+							Image(systemName: store.selected.contains(resource.id) ? "checkmark.circle.fill" : "circle")
 								.resizable()
 								.frame(width: .smallIcon, height: .smallIcon)
 								.foregroundColor(Asset.Colors.Action.default)
@@ -41,7 +41,7 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable & 
 				Button(role: .destructive) {
 					store.send(.view(.didTapDeselectAllButton))
 				} label: {
-					Label(Strings.Action.deselectAll, systemSymbol: .trash)
+					Label(Strings.Action.deselectAll, systemImage: "trash")
 				}
 				.disabled(store.selected.isEmpty)
 			}

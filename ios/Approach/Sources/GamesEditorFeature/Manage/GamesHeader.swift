@@ -139,22 +139,22 @@ public struct GamesHeaderView: View {
 			}
 
 			HStack {
-				headerButton(systemSymbol: .chevronBackward) { send(.didTapCloseButton) }
+				headerButton(systemImage: "chevron.backward") { send(.didTapCloseButton) }
 
 				Spacer()
 
-				headerButton(systemSymbol: .squareAndArrowUp) { send(.didTapShareButton) }
+				headerButton(systemImage: "square.and.arrow.up") { send(.didTapShareButton) }
 
-				headerButton(systemSymbol: .gear) { send(.didTapSettingsButton) }
+				headerButton(systemImage: "gear") { send(.didTapSettingsButton) }
 			}
 		}
 		.onChange(of: store.currentGameIndex) { send(.didStartShimmering) }
 		.task { await send(.didStartTask).finish() }
 	}
 
-	private func headerButton(systemSymbol: SFSymbol, action: @escaping () -> Void) -> some View {
+	private func headerButton(systemImage: String, action: @escaping () -> Void) -> some View {
 		Button(action: action) {
-			Image(systemSymbol: systemSymbol)
+			Image(systemName: systemImage)
 				.resizable()
 				.scaledToFit()
 				.frame(width: .smallIcon, height: .smallIcon)

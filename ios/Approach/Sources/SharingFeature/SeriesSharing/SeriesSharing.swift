@@ -218,13 +218,13 @@ public struct SeriesSharingView: View {
 			Grid(horizontalSpacing: .smallSpacing, verticalSpacing: .smallSpacing) {
 				GridRow {
 					ChipButton(
-						icon: .calendar,
+						systemImage: "calendar",
 						title: Strings.Sharing.Series.Details.date,
 						isOn: $store.isShowingSeriesDate.animation(.easeInOut(duration: 0.2))
 					)
 
 					ChipButton(
-						icon: .listDash,
+						systemImage: "list.dash",
 						title: Strings.Sharing.Series.Details.scoreSummary,
 						isOn: $store.isShowingSeriesSummary.animation(.easeInOut(duration: 0.2))
 					)
@@ -232,13 +232,13 @@ public struct SeriesSharingView: View {
 
 				GridRow {
 					ChipButton(
-						icon: .personFill,
+						systemImage: "person.fill",
 						title: Strings.Sharing.Series.Details.bowlerName,
 						isOn: $store.isShowingBowlerName.animation(.easeInOut(duration: 0.2))
 					)
 
 					ChipButton(
-						icon: .repeat,
+						systemImage: "repeat",
 						title: Strings.Sharing.Series.Details.leagueName,
 						isOn: $store.isShowingLeagueName.animation(.easeInOut(duration: 0.2))
 					)
@@ -246,13 +246,13 @@ public struct SeriesSharingView: View {
 
 				GridRow {
 					ChipButton(
-						icon: .plusForwardslashMinus,
+						systemImage: "plus.forwardslash.minus",
 						title: Strings.Sharing.Series.Details.highScore,
 						isOn: $store.isLabellingHighestScore.animation(.easeInOut(duration: 0.2))
 					)
 
 					ChipButton(
-						icon: .plusForwardslashMinus,
+						systemImage: "plus.forwardslash.minus",
 						title: Strings.Sharing.Series.Details.lowScore,
 						isOn: $store.isLabellingLowestScore.animation(.easeInOut(duration: 0.2))
 					)

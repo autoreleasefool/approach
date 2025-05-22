@@ -60,7 +60,7 @@ public struct BowlersListView: View {
 				Button { send(.didTapQuickLaunchButton, animation: .default) } label: {
 					HStack(spacing: 0) {
 						HStack(spacing: .standardSpacing) {
-							Image(systemSymbol: .figureBowling)
+							Image(systemName: "figure.bowling")
 								.resizable()
 								.scaledToFit()
 								.frame(width: .smallIcon, height: .smallIcon)
@@ -88,7 +88,7 @@ public struct BowlersListView: View {
 									.font(.caption)
 							}
 
-							Image(systemSymbol: .chevronRight)
+							Image(systemName: "chevron.right")
 								.font(.caption2)
 						}
 					}

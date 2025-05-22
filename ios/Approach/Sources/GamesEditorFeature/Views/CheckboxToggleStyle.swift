@@ -9,7 +9,7 @@ struct CheckboxToggleStyle: ToggleStyle {
 			Spacer()
 
 			Button { configuration.isOn.toggle() } label: {
-				Image(systemSymbol: configuration.isOn ? .checkmarkCircleFill : .circle)
+				Image(systemName: configuration.isOn ? "checkmark.circle.fill" : "circle")
 					.resizable()
 					.frame(width: .smallIcon, height: .smallIcon)
 					.foregroundColor(Asset.Colors.Action.default)

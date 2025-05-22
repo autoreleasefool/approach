@@ -3,7 +3,7 @@ import SwiftUI
 import ViewsLibrary
 
 struct ChipButton: View {
-	let icon: SFSymbol
+	let systemImage: String
 	let title: String
 	@Binding var isOn: Bool
 
@@ -13,7 +13,7 @@ struct ChipButton: View {
 		} label: {
 			Chip(
 				title: title,
-				icon: icon,
+				systemImage: systemImage,
 				accessory: isOn ? .radioBoxSelected : .radioBox,
 				style: isOn ? .primary : .plain
 			)
@@ -25,19 +25,19 @@ struct ChipButton: View {
 #Preview {
 	HStack {
 		ChipButton(
-			icon: .star,
+			systemImage: "star",
 			title: "Star",
 			isOn: .constant(false)
 		)
 
 		ChipButton(
-			icon: .star,
+			systemImage: "star",
 			title: "Star",
 			isOn: .constant(false)
 		)
 
 		ChipButton(
-			icon: .star,
+			systemImage: "star",
 			title: "Star",
 			isOn: .constant(false)
 		)

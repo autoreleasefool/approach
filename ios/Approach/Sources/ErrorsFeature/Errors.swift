@@ -39,7 +39,7 @@ public struct Errors<ErrorID: Hashable>: Reducer, Sendable {
 			let toast: ToastState<ToastAction> = .init(
 				content: .toast(.init(
 					message: error.message,
-					icon: error.icon,
+					systemImage: error.systemImage,
 					button: reportButton
 				)),
 				isDimmedBackgroundEnabled: false,
@@ -57,7 +57,12 @@ public struct Errors<ErrorID: Hashable>: Reducer, Sendable {
 		}
 
 		public mutating func enqueue(_ errorId: ErrorID, thrownError: Error, toastMessage: String) -> Effect<Errors.Action> {
-			enqueue(.init(id: errorId, thrownError: thrownError, message: .init(toastMessage), icon: .exclamationmarkTriangle))
+			enqueue(.init(
+				id: errorId,
+				thrownError: thrownError,
+				message: .init(toastMessage),
+				systemImage: "exclamationmark.triangle"
+			))
 		}
 	}
 
@@ -205,13 +210,13 @@ extension Errors {
 	public struct ErrorToastState: Identifiable, Equatable {
 		public let id: ErrorID
 		public let message: String
-		public let icon: SFSymbol?
+		public let systemImage: String?
 		public let thrownError: AlwaysEqual<Error>
 
-		public init(id: ErrorID, thrownError: Error, message: String, icon: SFSymbol?) {
+		public init(id: ErrorID, thrownError: Error, message: String, systemImage: String?) {
 			self.id = id
 			self.message = message
-			self.icon = icon
+			self.systemImage = systemImage
 			self.thrownError = .init(thrownError)
 		}
 	}

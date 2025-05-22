@@ -156,9 +156,9 @@ public struct ExportView: View {
 
 				Section {
 					HStack(spacing: .standardSpacing) {
-						let (warningSymbol, warningSymbolColor) = store.daysSinceLastExport.warningSymbol()
-						Image(systemSymbol: warningSymbol)
-							.foregroundStyle(warningSymbolColor)
+						let (warningImage, warningImageColor) = store.daysSinceLastExport.warningImage()
+						Image(systemName: warningImage)
+							.foregroundStyle(warningImageColor)
 
 						Group {
 							switch store.daysSinceLastExport {

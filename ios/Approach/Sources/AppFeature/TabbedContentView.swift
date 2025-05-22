@@ -83,11 +83,11 @@ extension TabbedContent.Tab {
 		case .accessories:
 			return Asset.Media.Icons.alley.image
 		case .settings:
-			return UIImage(systemSymbol: .gear)
+			return UIImage(systemName: "gear") ?? UIImage()
 		case .overview:
-			return UIImage(systemSymbol: .figureBowling)
+			return UIImage(systemName: "figure.bowling") ?? UIImage()
 		case .statistics:
-			return UIImage(systemSymbol: .chartBar)
+			return UIImage(systemName: "chart.bar") ?? UIImage()
 		}
 	}
 

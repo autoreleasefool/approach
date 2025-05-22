@@ -20,7 +20,7 @@ public struct SortOrderView<Ordering: Orderable>: View {
 						store.send(.view(.didTapOption(ordering)))
 					} label: {
 						HStack(alignment: .center, spacing: .standardSpacing) {
-							Image(systemSymbol: store.ordering == ordering ? .checkmarkCircleFill : .circle)
+							Image(systemName: store.ordering == ordering ? "checkmark.circle.fill" : "circle")
 								.resizable()
 								.frame(width: .smallIcon, height: .smallIcon)
 								.foregroundColor(Asset.Colors.Action.default)

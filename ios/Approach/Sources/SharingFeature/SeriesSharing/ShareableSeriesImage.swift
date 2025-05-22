@@ -27,15 +27,15 @@ public struct ShareableSeriesImage: View {
 		HStack(alignment: .top) {
 			VStack(alignment: .leading, spacing: .smallSpacing) {
 				if let date = configuration.date {
-					ChartLabel(symbol: .calendar, title: date.longFormat, style: .title)
+					ChartLabel(systemImage: "calendar", title: date.longFormat, style: .title)
 				}
 
 				if let bowlerName = configuration.bowlerName {
-					ChartLabel(symbol: .person, title: bowlerName, style: .plain)
+					ChartLabel(systemImage: "person", title: bowlerName, style: .plain)
 				}
 
 				if let leagueName = configuration.leagueName {
-					ChartLabel(symbol: .repeat, title: leagueName, style: .plain)
+					ChartLabel(systemImage: "repeat", title: leagueName, style: .plain)
 				}
 
 				if hasAnyPrimaryLabel {
@@ -69,16 +69,20 @@ public struct ShareableSeriesImage: View {
 			HStack(spacing: .smallSpacing) {
 				if configuration.showDetails {
 					if let total = configuration.total {
-						ChartLabel(symbol: .checkmarkSealFill, title: Strings.Sharing.Series.Details.totalLabel(total), style: .small)
+						ChartLabel(
+							systemImage: "checkmark.seal.fill",
+							title: Strings.Sharing.Series.Details.totalLabel(total),
+							style: .small
+						)
 					}
 
 					ChartLabel(
-						symbol: .arrowUp,
+						systemImage: "arrow.up",
 						title: Strings.Sharing.Series.Details.highScoreLabel(configuration.scores.highestScore),
 						style: .small
 					)
 					ChartLabel(
-						symbol: .arrowDown,
+						systemImage: "arrow.down",
 						title: Strings.Sharing.Series.Details.lowScoreLabel(configuration.scores.lowestScore),
 						style: .small
 					)
@@ -130,19 +134,19 @@ public struct ShareableSeriesImage: View {
 private struct ChartLabel: View {
 	@Environment(\.colorScheme) private var colorScheme
 
-	let symbol: SFSymbol
+	let systemImage: String
 	let title: String
 	let style: Style
 
-	init(symbol: SFSymbol, title: String, style: Style) {
-		self.symbol = symbol
+	init(systemImage: String, title: String, style: Style) {
+		self.systemImage = systemImage
 		self.title = title
 		self.style = style
 	}
 
 	var body: some View {
 		HStack(spacing: style.spacing) {
-			Image(systemSymbol: symbol)
+			Image(systemName: systemImage)
 				.resizable()
 				.frame(width: style.iconSize, height: style.iconSize)
 

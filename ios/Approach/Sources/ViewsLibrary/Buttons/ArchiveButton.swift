@@ -11,7 +11,7 @@ public struct ArchiveButton: View {
 
 	public var body: some View {
 		Button(role: .destructive, action: perform) {
-			Label(Strings.Action.archive, systemSymbol: .archivebox)
+			Label(Strings.Action.archive, systemImage: "archivebox")
 				.foregroundColor(Asset.Colors.Destructive.default)
 		}
 		.tint(Asset.Colors.Destructive.default)
@@ -27,7 +27,7 @@ public struct UnarchiveButton: View {
 
 	public var body: some View {
 		Button(action: perform) {
-			Label(Strings.Action.restore, systemSymbol: .arrowUturnBackward)
+			Label(Strings.Action.restore, systemImage: "arrow.uturn.backward")
 		}
 		.tint(Asset.Colors.Action.default)
 	}

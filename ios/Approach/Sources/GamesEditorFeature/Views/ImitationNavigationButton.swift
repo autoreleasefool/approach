@@ -17,7 +17,7 @@ public struct NavigationButton<Content: View>: View {
 				content
 					.frame(maxWidth: .infinity)
 
-				Image(systemSymbol: .chevronForward)
+				Image(systemName: "chevron.forward")
 					.resizable()
 					.scaledToFit()
 					.frame(width: .tinyIcon, height: .tinyIcon)

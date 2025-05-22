@@ -22,10 +22,10 @@ extension Lane {
 					.frame(maxWidth: .infinity, alignment: .leading)
 				switch position {
 				case .leftWall:
-					Image(systemSymbol: .arrowLeftToLineCompact)
+					Image(systemName: "arrow.left.to.line.compact")
 						.foregroundColor(.gray)
 				case .rightWall:
-					Image(systemSymbol: .arrowRightToLineCompact)
+					Image(systemName: "arrow.right.to.line.compact")
 						.foregroundColor(.gray)
 				case .noWall:
 					EmptyView()

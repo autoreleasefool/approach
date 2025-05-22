@@ -160,12 +160,12 @@ extension HorizontalShareableGamesImage {
 
 			var subtitles: [ScoreSheetLabel.Item] = if date != nil {
 				[
-					bowlerName.flatMap { ScoreSheetLabel.Item(symbol: .person, title: $0) },
-					leagueName.flatMap { ScoreSheetLabel.Item(symbol: .repeat, title: $0) },
+					bowlerName.flatMap { ScoreSheetLabel.Item(systemImage: "person", title: $0) },
+					leagueName.flatMap { ScoreSheetLabel.Item(systemImage: "repeat", title: $0) },
 				].compactMap { $0 }
 			} else if leagueName != nil {
 				[
-					bowlerName.flatMap { ScoreSheetLabel.Item(symbol: .person, title: $0) },
+					bowlerName.flatMap { ScoreSheetLabel.Item(systemImage: "person", title: $0) },
 				].compactMap { $0 }
 			} else {
 				[]
@@ -174,18 +174,18 @@ extension HorizontalShareableGamesImage {
 			if isShowingSeriesDetails {
 				if let total {
 					subtitles.append(ScoreSheetLabel.Item(
-						symbol: .checkmarkSealFill,
+						systemImage: "checkmark.seal.fill",
 						title: Strings.Sharing.Game.Details.totalLabel(total)
 					))
 				}
 
 				subtitles.append(ScoreSheetLabel.Item(
-					symbol: .arrowUp,
+					systemImage: "arrow.up",
 					title: Strings.Sharing.Game.Details.highScoreLabel(scores.highestScore)
 				))
 
 				subtitles.append(ScoreSheetLabel.Item(
-					symbol: .arrowDown,
+					systemImage: "arrow.down",
 					title: Strings.Sharing.Game.Details.lowScoreLabel(scores.lowestScore)
 				))
 			}

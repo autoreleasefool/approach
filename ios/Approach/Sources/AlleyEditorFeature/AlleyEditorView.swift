@@ -48,7 +48,7 @@ public struct AlleyEditorView: View {
 				}
 				Spacer()
 				if store.location != nil {
-					Image(systemSymbol: .xCircleFill)
+					Image(systemName: "x.circle.fill")
 				}
 			}
 		}

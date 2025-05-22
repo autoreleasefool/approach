@@ -157,7 +157,7 @@ public struct RollEditorView: View {
 					}
 
 					Button { send(.didTapOtherButton) } label: {
-						Image(systemSymbol: .chevronRightSquare)
+						Image(systemName: "chevron.right.square")
 							.resizable()
 							.scaledToFit()
 							.foregroundColor(.white)
@@ -173,7 +173,7 @@ public struct RollEditorView: View {
 				HStack(spacing: .smallSpacing) {
 					Text(Strings.Roll.Properties.Foul.title)
 						.foregroundColor(store.didFoul ? Asset.Colors.ScoreSheet.Plain.Text.OnBackground.foul.swiftUIColor : .white)
-					Image(systemSymbol: store.didFoul ? .fCursiveCircleFill : .fCursiveCircle)
+					Image(systemName: store.didFoul ? "f.cursive.circle.fill" : "f.cursive.circle")
 						.resizable()
 						.frame(width: .smallIcon, height: .smallIcon)
 						.foregroundColor(store.didFoul ? Asset.Colors.ScoreSheet.Plain.Text.OnBackground.foul.swiftUIColor : .white)

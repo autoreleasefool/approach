@@ -12,7 +12,7 @@ public struct FilterButton: View {
 
 	public var body: some View {
 		Button(action: perform) {
-			Image(systemSymbol: isActive ? .line3HorizontalDecreaseCircleFill : .line3HorizontalDecreaseCircle)
+			Image(systemName: isActive ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
 		}
 	}
 }

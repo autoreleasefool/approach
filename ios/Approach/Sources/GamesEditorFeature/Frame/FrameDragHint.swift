@@ -24,7 +24,7 @@ struct FrameDragHint: View {
 			Spacer()
 
 			if frameWidth > 0 {
-				Image(systemSymbol: .handDrawFill)
+				Image(systemName: "hand.draw.fill")
 					.resizable()
 					.scaledToFit()
 					.foregroundColor(Asset.Colors.Primary.light)

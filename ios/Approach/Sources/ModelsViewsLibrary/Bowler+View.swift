@@ -27,8 +27,8 @@ extension Bowler {
 
 				Spacer()
 
-				if let symbol = kind?.systemSymbol {
-					Image(systemSymbol: symbol)
+				if let image = kind?.systemImage {
+					Image(systemName: image)
 				}
 			}
 		}
@@ -36,10 +36,10 @@ extension Bowler {
 }
 
 extension Bowler.Kind {
-	public var systemSymbol: SFSymbol? {
+	public var systemImage: String? {
 		switch self {
-		case .opponent: return nil
-		case .playable: return .personFill
+		case .opponent: nil
+		case .playable: "person.fill"
 		}
 	}
 }

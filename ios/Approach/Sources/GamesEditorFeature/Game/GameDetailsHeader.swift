@@ -137,7 +137,7 @@ public struct GameDetailsHeaderView: View {
 					HStack {
 						Text(String(describing: next))
 							.font(.caption)
-						Image(systemSymbol: .chevronForward)
+						Image(systemName: "chevron.forward")
 							.resizable()
 							.scaledToFit()
 							.frame(width: .tinyIcon, height: .tinyIcon)
