@@ -30,6 +30,7 @@ public struct BasicTipView: View {
 				if let message = tip.message {
 					Text(message)
 						.frame(maxWidth: .infinity, alignment: .leading)
+						.fixedSize(horizontal: false, vertical: true)
 				}
 			}
 
