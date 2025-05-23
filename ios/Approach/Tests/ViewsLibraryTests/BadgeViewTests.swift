@@ -4,7 +4,7 @@ import Testing
 import TestUtilitiesLibrary
 @testable import ViewsLibrary
 
-@Suite("BadgeView", .tags(.library), .snapshots(record: .missing))
+@Suite("BadgeView", .tags(.library), .snapshots(record: .failed))
 struct BadgeViewTests {
 
 	@Test("Badge snapshots", .tags(.snapshot))

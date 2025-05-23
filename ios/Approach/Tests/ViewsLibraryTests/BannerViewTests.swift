@@ -4,7 +4,7 @@ import Testing
 import TestUtilitiesLibrary
 @testable import ViewsLibrary
 
-@Suite("BannerView", .tags(.library), .snapshots(record: .missing))
+@Suite("BannerView", .tags(.library), .snapshots(record: .failed))
 struct BannerViewTests {
 
 	@Test("Banner snapshots", .tags(.snapshot))

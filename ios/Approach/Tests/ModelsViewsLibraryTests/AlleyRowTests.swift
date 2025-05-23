@@ -5,7 +5,7 @@ import SwiftUI
 import Testing
 import TestUtilitiesLibrary
 
-@Suite("AlleyRow", .tags(.library), .snapshots(record: .missing))
+@Suite("AlleyRow", .tags(.library), .snapshots(record: .failed))
 struct AlleyRowTests {
 
 	@Test("Alley row snapshots", .tags(.snapshot))

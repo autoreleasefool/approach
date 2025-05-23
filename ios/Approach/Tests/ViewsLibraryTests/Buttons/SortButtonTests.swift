@@ -4,7 +4,7 @@ import Testing
 import TestUtilitiesLibrary
 @testable import ViewsLibrary
 
-@Suite("SortButton", .tags(.library), .snapshots(record: .missing))
+@Suite("SortButton", .tags(.library), .snapshots(record: .failed))
 struct SortButtonTests {
 
 	@Test("Active sort button snapshot", .tags(.snapshot))
