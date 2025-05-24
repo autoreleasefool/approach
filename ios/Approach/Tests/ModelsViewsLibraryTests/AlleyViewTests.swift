@@ -5,12 +5,12 @@ import SwiftUI
 import Testing
 import TestUtilitiesLibrary
 
-@Suite("AlleyRow", .tags(.library), .snapshots(record: .failed))
-struct AlleyRowTests {
+@Suite("AlleyView", .tags(.library), .snapshots(record: .failed))
+struct AlleyViewTests {
 
-	@Test("Alley row snapshots", .tags(.snapshot))
+	@Test("Alley view snapshots", .tags(.snapshot))
 	@MainActor
-	func snapshotAlleyRows() {
+	func snapshotAlleyViews() {
 		let rows = VStack {
 			Section {
 				Alley.View(.init(
@@ -38,7 +38,7 @@ struct AlleyRowTests {
 				))
 			}
 		}
-		.frame(width: 428)
+		.frame(width: 240)
 
 		assertSnapshot(of: rows, as: .image)
 	}
