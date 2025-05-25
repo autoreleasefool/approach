@@ -21,4 +21,3 @@ struct LaneViewTests {
 		assertSnapshot(of: view, as: .image, named: "\(position)")
 	}
 }
-

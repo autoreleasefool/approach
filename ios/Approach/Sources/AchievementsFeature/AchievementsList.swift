@@ -18,8 +18,7 @@ public struct AchievementsList: Reducer, Sendable {
 		public var achievements: IdentifiedArrayOf<Achievement.List> = []
 		public var list: [GridRow] = []
 
-		@Shared(.unseenAchievements)
-		public var unseenAchievements: Int = 0
+		@Shared(.unseenAchievements) public var unseenAchievements: Int = 0
 
 		@Presents public var details: AchievementDetails.State?
 

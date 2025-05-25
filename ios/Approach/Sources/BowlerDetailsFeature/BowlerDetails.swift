@@ -21,7 +21,7 @@ public struct BowlerDetails: Reducer, Sendable {
 			self.bowler = bowler
 			self.header = BowlerDetailsHeader.State(bowler: bowler)
 			self._recurrence = Shared(value: .none)
-			self._ordering = Shared(value: .default)
+			self._ordering = Shared(value: .byRecentlyUsed)
 			self.leagues = LeaguesSection.State(bowlerId: bowler.id, ordering: _ordering, recurrence: _recurrence)
 		}
 	}

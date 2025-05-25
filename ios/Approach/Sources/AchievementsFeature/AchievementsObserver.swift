@@ -20,8 +20,7 @@ public struct AchievementsObserver: Reducer, Sendable {
 	public struct State: Equatable {
 		public var achievementsQueue: [ToastState<AchievementAction>] = []
 
-		@Shared(.unseenAchievements)
-		public var unseenAchievements: Int = 0
+		@Shared(.unseenAchievements) public var unseenAchievements: Int = 0
 
 		@Presents public var achievementToast: ToastState<AchievementAction>?
 

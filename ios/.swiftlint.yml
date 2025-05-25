@@ -12,7 +12,7 @@ excluded:
 # Rule Configuration
 
 attributes:
-  always_on_same_line: ["@Dependency", "@Environment"]
+  always_on_same_line: ["@Dependency", "@Environment", "@Shared"]
   attributes_with_arguments_always_on_line_above: true
 
 trailing_comma:
