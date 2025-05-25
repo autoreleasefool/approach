@@ -3,9 +3,9 @@ import Foundation
 import Testing
 import TestUtilitiesLibrary
 import TipsLibrary
-import UserDefaultsPackageServiceInterface
 @testable import TipsService
 @testable import TipsServiceInterface
+import UserDefaultsPackageServiceInterface
 
 @Suite("TipsService", .tags(.service))
 struct TipsServiceTests {

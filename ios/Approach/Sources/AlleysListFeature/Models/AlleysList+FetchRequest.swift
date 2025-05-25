@@ -1,10 +1,12 @@
 import AlleysRepositoryInterface
+import Foundation
 import ModelsLibrary
+import Sharing
 
 extension Alley.List {
 	public struct FetchRequest: Equatable, Sendable {
-		public let filter: Filter
-		public let ordering: Alley.Ordering
+		public var filter: Filter
+		public var ordering: Alley.Ordering
 
 		public init(filter: Filter, ordering: Alley.Ordering) {
 			self.filter = filter
@@ -31,5 +33,14 @@ extension Alley.List.FetchRequest {
 			self.pinBase = pinBase
 			self.mechanism = mechanism
 		}
+	}
+}
+
+extension SharedReaderKey where Self == AppStorageKey<Alley.Ordering>.Default {
+	static var ordering: Self {
+		Self[
+			.appStorage("alleysList_ordering"),
+			default: .byRecentlyUsed
+		]
 	}
 }

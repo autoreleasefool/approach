@@ -10,6 +10,7 @@ import SwiftUI
 public struct GearFilter: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
+		// TODO: migrate to Shared
 		public var kind: Gear.Kind?
 	}
 

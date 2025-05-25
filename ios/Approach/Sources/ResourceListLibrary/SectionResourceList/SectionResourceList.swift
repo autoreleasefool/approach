@@ -17,7 +17,8 @@ public struct SectionResourceList<
 		public var editMode: EditMode = .inactive
 
 		public var features: [Feature]
-		public var query: Q
+
+		@SharedReader public var query: Q
 		public var sections: IdentifiedArrayOf<Section>?
 		public var listTitle: String?
 
@@ -54,12 +55,12 @@ public struct SectionResourceList<
 
 		public init(
 			features: [Feature],
-			query: Q,
+			query: SharedReader<Q>,
 			listTitle: String?,
 			emptyContent: ResourceListEmptyContent
 		) {
 			self.features = features
-			self.query = query
+			self._query = query
 			self.listTitle = listTitle
 			self.emptyState = .init(content: emptyContent, style: .empty)
 		}
@@ -107,7 +108,7 @@ public struct SectionResourceList<
 
 		@CasePathable
 		public enum Internal {
-			case refreshObservation
+			case observe(query: Q)
 			case sectionsResponse(Result<[Section], Error>)
 			case empty(ResourceListEmpty.Action)
 			case error(ResourceListEmpty.Action)
@@ -159,7 +160,10 @@ public struct SectionResourceList<
 			case let .view(viewAction):
 				switch viewAction {
 				case .onAppear:
-					return beginObservation(query: state.query)
+					return .publisher {
+						state.$query.publisher
+							.map { .internal(.observe(query: $0)) }
+					}
 
 				case .task:
 					return .cancelling(id: CancelID.observation)
@@ -233,7 +237,7 @@ public struct SectionResourceList<
 
 				case .alert(.presented(.didTapDismissButton)):
 					state.alert = nil
-					return beginObservation(query: state.query)
+					return state.restartObservation()
 
 				case .alert(.dismiss):
 					return .none
@@ -241,9 +245,9 @@ public struct SectionResourceList<
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .refreshObservation:
+				case let .observe(query):
 					state.errorState = nil
-					return beginObservation(query: state.query)
+					return beginObservation(query: query)
 
 				case let .sectionsResponse(.success(sections)):
 					state.sections = .init(uniqueElements: sections)
@@ -258,11 +262,9 @@ public struct SectionResourceList<
 
 				case .error(.delegate(.didTapActionButton)):
 					if state.errorState == .failedToLoad {
-						state.errorState = nil
-						return beginObservation(query: state.query)
+						return state.restartObservation()
 					} else if state.errorState == .failedToDelete {
-						state.errorState = nil
-						return beginObservation(query: state.query)
+						return state.restartObservation()
 					}
 					return .none
 

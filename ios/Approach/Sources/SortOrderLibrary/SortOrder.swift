@@ -8,6 +8,8 @@ public struct SortOrder<Ordering: Orderable>: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public let options: [Ordering] = Array(Ordering.allCases)
+
+		// TODO: Convert to Shared
 		public var ordering: Ordering
 
 		public init(initialValue: Ordering) {

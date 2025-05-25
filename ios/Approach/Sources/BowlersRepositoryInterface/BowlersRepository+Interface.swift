@@ -2,11 +2,9 @@ import Dependencies
 import ModelsLibrary
 
 extension Bowler {
-	public enum Ordering: Hashable, CaseIterable, Sendable {
+	public enum Ordering: String, Hashable, CaseIterable, Sendable {
 		case byName
 		case byRecentlyUsed
-
-		public static let `default`: Self = .byRecentlyUsed
 	}
 }
 
