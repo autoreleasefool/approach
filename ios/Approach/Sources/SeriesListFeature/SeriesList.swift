@@ -39,7 +39,9 @@ public struct SeriesList: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var league: League.SeriesHost
-		public var ordering: Series.Ordering = .default
+
+		@Shared public var fetchRequest: Series.List.FetchRequest
+		@Shared public var ordering: Series.Ordering
 
 		public var list: SectionResourceList<Series.List, Series.List.FetchRequest>.State
 
@@ -55,13 +57,23 @@ public struct SeriesList: Reducer, Sendable {
 
 		public init(league: League.SeriesHost) {
 			self.league = league
+			let ordering = Shared(value: Series.Ordering.newestFirst)
+			let fetchRequest = Shared(
+				value: Series.List.FetchRequest(
+					league: league.id,
+					ordering: ordering.wrappedValue
+				)
+			)
+			self._fetchRequest = fetchRequest
+			self._ordering = ordering
+
 			self.list = .init(
 				features: [
 					.add,
 					.swipeToEdit,
 					.swipeToArchive,
 				],
-				query: .init(league: league.id, ordering: .default),
+				query: SharedReader(fetchRequest),
 				listTitle: nil,
 				emptyContent: .init(
 					image: Asset.Media.EmptyState.series,
@@ -89,6 +101,7 @@ public struct SeriesList: Reducer, Sendable {
 			case didLoadEditableSeries(Result<Series.Edit, Error>)
 			case didLoadEditableLeague(Result<League.Edit, Error>)
 			case didLoadGameSeries(Result<Series.GameHost, Error>)
+			case didChangeOrdering(Series.Ordering)
 
 			case errors(Errors<ErrorID>.Action)
 			case destination(PresentationAction<Destination.Action>)
@@ -149,7 +162,10 @@ public struct SeriesList: Reducer, Sendable {
 			case let .view(viewAction):
 				switch viewAction {
 				case .onAppear:
-					return .none
+					return .publisher {
+						state.$ordering.publisher
+							.map { .internal(.didChangeOrdering($0)) }
+					}
 
 				case let .didTapSeries(id):
 					return .run { send in
@@ -176,6 +192,10 @@ public struct SeriesList: Reducer, Sendable {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .didChangeOrdering(ordering):
+					state.$fetchRequest.withLock { $0.ordering = ordering }
+					return .none
+
 				case let .didLoadEditableSeries(.success(series)):
 					state.destination = .seriesEditor(.init(value: .edit(series), inLeague: state.league))
 					return .none
@@ -286,9 +306,8 @@ public struct SeriesList: Reducer, Sendable {
 				case let .destination(.presented(.sortOrder(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didTapOption(option):
-						state.ordering = option
-						return state.list.updateQuery(to: .init(league: state.league.id, ordering: state.ordering))
-							.map { .internal(.list($0)) }
+						state.$ordering.withLock { $0 = option }
+						return .none
 					}
 
 				case .errors(.delegate(.doNothing)):

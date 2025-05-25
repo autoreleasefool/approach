@@ -29,8 +29,10 @@ extension Bowler.Ordering: CustomStringConvertible {
 public struct OpponentsList: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
-		public var list: ResourceList<Bowler.Opponent, Bowler.Ordering>.State
-		public var ordering: Bowler.Ordering = .byRecentlyUsed
+		public var list: ResourceList<Bowler.Opponent, Bowler.Opponent.FetchRequest>.State
+
+		@Shared(.fetchRequest) public var fetchRequest: Bowler.Opponent.FetchRequest
+
 		public let isOpponentDetailsEnabled: Bool
 
 		public var errors: Errors<ErrorID>.State = .init()
@@ -38,13 +40,16 @@ public struct OpponentsList: Reducer, Sendable {
 		@Presents public var destination: Destination.State?
 
 		public init() {
+			let fetchRequest = Shared(.fetchRequest)
+			self._fetchRequest = fetchRequest
+
 			self.list = .init(
 				features: [
 					.add,
 					.swipeToEdit,
 					.swipeToArchive,
 				],
-				query: .byRecentlyUsed,
+				query: SharedReader(fetchRequest),
 				listTitle: Strings.Opponent.List.title,
 				emptyContent: .init(
 					image: Asset.Media.EmptyState.opponents,
@@ -73,7 +78,7 @@ public struct OpponentsList: Reducer, Sendable {
 			case didLoadEditableOpponent(Result<Bowler.Edit, Error>)
 			case didArchiveOpponent(Result<Bowler.Opponent, Error>)
 
-			case list(ResourceList<Bowler.Opponent, Bowler.Ordering>.Action)
+			case list(ResourceList<Bowler.Opponent, Bowler.Opponent.FetchRequest>.Action)
 			case errors(Errors<ErrorID>.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
@@ -126,7 +131,7 @@ public struct OpponentsList: Reducer, Sendable {
 					return .none
 
 				case .didTapSortOrderButton:
-					state.destination = .sortOrder(.init(initialValue: state.ordering))
+					state.destination = .sortOrder(.init(initialValue: state.fetchRequest))
 					return .none
 				}
 
@@ -177,9 +182,8 @@ public struct OpponentsList: Reducer, Sendable {
 				case let .destination(.presented(.sortOrder(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didTapOption(option):
-						state.ordering = option
-						return state.list.updateQuery(to: state.ordering)
-							.map { .internal(.list($0)) }
+						state.$fetchRequest.withLock { $0 = option }
+						return .none
 					}
 
 				case .destination(.presented(.editor(.delegate(.doNothing)))):

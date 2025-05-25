@@ -10,6 +10,7 @@ import SwiftUI
 public struct LeaguesFilter: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
+		// TODO: migrate to Shared
 		public var recurrence: League.Recurrence?
 	}
 

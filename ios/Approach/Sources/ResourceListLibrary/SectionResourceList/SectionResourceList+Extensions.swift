@@ -14,8 +14,7 @@ extension SectionResourceList {
 }
 
 extension SectionResourceList.State {
-	public mutating func updateQuery(to query: Q) -> Effect<SectionResourceList.Action> {
-		self.query = query
-		return .send(.internal(.refreshObservation))
+	func restartObservation() -> Effect<SectionResourceList.Action> {
+		.send(.internal(.observe(query: query)))
 	}
 }

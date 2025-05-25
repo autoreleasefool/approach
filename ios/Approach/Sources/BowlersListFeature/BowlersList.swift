@@ -41,10 +41,11 @@ public struct BowlersList: Reducer, Sendable {
 
 	@ObservableState
 	public struct State: Equatable {
-		public var list: ResourceList<Bowler.List, Bowler.Ordering>.State
+		public var list: ResourceList<Bowler.List, Bowler.List.FetchRequest>.State
 		public var widgets: StatisticsWidgetLayout.State = .init(context: BowlersList.widgetContext, newWidgetSource: nil)
-		public var ordering: Bowler.Ordering = .default
 		public var quickLaunch: QuickLaunchSource?
+
+		@Shared(.fetchRequest) public var fetchRequest: Bowler.List.FetchRequest
 
 		public var errors: Errors<ErrorID>.State = .init()
 
@@ -55,13 +56,16 @@ public struct BowlersList: Reducer, Sendable {
 		public var isShowingWidgets: Bool
 
 		public init() {
+			let fetchRequest = Shared(.fetchRequest)
+			self._fetchRequest = fetchRequest
+
 			self.list = .init(
 				features: [
 					.add,
 					.swipeToEdit,
 					.swipeToArchive,
 				],
-				query: .default,
+				query: SharedReader(fetchRequest),
 				listTitle: Strings.Bowler.List.title,
 				emptyContent: .init(
 					image: Asset.Media.EmptyState.bowlers,
@@ -101,7 +105,7 @@ public struct BowlersList: Reducer, Sendable {
 			case didSetIsShowingWidgets(Bool)
 
 			case announcements(Announcements.Action)
-			case list(ResourceList<Bowler.List, Bowler.Ordering>.Action)
+			case list(ResourceList<Bowler.List, Bowler.List.FetchRequest>.Action)
 			case widgets(StatisticsWidgetLayout.Action)
 			case destination(PresentationAction<Destination.Action>)
 			case errors(Errors<ErrorID>.Action)
@@ -193,7 +197,7 @@ public struct BowlersList: Reducer, Sendable {
 					)
 
 				case .didTapSortOrderButton:
-					state.destination = .sortOrder(.init(initialValue: state.list.query))
+					state.destination = .sortOrder(.init(initialValue: state.fetchRequest))
 					return .none
 
 				case let .didTapBowler(id):
@@ -291,9 +295,8 @@ public struct BowlersList: Reducer, Sendable {
 				case let .destination(.presented(.sortOrder(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didTapOption(option):
-						state.ordering = option
-						return state.list.updateQuery(to: option)
-							.map { .internal(.list($0)) }
+						state.$fetchRequest.withLock { $0 = option }
+						return .none
 					}
 
 				case .destination(.dismiss):

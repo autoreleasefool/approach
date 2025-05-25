@@ -41,7 +41,7 @@ public struct GamesList: Reducer, Sendable {
 			self.series = series
 			self.list = .init(
 				features: [.moveable, .swipeToArchive],
-				query: series.id,
+				query: SharedReader(value: series.id),
 				listTitle: nil,
 				emptyContent: .init(
 					image: Asset.Media.EmptyState.games,
@@ -111,7 +111,7 @@ public struct GamesList: Reducer, Sendable {
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.list, action: \.internal.list) {
 			ResourceList { @Sendable in
-				fetchGames(seriesId: $0)
+				games.seriesGames(forId: $0, ordering: .byIndex)
 			}
 		}
 
@@ -293,21 +293,6 @@ public struct GamesList: Reducer, Sendable {
 			default:
 				return nil
 			}
-		}
-	}
-
-	private func fetchGames(seriesId: Series.ID) -> AsyncThrowingStream<[Game.List], Error> {
-		AsyncThrowingStream { continuation in
-			let task = Task {
-				do {
-					for try await games in games.seriesGames(forId: seriesId, ordering: .byIndex) {
-						continuation.yield(games)
-					}
-				} catch {
-					continuation.finish(throwing: error)
-				}
-			}
-			continuation.onTermination = { _ in task.cancel() }
 		}
 	}
 }

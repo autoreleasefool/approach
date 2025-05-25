@@ -18,7 +18,6 @@ public struct ResourceList<
 	public struct State: Equatable {
 		public var sectionList: SectionResourceList<R, Q>.State
 
-		public var query: Q { sectionList.query }
 		public var resources: IdentifiedArrayOf<R>? { sectionList.resources }
 		public var editMode: EditMode { sectionList.editMode }
 
@@ -28,7 +27,7 @@ public struct ResourceList<
 
 		public init(
 			features: [SectionResourceList<R, Q>.Feature],
-			query: Q,
+			query: SharedReader<Q>,
 			listTitle: String?,
 			emptyContent: ResourceListEmptyContent
 		) {

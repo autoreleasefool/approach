@@ -29,25 +29,34 @@ extension Gear.Ordering: CustomStringConvertible {
 public struct GearList: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
-		public var list: ResourceList<Gear.Summary, Query>.State
-		public var ordering: Gear.Ordering = .default
-		public var kindFilter: Gear.Kind?
+		@Shared public var fetchRequest: Gear.Summary.FetchRequest
+		@Shared(.ordering) public var ordering: Gear.Ordering
+
+		public var list: ResourceList<Gear.Summary, Gear.Summary.FetchRequest>.State
 
 		public var errors: Errors<ErrorID>.State = .init()
 
 		@Presents public var destination: Destination.State?
 
-		var isAnyFilterActive: Bool { kindFilter != nil }
+		var isAnyFilterActive: Bool { fetchRequest.kind != nil }
 
 		public init(kind: Gear.Kind?) {
-			self.kindFilter = kind
+			let ordering = Shared(.ordering)
+			let fetchRequest = Shared(
+				value: Gear.Summary.FetchRequest(
+						kind: kind,
+						ordering: ordering.wrappedValue
+					)
+			)
+			self._fetchRequest = fetchRequest
+			self._ordering = ordering
 			self.list = .init(
 				features: [
 					.add,
 					.swipeToEdit,
 					.swipeToDelete,
 				],
-				query: .init(kind: kind, sortOrder: .default),
+				query: SharedReader(fetchRequest),
 				listTitle: Strings.Gear.List.title,
 				emptyContent: .init(
 					image: Asset.Media.EmptyState.gear,
@@ -72,8 +81,9 @@ public struct GearList: Reducer, Sendable {
 		public enum Internal {
 			case didLoadEditableGear(Result<Gear.Edit, Error>)
 			case didDeleteGear(Result<Gear.Summary, Error>)
+			case didChangeOrdering(Gear.Ordering)
 
-			case list(ResourceList<Gear.Summary, Query>.Action)
+			case list(ResourceList<Gear.Summary, Gear.Summary.FetchRequest>.Action)
 			case errors(Errors<ErrorID>.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
@@ -81,11 +91,6 @@ public struct GearList: Reducer, Sendable {
 		case view(View)
 		case `internal`(Internal)
 		case delegate(Delegate)
-	}
-
-	public struct Query: Equatable, Sendable {
-		public var kind: Gear.Kind?
-		public var sortOrder: Gear.Ordering
 	}
 
 	@Reducer(state: .equatable)
@@ -114,7 +119,7 @@ public struct GearList: Reducer, Sendable {
 
 		Scope(state: \.list, action: \.internal.list) {
 			ResourceList {
-				gear.list(ownedBy: nil, ofKind: $0.kind, ordered: $0.sortOrder)
+				gear.list(ownedBy: nil, ofKind: $0.kind, ordered: $0.ordering)
 			}
 		}
 
@@ -123,10 +128,13 @@ public struct GearList: Reducer, Sendable {
 			case let .view(viewAction):
 				switch viewAction {
 				case .onAppear:
-					return .none
+					return .publisher {
+						state.$ordering.publisher
+							.map { .internal(.didChangeOrdering($0)) }
+					}
 
 				case .didTapFilterButton:
-					state.destination = .filters(.init(kind: state.kindFilter))
+					state.destination = .filters(.init(kind: state.fetchRequest.kind))
 					return .none
 
 				case .didTapSortOrderButton:
@@ -152,6 +160,10 @@ public struct GearList: Reducer, Sendable {
 					return state.errors
 						.enqueue(.failedToDeleteGear, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
 						.map { .internal(.errors($0)) }
+
+				case let .didChangeOrdering(ordering):
+					state.$fetchRequest.withLock { $0.ordering = ordering }
+					return .none
 
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
@@ -182,17 +194,15 @@ public struct GearList: Reducer, Sendable {
 				case let .destination(.presented(.sortOrder(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didTapOption(option):
-						state.ordering = option
-						return state.list.updateQuery(to: .init(kind: state.kindFilter, sortOrder: state.ordering))
-							.map { .internal(.list($0)) }
+						state.$ordering.withLock { $0 = option }
+						return .none
 					}
 
 				case let .destination(.presented(.filters(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didChangeFilters(filter):
-						state.kindFilter = filter
-						return state.list.updateQuery(to: .init(kind: state.kindFilter, sortOrder: state.ordering))
-							.map { .internal(.list($0)) }
+						state.$fetchRequest.withLock { $0.kind = filter }
+						return .none
 					}
 
 				case .destination(.presented(.editor(.delegate(.doNothing)))):

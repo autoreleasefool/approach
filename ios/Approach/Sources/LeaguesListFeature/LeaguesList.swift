@@ -41,8 +41,8 @@ public struct LeaguesList: Reducer, Sendable {
 		public var preferredGear: PreferredGear.State
 		public var widgets: StatisticsWidgetLayout.State
 
-		public var ordering: League.Ordering = .default
-		public var filter: LeaguesFilter.State
+		@Shared public var fetchRequest: League.List.FetchRequest
+		@Shared(.ordering) public var ordering: League.Ordering
 
 		public var isShowingWidgets: Bool
 
@@ -50,12 +50,22 @@ public struct LeaguesList: Reducer, Sendable {
 
 		@Presents public var destination: Destination.State?
 
-		var isAnyFilterActive: Bool { filter.recurrence != nil }
+		var isAnyFilterActive: Bool { fetchRequest.filter.recurrence != nil }
 
 		public init(bowler: Bowler.Summary) {
 			self.bowler = bowler
-			let filter: LeaguesFilter.State = .init()
-			self.filter = filter
+			let ordering = Shared(.ordering)
+			let fetchRequest = Shared(
+				value: League.List.FetchRequest(
+					filter: League.List.FetchRequest.Filter(
+						bowler: bowler.id,
+						recurrence: nil
+					),
+					ordering: ordering.wrappedValue
+				)
+			)
+			self._fetchRequest = fetchRequest
+			self._ordering = ordering
 			self.widgets = .init(context: LeaguesList.widgetContext(forBowler: bowler.id), newWidgetSource: .bowler(bowler.id))
 			self.preferredGear = .init(bowler: bowler.id)
 			self.list = SectionList.State(
@@ -64,10 +74,7 @@ public struct LeaguesList: Reducer, Sendable {
 					.swipeToEdit,
 					.swipeToArchive,
 				],
-				query: .init(
-					filter: .init(bowler: bowler.id, recurrence: filter.recurrence),
-					ordering: .default
-				),
+				query: SharedReader(fetchRequest),
 				listTitle: Strings.League.List.title,
 				emptyContent: .init(
 					image: Asset.Media.EmptyState.leagues,
@@ -102,6 +109,7 @@ public struct LeaguesList: Reducer, Sendable {
 			case didLoadSeriesLeague(Result<League.SeriesHost, Error>)
 			case didLoadEventSeries(Result<EventSeries, Error>)
 			case didSetIsShowingWidgets(Bool)
+			case didChangeOrdering(League.Ordering)
 
 			case errors(Errors<ErrorID>.Action)
 			case preferredGear(PreferredGear.Action)
@@ -170,7 +178,10 @@ public struct LeaguesList: Reducer, Sendable {
 			case let .view(viewAction):
 				switch viewAction {
 				case .onAppear:
-					return .none
+					return .publisher {
+						state.$ordering.publisher
+							.map { .internal(.didChangeOrdering($0)) }
+					}
 
 				case .didStartTask:
 					return .run { send in
@@ -182,7 +193,7 @@ public struct LeaguesList: Reducer, Sendable {
 					}
 
 				case .didTapFilterButton:
-					state.destination = .filters(.init(recurrence: state.filter.recurrence))
+					state.destination = .filters(.init(recurrence: state.fetchRequest.filter.recurrence))
 					return .none
 
 				case .didTapSortOrderButton:
@@ -208,6 +219,10 @@ public struct LeaguesList: Reducer, Sendable {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .didChangeOrdering(ordering):
+					state.$fetchRequest.withLock { $0.ordering = ordering }
+					return .none
+
 				case let .didSetIsShowingWidgets(isShowing):
 					state.isShowingWidgets = isShowing
 					return .none
@@ -283,27 +298,15 @@ public struct LeaguesList: Reducer, Sendable {
 				case let .destination(.presented(.sortOrder(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didTapOption(option):
-						state.ordering = option
-						return state.list.updateQuery(
-							to: .init(
-								filter: .init(bowler: state.bowler.id, recurrence: state.filter.recurrence),
-								ordering: state.ordering
-							)
-						)
-						.map { .internal(.list($0)) }
+						state.$ordering.withLock { $0 = option }
+						return .none
 					}
 
 				case let .destination(.presented(.filters(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didChangeFilters(recurrence):
-						state.filter.recurrence = recurrence
-						return state.list.updateQuery(
-							to: .init(
-								filter: .init(bowler: state.bowler.id, recurrence: state.filter.recurrence),
-								ordering: state.ordering
-							)
-						)
-						.map { .internal(.list($0)) }
+						state.$fetchRequest.withLock { $0.filter.recurrence = recurrence }
+						return .none
 					}
 
 				case let .destination(.presented(.editor(.delegate(delegateAction)))):

@@ -3,13 +3,11 @@ import Foundation
 import ModelsLibrary
 
 extension Series {
-	public enum Ordering: Hashable, CaseIterable, Sendable {
+	public enum Ordering: String, Hashable, CaseIterable, Sendable {
 		case newestFirst
 		case oldestFirst
 		case lowestToHighest
 		case highestToLowest
-
-		public static let `default`: Self = .newestFirst
 	}
 }
 

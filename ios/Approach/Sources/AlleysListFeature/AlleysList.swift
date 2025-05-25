@@ -8,6 +8,7 @@ import FeatureActionLibrary
 import FeatureFlagsLibrary
 import ModelsLibrary
 import ResourceListLibrary
+import Sharing
 import StringsLibrary
 import ViewsLibrary
 
@@ -17,10 +18,12 @@ extension Alley.List: ResourceListItem {}
 public struct AlleysList: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
-		public var list: ResourceList<Alley.List, Alley.List.FetchRequest>.State
-		public var filter: Alley.List.FetchRequest.Filter = .init()
-		public var bowlerForAverages: Bowler.Summary?
+		@Shared public var fetchRequest: Alley.List.FetchRequest
+		@Shared(.ordering) public var ordering: Alley.Ordering
 
+		public var list: ResourceList<Alley.List, Alley.List.FetchRequest>.State
+
+		public var bowlerForAverages: Bowler.Summary?
 		public let isAlleyAndGearAveragesEnabled: Bool
 
 		public var errors: Errors<ErrorID>.State = .init()
@@ -28,17 +31,26 @@ public struct AlleysList: Reducer, Sendable {
 		@Presents public var destination: Destination.State?
 
 		var bowlerName: String? { bowlerForAverages?.name }
-		var isAnyFilterActive: Bool { filter != .init() }
+		var isAnyFilterActive: Bool { fetchRequest.filter != .init() }
 		var isShowingAverages: Bool { isAlleyAndGearAveragesEnabled }
 
 		public init() {
+			let ordering = Shared(.ordering)
+			let fetchRequest = Shared(
+				value: Alley.List.FetchRequest(
+					filter: .init(),
+					ordering: ordering.wrappedValue
+				)
+			)
+
+			self._fetchRequest = fetchRequest
 			self.list = .init(
 				features: [
 					.add,
 					.swipeToEdit,
 					.swipeToDelete,
 				],
-				query: .init(filter: .init(), ordering: .default),
+				query: SharedReader(fetchRequest),
 				listTitle: Strings.Alley.List.title,
 				emptyContent: .init(
 					image: Asset.Media.EmptyState.alleys,
@@ -56,6 +68,7 @@ public struct AlleysList: Reducer, Sendable {
 	public enum Action: FeatureAction, ViewAction {
 		@CasePathable
 		public enum View {
+			case onAppear
 			case didTapFiltersButton
 			case didTapBowler
 		}
@@ -67,6 +80,7 @@ public struct AlleysList: Reducer, Sendable {
 		public enum Internal {
 			case didLoadEditableAlley(Result<Alley.EditWithLanes, Error>)
 			case didDeleteAlley(Result<Alley.List, Error>)
+			case didChangeOrdering(Alley.Ordering)
 
 			case errors(Errors<ErrorID>.Action)
 			case list(ResourceList<Alley.List, Alley.List.FetchRequest>.Action)
@@ -82,6 +96,7 @@ public struct AlleysList: Reducer, Sendable {
 	public enum Destination {
 		case editor(AlleyEditor)
 		case filters(AlleysFilter)
+		// TODO: Support sort order
 	}
 
 	public enum ErrorID: Hashable {
@@ -115,17 +130,27 @@ public struct AlleysList: Reducer, Sendable {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .publisher {
+						state.$ordering.publisher
+							.map { .internal(.didChangeOrdering($0)) }
+					}
+
 				case .didTapBowler:
 					// FIXME: Present picker for bowler to control averages shown
 					return .none
 
 				case .didTapFiltersButton:
-					state.destination = .filters(.init(filter: state.filter))
+					state.destination = .filters(.init(filter: state.fetchRequest.filter))
 					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .didChangeOrdering(ordering):
+					state.$fetchRequest.withLock { $0.ordering = ordering }
+					return .none
+
 				case let .didLoadEditableAlley(.success(alley)):
 					state.destination = .editor(.init(value: .edit(alley)))
 					return .none
@@ -171,9 +196,8 @@ public struct AlleysList: Reducer, Sendable {
 				case let .destination(.presented(.filters(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didChangeFilters(filter):
-						state.filter = filter
-						return state.list.updateQuery(to: .init(filter: filter, ordering: .byRecentlyUsed))
-							.map { .internal(.list($0)) }
+						state.$fetchRequest.withLock { $0.filter = filter }
+						return .none
 					}
 
 				case .destination(.dismiss),

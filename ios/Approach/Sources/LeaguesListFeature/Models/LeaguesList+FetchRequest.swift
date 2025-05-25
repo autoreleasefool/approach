@@ -1,10 +1,11 @@
 import LeaguesRepositoryInterface
 import ModelsLibrary
+import Sharing
 
 extension League.List {
 	public struct FetchRequest: Equatable, Sendable {
-		public let filter: Filter
-		public let ordering: League.Ordering
+		public var filter: Filter
+		public var ordering: League.Ordering
 
 		public init(filter: Filter, ordering: League.Ordering) {
 			self.filter = filter
@@ -25,5 +26,14 @@ extension League.List.FetchRequest {
 			self.bowler = bowler
 			self.recurrence = recurrence
 		}
+	}
+}
+
+extension SharedReaderKey where Self == AppStorageKey<League.Ordering>.Default {
+	static var ordering: Self {
+		Self[
+			.appStorage("leaguesList_ordering"),
+			default: .byRecentlyUsed
+		]
 	}
 }
