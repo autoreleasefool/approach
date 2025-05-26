@@ -70,8 +70,8 @@ public struct TextAvatarEditor: Reducer, Sendable {
 
 		public var description: String {
 			switch self {
-			case .solid: return Strings.Avatar.Editor.Properties.BackgroundColor.Style.solid
-			case .gradient: return Strings.Avatar.Editor.Properties.BackgroundColor.Style.gradient
+			case .solid: Strings.Avatar.Editor.Properties.BackgroundColor.Style.solid
+			case .gradient: Strings.Avatar.Editor.Properties.BackgroundColor.Style.gradient
 			}
 		}
 	}

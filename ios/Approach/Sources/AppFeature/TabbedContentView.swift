@@ -67,14 +67,10 @@ public struct TabbedContentView: View {
 extension TabbedContent.Tab {
 	var name: String {
 		switch self {
-		case .overview:
-			return Strings.App.Tabs.overview
-		case .settings:
-			return Strings.App.Tabs.settings
-		case .accessories:
-			return Strings.App.Tabs.accessories
-		case .statistics:
-			return Strings.App.Tabs.statistics
+		case .overview: Strings.App.Tabs.overview
+		case .settings: Strings.App.Tabs.settings
+		case .accessories: Strings.App.Tabs.accessories
+		case .statistics: Strings.App.Tabs.statistics
 		}
 	}
 

@@ -32,13 +32,13 @@ extension GameDetailsHeader.State {
 		public var description: String {
 			switch self {
 			case let .bowler(name, _):
-				return name
+				name
 			case let .roll(rollIndex):
-				return Strings.Roll.title(rollIndex + 1)
+				Strings.Roll.title(rollIndex + 1)
 			case let .frame(frameIndex):
-				return Strings.Frame.title(frameIndex + 1)
+				Strings.Frame.title(frameIndex + 1)
 			case let .game(gameIndex, _, _):
-				return Strings.Game.titleWithOrdinal(gameIndex + 1)
+				Strings.Game.titleWithOrdinal(gameIndex + 1)
 			}
 		}
 	}

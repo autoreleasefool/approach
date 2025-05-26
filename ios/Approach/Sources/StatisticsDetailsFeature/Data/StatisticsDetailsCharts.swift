@@ -133,11 +133,11 @@ extension TrackableFilter.Aggregation {
 	func description(forSource: TrackableFilter.Source) -> String {
 		switch (self, forSource) {
 		case (.accumulate, _):
-			return Strings.Statistics.Filter.Aggregation.accumulate
+			Strings.Statistics.Filter.Aggregation.accumulate
 		case (.periodic, .series):
-			return Strings.Statistics.Filter.Aggregation.byGame
+			Strings.Statistics.Filter.Aggregation.byGame
 		case (.periodic, _):
-			return Strings.Statistics.Filter.Aggregation.periodic
+			Strings.Statistics.Filter.Aggregation.periodic
 		}
 	}
 }

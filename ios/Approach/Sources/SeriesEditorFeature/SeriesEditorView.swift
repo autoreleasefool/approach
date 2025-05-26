@@ -177,8 +177,8 @@ public struct SeriesEditorView: View {
 extension Series.PreBowl: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .preBowl: return Strings.Series.Properties.PreBowl.preBowl
-		case .regular: return Strings.Series.Properties.PreBowl.regular
+		case .preBowl: Strings.Series.Properties.PreBowl.preBowl
+		case .regular: Strings.Series.Properties.PreBowl.regular
 		}
 	}
 }
@@ -186,8 +186,8 @@ extension Series.PreBowl: CustomStringConvertible {
 extension Series.ExcludeFromStatistics: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .exclude: return Strings.Series.Properties.ExcludeFromStatistics.exclude
-		case .include: return Strings.Series.Properties.ExcludeFromStatistics.include
+		case .exclude: Strings.Series.Properties.ExcludeFromStatistics.exclude
+		case .include: Strings.Series.Properties.ExcludeFromStatistics.include
 		}
 	}
 }

@@ -21,11 +21,11 @@ extension StatisticsWidget {
 extension StatisticsWidget.Timeline: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .past1Month: return Strings.Widget.Timeline.past1Month
-		case .past3Months: return Strings.Widget.Timeline.past3Months
-		case .past6Months: return Strings.Widget.Timeline.past6Months
-		case .pastYear: return Strings.Widget.Timeline.pastYear
-		case .allTime: return Strings.Widget.Timeline.allTime
+		case .past1Month: Strings.Widget.Timeline.past1Month
+		case .past3Months: Strings.Widget.Timeline.past3Months
+		case .past6Months: Strings.Widget.Timeline.past6Months
+		case .pastYear: Strings.Widget.Timeline.pastYear
+		case .allTime: Strings.Widget.Timeline.allTime
 		}
 	}
 }

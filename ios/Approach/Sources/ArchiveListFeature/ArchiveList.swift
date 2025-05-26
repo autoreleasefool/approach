@@ -276,8 +276,8 @@ public struct ArchiveList: Reducer, Sendable {
 extension Game.ScoringMethod: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .manual: return Strings.Game.Editor.Fields.ScoringMethod.manual
-		case .byFrame: return Strings.Game.Editor.Fields.ScoringMethod.byFrame
+		case .manual: Strings.Game.Editor.Fields.ScoringMethod.manual
+		case .byFrame: Strings.Game.Editor.Fields.ScoringMethod.byFrame
 		}
 	}
 }

@@ -20,10 +20,10 @@ import ViewsLibrary
 extension Series.Ordering: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .oldestFirst: return Strings.Ordering.oldestFirst
-		case .newestFirst: return Strings.Ordering.newestFirst
-		case .highestToLowest: return Strings.Ordering.highestToLowest
-		case .lowestToHighest: return Strings.Ordering.lowestToHighest
+		case .oldestFirst: Strings.Ordering.oldestFirst
+		case .newestFirst: Strings.Ordering.newestFirst
+		case .highestToLowest: Strings.Ordering.highestToLowest
+		case .lowestToHighest: Strings.Ordering.lowestToHighest
 		}
 	}
 }

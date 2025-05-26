@@ -42,9 +42,9 @@ public struct MatchPlaySummarySection: View {
 
 	private var opponentScore: String {
 		if let score = matchPlay?.opponentScore {
-			return Strings.MatchPlay.Summary.Score.label(score)
+			Strings.MatchPlay.Summary.Score.label(score)
 		} else {
-			return Strings.MatchPlay.Summary.Score.none
+			Strings.MatchPlay.Summary.Score.none
 		}
 	}
 }

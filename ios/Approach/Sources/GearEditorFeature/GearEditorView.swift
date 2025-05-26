@@ -92,10 +92,10 @@ extension View {
 extension Gear.Kind: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .shoes: return Strings.Gear.Properties.Kind.shoes
-		case .bowlingBall: return Strings.Gear.Properties.Kind.bowlingBall
-		case .towel: return Strings.Gear.Properties.Kind.towel
-		case .other: return Strings.other
+		case .shoes: Strings.Gear.Properties.Kind.shoes
+		case .bowlingBall: Strings.Gear.Properties.Kind.bowlingBall
+		case .towel: Strings.Gear.Properties.Kind.towel
+		case .other: Strings.other
 		}
 	}
 }

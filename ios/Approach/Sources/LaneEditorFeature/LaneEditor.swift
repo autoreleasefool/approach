@@ -6,9 +6,9 @@ import StringsLibrary
 extension Lane.Position: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .leftWall: return Strings.Lane.Properties.Position.leftWall
-		case .rightWall: return Strings.Lane.Properties.Position.rightWall
-		case .noWall: return Strings.Lane.Properties.Position.noWall
+		case .leftWall: Strings.Lane.Properties.Position.leftWall
+		case .rightWall: Strings.Lane.Properties.Position.rightWall
+		case .noWall: Strings.Lane.Properties.Position.noWall
 		}
 	}
 }

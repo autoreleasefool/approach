@@ -29,8 +29,8 @@ extension Bowler.List: ResourceListItem {}
 extension Bowler.Ordering: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .byRecentlyUsed: return Strings.Ordering.mostRecentlyUsed
-		case .byName: return Strings.Ordering.alphabetical
+		case .byRecentlyUsed: Strings.Ordering.mostRecentlyUsed
+		case .byName: Strings.Ordering.alphabetical
 		}
 	}
 }

@@ -287,8 +287,8 @@ extension League.Edit: EditableRecord {
 extension League.Recurrence: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .repeating: return Strings.League.Properties.Recurrence.repeats
-		case .once: return Strings.League.Properties.Recurrence.never
+		case .repeating: Strings.League.Properties.Recurrence.repeats
+		case .once: Strings.League.Properties.Recurrence.never
 		}
 	}
 
@@ -305,8 +305,8 @@ extension League.Recurrence: CustomStringConvertible {
 extension League.ExcludeFromStatistics: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .include: return Strings.League.Properties.ExcludeFromStatistics.include
-		case .exclude: return Strings.League.Properties.ExcludeFromStatistics.exclude
+		case .include: Strings.League.Properties.ExcludeFromStatistics.include
+		case .exclude: Strings.League.Properties.ExcludeFromStatistics.exclude
 		}
 	}
 }

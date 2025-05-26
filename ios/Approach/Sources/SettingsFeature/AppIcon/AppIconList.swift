@@ -188,10 +188,10 @@ public struct AppIconListView: View {
 extension AppIcon.Category: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .pride: return Strings.App.Icon.Category.pride
-		case .standard: return Strings.App.Icon.Category.standard
-		case .christmas: return Strings.App.Icon.Category.christmas
-		case .halloween: return Strings.App.Icon.Category.halloween
+		case .pride: Strings.App.Icon.Category.pride
+		case .standard: Strings.App.Icon.Category.standard
+		case .christmas: Strings.App.Icon.Category.christmas
+		case .halloween: Strings.App.Icon.Category.halloween
 		}
 	}
 }

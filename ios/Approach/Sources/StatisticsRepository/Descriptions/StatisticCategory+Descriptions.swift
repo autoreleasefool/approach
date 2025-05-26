@@ -7,28 +7,28 @@ import UIKit
 extension StatisticCategory {
 	func detailedDescription(frameConfiguration: TrackablePerFrameConfiguration) -> String? {
 		switch self {
-		case .aces: return Strings.Statistics.Categories.Aces.description
-		case .chopOffs: return Strings.Statistics.Categories.ChopOffs.description
-		case .fives: return Strings.Statistics.Categories.Fives.description
+		case .aces: Strings.Statistics.Categories.Aces.description
+		case .chopOffs: Strings.Statistics.Categories.ChopOffs.description
+		case .fives: Strings.Statistics.Categories.Fives.description
 		case .headPins:
-			return frameConfiguration.countHeadPin2AsHeadPin
+			frameConfiguration.countHeadPin2AsHeadPin
 			? Strings.Statistics.Categories.HeadPins.Description.withH2
 			: Strings.Statistics.Categories.HeadPins.Description.withoutH2
 		case .splits:
-			return frameConfiguration.countSplitWithBonusAsSplit
+			frameConfiguration.countSplitWithBonusAsSplit
 			? Strings.Statistics.Categories.Splits.Description.withBonus
 			: Strings.Statistics.Categories.Splits.Description.withoutBonus
-		case .threes: return Strings.Statistics.Categories.Threes.description
-		case .taps: return Strings.Statistics.Categories.Taps.description
-		case .twelves: return Strings.Statistics.Categories.Twelves.description
-		case .middleHits: return Strings.Statistics.Categories.MiddleHits.description
-		case .strikesAndSpares: return Strings.Statistics.Categories.StrikesAndSpares.description
-		case .firstRoll: return Strings.Statistics.Categories.FirstRoll.description
-		case .fouls: return nil
-		case .matchPlayResults: return nil
-		case .overall: return nil
-		case .series: return nil
-		case .pinsLeftOnDeck: return nil
+		case .threes: Strings.Statistics.Categories.Threes.description
+		case .taps: Strings.Statistics.Categories.Taps.description
+		case .twelves: Strings.Statistics.Categories.Twelves.description
+		case .middleHits: Strings.Statistics.Categories.MiddleHits.description
+		case .strikesAndSpares: Strings.Statistics.Categories.StrikesAndSpares.description
+		case .firstRoll: Strings.Statistics.Categories.FirstRoll.description
+		case .fouls: nil
+		case .matchPlayResults: nil
+		case .overall: nil
+		case .series: nil
+		case .pinsLeftOnDeck: nil
 		}
 	}
 

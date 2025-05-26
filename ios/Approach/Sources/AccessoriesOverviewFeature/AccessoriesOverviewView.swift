@@ -181,10 +181,10 @@ extension View {
 extension Gear.Kind {
 	var pluralDescription: String {
 		switch self {
-		case .shoes: return Strings.Gear.Properties.Kind.shoes
-		case .bowlingBall: return Strings.Gear.Properties.Kind.bowlingBalls
-		case .towel: return Strings.Gear.Properties.Kind.towels
-		case .other: return Strings.other
+		case .shoes: Strings.Gear.Properties.Kind.shoes
+		case .bowlingBall: Strings.Gear.Properties.Kind.bowlingBalls
+		case .towel: Strings.Gear.Properties.Kind.towels
+		case .other: Strings.other
 		}
 	}
 }

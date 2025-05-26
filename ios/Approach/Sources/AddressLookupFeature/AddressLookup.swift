@@ -56,7 +56,7 @@ public struct AddressLookup: Reducer, Sendable {
 
 		public var errorDescription: String? {
 			switch self {
-			case .addressNotFound: return Strings.Address.Error.notFound
+			case .addressNotFound: Strings.Address.Error.notFound
 			}
 		}
 	}

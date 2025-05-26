@@ -127,8 +127,8 @@ public struct AlleysFilterView: View {
 extension Alley.Material: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .synthetic: return Strings.Alley.Properties.Material.synthetic
-		case .wood: return Strings.Alley.Properties.Material.wood
+		case .synthetic: Strings.Alley.Properties.Material.synthetic
+		case .wood: Strings.Alley.Properties.Material.wood
 		}
 	}
 }
@@ -136,8 +136,8 @@ extension Alley.Material: CustomStringConvertible {
 extension Alley.PinFall: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .freefall: return Strings.Alley.Properties.PinFall.freefall
-		case .strings: return Strings.Alley.Properties.PinFall.strings
+		case .freefall: Strings.Alley.Properties.PinFall.freefall
+		case .strings: Strings.Alley.Properties.PinFall.strings
 		}
 	}
 }
@@ -145,8 +145,8 @@ extension Alley.PinFall: CustomStringConvertible {
 extension Alley.Mechanism: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .dedicated: return Strings.Alley.Properties.Mechanism.dedicated
-		case .interchangeable: return Strings.Alley.Properties.Mechanism.interchangeable
+		case .dedicated: Strings.Alley.Properties.Mechanism.dedicated
+		case .interchangeable: Strings.Alley.Properties.Mechanism.interchangeable
 		}
 	}
 }
@@ -154,9 +154,9 @@ extension Alley.Mechanism: CustomStringConvertible {
 extension Alley.PinBase: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .black: return Strings.Alley.Properties.PinBase.black
-		case .white: return Strings.Alley.Properties.PinBase.white
-		case .other: return Strings.other
+		case .black: Strings.Alley.Properties.PinBase.black
+		case .white: Strings.Alley.Properties.PinBase.white
+		case .other: Strings.other
 		}
 	}
 }
