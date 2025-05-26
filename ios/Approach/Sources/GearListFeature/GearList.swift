@@ -134,7 +134,7 @@ public struct GearList: Reducer, Sendable {
 					}
 
 				case .didTapFilterButton:
-					state.destination = .filters(.init(kind: state.fetchRequest.kind))
+					state.destination = .filters(GearFilter.State(kind: state.$fetchRequest.kind))
 					return .none
 
 				case .didTapSortOrderButton:
@@ -198,12 +198,8 @@ public struct GearList: Reducer, Sendable {
 						return .none
 					}
 
-				case let .destination(.presented(.filters(.delegate(delegateAction)))):
-					switch delegateAction {
-					case let .didChangeFilters(filter):
-						state.$fetchRequest.withLock { $0.kind = filter }
-						return .none
-					}
+				case .destination(.presented(.filters(.delegate(.doNothing)))):
+					return .none
 
 				case .destination(.presented(.editor(.delegate(.doNothing)))):
 					return .none

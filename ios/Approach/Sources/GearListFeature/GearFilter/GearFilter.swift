@@ -10,8 +10,7 @@ import SwiftUI
 public struct GearFilter: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
-		// TODO: migrate to Shared
-		public var kind: Gear.Kind?
+		@Shared public var kind: Gear.Kind?
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
@@ -21,9 +20,7 @@ public struct GearFilter: Reducer, Sendable {
 			case didTapApplyButton
 		}
 		@CasePathable
-		public enum Delegate {
-			case didChangeFilters(Gear.Kind?)
-		}
+		public enum Delegate { case doNothing }
 		@CasePathable
 		public enum Internal { case doNothing }
 
@@ -45,10 +42,8 @@ public struct GearFilter: Reducer, Sendable {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didTapClearButton:
-					return .concatenate(
-						.send(.delegate(.didChangeFilters(nil))),
-						.run { _ in await dismiss() }
-					)
+					state.$kind.withLock { $0 = nil }
+					return .run { _ in await dismiss() }
 
 				case .didTapApplyButton:
 					return .run { _ in await dismiss() }
@@ -56,9 +51,6 @@ public struct GearFilter: Reducer, Sendable {
 
 			case .internal(.doNothing):
 				return .none
-
-			case .binding(\.kind):
-				return .send(.delegate(.didChangeFilters(state.kind)))
 
 			case .delegate, .binding:
 				return .none
