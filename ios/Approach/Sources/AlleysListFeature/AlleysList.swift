@@ -141,7 +141,7 @@ public struct AlleysList: Reducer, Sendable {
 					return .none
 
 				case .didTapFiltersButton:
-					state.destination = .filters(.init(filter: state.fetchRequest.filter))
+					state.destination = .filters(AlleysFilter.State(filter: state.$fetchRequest.filter))
 					return .none
 				}
 
@@ -193,12 +193,8 @@ public struct AlleysList: Reducer, Sendable {
 						return .none
 					}
 
-				case let .destination(.presented(.filters(.delegate(delegateAction)))):
-					switch delegateAction {
-					case let .didChangeFilters(filter):
-						state.$fetchRequest.withLock { $0.filter = filter }
-						return .none
-					}
+				case .destination(.presented(.filters(.delegate(.doNothing)))):
+					return .none
 
 				case .destination(.dismiss),
 						.destination(.presented(.filters(.internal))),

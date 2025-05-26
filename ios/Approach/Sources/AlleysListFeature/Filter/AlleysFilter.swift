@@ -10,7 +10,7 @@ import SwiftUI
 public struct AlleysFilter: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
-		public var filter: Alley.List.FetchRequest.Filter
+		@Shared public var filter: Alley.List.FetchRequest.Filter
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
@@ -20,9 +20,7 @@ public struct AlleysFilter: Reducer, Sendable {
 			case didTapApplyButton
 		}
 		@CasePathable
-		public enum Delegate {
-			case didChangeFilters(Alley.List.FetchRequest.Filter)
-		}
+		public enum Delegate { case doNothing }
 		@CasePathable
 		public enum Internal { case doNothing }
 
@@ -44,10 +42,8 @@ public struct AlleysFilter: Reducer, Sendable {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didTapClearButton:
-					return .concatenate(
-						.send(.delegate(.didChangeFilters(.init()))),
-						.run { _ in await dismiss() }
-					)
+					state.$filter.withLock { $0 = .init() }
+					return .run { _ in await dismiss() }
 
 				case .didTapApplyButton:
 					return .run { _ in await dismiss() }
@@ -56,10 +52,7 @@ public struct AlleysFilter: Reducer, Sendable {
 			case .internal(.doNothing):
 				return .none
 
-			case .binding:
-				return .send(.delegate(.didChangeFilters(state.filter)))
-
-			case .delegate:
+			case .delegate, .binding:
 				return .none
 			}
 		}
