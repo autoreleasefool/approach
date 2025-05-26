@@ -197,7 +197,7 @@ public struct BowlersList: Reducer, Sendable {
 					)
 
 				case .didTapSortOrderButton:
-					state.destination = .sortOrder(.init(initialValue: state.fetchRequest))
+					state.destination = .sortOrder(.init(initialValue: state.$fetchRequest))
 					return .none
 
 				case let .didTapBowler(id):
@@ -250,11 +250,8 @@ public struct BowlersList: Reducer, Sendable {
 					// Intentionally drop quick launch errors
 					return .none
 
-				case let .destination(.presented(.details(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .doNothing:
-						return .none
-					}
+				case .destination(.presented(.details(.delegate(.doNothing)))):
+					return .none
 
 				case let .destination(.presented(.seriesEditor(.delegate(delegateAction)))):
 					switch delegateAction {
@@ -292,12 +289,8 @@ public struct BowlersList: Reducer, Sendable {
 						return .none
 					}
 
-				case let .destination(.presented(.sortOrder(.delegate(delegateAction)))):
-					switch delegateAction {
-					case let .didTapOption(option):
-						state.$fetchRequest.withLock { $0 = option }
-						return .none
-					}
+				case .destination(.presented(.sortOrder(.delegate(.doNothing)))):
+					return .none
 
 				case .destination(.dismiss):
 					return .none

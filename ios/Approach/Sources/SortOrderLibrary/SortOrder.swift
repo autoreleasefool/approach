@@ -9,11 +9,10 @@ public struct SortOrder<Ordering: Orderable>: Reducer, Sendable {
 	public struct State: Equatable {
 		public let options: [Ordering] = Array(Ordering.allCases)
 
-		// TODO: Convert to Shared
-		public var ordering: Ordering
+		@Shared public var ordering: Ordering
 
-		public init(initialValue: Ordering) {
-			self.ordering = initialValue
+		public init(initialValue: Shared<Ordering>) {
+			self._ordering = initialValue
 		}
 	}
 
@@ -25,9 +24,7 @@ public struct SortOrder<Ordering: Orderable>: Reducer, Sendable {
 		@CasePathable
 		public enum Internal { case doNothing }
 		@CasePathable
-		public enum Delegate {
-			case didTapOption(Ordering)
-		}
+		public enum Delegate { case doNothing }
 
 		case view(View)
 		case `internal`(Internal)
@@ -44,11 +41,8 @@ public struct SortOrder<Ordering: Orderable>: Reducer, Sendable {
 			case let .view(viewAction):
 				switch viewAction {
 				case let .didTapOption(ordering):
-					state.ordering = ordering
-					return .concatenate(
-						.send(.delegate(.didTapOption(ordering))),
-						.run { _ in await dismiss() }
-					)
+					state.$ordering.withLock { $0 = ordering }
+					return .run { _ in await dismiss() }
 				}
 
 			case .internal(.doNothing):

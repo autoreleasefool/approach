@@ -182,7 +182,7 @@ public struct SeriesList: Reducer, Sendable {
 					}
 
 				case .didTapSortOrderButton:
-					state.destination = .sortOrder(.init(initialValue: state.ordering))
+					state.destination = .sortOrder(.init(initialValue: state.$ordering))
 					return .none
 
 				case .didTapUpdatePreBowlsButton:
@@ -303,12 +303,8 @@ public struct SeriesList: Reducer, Sendable {
 				case .destination(.presented(.games(.delegate(.doNothing)))):
 					return .none
 
-				case let .destination(.presented(.sortOrder(.delegate(delegateAction)))):
-					switch delegateAction {
-					case let .didTapOption(option):
-						state.$ordering.withLock { $0 = option }
-						return .none
-					}
+				case .destination(.presented(.sortOrder(.delegate(.doNothing)))):
+					return .none
 
 				case .errors(.delegate(.doNothing)):
 					return .none
