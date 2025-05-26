@@ -9,10 +9,20 @@ import FeatureFlagsLibrary
 import ModelsLibrary
 import ResourceListLibrary
 import Sharing
+import SortOrderLibrary
 import StringsLibrary
 import ViewsLibrary
 
 extension Alley.List: ResourceListItem {}
+
+extension Alley.Ordering: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .byName: Strings.Ordering.alphabetical
+		case .byRecentlyUsed: Strings.Ordering.mostRecentlyUsed
+		}
+	}
+}
 
 @Reducer
 public struct AlleysList: Reducer, Sendable {
@@ -70,6 +80,7 @@ public struct AlleysList: Reducer, Sendable {
 		public enum View {
 			case onAppear
 			case didTapFiltersButton
+			case didTapSortOrderButton
 			case didTapBowler
 		}
 
@@ -96,7 +107,7 @@ public struct AlleysList: Reducer, Sendable {
 	public enum Destination {
 		case editor(AlleyEditor)
 		case filters(AlleysFilter)
-		// TODO: Support sort order
+		case sortOrder(SortOrderLibrary.SortOrder<Alley.Ordering>)
 	}
 
 	public enum ErrorID: Hashable {
@@ -138,6 +149,10 @@ public struct AlleysList: Reducer, Sendable {
 
 				case .didTapBowler:
 					// FIXME: Present picker for bowler to control averages shown
+					return .none
+
+				case .didTapSortOrderButton:
+					state.destination = .sortOrder(.init(initialValue: state.$ordering))
 					return .none
 
 				case .didTapFiltersButton:
@@ -193,6 +208,9 @@ public struct AlleysList: Reducer, Sendable {
 						return .none
 					}
 
+				case .destination(.presented(.sortOrder(.delegate(.doNothing)))):
+					return .none
+
 				case .destination(.presented(.filters(.delegate(.doNothing)))):
 					return .none
 
@@ -204,6 +222,8 @@ public struct AlleysList: Reducer, Sendable {
 						.destination(.presented(.editor(.view))),
 						.destination(.presented(.editor(.binding))),
 						.destination(.presented(.editor(.delegate(.doNothing)))),
+						.destination(.presented(.sortOrder(.internal))),
+						.destination(.presented(.sortOrder(.view))),
 						.list(.internal), .list(.view),
 						.errors(.internal), .errors(.view), .errors(.delegate(.doNothing)):
 					return .none

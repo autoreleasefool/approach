@@ -2,7 +2,7 @@ import Dependencies
 import ModelsLibrary
 
 extension Alley {
-	public enum Ordering: String, Sendable {
+	public enum Ordering: String, Hashable, CaseIterable, Sendable {
 		case byName
 		case byRecentlyUsed
 	}

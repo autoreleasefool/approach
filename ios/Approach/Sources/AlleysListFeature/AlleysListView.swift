@@ -7,6 +7,7 @@ import FeatureActionLibrary
 import ModelsLibrary
 import ModelsViewsLibrary
 import ResourceListLibrary
+import SortOrderLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsPackageLibrary
@@ -43,10 +44,17 @@ public struct AlleysListView: View {
 					send(.didTapFiltersButton)
 				}
 			}
+
+			ToolbarItem(placement: .navigationBarTrailing) {
+				SortButton(isActive: false) {
+					send(.didTapSortOrderButton)
+				}
+			}
 		}
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		.alleyEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
 		.alleysFilter($store.scope(state: \.destination?.filters, action: \.internal.destination.filters))
+		.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
 	}
 
 	@ViewBuilder private var header: some View {
@@ -81,6 +89,15 @@ extension View {
 				AlleysFilterView(store: store)
 			}
 			.presentationDetents([.medium, .large])
+		}
+	}
+
+	fileprivate func sortOrder(_ store: Binding<StoreOf<SortOrderLibrary.SortOrder<Alley.Ordering>>?>) -> some View {
+		sheet(item: store) { store in
+			NavigationStack {
+				SortOrderView(store: store)
+			}
+			.presentationDetents([.medium])
 		}
 	}
 }
