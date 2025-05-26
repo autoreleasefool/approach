@@ -120,8 +120,7 @@ public struct BackupFailureView: View {
 
 	private var titleSection: some View {
 		HStack(spacing: 0) {
-			// TODO: Use custom image for backup failures
-			Image(asset: Asset.Media.Error.notFound)
+			Image(asset: Asset.Media.Error.backupFailed)
 				.resizable()
 				.scaledToFit()
 				.frame(width: .largeIcon, height: .largeIcon)

@@ -282,6 +282,7 @@ public enum Asset: Sendable {
       public static let teams = ImageAsset(name: "EmptyState/Teams")
     }
     public enum Error {
+      public static let backupFailed = ImageAsset(name: "Error/BackupFailed")
       public static let notFound = ImageAsset(name: "Error/NotFound")
     }
     public enum Frame {
