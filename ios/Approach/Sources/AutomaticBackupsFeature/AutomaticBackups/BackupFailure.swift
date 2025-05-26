@@ -94,7 +94,7 @@ public struct BackupFailureView: View {
 			.padding(.top)
 
 			Divider()
-				.padding(.vertical)
+				.padding(.bottom)
 
 			Button { send(.didTapOpenSettingsButton) } label: {
 				Text(Strings.Backups.Error.FailedToBackup.openSettings)
