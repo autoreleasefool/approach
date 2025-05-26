@@ -193,7 +193,7 @@ public struct LeaguesList: Reducer, Sendable {
 					}
 
 				case .didTapFilterButton:
-					state.destination = .filters(.init(recurrence: state.fetchRequest.filter.recurrence))
+					state.destination = .filters(LeaguesFilter.State(recurrence: state.$fetchRequest.filter.recurrence))
 					return .none
 
 				case .didTapSortOrderButton:
@@ -302,12 +302,8 @@ public struct LeaguesList: Reducer, Sendable {
 						return .none
 					}
 
-				case let .destination(.presented(.filters(.delegate(delegateAction)))):
-					switch delegateAction {
-					case let .didChangeFilters(recurrence):
-						state.$fetchRequest.withLock { $0.filter.recurrence = recurrence }
-						return .none
-					}
+				case .destination(.presented(.filters(.delegate(.doNothing)))):
+					return .none
 
 				case let .destination(.presented(.editor(.delegate(delegateAction)))):
 					switch delegateAction {

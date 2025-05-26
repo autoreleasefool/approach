@@ -10,8 +10,7 @@ import SwiftUI
 public struct LeaguesFilter: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
-		// TODO: migrate to Shared
-		public var recurrence: League.Recurrence?
+		@Shared public var recurrence: League.Recurrence?
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
@@ -21,9 +20,7 @@ public struct LeaguesFilter: Reducer, Sendable {
 			case didTapApplyButton
 		}
 		@CasePathable
-		public enum Delegate {
-			case didChangeFilters(League.Recurrence?)
-		}
+		public enum Delegate { case doNothing }
 		@CasePathable
 		public enum Internal { case doNothing }
 
@@ -45,10 +42,8 @@ public struct LeaguesFilter: Reducer, Sendable {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didTapClearButton:
-					return .concatenate(
-						.send(.delegate(.didChangeFilters(nil))),
-						.run { _ in await dismiss() }
-					)
+					state.$recurrence.withLock { $0 = nil }
+					return .run { _ in await dismiss() }
 
 				case .didTapApplyButton:
 					return .run { _ in await dismiss() }
@@ -57,10 +52,7 @@ public struct LeaguesFilter: Reducer, Sendable {
 			case .internal(.doNothing):
 				return .none
 
-			case .binding:
-				return .send(.delegate(.didChangeFilters(state.recurrence)))
-
-			case .delegate:
+			case .delegate, .binding:
 				return .none
 			}
 		}
