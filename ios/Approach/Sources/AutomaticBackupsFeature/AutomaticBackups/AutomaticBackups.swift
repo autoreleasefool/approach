@@ -64,6 +64,8 @@ public struct AutomaticBackups: Reducer, Sendable {
 						await send(.internal(.didCreateBackup(Result {
 							try await backups.createBackup(skipIfWithinMinimumTime: true)
 						})))
+
+						try await backups.cleanUp()
 					}
 				}
 

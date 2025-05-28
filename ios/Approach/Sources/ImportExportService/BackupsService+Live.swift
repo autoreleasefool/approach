@@ -95,45 +95,48 @@ extension BackupsService: DependencyKey {
 				.appending(path: "import.tmp")
 		}
 
+		@Sendable
+		func listBackups() async throws -> [BackupFile] {
+			guard isEnabled() else {
+				throw ServiceError.serviceDisabled
+			}
+
+			@Dependency(\.fileCoordinator) var fileCoordinator
+			@Dependency(\.fileManager) var fileManager
+
+			guard let backupsDirectory = try await getBackupDirectory() else { return [] }
+			let backups = LockIsolated<[BackupFile]>([])
+
+			let coordinatorId = getNewCoordinatorId()
+			defer { fileCoordinator.discardCoordinator(coordinatorId) }
+
+			try await fileCoordinator.read(
+				itemAt: backupsDirectory,
+				withCoordinator: coordinatorId,
+				options: []
+			) { url in
+				let contents = try fileManager.contentsOfDirectory(
+					at: url,
+					includingPropertiesForKeys: [.fileSizeKey, .creationDateKey],
+					options: []
+				)
+
+				let backupsToReturn: [BackupFile] = try contents
+					.compactMap { try getBackupFile(for: $0) }
+					.sorted(by: { $0.dateCreated < $1.dateCreated })
+					.reversed()
+
+				backups.setValue(backupsToReturn)
+			}
+
+			return backups.value
+		}
+
 		return Self(
 			isEnabled: isEnabled,
 			checkIsServiceAvailable: checkIsServiceAvailable,
 			lastSuccessfulBackupDate: lastSuccessfulBackupDate,
-			listBackups: {
-				guard isEnabled() else {
-					throw ServiceError.serviceDisabled
-				}
-
-				@Dependency(\.fileCoordinator) var fileCoordinator
-				@Dependency(\.fileManager) var fileManager
-
-				guard let backupsDirectory = try await getBackupDirectory() else { return [] }
-				let backups = LockIsolated<[BackupFile]>([])
-
-				let coordinatorId = getNewCoordinatorId()
-				defer { fileCoordinator.discardCoordinator(coordinatorId) }
-
-				try await fileCoordinator.read(
-					itemAt: backupsDirectory,
-					withCoordinator: coordinatorId,
-					options: []
-				) { url in
-					let contents = try fileManager.contentsOfDirectory(
-						at: url,
-						includingPropertiesForKeys: [.fileSizeKey, .creationDateKey],
-						options: []
-					)
-
-					let backupsToReturn: [BackupFile] = try contents
-						.compactMap { try getBackupFile(for: $0) }
-						.sorted(by: { $0.dateCreated < $1.dateCreated })
-						.reversed()
-
-					backups.setValue(backupsToReturn)
-				}
-
-				return backups.value
-			},
+			listBackups: listBackups,
 			createBackup: { skipIfWithinMinimumTime in
 				guard isEnabled() else {
 					throw ServiceError.serviceDisabled
@@ -242,6 +245,52 @@ extension BackupsService: DependencyKey {
 					options: [.forDeleting]
 				) { url in
 					try fileManager.remove(url)
+				}
+			},
+			cleanUp: {
+				@Dependency(\.date) var date
+
+				let backups = try await listBackups()
+					.sorted(by: { $0.dateCreated < $1.dateCreated })
+
+				// There should always be at least 1 backup, so exit if we only have 1 or fewer
+				guard backups.count > 1 else { return }
+
+				var backupsToRemove: Set<URL> = []
+
+				// Only keep the most recent backups until we reach the maximum size
+				var cumulativeSize = 0
+
+				// Drop most recent backup, so we always keep at least 1
+				for file in backups.dropFirst() {
+					cumulativeSize += file.fileSizeBytes
+					if cumulativeSize > BackupsService.MAXIMUM_TOTAL_BACKUP_SIZE_BYTES {
+						backupsToRemove.insert(file.url)
+					}
+
+					// If a backup is older than the maximum age, remove it
+					if date().timeIntervalSince(file.dateCreated) > BackupsService.MAXIMUM_SECONDS_BACKUP_AGE {
+						backupsToRemove.insert(file.url)
+					}
+				}
+
+				guard !backupsToRemove.isEmpty else { return }
+
+				// Remove the backups
+				@Dependency(\.fileManager) var fileManager
+				@Dependency(\.fileCoordinator) var fileCoordinator
+
+				let coordinatorId = getNewCoordinatorId()
+				defer { fileCoordinator.discardCoordinator(coordinatorId) }
+
+				for backupUrl in backupsToRemove {
+					try await fileCoordinator.write(
+						itemAt: backupUrl,
+						withCoordinator: coordinatorId,
+						options: [.forDeleting]
+					) { url in
+						try fileManager.remove(url)
+					}
 				}
 			}
 		)

@@ -11,10 +11,13 @@ public struct BackupsService: Sendable {
 	public var createBackup: @Sendable (_ skipIfWithinMinimumTime: Bool) async throws -> BackupFile?
 	public var restoreBackup: @Sendable (_ fromUrl: URL) async throws -> Void
 	public var deleteBackup: @Sendable (_ fromUrl: URL) async throws -> Void
+	public var cleanUp: @Sendable () async throws -> Void
 }
 
 extension BackupsService {
 	public static let MINIMUM_SECONDS_BETWEEN_BACKUPS: TimeInterval = 60 * 60 * 24 * 14
+	public static let MAXIMUM_SECONDS_BACKUP_AGE: TimeInterval = 60 * 60 * 24 * 90
+	public static let MAXIMUM_TOTAL_BACKUP_SIZE_BYTES: Int = 1024 * 1024 * 100 // 100 MB
 
 	public enum ServiceError: Error {
 		case failedToAccessDirectory
