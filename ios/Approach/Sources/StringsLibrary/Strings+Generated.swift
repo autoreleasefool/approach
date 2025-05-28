@@ -493,6 +493,12 @@ public enum Strings {
         /// Enable automatic backups?
         public static let title = Strings.tr("Localizable", "backups.list.enableAutomaticBackups.title", fallback: "Enable automatic backups?")
       }
+      public enum Error {
+        /// You previously disabled cloud backups. You can still return to the Settings and export your data to save it elsewhere.
+        public static let backupsDisabled = Strings.tr("Localizable", "backups.list.error.backupsDisabled", fallback: "You previously disabled cloud backups. You can still return to the Settings and export your data to save it elsewhere.")
+        /// iCloud doesn't seem to be enabled or Approach cannot access it.
+        public static let icloudUnavailable = Strings.tr("Localizable", "backups.list.error.icloudUnavailable", fallback: "iCloud doesn't seem to be enabled or Approach cannot access it.")
+      }
       public enum MostRecent {
         /// You have no recent backups
         public static let `none` = Strings.tr("Localizable", "backups.list.mostRecent.none", fallback: "You have no recent backups")

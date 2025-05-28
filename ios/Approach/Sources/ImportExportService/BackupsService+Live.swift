@@ -9,14 +9,39 @@ import PreferenceServiceInterface
 extension BackupsService: DependencyKey {
 	public static var liveValue: Self {
 		@Sendable
+		func isICloudEnabled() -> Bool {
+			@Dependency(\.fileManager) var fileManager
+			return fileManager.ubiquityIdentityToken() != nil
+		}
+
+		@Sendable
+		func isICloudBackupsEnabled() -> Bool {
+			@Dependency(\.preferences) var preferences
+			return preferences.bool(forKey: .dataICloudBackupEnabled) ?? true
+		}
+
+		@Sendable
 		func isEnabled() -> Bool {
 			@Dependency(\.featureFlags) var featureFlags
-			@Dependency(\.fileManager) var fileManager
-			@Dependency(\.preferences) var preferences
 
-			return featureFlags.isFlagEnabled(.automaticBackups) &&
-				fileManager.ubiquityIdentityToken() != nil &&
-				(preferences.bool(forKey: .dataICloudBackupEnabled) ?? true)
+			let isAutomaticBackupsEnabled = featureFlags.isFlagEnabled(.automaticBackups)
+			let isCloudEnabled = isICloudEnabled()
+			let isICloudBackupsEnabled = isICloudBackupsEnabled()
+
+			return isAutomaticBackupsEnabled &&
+				isCloudEnabled &&
+				isICloudBackupsEnabled
+		}
+
+		@Sendable
+		func checkIsServiceAvailable() async throws {
+			if !isICloudEnabled() {
+				throw ServiceAvailableError.icloudUnavailable
+			}
+
+			if !isICloudBackupsEnabled() {
+				throw ServiceAvailableError.backupsDisabled
+			}
 		}
 
 		@Sendable
@@ -72,9 +97,12 @@ extension BackupsService: DependencyKey {
 
 		return Self(
 			isEnabled: isEnabled,
+			checkIsServiceAvailable: checkIsServiceAvailable,
 			lastSuccessfulBackupDate: lastSuccessfulBackupDate,
 			listBackups: {
-				guard isEnabled() else { return [] }
+				guard isEnabled() else {
+					throw ServiceError.serviceDisabled
+				}
 
 				@Dependency(\.fileCoordinator) var fileCoordinator
 				@Dependency(\.fileManager) var fileManager
@@ -107,7 +135,9 @@ extension BackupsService: DependencyKey {
 				return backups.value
 			},
 			createBackup: { skipIfWithinMinimumTime in
-				guard isEnabled() else { return nil }
+				guard isEnabled() else {
+					throw ServiceError.serviceDisabled
+				}
 
 				@Dependency(\.date) var date
 

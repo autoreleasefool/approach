@@ -5,6 +5,7 @@ import Foundation
 @DependencyClient
 public struct BackupsService: Sendable {
 	public var isEnabled: @Sendable () -> Bool = { unimplemented("\(Self.self).isEnabled", placeholder: false) }
+	public var checkIsServiceAvailable: @Sendable () async throws -> Void
 	public var lastSuccessfulBackupDate: @Sendable () -> Date?
 	public var listBackups: @Sendable () async throws -> [BackupFile]
 	public var createBackup: @Sendable (_ skipIfWithinMinimumTime: Bool) async throws -> BackupFile?
@@ -18,6 +19,12 @@ extension BackupsService {
 	public enum ServiceError: Error {
 		case failedToAccessDirectory
 		case failedToCreateExport
+		case serviceDisabled
+	}
+
+	public enum ServiceAvailableError: Error {
+		case icloudUnavailable
+		case backupsDisabled
 	}
 }
 

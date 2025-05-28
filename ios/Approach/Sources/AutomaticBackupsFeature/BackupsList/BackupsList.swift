@@ -1,4 +1,5 @@
 import AnalyticsServiceInterface
+import AssetsLibrary
 import ComposableArchitecture
 import DateTimeLibrary
 import ErrorsFeature
@@ -19,6 +20,7 @@ public struct BackupsList: Reducer, Sendable {
 		public var backups: IdentifiedArrayOf<BackupFile> = []
 
 		public var isAutomaticBackupsEnabled: Bool
+		public var serviceUnavailableError: String?
 
 		public var errors: Errors<ErrorID>.State = .init()
 		@Presents public var destination: Destination.State?
@@ -50,6 +52,7 @@ public struct BackupsList: Reducer, Sendable {
 			case didCreateBackup(Result<BackupFile?, Error>)
 			case didRestoreBackup(Result<Void, Error>)
 			case didDeleteBackup(Result<Void, Error>)
+			case serviceUnavailable(Error)
 
 			case errors(Errors<ErrorID>.Action)
 			case toast(PresentationAction<ToastAction>)
@@ -109,7 +112,11 @@ public struct BackupsList: Reducer, Sendable {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didFirstAppear:
-					return .none
+					return .run { _ in
+						try await backups.checkIsServiceAvailable()
+					} catch: { error, send in
+						await send(.internal(.serviceUnavailable(error)))
+					}
 
 				case .didStartTask:
 					return refreshBackups()
@@ -176,6 +183,14 @@ public struct BackupsList: Reducer, Sendable {
 					return state.errors
 						.enqueue(.failedToLoadBackups, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
 						.map { .internal(.errors($0)) }
+
+				case let .serviceUnavailable(error):
+					guard let error = error as? BackupsService.ServiceAvailableError else { return .none }
+					state.serviceUnavailableError = switch error {
+					case .backupsDisabled: Strings.Backups.List.Error.backupsDisabled
+					case .icloudUnavailable: Strings.Backups.List.Error.icloudUnavailable
+					}
+					return .none
 
 				case let .toast(.presented(toastAction)):
 					switch toastAction {
@@ -361,9 +376,12 @@ public struct BackupsListView: View {
 					Text(Strings.Backups.List.manualSync)
 						.frame(maxWidth: .infinity, alignment: .center)
 				}
-				.modifier(PrimaryButton())
+			} footer: {
+				if let error = store.serviceUnavailableError {
+					Text(error)
+						.foregroundStyle(Asset.Colors.Error.default.swiftUIColor)
+				}
 			}
-			.listRowInsets(EdgeInsets())
 
 			Section(Strings.Backups.List.mostRecent) {
 				if store.backups.isEmpty {
@@ -385,6 +403,7 @@ public struct BackupsListView: View {
 		}
 		.navigationTitle(Strings.Backups.List.title)
 		.task { await send(.didStartTask).finish() }
+		.onAppear { send(.didFirstAppear) }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		.alert($store.scope(state: \.destination?.alert, action: \.internal.destination.alert))
 		.toast($store.scope(state: \.toast, action: \.internal.toast))

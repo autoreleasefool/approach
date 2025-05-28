@@ -746,6 +746,8 @@
 "backups.list.lastSyncNotWithinTwoWeeks" = "It's been more than 2 weeks since your data was last synced";
 "backups.list.fileSize" = "%@ mb";
 "backups.list.latest" = "Latest";
+"backups.list.error.icloudUnavailable" = "iCloud doesn't seem to be enabled or Approach cannot access it.";
+"backups.list.error.backupsDisabled" = "You previously disabled cloud backups. You can still return to the Settings and export your data to save it elsewhere.";
 "backups.restore.action.restore" = "Restore";
 "backups.restore.title" = "Restore from backup?";
 "backups.restore.message" = "Restoring your data from a backup will overwrite any new data you've recorded since this backup. Are you sure about this?";
