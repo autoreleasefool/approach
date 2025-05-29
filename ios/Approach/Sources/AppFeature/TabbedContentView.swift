@@ -58,7 +58,7 @@ public struct TabbedContentView: View {
 		.observeAchievements(store: store.scope(state: \.achievements, action: \.internal.achievements))
 		.automaticBackups(store: store.scope(state: \.backups, action: \.internal.backups))
 		.toast(isPresented: $store.isHudVisible) {
-			ToastView("Loading")
+			ToastView(Strings.loading)
 				.toastViewStyle(.indeterminate)
 		}
 	}

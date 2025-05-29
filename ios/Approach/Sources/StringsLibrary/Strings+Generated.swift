@@ -12,6 +12,8 @@ import Foundation
 public enum Strings {
   /// Copied to clipboard
   public static let copiedToClipboard = Strings.tr("Localizable", "copiedToClipboard", fallback: "Copied to clipboard")
+  /// Loading
+  public static let loading = Strings.tr("Localizable", "loading", fallback: "Loading")
   /// No
   public static let no = Strings.tr("Localizable", "no", fallback: "No")
   /// None
