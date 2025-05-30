@@ -33,14 +33,14 @@ public struct HorizontalShareableGamesImage: View {
 					.padding(.horizontal)
 					.padding(.top)
 					.padding(.bottom, configuration.subtitles == nil ? .standardSpacing : 0)
-					.foregroundColor(baseScoreSheetConfiguration.foreground)
+					.foregroundStyle(baseScoreSheetConfiguration.foreground)
 			}
 
 			if let subtitles = configuration.subtitles {
 				HStack {
 					ForEach(subtitles) { subtitle in
 						ScoreSheetLabel(item: subtitle, style: .plain)
-							.foregroundColor(baseScoreSheetConfiguration.foreground)
+							.foregroundStyle(baseScoreSheetConfiguration.foreground)
 					}
 				}
 				.padding()
@@ -68,7 +68,7 @@ public struct HorizontalShareableGamesImage: View {
 						Text(Strings.Game.titleWithOrdinal(game.index + 1))
 							.font(.headline)
 							.padding(.horizontal)
-							.foregroundColor(baseScoreSheetConfiguration.foreground)
+							.foregroundStyle(baseScoreSheetConfiguration.foreground)
 							.matchHeight(byKey: GridItemHeightKey.self, to: $gridItemHeight)
 
 						ScoreSheet(
@@ -105,7 +105,7 @@ public struct HorizontalShareableGamesImage: View {
 			.font(.caption)
 			.monospaced()
 			.padding(.smallSpacing)
-			.foregroundColor(configuration.foreground)
+			.foregroundStyle(configuration.foreground)
 			.frame(maxWidth: .infinity, alignment: .trailing)
 	}
 }

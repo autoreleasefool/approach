@@ -14,15 +14,15 @@ public struct BadgeView: View {
 		Text(text)
 			.lineLimit(1)
 			.font(.caption)
-			.foregroundColor(style.foregroundColor)
+			.foregroundStyle(style.foregroundStyle)
 			.padding(.vertical, .tinySpacing)
 			.padding(.horizontal, .smallSpacing)
 			.background(
 				RoundedRectangle(cornerRadius: .standardRadius)
-					.strokeBorder(style.foregroundColor, lineWidth: 1)
+					.strokeBorder(style.foregroundStyle, lineWidth: 1)
 					.background(
 						RoundedRectangle(cornerRadius: .standardRadius)
-							.foregroundColor(style.backgroundColor)
+							.foregroundStyle(style.backgroundColor)
 					)
 			)
 	}
@@ -30,11 +30,11 @@ public struct BadgeView: View {
 
 extension BadgeView {
 	public struct Style: Sendable {
-		let foregroundColor: Color
+		let foregroundStyle: Color
 		let backgroundColor: Color
 
 		public init(foreground: Color, background: Color) {
-			self.foregroundColor = foreground
+			self.foregroundStyle = foreground
 			self.backgroundColor = background
 		}
 

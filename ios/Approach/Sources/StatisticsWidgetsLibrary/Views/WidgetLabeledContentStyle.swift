@@ -8,10 +8,10 @@ public struct WidgetLabeledContentStyle: LabeledContentStyle {
 	public func makeBody(configuration: Configuration) -> some View {
 		HStack(alignment: .firstTextBaseline) {
 			configuration.label
-				.foregroundColor(labelColor)
+				.foregroundStyle(labelColor)
 			Spacer()
 			configuration.content
-				.foregroundColor(contentColor)
+				.foregroundStyle(contentColor)
 				.multilineTextAlignment(.trailing)
 		}
 		.font(.caption)

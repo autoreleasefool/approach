@@ -44,7 +44,7 @@ public struct MoveableWidget: View {
 								.resizable()
 								.scaledToFit()
 								.frame(width: .tinyIcon, height: .tinyIcon)
-								.foregroundColor(.white)
+								.foregroundStyle(.white)
 						}
 						.padding(.top, (.standardSpacing + .smallSpacing) * -1)
 						.padding(.trailing, (.standardSpacing + .smallSpacing) * -1)

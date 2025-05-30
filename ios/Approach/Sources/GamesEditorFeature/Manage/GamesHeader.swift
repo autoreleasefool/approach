@@ -130,7 +130,7 @@ public struct GamesHeaderView: View {
 			HStack {
 				Text(Strings.Game.titleWithOrdinal(store.currentGameIndex + 1))
 					.font(.caption)
-					.foregroundColor(.white)
+					.foregroundStyle(.white)
 					.padding(.tinySpacing)
 					.background(
 						RoundedRectangle(cornerRadius: .smallRadius)
@@ -158,7 +158,7 @@ public struct GamesHeaderView: View {
 				.resizable()
 				.scaledToFit()
 				.frame(width: .smallIcon, height: .smallIcon)
-				.foregroundColor(.white)
+				.foregroundStyle(.white)
 				.padding()
 		}
 	}

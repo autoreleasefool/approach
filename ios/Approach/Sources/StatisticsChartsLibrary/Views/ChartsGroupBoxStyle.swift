@@ -29,7 +29,7 @@ public struct ChartsGroupBoxStyle: GroupBoxStyle {
 			.overlay(
 				configuration.label
 					.font(.headline)
-					.foregroundColor(labelColor)
+					.foregroundStyle(labelColor)
 					.padding(.standardSpacing),
 				alignment: .topLeading
 			)

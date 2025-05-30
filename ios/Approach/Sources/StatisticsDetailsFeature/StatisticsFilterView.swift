@@ -146,7 +146,7 @@ public struct StatisticsFilterView: View {
 			Text(value)
 				.font(size.valueFont)
 		}
-		.foregroundColor(type.text)
+		.foregroundStyle(type.text)
 		.padding(size.padding)
 		.background(type.background)
 		.cornerRadius(.standardRadius)

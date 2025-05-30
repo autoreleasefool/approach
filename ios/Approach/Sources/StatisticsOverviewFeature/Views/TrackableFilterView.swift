@@ -56,7 +56,7 @@ public struct TrackableFilterView: View {
 			.font(.caption)
 		}
 		.padding(.standardSpacing)
-		.foregroundColor(configuration.foreground)
+		.foregroundStyle(configuration.foreground)
 		.background(configuration.background)
 	}
 }

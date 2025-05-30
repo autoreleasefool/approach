@@ -142,7 +142,7 @@ public struct GameDetailsHeaderView: View {
 							.scaledToFit()
 							.frame(width: .tinyIcon, height: .tinyIcon)
 					}
-					.foregroundColor(Asset.Colors.Text.onAction)
+					.foregroundStyle(Asset.Colors.Text.onAction)
 					.padding(.standardSpacing)
 					.background(
 						RoundedRectangle(cornerRadius: .standardRadius)

@@ -64,7 +64,7 @@ public struct BowlersListView: View {
 								.resizable()
 								.scaledToFit()
 								.frame(width: .smallIcon, height: .smallIcon)
-								.foregroundColor(Asset.Colors.Text.onAction)
+								.foregroundStyle(Asset.Colors.Text.onAction)
 
 							VStack(alignment: .leading) {
 								Text(quickLaunch.bowler.name)

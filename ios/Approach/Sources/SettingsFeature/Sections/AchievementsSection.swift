@@ -16,7 +16,7 @@ struct AchievementsSection: View {
 						Spacer(minLength: .standardSpacing)
 
 						Text("\(unseenCount)")
-							.foregroundColor(.secondary)
+							.foregroundStyle(.secondary)
 					}
 				}
 			}

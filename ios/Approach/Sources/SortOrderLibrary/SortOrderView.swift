@@ -23,7 +23,7 @@ public struct SortOrderView<Ordering: Orderable>: View {
 							Image(systemName: store.ordering == ordering ? "checkmark.circle.fill" : "circle")
 								.resizable()
 								.frame(width: .smallIcon, height: .smallIcon)
-								.foregroundColor(Asset.Colors.Action.default)
+								.foregroundStyle(Asset.Colors.Action.default)
 							Text(String(describing: ordering))
 								.frame(maxWidth: .infinity, alignment: .leading)
 						}

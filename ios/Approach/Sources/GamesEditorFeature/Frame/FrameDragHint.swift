@@ -27,7 +27,7 @@ struct FrameDragHint: View {
 				Image(systemName: "hand.draw.fill")
 					.resizable()
 					.scaledToFit()
-					.foregroundColor(Asset.Colors.Primary.light)
+					.foregroundStyle(Asset.Colors.Primary.light)
 					.frame(width: .largeIcon, height: .largeIcon)
 					.keyframeAnimator(
 						initialValue: AnimationValues(frameWidth: frameWidth)

@@ -21,7 +21,7 @@ public struct NavigationButton<Content: View>: View {
 					.resizable()
 					.scaledToFit()
 					.frame(width: .tinyIcon, height: .tinyIcon)
-					.foregroundColor(Color(uiColor: .secondaryLabel))
+					.foregroundStyle(Color(uiColor: .secondaryLabel))
 			}
 			.contentShape(Rectangle())
 		}

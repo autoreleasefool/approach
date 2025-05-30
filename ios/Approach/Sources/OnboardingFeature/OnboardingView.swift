@@ -51,7 +51,7 @@ public struct OnboardingView: View {
 					Text(Strings.Onboarding.getStarted)
 						.font(.headline)
 						.fontWeight(.heavy)
-						.foregroundColor(Asset.Colors.Action.default)
+						.foregroundStyle(Asset.Colors.Action.default)
 						.textCase(.uppercase)
 						.frame(maxWidth: .infinity)
 				}

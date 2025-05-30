@@ -347,7 +347,7 @@ private struct ShareImageButtonModifier: ViewModifier {
 		content
 			.buttonStyle(.borderedProminent)
 			.controlSize(.large)
-			.foregroundColor(Asset.Colors.Text.onPrimary)
+			.foregroundStyle(Asset.Colors.Text.onPrimary)
 			.tint(Asset.Colors.Primary.default)
 	}
 }

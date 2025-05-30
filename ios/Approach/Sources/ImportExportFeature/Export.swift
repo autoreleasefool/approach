@@ -205,7 +205,7 @@ public struct ExportView: View {
 		if let error = store.errorMessage {
 			VStack {
 				Text(Strings.Export.errorMessage(error))
-					.foregroundColor(Asset.Colors.Error.default)
+					.foregroundStyle(Asset.Colors.Error.default)
 
 				Button(Strings.Action.tryAgain) {
 					send(.didTapRetryButton)

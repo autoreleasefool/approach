@@ -94,7 +94,7 @@ public struct StatisticPickerView: View {
 								Image(systemName: store.selectedStatistic == statistic ? "checkmark.circle.fill" : "circle")
 									.resizable()
 									.frame(width: .smallIcon, height: .smallIcon)
-									.foregroundColor(Asset.Colors.Action.default)
+									.foregroundStyle(Asset.Colors.Action.default)
 
 								Text(statistic)
 									.frame(maxWidth: .infinity, alignment: .leading)

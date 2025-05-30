@@ -17,8 +17,8 @@ extension View {
 		self.background(asset.swiftUIColor)
 	}
 
-	public func foregroundColor(_ asset: ColorAsset) -> some View {
-		self.foregroundColor(asset.swiftUIColor)
+	public func foregroundStyle(_ asset: ColorAsset) -> some View {
+		self.foregroundStyle(asset.swiftUIColor)
 	}
 
 	public func tint(_ asset: ColorAsset) -> some View {

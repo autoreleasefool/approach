@@ -26,7 +26,7 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable & 
 							Image(systemName: store.selected.contains(resource.id) ? "checkmark.circle.fill" : "circle")
 								.resizable()
 								.frame(width: .smallIcon, height: .smallIcon)
-								.foregroundColor(Asset.Colors.Action.default)
+								.foregroundStyle(Asset.Colors.Action.default)
 							row(resource)
 								.frame(maxWidth: .infinity, alignment: .leading)
 						}

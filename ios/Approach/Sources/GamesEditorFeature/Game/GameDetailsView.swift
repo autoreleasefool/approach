@@ -120,17 +120,17 @@ public struct GameDetailsView: View {
 		switch excludeLeagueFromStatistics {
 		case .exclude:
 			Text(Strings.Game.Editor.Fields.ExcludeFromStatistics.excludedWhenLeagueExcluded)
-				.foregroundColor(Asset.Colors.Warning.default)
+				.foregroundStyle(Asset.Colors.Warning.default)
 		case .include:
 			switch seriesPreBowl {
 			case .preBowl:
 				Text(Strings.Game.Editor.Fields.ExcludeFromStatistics.excludedWhenSeriesPreBowl)
-					.foregroundColor(Asset.Colors.Warning.default)
+					.foregroundStyle(Asset.Colors.Warning.default)
 			case .regular:
 				switch excludeSeriesFromStatistics {
 				case .exclude:
 					Text(Strings.Game.Editor.Fields.ExcludeFromStatistics.excludedWhenSeriesExcluded)
-						.foregroundColor(Asset.Colors.Warning.default)
+						.foregroundStyle(Asset.Colors.Warning.default)
 				case .include:
 					Text(Strings.Game.Editor.Fields.ExcludeFromStatistics.help)
 				}

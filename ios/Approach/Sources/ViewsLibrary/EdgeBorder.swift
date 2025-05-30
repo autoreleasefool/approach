@@ -7,7 +7,7 @@ extension View {
 		width: CGFloat = .standardBorder,
 		color: ColorAsset = Asset.Colors.ScoreSheet.Plain.Border.default
 	) -> some View {
-		overlay(EdgeBorder(width: width, edges: edges).foregroundColor(color))
+		overlay(EdgeBorder(width: width, edges: edges).foregroundStyle(color))
 	}
 }
 

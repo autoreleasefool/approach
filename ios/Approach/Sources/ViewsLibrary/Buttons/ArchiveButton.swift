@@ -12,7 +12,7 @@ public struct ArchiveButton: View {
 	public var body: some View {
 		Button(role: .destructive, action: perform) {
 			Label(Strings.Action.archive, systemImage: "archivebox")
-				.foregroundColor(Asset.Colors.Destructive.default)
+				.foregroundStyle(Asset.Colors.Destructive.default)
 		}
 		.tint(Asset.Colors.Destructive.default)
 	}

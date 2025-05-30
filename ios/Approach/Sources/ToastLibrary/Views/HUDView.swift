@@ -17,17 +17,17 @@ struct HUDView: View {
 					.resizable()
 					.scaledToFit()
 					.frame(width: .extraLargeIcon, height: .extraLargeIcon)
-					.foregroundColor(style.foreground)
+					.foregroundStyle(style.foreground)
 					.padding(.bottom, .standardSpacing)
 			}
 
 			Text(title)
 				.bold()
-				.foregroundColor(style.foreground)
+				.foregroundStyle(style.foreground)
 
 			if let message {
 				Text(message)
-					.foregroundColor(style.foreground)
+					.foregroundStyle(style.foreground)
 					.padding(.top, .smallSpacing)
 			}
 
@@ -39,7 +39,7 @@ struct HUDView: View {
 					Text(action)
 						.frame(maxWidth: .infinity, alignment: .center)
 						.font(.caption)
-						.foregroundColor(style.foreground)
+						.foregroundStyle(style.foreground)
 						.padding()
 						.overlay(
 							RoundedRectangle(cornerRadius: .smallRadius)

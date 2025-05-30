@@ -43,11 +43,11 @@ public struct AddressLookupView: View {
 								VStack(alignment: .leading, spacing: .tinySpacing) {
 									Text(result.title)
 										.font(.body)
-										.foregroundColor(Color(uiColor: .label))
+										.foregroundStyle(Color(uiColor: .label))
 									if !result.subtitle.isEmpty {
 										Text(result.subtitle)
 											.font(.caption)
-											.foregroundColor(Color(uiColor: .secondaryLabel))
+											.foregroundStyle(Color(uiColor: .secondaryLabel))
 									}
 								}
 							}

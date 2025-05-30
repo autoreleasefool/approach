@@ -92,7 +92,7 @@ public struct EmptyContentAction: View {
 		}
 		.buttonStyle(.borderedProminent)
 		.controlSize(.large)
-		.foregroundColor(.white)
+		.foregroundStyle(.white)
 		.tint(Asset.Colors.Action.default)
 	}
 }

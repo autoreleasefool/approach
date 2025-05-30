@@ -29,14 +29,14 @@ public struct VerticalShareableGameImage: View {
 					.bold()
 					.padding(.top)
 					.padding(.bottom, configuration.subtitles == nil ? .standardSpacing : 0)
-					.foregroundColor(configuration.labelForeground)
+					.foregroundStyle(configuration.labelForeground)
 			}
 
 			if let subtitles = configuration.subtitles {
 				HStack {
 					ForEach(subtitles) { subtitle in
 						ScoreSheetLabel(item: subtitle, style: .plain)
-							.foregroundColor(configuration.labelForeground)
+							.foregroundStyle(configuration.labelForeground)
 					}
 				}
 				.padding(.vertical, .standardSpacing)
@@ -145,7 +145,7 @@ public struct VerticalShareableGameImage: View {
 		Text(Strings.Sharing.Common.Watermark.madeWithApproach)
 			.font(.caption)
 			.monospaced()
-			.foregroundColor(configuration.labelForeground)
+			.foregroundStyle(configuration.labelForeground)
 			.padding(.smallSpacing)
 			.frame(maxWidth: .infinity, alignment: .trailing)
 	}

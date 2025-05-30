@@ -12,7 +12,7 @@ struct CheckboxToggleStyle: ToggleStyle {
 				Image(systemName: configuration.isOn ? "checkmark.circle.fill" : "circle")
 					.resizable()
 					.frame(width: .smallIcon, height: .smallIcon)
-					.foregroundColor(Asset.Colors.Action.default)
+					.foregroundStyle(Asset.Colors.Action.default)
 					.padding(.vertical, .smallSpacing)
 					.padding(.leading, .standardSpacing)
 			}

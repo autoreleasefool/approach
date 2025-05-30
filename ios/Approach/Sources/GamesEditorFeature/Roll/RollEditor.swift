@@ -141,7 +141,7 @@ public struct RollEditorView: View {
 				Text(Strings.Roll.Properties.Ball.title)
 					.font(.caption)
 					.italic()
-					.foregroundColor(.white)
+					.foregroundStyle(.white)
 
 				HStack(spacing: .smallSpacing) {
 					ForEach(store.recentGear) { gear in
@@ -160,7 +160,7 @@ public struct RollEditorView: View {
 						Image(systemName: "chevron.right.square")
 							.resizable()
 							.scaledToFit()
-							.foregroundColor(.white)
+							.foregroundStyle(.white)
 							.frame(width: .smallIcon, height: .smallIcon)
 							.padding(.smallSpacing)
 					}
@@ -172,11 +172,11 @@ public struct RollEditorView: View {
 			Button { send(.didToggleFoul) } label: {
 				HStack(spacing: .smallSpacing) {
 					Text(Strings.Roll.Properties.Foul.title)
-						.foregroundColor(store.didFoul ? Asset.Colors.ScoreSheet.Plain.Text.OnBackground.foul.swiftUIColor : .white)
+						.foregroundStyle(store.didFoul ? Asset.Colors.ScoreSheet.Plain.Text.OnBackground.foul.swiftUIColor : .white)
 					Image(systemName: store.didFoul ? "f.cursive.circle.fill" : "f.cursive.circle")
 						.resizable()
 						.frame(width: .smallIcon, height: .smallIcon)
-						.foregroundColor(store.didFoul ? Asset.Colors.ScoreSheet.Plain.Text.OnBackground.foul.swiftUIColor : .white)
+						.foregroundStyle(store.didFoul ? Asset.Colors.ScoreSheet.Plain.Text.OnBackground.foul.swiftUIColor : .white)
 				}
 			}
 			.buttonStyle(TappableElement())

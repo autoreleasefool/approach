@@ -43,7 +43,7 @@ public struct Banner: View {
 		}
 		.padding()
 		.frame(maxWidth: .infinity)
-		.foregroundStyle(style.foregroundColor)
+		.foregroundStyle(style.foregroundStyle)
 		.background(style.backgroundColor)
 		.cornerRadius(.standardRadius)
 	}
@@ -77,11 +77,11 @@ extension Banner {
 
 extension Banner {
 	public struct Style: Sendable {
-		let foregroundColor: Color
+		let foregroundStyle: Color
 		let backgroundColor: Color
 
 		public init(foreground: Color, background: Color) {
-			self.foregroundColor = foreground
+			self.foregroundStyle = foreground
 			self.backgroundColor = background
 		}
 

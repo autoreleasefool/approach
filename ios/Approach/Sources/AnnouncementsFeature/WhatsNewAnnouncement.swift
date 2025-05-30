@@ -158,7 +158,7 @@ private struct NewItem: View {
 				.resizable()
 				.scaledToFit()
 				.frame(width: .smallerIcon, height: .smallerIcon)
-				.foregroundColor(Asset.Colors.Primary.default)
+				.foregroundStyle(Asset.Colors.Primary.default)
 
 			VStack(alignment: .leading, spacing: .tinySpacing) {
 				Text(state.title)

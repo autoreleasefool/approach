@@ -17,7 +17,7 @@ public struct BackupsService: Sendable {
 extension BackupsService {
 	public static let MINIMUM_SECONDS_BETWEEN_BACKUPS: TimeInterval = 60 * 60 * 24 * 14
 	public static let MAXIMUM_SECONDS_BACKUP_AGE: TimeInterval = 60 * 60 * 24 * 90
-	public static let MAXIMUM_TOTAL_BACKUP_SIZE_BYTES: Int = 1024 * 1024 * 100 // 100 MB
+	public static let MAXIMUM_TOTAL_BACKUP_SIZE_BYTES: Int = 1_024 * 1_024 * 100 // 100 MB
 
 	public enum ServiceError: Error {
 		case failedToAccessDirectory

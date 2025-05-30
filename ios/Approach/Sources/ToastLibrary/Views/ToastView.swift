@@ -14,7 +14,7 @@ struct ToastView: View {
 			HStack(alignment: .center, spacing: 0) {
 				Text(title)
 					.bold()
-					.foregroundColor(style.foreground)
+					.foregroundStyle(style.foreground)
 
 				if let action {
 					Spacer(minLength: .standardSpacing)
@@ -22,7 +22,7 @@ struct ToastView: View {
 					Button(action: onAction) {
 						Text(action.uppercased())
 							.font(.caption)
-							.foregroundColor(style.foreground)
+							.foregroundStyle(style.foreground)
 							.padding()
 							.overlay(
 								RoundedRectangle(cornerRadius: .smallRadius)

@@ -171,7 +171,7 @@ public struct StatisticsDetailsListView<Header: View>: View {
 										Text(Strings.Statistics.List.new.uppercased())
 											.font(.caption)
 											.fontWeight(.thin)
-											.foregroundColor(Asset.Colors.Action.default)
+											.foregroundStyle(Asset.Colors.Action.default)
 									}
 
 									VStack(alignment: .leading) {

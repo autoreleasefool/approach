@@ -116,7 +116,7 @@ public struct FrameView: View {
 			Text(frame.displayValue ?? " ")
 				.frame(maxWidth: .infinity)
 				.padding(.smallSpacing)
-				.foregroundColor(configuration.foreground(highlight: highlight))
+				.foregroundStyle(configuration.foreground(highlight: highlight))
 				.background(configuration.background(highlight: highlight))
 				.roundCorners(
 					topLeading: configuration.shouldRound(.frame, inPosition: .topLeading, frameIndex: frame.index),
@@ -162,7 +162,7 @@ public struct RollView: View {
 				.lineLimit(1)
 				.frame(width: width)
 				.padding(.vertical, .unitSpacing)
-				.foregroundColor(
+				.foregroundStyle(
 					configuration.foreground(
 						highlight: highlight,
 						didFoul: roll.didFoul,
@@ -215,7 +215,7 @@ public struct RailView: View {
 			.font(.caption2)
 			.frame(maxWidth: .infinity)
 			.padding(.vertical, .unitSpacing)
-			.foregroundColor(configuration.railForeground(highlight: highlight))
+			.foregroundStyle(configuration.railForeground(highlight: highlight))
 			.background(configuration.railBackground(highlight: highlight))
 			.border(edges: frame.index == 0 ? [] : [.leading], color: configuration.border)
 			.roundCorners(
@@ -244,7 +244,7 @@ public struct FinalScoreView: View {
 			.padding(.horizontal, .largeSpacing)
 			.frame(width: width)
 			.frame(maxHeight: .infinity)
-			.foregroundColor(configuration.foreground)
+			.foregroundStyle(configuration.foreground)
 			.background(configuration.background)
 			.roundCorners(
 				topTrailing: configuration.shouldRound(.score, inPosition: .topTrailing),

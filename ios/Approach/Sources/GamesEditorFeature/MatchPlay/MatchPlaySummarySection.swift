@@ -33,7 +33,7 @@ public struct MatchPlaySummarySection: View {
 					Image(systemName: matchPlay?.result?.systemImage ?? "square.slash")
 						.resizable()
 						.scaledToFit()
-						.foregroundColor(matchPlay?.result?.foregroundColor)
+						.foregroundStyle(matchPlay?.result?.foregroundStyle ?? Asset.Colors.Text.onBackground.swiftUIColor)
 						.frame(width: .smallerIcon, height: .smallerIcon)
 				}
 			}
@@ -58,7 +58,7 @@ extension MatchPlay.Result {
 		}
 	}
 
-	var foregroundColor: Color? {
+	var foregroundStyle: Color? {
 		switch self {
 		case .lost: return Asset.Colors.MatchPlay.lost.swiftUIColor
 		case .won: return Asset.Colors.MatchPlay.won.swiftUIColor

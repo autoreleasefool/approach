@@ -153,7 +153,7 @@ public struct ErrorReportView: View {
 						.resizable()
 						.scaledToFit()
 						.frame(width: .extraTinyIcon, height: .extraTinyIcon)
-						.foregroundColor(.white)
+						.foregroundStyle(.white)
 						.padding(.smallSpacing)
 						.background(
 							Circle()
@@ -185,7 +185,7 @@ public struct ErrorReportView: View {
 									.frame(width: .tinyIcon)
 							}
 						}
-						.foregroundColor(.white)
+						.foregroundStyle(.white)
 						.padding(.smallSpacing)
 						.background(
 							RoundedRectangle(cornerRadius: .standardRadius)
@@ -211,7 +211,7 @@ public struct ErrorReportView: View {
 
 						Text(Strings.ErrorReport.IncludeDeviceLogs.disclaimer)
 							.font(.caption2)
-							.foregroundColor(.gray)
+							.foregroundStyle(.gray)
 					}
 				}
 			}

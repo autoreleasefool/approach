@@ -30,12 +30,12 @@ extension StatisticsWidget {
 					Text(title)
 						.font(.subheadline)
 						.fontWeight(.black)
-						.foregroundColor(.white)
+						.foregroundStyle(.white)
 
 					if let subtitle {
 						Text(subtitle)
 							.font(.caption)
-							.foregroundColor(.white)
+							.foregroundStyle(.white)
 							.padding(.top, .tinySpacing)
 					}
 

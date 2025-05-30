@@ -77,7 +77,7 @@ extension StatisticsWidget {
 					))
 				} else {
 					Text(String(describing: configuration.timeline))
-						.foregroundColor(Asset.Colors.Charts.Percentage.Compact.axes)
+						.foregroundStyle(Asset.Colors.Charts.Percentage.Compact.axes)
 						.font(.caption)
 				}
 			}
@@ -97,7 +97,7 @@ extension StatisticsWidget {
 				)
 			} footer: {
 				Text(String(describing: configuration.timeline))
-					.foregroundColor(Asset.Colors.Charts.Counting.Compact.axes)
+					.foregroundStyle(Asset.Colors.Charts.Counting.Compact.axes)
 					.font(.caption)
 			}
 		}
@@ -131,7 +131,7 @@ extension StatisticsWidget {
 						.resizable()
 						.renderingMode(.template)
 						.scaledToFit()
-						.foregroundColor(Asset.Colors.Error.default)
+						.foregroundStyle(Asset.Colors.Error.default)
 						.frame(width: .smallIcon, height: .smallIcon)
 						.padding()
 				}
@@ -151,12 +151,12 @@ extension StatisticsWidget {
 				Image(systemName: "questionmark.circle")
 					.resizable()
 					.scaledToFit()
-					.foregroundColor(.white)
+					.foregroundStyle(.white)
 					.frame(width: .tinyIcon, height: .tinyIcon)
 
 				Text(Strings.Widget.Chart.Placeholder.whatDoesThisMean)
 					.font(.caption)
-					.foregroundColor(.white)
+					.foregroundStyle(.white)
 			}
 		}
 

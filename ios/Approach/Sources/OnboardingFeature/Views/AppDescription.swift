@@ -15,7 +15,7 @@ struct Header: View {
 			Text(Strings.Onboarding.Header.appName)
 				.font(.title)
 				.fontWeight(.heavy)
-				.foregroundColor(Asset.Colors.Primary.default)
+				.foregroundStyle(Asset.Colors.Primary.default)
 				.frame(maxWidth: .infinity, alignment: .leading)
 				.padding(.bottom, .standardSpacing)
 		}

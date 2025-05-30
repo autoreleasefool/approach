@@ -29,13 +29,13 @@ public struct Chip: View {
 					.resizable()
 					.frame(width: size.icon, height: size.icon)
 					.padding(.trailing, .smallSpacing)
-					.foregroundColor(style.foreground)
+					.foregroundStyle(style.foreground)
 			}
 
 			Text(title)
 				.lineLimit(0)
 				.font(size.font)
-				.foregroundColor(style.foreground)
+				.foregroundStyle(style.foreground)
 				.minimumScaleFactor(0.5)
 
 			if let accessory {
@@ -45,7 +45,7 @@ public struct Chip: View {
 					.resizable()
 					.frame(width: size.icon, height: size.icon)
 					.padding(.leading, .smallSpacing)
-					.foregroundColor(style.foreground)
+					.foregroundStyle(style.foreground)
 			}
 		}
 		.padding(.all, size.padding)
