@@ -39,6 +39,7 @@ public enum Migrations {
 			Migration20240329ClearExtraRolledBalls.self,
 			Migration20241021CreateTeam.self,
 			Migration20250315CreateAchievements.self,
+			Migration20250530CreateNote.self,
 		]
 	}
 }
