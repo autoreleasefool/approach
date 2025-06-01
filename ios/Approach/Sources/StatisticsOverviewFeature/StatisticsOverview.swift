@@ -7,7 +7,6 @@ import StatisticsDetailsFeature
 import StatisticsLibrary
 import StatisticsRepositoryInterface
 import StringsLibrary
-import TipsLibrary
 import TipsServiceInterface
 
 @Reducer
