@@ -96,7 +96,7 @@ public struct BowlersListView: View {
 				.modifier(PrimaryButton())
 			}
 			.listRowInsets(EdgeInsets())
-			.compactList()
+			.listSectionSpacing(.compact)
 
 			if store.isShowingQuickLaunchTip {
 				Section {
@@ -106,7 +106,7 @@ public struct BowlersListView: View {
 						onDismiss: {}
 					)
 				}
-				.compactList()
+				.listSectionSpacing(.compact)
 			}
 		}
 	}
@@ -119,7 +119,7 @@ public struct BowlersListView: View {
 			.listRowSeparator(.hidden)
 			.listRowInsets(EdgeInsets())
 			.listRowBackground(Color.clear)
-			.compactList()
+			.listSectionSpacing(.compact)
 		}
 	}
 }
