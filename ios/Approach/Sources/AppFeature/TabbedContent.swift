@@ -5,7 +5,9 @@ import AutomaticBackupsFeature
 import BowlersListFeature
 import ComposableArchitecture
 import FeatureActionLibrary
+import FeatureFlagsLibrary
 import HUDServiceInterface
+import OverviewFeature
 import SettingsFeature
 import StatisticsOverviewFeature
 
@@ -20,13 +22,19 @@ public struct TabbedContent: Reducer, Sendable {
 
 		public var accessories = AccessoriesOverview.State()
 		public var bowlersList = BowlersList.State()
+		public var overview = Overview.State()
 		public var statistics = StatisticsOverview.State()
 		public var settings = Settings.State()
 
 		public var achievements = AchievementsObserver.State()
 		public var backups = AutomaticBackups.State()
 
-		public init() {}
+		public let isOverviewEnabled: Bool
+
+		public init() {
+			@Dependency(\.featureFlags) var featureFlags
+			self.isOverviewEnabled = featureFlags.isFlagEnabled(.teams)
+		}
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
@@ -42,6 +50,7 @@ public struct TabbedContent: Reducer, Sendable {
 
 			case accessories(AccessoriesOverview.Action)
 			case bowlersList(BowlersList.Action)
+			case overview(Overview.Action)
 			case settings(Settings.Action)
 			case statistics(StatisticsOverview.Action)
 			case achievements(AchievementsObserver.Action)
@@ -70,6 +79,10 @@ public struct TabbedContent: Reducer, Sendable {
 
 		Scope(state: \.bowlersList, action: \.internal.bowlersList) {
 			BowlersList()
+		}
+
+		Scope(state: \.overview, action: \.internal.overview) {
+			Overview()
 		}
 
 		Scope(state: \.settings, action: \.internal.settings) {
@@ -121,6 +134,7 @@ public struct TabbedContent: Reducer, Sendable {
 
 				case .accessories(.view), .accessories(.internal), .accessories(.delegate(.doNothing)),
 						.bowlersList(.view), .bowlersList(.internal), .bowlersList(.delegate(.doNothing)),
+						.overview(.view), .overview(.internal), .overview(.delegate(.doNothing)),
 						.settings(.view), .settings(.internal), .settings(.delegate(.doNothing)), .settings(.binding),
 						.statistics(.view), .statistics(.internal), .statistics(.delegate(.doNothing)),
 						.achievements(.view), .achievements(.internal), .achievements(.delegate(.doNothing)),
