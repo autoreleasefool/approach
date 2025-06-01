@@ -37,6 +37,7 @@ let package = Package(
 		.library(name: "OnboardingFeature", targets: ["OnboardingFeature"]),
 		.library(name: "OpponentDetailsFeature", targets: ["OpponentDetailsFeature"]),
 		.library(name: "OpponentsListFeature", targets: ["OpponentsListFeature"]),
+		.library(name: "OverviewFeature", targets: ["OverviewFeature"]),
 		.library(name: "SeriesEditorFeature", targets: ["SeriesEditorFeature"]),
 		.library(name: "SeriesListFeature", targets: ["SeriesListFeature"]),
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
@@ -302,6 +303,7 @@ let package = Package(
 				"BowlersListFeature",
 				"LaunchServiceInterface",
 				"OnboardingFeature",
+				"OverviewFeature",
 				"SettingsFeature",
 				"StatisticsOverviewFeature",
 			]
@@ -692,6 +694,22 @@ let package = Package(
 				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"OpponentsListFeature",
+				"TestUtilitiesLibrary",
+			]
+		),
+		.target(
+			name: "OverviewFeature",
+			dependencies: [
+				"AnnouncementsFeature",
+				"QuickLaunchRepositoryInterface",
+			]
+		),
+		.testTarget(
+			name: "OverviewFeatureTests",
+			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"OverviewFeature",
 				"TestUtilitiesLibrary",
 			]
 		),
