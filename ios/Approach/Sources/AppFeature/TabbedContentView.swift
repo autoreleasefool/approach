@@ -5,6 +5,7 @@ import AutomaticBackupsFeature
 import BowlersListFeature
 import ComposableArchitecture
 import FeatureActionLibrary
+import OverviewFeature
 import SettingsFeature
 import StatisticsOverviewFeature
 import StringsLibrary
@@ -22,9 +23,15 @@ public struct TabbedContentView: View {
 	public var body: some View {
 		TabView(selection: $store.selectedTab) {
 			NavigationStack {
-				BowlersListView(
-					store: store.scope(state: \.bowlersList, action: \.internal.bowlersList)
-				)
+				if store.isOverviewEnabled {
+					OverviewView(
+						store: store.scope(state: \.overview, action: \.internal.overview)
+					)
+				} else {
+					BowlersListView(
+						store: store.scope(state: \.bowlersList, action: \.internal.bowlersList)
+					)
+				}
 			}
 			.tag(TabbedContent.Tab.overview)
 			.tabItem { TabbedContent.Tab.overview.label }

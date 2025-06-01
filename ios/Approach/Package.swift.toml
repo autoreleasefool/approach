@@ -10,7 +10,7 @@ supported = [ "\"17.0\"" ]
 # Features
 
 [features.App]
-features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
+features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Overview", "Settings", "StatisticsOverview" ]
 services = [ "Launch" ]
 dependencies = [ "AppInfoPackageService", "BundlePackageService", "FeatureFlagsPackageService", "FileManagerPackageService", "GRDBDatabasePackageService", "PasteboardPackageService", "SentryErrorReportingPackageService", "StoreReviewPackageService", "TelemetryDeckAnalyticsPackageService", "UserDefaultsPackageService" ]
 
@@ -132,12 +132,16 @@ libraries = [ "ResourceList" ]
 features = [ "OpponentDetails" ]
 services = [ "RecentlyUsed" ]
 libraries = [ "FeatureFlags", "ModelsViews", "SortOrder" ]
-dependencies = [ "ExtensionsPackageLibrary" ]
+dependencies = [ "ExtensionsPackageLibrary", "Sharing" ]
 
 [features.Onboarding]
 repositories = [ "Bowlers" ]
 libraries = [ "Views" ]
 dependencies = [ "ExtensionsPackageLibrary", "SwiftUIExtensionsPackageLibrary" ]
+
+[features.Overview]
+features = [ "Announcements" ]
+repositories = [ "QuickLaunch" ]
 
 [features.SeriesEditor]
 features = [ "Form" ]
