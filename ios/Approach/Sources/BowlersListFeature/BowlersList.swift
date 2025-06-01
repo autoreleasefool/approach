@@ -20,7 +20,6 @@ import SeriesEditorFeature
 import SortOrderLibrary
 import StatisticsWidgetsLayoutFeature
 import StringsLibrary
-import TipsLibrary
 import TipsServiceInterface
 import ViewsLibrary
 

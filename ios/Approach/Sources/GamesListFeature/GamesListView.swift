@@ -12,7 +12,6 @@ import SharingFeature
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsPackageLibrary
-import TipsLibrary
 import ViewsLibrary
 
 @ViewAction(for: GamesList.self)

@@ -15,7 +15,6 @@ import StatisticsWidgetEditorFeature
 import StatisticsWidgetsLibrary
 import StatisticsWidgetsRepositoryInterface
 import StringsLibrary
-import TipsLibrary
 import TipsServiceInterface
 
 @Reducer
