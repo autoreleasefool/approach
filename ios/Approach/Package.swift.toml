@@ -38,8 +38,8 @@ libraries = [ "ModelsViews" ]
 
 [features.AlleysList]
 features = [ "AlleyEditor" ]
-libraries = [ "FeatureFlags", "ResourceList" ]
-dependencies = [ "ExtensionsPackageLibrary" ]
+libraries = [ "FeatureFlags", "ResourceList", "SortOrder" ]
+dependencies = [ "ExtensionsPackageLibrary", "Sharing" ]
 
 [features.Announcements]
 features = [ "Achievements" ]
@@ -103,6 +103,7 @@ libraries = [ "PickableModels" ]
 features = [ "GearEditor" ]
 services = [ "RecentlyUsed" ]
 libraries = [ "ResourceList", "SortOrder" ]
+dependencies = [ "Sharing" ]
 
 [features.ImportExport]
 features = [ "Errors" ]

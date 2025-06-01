@@ -7,7 +7,6 @@ import StatisticsRepositoryInterface
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsPackageLibrary
-import TipsLibrary
 import TipsServiceInterface
 import ViewsLibrary
 

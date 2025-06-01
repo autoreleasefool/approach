@@ -1,5 +1,5 @@
 import Dependencies
-import TipsLibrary
+@_exported import TipsLibrary
 
 public struct TipsService: Sendable {
 	public var shouldShowTip: @Sendable (Tip) -> Bool

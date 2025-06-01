@@ -14,7 +14,6 @@ import SeriesRepositoryInterface
 import SharingFeature
 import StringsLibrary
 import SwiftUI
-import TipsLibrary
 import TipsServiceInterface
 
 extension Game.List: ResourceListItem {
