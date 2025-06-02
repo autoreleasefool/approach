@@ -1,3 +1,4 @@
+import AnnouncementsFeature
 import ComposableArchitecture
 import GamesListFeature
 import SeriesEditorFeature
@@ -28,6 +29,7 @@ public struct OverviewView: View {
 		.navigationTitle(Strings.Overview.title)
 		.task { await send(.didStartTask).finish() }
 		.onAppear { send(.onAppear) }
+		.announcements(store: store.scope(state: \.announcements, action: \.internal.announcements))
 		.destinations($store)
 	}
 }
