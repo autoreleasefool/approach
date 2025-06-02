@@ -14,6 +14,7 @@ public struct Overview: Reducer, Sendable {
 
 	@ObservableState
 	public struct State: Equatable {
+		public var announcements = Announcements.State()
 		public var quickLaunch = QuickLaunch.State()
 		public var widgets: StatisticsWidgetLayout.State?
 
@@ -36,6 +37,7 @@ public struct Overview: Reducer, Sendable {
 		public enum Internal {
 			case showingWidgetsPreferenceDidChange
 
+			case announcements(Announcements.Action)
 			case quickLaunch(QuickLaunch.Action)
 			case widgets(StatisticsWidgetLayout.Action)
 			case destination(PresentationAction<Destination.Action>)
@@ -57,6 +59,10 @@ public struct Overview: Reducer, Sendable {
 	@Dependency(\.preferences) var preferences
 
 	public var body: some ReducerOf<Self> {
+		Scope(state: \.announcements, action: \.internal.announcements) {
+			Announcements()
+		}
+
 		Scope(state: \.quickLaunch, action: \.internal.quickLaunch) {
 			QuickLaunch()
 		}
@@ -108,6 +114,7 @@ public struct Overview: Reducer, Sendable {
 						.destination(.presented(.seriesEditor(.internal))),
 						.destination(.presented(.seriesEditor(.view))),
 						.destination(.presented(.seriesEditor(.binding))),
+						.announcements(.internal), .announcements(.view), .announcements(.delegate(.doNothing)),
 						.quickLaunch(.view), .quickLaunch(.internal),
 						.widgets(.delegate(.doNothing)), .widgets(.view), .widgets(.internal):
 					return .none
