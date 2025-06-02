@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import GamesListFeature
 import SeriesEditorFeature
+import StatisticsWidgetsLayoutFeature
 import StringsLibrary
 import SwiftUI
 
@@ -15,11 +16,18 @@ public struct OverviewView: View {
 	public var body: some View {
 		List {
 			QuickLaunchView(store: store.scope(state: \.quickLaunch, action: \.internal.quickLaunch))
+
+			if let store = store.scope(state: \.widgets, action: \.internal.widgets) {
+				StatisticsWidgetLayoutView(store: store)
+					.listRowSeparator(.hidden)
+					.listRowInsets(EdgeInsets())
+					.listRowBackground(Color.clear)
+					.listSectionSpacing(.compact)
+			}
 		}
 		.navigationTitle(Strings.Overview.title)
 		.task { await send(.didStartTask).finish() }
 		.onAppear { send(.onAppear) }
-		.onFirstAppear { send(.didFirstAppear) }
 		.destinations($store)
 	}
 }

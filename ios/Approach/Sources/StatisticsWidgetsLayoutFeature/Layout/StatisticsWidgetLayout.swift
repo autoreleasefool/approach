@@ -220,7 +220,7 @@ public struct StatisticsWidgetLayoutView: View {
 			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 	}
 
-	 @ViewBuilder private var widgetRows: some View {
+	@ViewBuilder private var widgetRows: some View {
 		if let widgets = widgetRows(forScreenWidth: contentSize.width, inSizeClass: horizontalSizeClass) {
 			let leftoverWidget = leftoverWidget(forScreenWidth: contentSize.width, inSizeClass: horizontalSizeClass)
 			let numberOfWidgetsPerRow = numberOfWidgetsPerRow(

@@ -3,14 +3,19 @@ import AnnouncementsFeature
 import ComposableArchitecture
 import FeatureActionLibrary
 import GamesListFeature
+import PreferenceServiceInterface
 import QuickLaunchRepositoryInterface
 import SeriesEditorFeature
+import StatisticsWidgetsLayoutFeature
 
 @Reducer
 public struct Overview: Reducer, Sendable {
+	public static let widgetContext = "bowlersList"
+
 	@ObservableState
 	public struct State: Equatable {
 		public var quickLaunch = QuickLaunch.State()
+		public var widgets: StatisticsWidgetLayout.State?
 
 		@Presents public var destination: Destination.State?
 
@@ -21,7 +26,6 @@ public struct Overview: Reducer, Sendable {
 		@CasePathable
 		public enum View {
 			case onAppear
-			case didFirstAppear
 			case didStartTask
 		}
 
@@ -30,7 +34,10 @@ public struct Overview: Reducer, Sendable {
 
 		@CasePathable
 		public enum Internal {
+			case showingWidgetsPreferenceDidChange
+
 			case quickLaunch(QuickLaunch.Action)
+			case widgets(StatisticsWidgetLayout.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -47,6 +54,8 @@ public struct Overview: Reducer, Sendable {
 
 	public init() {}
 
+	@Dependency(\.preferences) var preferences
+
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.quickLaunch, action: \.internal.quickLaunch) {
 			QuickLaunch()
@@ -57,17 +66,23 @@ public struct Overview: Reducer, Sendable {
 			case let .view(viewAction):
 				switch viewAction {
 				case .onAppear:
-					return .none
-
-				case .didFirstAppear:
-					return .none
+					return .send(.internal(.showingWidgetsPreferenceDidChange))
 
 				case .didStartTask:
-					return .none
+					return .run { send in
+						for await _ in preferences.observe(keys: [.statisticsWidgetHideInBowlerList]) {
+							await send(.internal(.showingWidgetsPreferenceDidChange))
+						}
+					}
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case .showingWidgetsPreferenceDidChange:
+					let isShowingWidgets = preferences.bool(forKey: .statisticsWidgetHideInBowlerList) != true
+					state.widgets = isShowingWidgets ? .init(context: Overview.widgetContext, newWidgetSource: nil) : nil
+					return .none
+
 				case let .quickLaunch(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .createSeries(series, league):
@@ -93,7 +108,8 @@ public struct Overview: Reducer, Sendable {
 						.destination(.presented(.seriesEditor(.internal))),
 						.destination(.presented(.seriesEditor(.view))),
 						.destination(.presented(.seriesEditor(.binding))),
-						.quickLaunch(.view), .quickLaunch(.internal):
+						.quickLaunch(.view), .quickLaunch(.internal),
+						.widgets(.delegate(.doNothing)), .widgets(.view), .widgets(.internal):
 					return .none
 				}
 
@@ -102,6 +118,9 @@ public struct Overview: Reducer, Sendable {
 			}
 		}
 		.ifLet(\.$destination, action: \.internal.destination)
+		.ifLet(\.widgets, action: \.internal.widgets) {
+			StatisticsWidgetLayout()
+		}
 
 		BreadcrumbReducer<State, Action> { _, action in
 			switch action {
