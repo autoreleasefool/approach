@@ -703,6 +703,7 @@ let package = Package(
 				"AnnouncementsFeature",
 				"GamesListFeature",
 				"QuickLaunchRepositoryInterface",
+				"StatisticsWidgetsLayoutFeature",
 			]
 		),
 		.testTarget(
