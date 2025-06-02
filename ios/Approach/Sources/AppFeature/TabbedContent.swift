@@ -29,7 +29,7 @@ public struct TabbedContent: Reducer, Sendable {
 		public var achievements = AchievementsObserver.State()
 		public var backups = AutomaticBackups.State()
 
-		public let isOverviewEnabled: Bool
+		public var isOverviewEnabled: Bool
 
 		public init() {
 			@Dependency(\.featureFlags) var featureFlags
@@ -47,6 +47,7 @@ public struct TabbedContent: Reducer, Sendable {
 		@CasePathable
 		public enum Internal {
 			case showHUD(Bool)
+			case flagsDidChange
 
 			case accessories(AccessoriesOverview.Action)
 			case bowlersList(BowlersList.Action)
@@ -72,6 +73,7 @@ public struct TabbedContent: Reducer, Sendable {
 
 	public init() {}
 
+	@Dependency(\.featureFlags) var featureFlags
 	@Dependency(HUDService.self) var hud
 
 	public var body: some ReducerOf<Self> {
@@ -110,15 +112,26 @@ public struct TabbedContent: Reducer, Sendable {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didStartTask:
-					return .run { send in
-						for await status in hud.hudStatusNotifications() {
-							await send(.internal(.showHUD(status.isShowing)))
+					return .merge(
+						.run { send in
+							for await status in hud.hudStatusNotifications() {
+								await send(.internal(.showHUD(status.isShowing)))
+							}
+						},
+						.run { send in
+							for await _ in try featureFlags.observe(flag: .teams) {
+								await send(.internal(.flagsDidChange))
+							}
 						}
-					}
+					)
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case .flagsDidChange:
+					state.isOverviewEnabled = featureFlags.isFlagEnabled(.teams)
+					return .none
+
 				case let .showHUD(isShowing):
 					state.isHudVisible = isShowing
 					return .none
