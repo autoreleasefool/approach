@@ -25,6 +25,8 @@ public struct OverviewView: View {
 					.listRowBackground(Color.clear)
 					.listSectionSpacing(.compact)
 			}
+
+			BowlersView(store: store.scope(state: \.bowlers, action: \.internal.bowlers))
 		}
 		.navigationTitle(Strings.Overview.title)
 		.task { await send(.didStartTask).finish() }

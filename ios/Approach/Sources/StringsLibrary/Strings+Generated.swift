@@ -1285,6 +1285,10 @@ public enum Strings {
   public enum Overview {
     /// Overview
     public static let title = Strings.tr("Localizable", "overview.title", fallback: "Overview")
+    public enum List {
+      /// Bowlers
+      public static let bowlers = Strings.tr("Localizable", "overview.list.bowlers", fallback: "Bowlers")
+    }
   }
   public enum Picker {
     /// Picking %@
