@@ -1,12 +1,18 @@
 import AnnouncementsFeature
 import ComposableArchitecture
 import FeatureActionLibrary
+import GamesListFeature
 import QuickLaunchRepositoryInterface
+import SeriesEditorFeature
 
 @Reducer
 public struct Overview: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
+		public var quickLaunch = QuickLaunch.State()
+
+		@Presents public var destination: Destination.State?
+
 		public init() {}
 	}
 
@@ -22,16 +28,29 @@ public struct Overview: Reducer, Sendable {
 		public enum Delegate { case doNothing }
 
 		@CasePathable
-		public enum Internal { case doNothing }
+		public enum Internal {
+			case quickLaunch(QuickLaunch.Action)
+			case destination(PresentationAction<Destination.Action>)
+		}
 
 		case view(View)
 		case `internal`(Internal)
 		case delegate(Delegate)
 	}
 
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case games(GamesList)
+		case seriesEditor(SeriesEditor)
+	}
+
 	public init() {}
 
 	public var body: some ReducerOf<Self> {
+		Scope(state: \.quickLaunch, action: \.internal.quickLaunch) {
+			QuickLaunch()
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
@@ -48,7 +67,32 @@ public struct Overview: Reducer, Sendable {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .doNothing:
+				case let .quickLaunch(.delegate(delegateAction)):
+					switch delegateAction {
+					case let .createSeries(series, league):
+						state.destination = .seriesEditor(SeriesEditor.State(value: .create(series), inLeague: league))
+						return .none
+					}
+
+				case let .destination(.presented(.seriesEditor(.delegate(delegateAction)))):
+					switch delegateAction {
+					case let .didFinishCreating(created):
+						guard let league = state.quickLaunch.source.value?.league else { return .none }
+						state.destination = .games(GamesList.State(series: created.asGameHost, host: league))
+						return .none
+
+					case .didFinishArchiving, .didFinishUpdating:
+						return .none
+					}
+
+				case .destination(.dismiss),
+						.destination(.presented(.games(.delegate(.doNothing)))),
+						.destination(.presented(.games(.view))),
+						.destination(.presented(.games(.internal))),
+						.destination(.presented(.seriesEditor(.internal))),
+						.destination(.presented(.seriesEditor(.view))),
+						.destination(.presented(.seriesEditor(.binding))),
+						.quickLaunch(.view), .quickLaunch(.internal):
 					return .none
 				}
 
@@ -56,5 +100,6 @@ public struct Overview: Reducer, Sendable {
 				return .none
 			}
 		}
+		.ifLet(\.$destination, action: \.internal.destination)
 	}
 }

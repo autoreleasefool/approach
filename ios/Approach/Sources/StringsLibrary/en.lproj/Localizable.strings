@@ -53,6 +53,10 @@
 "bowler.error.empty.title" = "No bowlers found";
 "bowler.error.empty.message" = "You haven't added any bowlers yet. Try adding yourself to get started.";
 
+// MARK: - Overview
+
+"overview.title" = "Overview";
+
 // MARK: - Opponents
 
 "opponent.title" = "Opponent";
@@ -497,8 +501,8 @@
 "quickLaunch.title" = "Quick Play";
 "quickLaunch.newSeries" = "New Series";
 "quickLaunch.playNow" = "Play Now";
-"quickLaunch.bowlerslist.title" = "Quick Play";
-"quickLaunch.bowlerslist.subtitle" = "Start bowling";
+"quickLaunch.bowlersList.title" = "Quick Play";
+"quickLaunch.bowlersList.subtitle" = "Start bowling";
 "quickLaunch.bowlersList.tip.title" = "Quickly start a new series";
 "quickLaunch.bowlersList.tip.message" = "Use the button above to start a new series in your last played league.";
 

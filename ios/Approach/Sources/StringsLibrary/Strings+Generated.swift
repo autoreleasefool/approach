@@ -1282,6 +1282,10 @@ public enum Strings {
     /// Oldest to Newest
     public static let oldestFirst = Strings.tr("Localizable", "ordering.oldestFirst", fallback: "Oldest to Newest")
   }
+  public enum Overview {
+    /// Overview
+    public static let title = Strings.tr("Localizable", "overview.title", fallback: "Overview")
+  }
   public enum Picker {
     /// Picking %@
     public static func title(_ p1: Any) -> String {
@@ -1300,18 +1304,16 @@ public enum Strings {
     /// Quick Play
     public static let title = Strings.tr("Localizable", "quickLaunch.title", fallback: "Quick Play")
     public enum BowlersList {
+      /// Start bowling
+      public static let subtitle = Strings.tr("Localizable", "quickLaunch.bowlersList.subtitle", fallback: "Start bowling")
+      /// Quick Play
+      public static let title = Strings.tr("Localizable", "quickLaunch.bowlersList.title", fallback: "Quick Play")
       public enum Tip {
         /// Use the button above to start a new series in your last played league.
         public static let message = Strings.tr("Localizable", "quickLaunch.bowlersList.tip.message", fallback: "Use the button above to start a new series in your last played league.")
         /// Quickly start a new series
         public static let title = Strings.tr("Localizable", "quickLaunch.bowlersList.tip.title", fallback: "Quickly start a new series")
       }
-    }
-    public enum Bowlerslist {
-      /// Start bowling
-      public static let subtitle = Strings.tr("Localizable", "quickLaunch.bowlerslist.subtitle", fallback: "Start bowling")
-      /// Quick Play
-      public static let title = Strings.tr("Localizable", "quickLaunch.bowlerslist.title", fallback: "Quick Play")
     }
   }
   public enum Roll {
