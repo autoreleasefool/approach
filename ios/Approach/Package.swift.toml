@@ -140,7 +140,7 @@ libraries = [ "Views" ]
 dependencies = [ "ExtensionsPackageLibrary", "SwiftUIExtensionsPackageLibrary" ]
 
 [features.Overview]
-features = [ "Announcements", "GamesList" ]
+features = [ "Announcements", "GamesList", "StatisticsWidgetsLayout" ]
 repositories = [ "QuickLaunch" ]
 
 [features.SeriesEditor]
