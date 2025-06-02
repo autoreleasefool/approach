@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AnnouncementsFeature
 import ComposableArchitecture
 import FeatureActionLibrary
@@ -101,5 +102,12 @@ public struct Overview: Reducer, Sendable {
 			}
 		}
 		.ifLet(\.$destination, action: \.internal.destination)
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
+			}
+		}
 	}
 }
