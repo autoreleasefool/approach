@@ -13,7 +13,7 @@ import ViewsLibrary
 public struct QuickLaunch: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
-		public var source: Source = .notLoaded
+		public var source: Loadable<QuickLaunchSource?> = .notLoaded
 		public var isShowingTip: Bool
 
 		init() {
@@ -44,18 +44,6 @@ public struct QuickLaunch: Reducer, Sendable {
 		case delegate(Delegate)
 	}
 
-	public enum Source: Equatable {
-		case notLoaded
-		case loaded(QuickLaunchSource?)
-
-		var value: QuickLaunchSource? {
-			switch self {
-			case let .loaded(t): t
-			case .notLoaded: nil
-			}
-		}
-	}
-
 	@Dependency(\.calendar) var calendar
 	@Dependency(\.date) var date
 	@Dependency(QuickLaunchRepository.self) var quickLaunch
@@ -75,17 +63,17 @@ public struct QuickLaunch: Reducer, Sendable {
 					}
 
 				case .didTapStartButton:
-					guard let league = state.source.value?.league else { return .none }
+					guard let source = state.source.value ?? nil else { return .none }
 					state.isShowingTip = false
 
 					let series = Series.Create.default(
 						withId: uuid(),
 						onDate: calendar.startOfDay(for: date()),
-						inLeague: league
+						inLeague: source.league
 					)
 
 					return .run { send in
-						await send(.delegate(.createSeries(series, league)))
+						await send(.delegate(.createSeries(series, source.league)))
 						await tips.hide(tipFor: .quickLaunchTip)
 					}
 				}
@@ -125,7 +113,7 @@ public struct QuickLaunchView: View {
 			ProgressView()
 				.onAppear { send(.onAppear) }
 		case let .loaded(source):
-			if let source {
+			if let source = source ?? nil {
 				startButtonSection(source: source)
 
 				if store.isShowingTip {

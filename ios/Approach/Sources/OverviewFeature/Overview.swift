@@ -15,6 +15,7 @@ public struct Overview: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var announcements = Announcements.State()
+		public var bowlers = Bowlers.State()
 		public var quickLaunch = QuickLaunch.State()
 		public var widgets: StatisticsWidgetLayout.State?
 
@@ -38,6 +39,7 @@ public struct Overview: Reducer, Sendable {
 			case showingWidgetsPreferenceDidChange
 
 			case announcements(Announcements.Action)
+			case bowlers(Bowlers.Action)
 			case quickLaunch(QuickLaunch.Action)
 			case widgets(StatisticsWidgetLayout.Action)
 			case destination(PresentationAction<Destination.Action>)
@@ -61,6 +63,10 @@ public struct Overview: Reducer, Sendable {
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.announcements, action: \.internal.announcements) {
 			Announcements()
+		}
+
+		Scope(state: \.bowlers, action: \.internal.bowlers) {
+			Bowlers()
 		}
 
 		Scope(state: \.quickLaunch, action: \.internal.quickLaunch) {
@@ -89,6 +95,13 @@ public struct Overview: Reducer, Sendable {
 					state.widgets = isShowingWidgets ? .init(context: Overview.widgetContext, newWidgetSource: nil) : nil
 					return .none
 
+				case let .bowlers(.delegate(delegateAction)):
+					switch delegateAction {
+					case let .didSelectBowler(bowler):
+						// TODO: Show bowler's leagues
+						return .none
+					}
+
 				case let .quickLaunch(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .createSeries(series, league):
@@ -99,7 +112,7 @@ public struct Overview: Reducer, Sendable {
 				case let .destination(.presented(.seriesEditor(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didFinishCreating(created):
-						guard let league = state.quickLaunch.source.value?.league else { return .none }
+						guard let league = state.quickLaunch.source.value??.league else { return .none }
 						state.destination = .games(GamesList.State(series: created.asGameHost, host: league))
 						return .none
 
@@ -115,6 +128,7 @@ public struct Overview: Reducer, Sendable {
 						.destination(.presented(.seriesEditor(.view))),
 						.destination(.presented(.seriesEditor(.binding))),
 						.announcements(.internal), .announcements(.view), .announcements(.delegate(.doNothing)),
+						.bowlers(.internal), .bowlers(.view),
 						.quickLaunch(.view), .quickLaunch(.internal),
 						.widgets(.delegate(.doNothing)), .widgets(.view), .widgets(.internal):
 					return .none
