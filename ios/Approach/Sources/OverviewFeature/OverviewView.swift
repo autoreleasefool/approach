@@ -1,4 +1,7 @@
 import ComposableArchitecture
+import GamesListFeature
+import SeriesEditorFeature
+import StringsLibrary
 import SwiftUI
 
 @ViewAction(for: Overview.self)
@@ -10,13 +13,37 @@ public struct OverviewView: View {
 	}
 
 	public var body: some View {
-		VStack {
-			Text("Welcome to the Overview!")
-				.font(.largeTitle)
-				.padding()
+		List {
+			QuickLaunchView(store: store.scope(state: \.quickLaunch, action: \.internal.quickLaunch))
 		}
-		.navigationTitle("Overview")
-		.navigationBarTitleDisplayMode(.inline)
+		.navigationTitle(Strings.Overview.title)
 		.task { await send(.didStartTask).finish() }
+		.onAppear { send(.onAppear) }
+		.onFirstAppear { send(.didFirstAppear) }
+		.destinations($store)
+	}
+}
+
+// MARK: - Destinations
+
+extension View {
+	fileprivate func destinations(_ store: Bindable<StoreOf<Overview>>) -> some View {
+		self
+			.gamesList(store.scope(state: \.destination?.games, action: \.internal.destination.games))
+			.seriesEditor(store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
+	}
+
+	fileprivate func gamesList(_ store: Binding<StoreOf<GamesList>?>) -> some View {
+		navigationDestination(item: store) { (store: StoreOf<GamesList>) in
+			GamesListView(store: store)
+		}
+	}
+
+	fileprivate func seriesEditor(_ store: Binding<StoreOf<SeriesEditor>?>) -> some View {
+		sheet(item: store) { (store: StoreOf<SeriesEditor>) in
+			NavigationStack {
+				SeriesEditorView(store: store)
+			}
+		}
 	}
 }

@@ -17,6 +17,7 @@ import StatisticsWidgetsLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsPackageLibrary
+import TipsLibrary
 import ViewsLibrary
 
 @ViewAction(for: BowlersList.self)
@@ -80,10 +81,10 @@ public struct BowlersListView: View {
 
 						HStack(spacing: .standardSpacing) {
 							VStack(alignment: .trailing) {
-								Text(Strings.QuickLaunch.Bowlerslist.title)
+								Text(Strings.QuickLaunch.BowlersList.title)
 									.font(.subheadline)
 
-								Text(Strings.QuickLaunch.Bowlerslist.subtitle)
+								Text(Strings.QuickLaunch.BowlersList.subtitle)
 									.font(.caption)
 							}
 
