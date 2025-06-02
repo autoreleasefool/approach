@@ -701,6 +701,7 @@ let package = Package(
 			name: "OverviewFeature",
 			dependencies: [
 				"AnnouncementsFeature",
+				"GamesListFeature",
 				"QuickLaunchRepositoryInterface",
 			]
 		),
