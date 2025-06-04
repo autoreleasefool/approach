@@ -1,6 +1,9 @@
 import AnnouncementsFeature
+import BowlerDetailsFeature
+import BowlerEditorFeature
 import ComposableArchitecture
 import GamesListFeature
+import LeaguesListFeature
 import SeriesEditorFeature
 import StatisticsWidgetsLayoutFeature
 import StringsLibrary
@@ -26,11 +29,12 @@ public struct OverviewView: View {
 					.listSectionSpacing(.compact)
 			}
 
-			BowlersView(store: store.scope(state: \.bowlers, action: \.internal.bowlers))
+			BowlersSectionView(store: store.scope(state: \.bowlers, action: \.internal.bowlers))
 		}
 		.navigationTitle(Strings.Overview.title)
 		.task { await send(.didStartTask).finish() }
 		.onAppear { send(.onAppear) }
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		.announcements(store: store.scope(state: \.announcements, action: \.internal.announcements))
 		.destinations($store)
 	}
@@ -41,13 +45,36 @@ public struct OverviewView: View {
 extension View {
 	fileprivate func destinations(_ store: Bindable<StoreOf<Overview>>) -> some View {
 		self
-			.gamesList(store.scope(state: \.destination?.games, action: \.internal.destination.games))
+			.bowlerDetails(store.scope(state: \.destination?.bowlerDetails, action: \.internal.destination.bowlerDetails))
+			.bowlerEditor(store.scope(state: \.destination?.bowlerEditor, action: \.internal.destination.bowlerEditor))
+			.gamesList(store.scope(state: \.destination?.gamesList, action: \.internal.destination.gamesList))
+			.leaguesList(store.scope(state: \.destination?.leaguesList, action: \.internal.destination.leaguesList))
 			.seriesEditor(store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
+	}
+
+	fileprivate func bowlerDetails(_ store: Binding<StoreOf<BowlerDetails>?>) -> some View {
+		navigationDestination(item: store) { (store: StoreOf<BowlerDetails>) in
+			BowlerDetailsView(store: store)
+		}
+	}
+
+	fileprivate func bowlerEditor(_ store: Binding<StoreOf<BowlerEditor>?>) -> some View {
+		sheet(item: store) { (store: StoreOf<BowlerEditor>) in
+			NavigationStack {
+				BowlerEditorView(store: store)
+			}
+		}
 	}
 
 	fileprivate func gamesList(_ store: Binding<StoreOf<GamesList>?>) -> some View {
 		navigationDestination(item: store) { (store: StoreOf<GamesList>) in
 			GamesListView(store: store)
+		}
+	}
+
+	fileprivate func leaguesList(_ store: Binding<StoreOf<LeaguesList>?>) -> some View {
+		navigationDestination(item: store) { (store: StoreOf<LeaguesList>) in
+			LeaguesListView(store: store)
 		}
 	}
 
