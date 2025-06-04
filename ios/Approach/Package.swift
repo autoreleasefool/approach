@@ -701,9 +701,8 @@ let package = Package(
 			name: "OverviewFeature",
 			dependencies: [
 				"AnnouncementsFeature",
-				"GamesListFeature",
+				"BowlerDetailsFeature",
 				"QuickLaunchRepositoryInterface",
-				"StatisticsWidgetsLayoutFeature",
 			]
 		),
 		.testTarget(
