@@ -25,6 +25,10 @@ public func initializeApproachDatabase(
 	withBowlerPreferredGear: InitialValue<BowlerPreferredGear.Database>? = nil,
 	withAchievementEvents: InitialValue<AchievementEvent.Database>? = nil,
 	withAchievements: InitialValue<Achievement.Database>? = nil,
+	withTeams: InitialValue<Team.Database>? = nil,
+	withTeamBowlers: InitialValue<TeamBowler.Database>? = nil,
+	withTeamSeries: InitialValue<TeamSeries.Database>? = nil,
+	withTeamSeriesSeries: InitialValue<TeamSeriesSeries.Database>? = nil,
 	to db: (any DatabaseWriter)? = nil
 ) throws -> any DatabaseWriter {
 	let statisticsWidgets = withStatisticsWidgets
@@ -36,6 +40,10 @@ public func initializeApproachDatabase(
 	let gear = coallesce(withGear, ifHasOneOf: frames)
 	let avatars = coallesce(withAvatars, ifHasOneOf: gear)
 	let bowlers = coallesce(withBowlers, ifHasOneOf: leagues, gear, matchPlays, statisticsWidgets)
+	let teams = withTeams
+	let teamBowlers = coallesce(withTeamBowlers, ifHasAllOf: teams, bowlers)
+	let teamSeries = coallesce(withTeamSeries, ifHasAllOf: teams, teamBowlers)
+	let teamSeriesSeries = coallesce(withTeamSeriesSeries, ifHasAllOf: teams, teamSeries, series)
 	let lanes = withLanes
 	let alleys = coallesce(withAlleys, ifHasOneOf: lanes, leagues)
 	let locations = coallesce(withLocations, ifHasOneOf: alleys)
@@ -63,6 +71,10 @@ public func initializeApproachDatabase(
 		try insert(bowlerPreferredGear: bowlerPreferredGear, into: $0)
 		try insert(achievementEvents: achievementEvents, into: $0)
 		try insert(achievements: achievements, into: $0)
+		try insert(teams: teams, into: $0)
+		try insert(teamBowlers: teamBowlers, into: $0)
+		try insert(teamSeries: teamSeries, into: $0)
+		try insert(teamSeriesSeries: teamSeriesSeries, into: $0)
 	}
 
 	return dbQueue

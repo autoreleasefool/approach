@@ -24,3 +24,5 @@ extension Team.Database {
 		public static let name = Column(CodingKeys.name)
 	}
 }
+
+extension Team.List: FetchableRecord {}

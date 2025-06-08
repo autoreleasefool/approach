@@ -11,6 +11,7 @@
 		CA28CC972CD066EF00731AB1 /* CodableService in Frameworks */ = {isa = PBXBuildFile; productRef = CA28CC962CD066EF00731AB1 /* CodableService */; };
 		CA2B781F2AABC9E10044487E /* ScoresRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA2B781E2AABC9E10044487E /* ScoresRepository */; };
 		CA2B78212AABC9EC0044487E /* ScoresRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA2B78202AABC9EC0044487E /* ScoresRepository */; };
+		CA2EB4FE2DF1450F006CA8DB /* TeamsRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA2EB4FD2DF1450F006CA8DB /* TeamsRepository */; };
 		CA2FA1552A2559C3008341A5 /* NotificationsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA2FA1542A2559C3008341A5 /* NotificationsService */; };
 		CA2FCE912A14908C0061A7FE /* MatchPlaysRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA2FCE902A14908C0061A7FE /* MatchPlaysRepository */; };
 		CA2FCE932A1490910061A7FE /* MatchPlaysRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA2FCE922A1490910061A7FE /* MatchPlaysRepository */; };
@@ -146,6 +147,7 @@
 				CA9C5D7D2A8C032100E484E2 /* LoggingService in Frameworks */,
 				CA2FCE932A1490910061A7FE /* MatchPlaysRepository in Frameworks */,
 				CAD15BB729FB91270015E4CB /* LocationsRepository in Frameworks */,
+				CA2EB4FE2DF1450F006CA8DB /* TeamsRepository in Frameworks */,
 				CAC51C1E2A51412300A99164 /* StatisticsWidgetsRepository in Frameworks */,
 				CA439E5029E2949400B09020 /* AlleysRepository in Frameworks */,
 				CA626E272A821846002BCC13 /* StoreKit.framework in Frameworks */,
@@ -376,6 +378,7 @@
 				CA28CC962CD066EF00731AB1 /* CodableService */,
 				CA4E0A382D87802800840E0A /* AchievementsRepository */,
 				CA4E0A3A2D87802800840E0A /* AchievementsService */,
+				CA2EB4FD2DF1450F006CA8DB /* TeamsRepository */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -653,6 +656,10 @@
 		CA2B78202AABC9EC0044487E /* ScoresRepository */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ScoresRepository;
+		};
+		CA2EB4FD2DF1450F006CA8DB /* TeamsRepository */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TeamsRepository;
 		};
 		CA2FA1542A2559C3008341A5 /* NotificationsService */ = {
 			isa = XCSwiftPackageProductDependency;

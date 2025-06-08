@@ -250,6 +250,9 @@ repositories = [ "Statistics" ]
 [repositories.StatisticsWidgets.tests]
 repositories = [ "Statistics" ]
 
+[repositories.Teams]
+services = [ "RecentlyUsed" ]
+
 # Services
 
 [services.Achievements]

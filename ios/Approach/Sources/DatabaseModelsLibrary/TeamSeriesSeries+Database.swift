@@ -23,5 +23,6 @@ extension TeamSeriesSeries.Database {
 	public enum Columns {
 		public static let teamSeriesId = Column(CodingKeys.teamSeriesId)
 		public static let seriesId = Column(CodingKeys.seriesId)
+		public static let position = Column(CodingKeys.position)
 	}
 }
