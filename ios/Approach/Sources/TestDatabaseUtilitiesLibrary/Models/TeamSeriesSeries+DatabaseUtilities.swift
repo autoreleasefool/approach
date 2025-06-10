@@ -38,4 +38,3 @@ func insert(
 		try series.insert(db)
 	}
 }
-

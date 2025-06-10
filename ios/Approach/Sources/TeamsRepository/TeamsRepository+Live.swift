@@ -16,7 +16,7 @@ extension TeamsRepository: DependencyKey {
 				@Dependency(RecentlyUsedService.self) var recentlyUsed
 
 				let teams = database.reader().observe {
-					return try Team.Database
+					try Team.Database
 						.all()
 						.order { $0.name.collating(.localizedCaseInsensitiveCompare) }
 						.including(

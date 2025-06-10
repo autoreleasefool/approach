@@ -30,6 +30,7 @@ public struct OverviewView: View {
 			}
 
 			BowlersSectionView(store: store.scope(state: \.bowlers, action: \.internal.bowlers))
+			TeamsSectionView(store: store.scope(state: \.teams, action: \.internal.teams))
 		}
 		.navigationTitle(Strings.Overview.title)
 		.task { await send(.didStartTask).finish() }
