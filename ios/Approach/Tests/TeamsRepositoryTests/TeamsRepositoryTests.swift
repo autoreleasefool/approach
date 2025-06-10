@@ -8,9 +8,9 @@ import RecentlyUsedServiceInterface
 @testable import TeamsRepository
 @testable import TeamsRepositoryInterface
 import TestDatabaseUtilitiesLibrary
+import Testing
 import TestUtilitiesLibrary
 import TestUtilitiesPackageLibrary
-import Testing
 
 @Suite("TeamsRepository", .tags(.repository))
 struct TeamsRepositoryTests {
@@ -51,7 +51,7 @@ struct TeamsRepositoryTests {
 				$0[DatabaseService.self].reader = { @Sendable in db }
 				$0[TeamsRepository.self] = .liveValue
 			} operation: {
-				self.teams.list(ordered: .byName)
+				teams.list(ordered: .byName)
 			}
 
 			var iterator = teams.makeAsyncIterator()
@@ -73,7 +73,7 @@ struct TeamsRepositoryTests {
 				$0[DatabaseService.self].reader = { @Sendable in db }
 				$0[TeamsRepository.self] = .liveValue
 			} operation: {
-				self.teams.list(ordered: .byName)
+				teams.list(ordered: .byName)
 			}
 
 			var iterator = teams.makeAsyncIterator()
@@ -96,7 +96,7 @@ struct TeamsRepositoryTests {
 				$0[RecentlyUsedService.self].observeRecentlyUsedIds = { @Sendable _ in recentStream }
 				$0[TeamsRepository.self] = .liveValue
 			} operation: {
-				self.teams.list(ordered: .byRecentlyUsed)
+				teams.list(ordered: .byRecentlyUsed)
 			}
 
 			var iterator = teams.makeAsyncIterator()
@@ -114,7 +114,7 @@ struct TeamsRepositoryTests {
 				$0[DatabaseService.self].reader = { @Sendable in db }
 				$0[TeamsRepository.self] = .liveValue
 			} operation: {
-				self.teams.list(ordered: .byName)
+				teams.list(ordered: .byName)
 			}
 
 			var iterator = teams.makeAsyncIterator()

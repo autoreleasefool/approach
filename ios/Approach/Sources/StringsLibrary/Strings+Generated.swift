@@ -1288,6 +1288,8 @@ public enum Strings {
     public enum List {
       /// Bowlers
       public static let bowlers = Strings.tr("Localizable", "overview.list.bowlers", fallback: "Bowlers")
+      /// Teams
+      public static let teams = Strings.tr("Localizable", "overview.list.teams", fallback: "Teams")
     }
   }
   public enum Picker {
@@ -2296,6 +2298,20 @@ public enum Strings {
       public static let twelves = Strings.tr("Localizable", "statistics.title.twelves", fallback: "Twelves")
       /// Twelves Spared
       public static let twelvesSpared = Strings.tr("Localizable", "statistics.title.twelvesSpared", fallback: "Twelves Spared")
+    }
+  }
+  public enum Team {
+    public enum Error {
+      public enum Empty {
+        /// You haven't added any teams yet.
+        public static let message = Strings.tr("Localizable", "team.error.empty.message", fallback: "You haven't added any teams yet.")
+        /// No teams found
+        public static let title = Strings.tr("Localizable", "team.error.empty.title", fallback: "No teams found")
+      }
+    }
+    public enum List {
+      /// Add Team
+      public static let add = Strings.tr("Localizable", "team.list.add", fallback: "Add Team")
     }
   }
   public enum Widget {

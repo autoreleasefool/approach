@@ -3,8 +3,8 @@ import BowlersRepositoryInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import ModelsLibrary
-import ResourceListLibrary
 import RecentlyUsedServiceInterface
+import ResourceListLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsPackageLibrary
@@ -122,7 +122,7 @@ public struct BowlersSection: Reducer, Sendable {
 					case let .didArchive(bowler):
 						return .run { send in
 							await send(.internal(.didArchiveBowler(Result {
-								try await bowlers.archive(bowler.id);
+								try await bowlers.archive(bowler.id)
 								return bowler
 							})))
 						}

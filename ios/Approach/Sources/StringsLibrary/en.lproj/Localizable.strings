@@ -53,10 +53,17 @@
 "bowler.error.empty.title" = "No bowlers found";
 "bowler.error.empty.message" = "You haven't added any bowlers yet. Try adding yourself to get started.";
 
+// MARK: - Teams
+
+"team.list.add" = "Add Team";
+"team.error.empty.title" = "No teams found";
+"team.error.empty.message" = "You haven't added any teams yet.";
+
 // MARK: - Overview
 
 "overview.title" = "Overview";
 "overview.list.bowlers" = "Bowlers";
+"overview.list.teams" = "Teams";
 
 // MARK: - Opponents
 

@@ -23,6 +23,7 @@ public struct Overview: Reducer, Sendable {
 		public var announcements = Announcements.State()
 		public var bowlers = BowlersSection.State()
 		public var quickLaunch = QuickLaunch.State()
+		public var teams = TeamsSection.State()
 		public var widgets: StatisticsWidgetLayout.State?
 
 		@Presents public var destination: Destination.State?
@@ -48,6 +49,7 @@ public struct Overview: Reducer, Sendable {
 			case announcements(Announcements.Action)
 			case bowlers(BowlersSection.Action)
 			case quickLaunch(QuickLaunch.Action)
+			case teams(TeamsSection.Action)
 			case widgets(StatisticsWidgetLayout.Action)
 			case errors(Errors<ErrorID>.Action)
 
@@ -70,6 +72,7 @@ public struct Overview: Reducer, Sendable {
 
 	public enum ErrorID: Hashable {
 		case bowlers(BowlersSection.ErrorID)
+		case teams(TeamsSection.ErrorID)
 	}
 
 	public init() {}
@@ -85,6 +88,10 @@ public struct Overview: Reducer, Sendable {
 
 		Scope(state: \.bowlers, action: \.internal.bowlers) {
 			BowlersSection()
+		}
+
+		Scope(state: \.teams, action: \.internal.teams) {
+			TeamsSection()
 		}
 
 		Scope(state: \.errors, action: \.internal.errors) {
@@ -148,6 +155,14 @@ public struct Overview: Reducer, Sendable {
 						return .none
 					}
 
+				case let .teams(.delegate(delegateAction)):
+					switch delegateAction {
+					case let .didReceiveError(id, error, message):
+						return state.errors
+							.enqueue(.teams(id), thrownError: error, toastMessage: message)
+							.map { .internal(.errors($0)) }
+					}
+
 				case let .destination(.presented(.seriesEditor(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didFinishCreating(created):
@@ -180,6 +195,7 @@ public struct Overview: Reducer, Sendable {
 						.bowlers(.internal), .bowlers(.view),
 						.errors(.view), .errors(.internal), .errors(.delegate(.doNothing)),
 						.quickLaunch(.view), .quickLaunch(.internal),
+						.teams(.internal), .teams(.view),
 						.widgets(.delegate(.doNothing)), .widgets(.view), .widgets(.internal):
 					return .none
 				}
