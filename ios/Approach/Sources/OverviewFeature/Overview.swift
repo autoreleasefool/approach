@@ -7,6 +7,7 @@ import ErrorsFeature
 import FeatureActionLibrary
 import FeatureFlagsLibrary
 import GamesListFeature
+import GamesRepositoryInterface
 import LeaguesListFeature
 import ModelsLibrary
 import PreferenceServiceInterface
@@ -79,6 +80,7 @@ public struct Overview: Reducer, Sendable {
 
 	@Dependency(\.errors) var errors
 	@Dependency(\.featureFlags) var featureFlags
+	@Dependency(GamesRepository.self) var games
 	@Dependency(\.preferences) var preferences
 
 	public var body: some ReducerOf<Self> {
@@ -107,7 +109,14 @@ public struct Overview: Reducer, Sendable {
 			case let .view(viewAction):
 				switch viewAction {
 				case .onAppear:
-					return .send(.internal(.showingWidgetsPreferenceDidChange))
+					return .merge(
+						.run { _ in
+							try await games.lockStaleGames()
+						} catch: { error, send in
+							errors.captureError(error)
+						},
+						.send(.internal(.showingWidgetsPreferenceDidChange))
+					)
 
 				case .didStartTask:
 					return .run { send in
