@@ -4,7 +4,9 @@ import BowlerEditorFeature
 import ComposableArchitecture
 import GamesListFeature
 import LeaguesListFeature
+import ModelsLibrary
 import SeriesEditorFeature
+import SortOrderLibrary
 import StatisticsWidgetsLayoutFeature
 import StringsLibrary
 import SwiftUI
@@ -48,6 +50,7 @@ extension View {
 		self
 			.bowlerDetails(store.scope(state: \.destination?.bowlerDetails, action: \.internal.destination.bowlerDetails))
 			.bowlerEditor(store.scope(state: \.destination?.bowlerEditor, action: \.internal.destination.bowlerEditor))
+			.bowlerSortOrder(store.scope(state: \.destination?.bowlerSortOrder, action: \.internal.destination.bowlerSortOrder))
 			.gamesList(store.scope(state: \.destination?.gamesList, action: \.internal.destination.gamesList))
 			.leaguesList(store.scope(state: \.destination?.leaguesList, action: \.internal.destination.leaguesList))
 			.seriesEditor(store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
@@ -64,6 +67,17 @@ extension View {
 			NavigationStack {
 				BowlerEditorView(store: store)
 			}
+		}
+	}
+
+	fileprivate func bowlerSortOrder(
+		_ store: Binding<StoreOf<SortOrderLibrary.SortOrder<Bowler.List.FetchRequest>>?>
+	) -> some View {
+		sheet(item: store) { (store: StoreOf<SortOrderLibrary.SortOrder<Bowler.List.FetchRequest>>) in
+			NavigationStack {
+				SortOrderView(store: store)
+			}
+			.presentationDetents([.medium])
 		}
 	}
 

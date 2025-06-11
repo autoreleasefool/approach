@@ -141,7 +141,7 @@ dependencies = [ "ExtensionsPackageLibrary", "SwiftUIExtensionsPackageLibrary" ]
 
 [features.Overview]
 features = [ "Announcements", "BowlerDetails" ]
-repositories = [ "QuickLaunch" ]
+repositories = [ "QuickLaunch", "Teams" ]
 
 [features.SeriesEditor]
 features = [ "Form" ]

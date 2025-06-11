@@ -2,6 +2,7 @@ import AnalyticsServiceInterface
 import AnnouncementsFeature
 import BowlerDetailsFeature
 import BowlerEditorFeature
+import BowlersRepositoryInterface
 import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
@@ -13,7 +14,18 @@ import ModelsLibrary
 import PreferenceServiceInterface
 import QuickLaunchRepositoryInterface
 import SeriesEditorFeature
+import SortOrderLibrary
 import StatisticsWidgetsLayoutFeature
+import StringsLibrary
+
+extension Bowler.Ordering: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .byRecentlyUsed: Strings.Ordering.mostRecentlyUsed
+		case .byName: Strings.Ordering.alphabetical
+		}
+	}
+}
 
 @Reducer
 public struct Overview: Reducer, Sendable {
@@ -69,6 +81,7 @@ public struct Overview: Reducer, Sendable {
 		case leaguesList(LeaguesList)
 		case gamesList(GamesList)
 		case seriesEditor(SeriesEditor)
+		case bowlerSortOrder(SortOrderLibrary.SortOrder<Bowler.List.FetchRequest>)
 	}
 
 	public enum ErrorID: Hashable {
@@ -151,6 +164,10 @@ public struct Overview: Reducer, Sendable {
 						}
 						return .none
 
+					case .showSortOrder:
+						state.destination = .bowlerSortOrder(.init(initialValue: state.bowlers.$bowlersFetchRequest))
+						return .none
+
 					case let .didReceiveError(id, error, message):
 						return state.errors
 							.enqueue(.bowlers(id), thrownError: error, toastMessage: message)
@@ -200,6 +217,9 @@ public struct Overview: Reducer, Sendable {
 						.destination(.presented(.seriesEditor(.internal))),
 						.destination(.presented(.seriesEditor(.view))),
 						.destination(.presented(.seriesEditor(.binding))),
+						.destination(.presented(.bowlerSortOrder(.internal))),
+						.destination(.presented(.bowlerSortOrder(.view))),
+						.destination(.presented(.bowlerSortOrder(.delegate(.doNothing)))),
 						.announcements(.internal), .announcements(.view), .announcements(.delegate(.doNothing)),
 						.bowlers(.internal), .bowlers(.view),
 						.errors(.view), .errors(.internal), .errors(.delegate(.doNothing)),

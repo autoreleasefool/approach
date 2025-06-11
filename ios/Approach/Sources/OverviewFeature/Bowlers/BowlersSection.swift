@@ -39,6 +39,7 @@ public struct BowlersSection: Reducer, Sendable {
 		@CasePathable
 		public enum View {
 			case didTapBowler(Bowler.ID)
+			case didTapSortOrderButton
 		}
 
 		@CasePathable
@@ -54,6 +55,7 @@ public struct BowlersSection: Reducer, Sendable {
 			case editBowler(Bowler.Edit)
 			case createBowler(Bowler.Create)
 			case showBowlerDetails(Bowler.Summary)
+			case showSortOrder
 			case didReceiveError(ErrorID, Error, message: String)
 		}
 
@@ -86,6 +88,9 @@ public struct BowlersSection: Reducer, Sendable {
 						.send(.delegate(.showBowlerDetails(bowler.summary))),
 						recentlyUsed.didRecentlyUse(.bowlers, id: id, in: self),
 					)
+
+				case .didTapSortOrderButton:
+					return .send(.delegate(.showSortOrder))
 				}
 
 			case let .internal(internalAction):
@@ -154,12 +159,37 @@ public struct BowlersSectionView: View {
 	}
 
 	public var body: some View {
-		Section(Strings.Overview.List.bowlers) {
+		Section {
 			ResourceListSectionView(
 				store: store.scope(state: \.bowlers, action: \.internal.bowlers)
 			) { bowler in
 				LabeledContent(bowler.name, value: format(average: bowler.average))
 			}
+		} header: {
+			HStack(alignment: .firstTextBaseline) {
+				Text(Strings.Overview.List.bowlers)
+				Spacer()
+				Menu {
+					Button {
+						send(.didTapSortOrderButton)
+					} label: {
+						Label("Sort bowlers", systemImage: "arrow.up.arrow.down.square")
+					}
+				} label: {
+					Image(systemName: "ellipsis")
+						.frame(width: .smallerIcon, height: .smallerIcon)
+						.contentShape(.rect)
+				}
+			}
 		}
+	}
+}
+
+#Preview {
+	List {
+		BowlersSectionView(store: Store(
+			initialState: BowlersSection.State(),
+			reducer: { BowlersSection() }
+		))
 	}
 }

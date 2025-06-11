@@ -705,6 +705,7 @@ let package = Package(
 				"AnnouncementsFeature",
 				"BowlerDetailsFeature",
 				"QuickLaunchRepositoryInterface",
+				"TeamsRepositoryInterface",
 			]
 		),
 		.testTarget(
