@@ -78,7 +78,7 @@ public struct SeriesPreBowlEditor: Reducer, Sendable {
 		}
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case failedToUpdate
 	}
 

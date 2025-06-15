@@ -67,7 +67,7 @@ public struct AlleyLanesEditor: Reducer, Sendable {
 		case didTapDismissButton
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case failedToDeleteLane
 	}
 

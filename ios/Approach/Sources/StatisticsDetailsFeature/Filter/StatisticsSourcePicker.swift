@@ -116,7 +116,7 @@ public struct StatisticsSourcePicker: Reducer, Sendable {
 		}
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case failedToLoadSources
 	}
 

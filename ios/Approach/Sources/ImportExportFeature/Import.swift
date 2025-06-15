@@ -98,7 +98,7 @@ public struct Import: Reducer, Sendable {
 		case didFinishDismissing
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case failedToImport
 		case failedToRestore
 		case failedToFetchBackup

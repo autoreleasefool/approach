@@ -66,7 +66,7 @@ public struct StatisticsWidgetLayout: Reducer, Sendable {
 		case help(StatisticsWidgetHelp)
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case widgetNotFound
 		case failedToLoadWidgets
 		case failedToLoadChart

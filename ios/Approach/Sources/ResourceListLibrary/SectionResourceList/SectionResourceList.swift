@@ -282,7 +282,7 @@ public struct SectionResourceList<
 			ResourceListEmpty()
 		}
 
-		// TODO: Add ErrorHandler to SectionResourceList
+		// FIXME: Add ErrorHandler to SectionResourceList
 //		ErrorHandlerReducer<State, Action> { _, action in
 //			switch action {
 //			case let .internal(.sectionsResponse(.failure(error))):

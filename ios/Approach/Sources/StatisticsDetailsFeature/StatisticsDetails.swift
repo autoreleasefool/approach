@@ -115,7 +115,7 @@ public struct StatisticsDetails: Reducer, Sendable {
 		case loadingChartValues
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case failedToLoadSources
 		case failedToLoadList
 		case failedToLoadChart

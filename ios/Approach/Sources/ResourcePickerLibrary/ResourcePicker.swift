@@ -149,7 +149,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable & Send
 			}
 		}
 
-		// TODO: Add Breadcrumb + Analaytics to ResourcePickerLibrary
+		// FIXME: Add Breadcrumb + Analaytics to ResourcePickerLibrary
 //		BreadcrumbReducer<State, Action> { _, action in
 //			switch action {
 //			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
@@ -157,7 +157,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable & Send
 //			}
 //		}
 
-		// TODO: Add ErrorHandler to ResourcePickerLibrary
+		// FIXME: Add ErrorHandler to ResourcePickerLibrary
 //		ErrorHandlerReducer<State, Action> { _, action in
 //			switch action {
 //			case let .internal(.didLoadResources(.failure(error))):

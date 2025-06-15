@@ -3,7 +3,7 @@ import ModelsLibrary
 import StatisticsChartsLibrary
 import StatisticsLibrary
 
-protocol ChartEntryKey: Hashable, Comparable {
+protocol ChartEntryKey: Hashable, Comparable, Sendable {
 	func toAveragingChartXAxis() -> AveragingChart.Data.XAxis
 	func toCountingChartXAxis(withTimeInterval: TimeInterval) -> CountingChart.Data.XAxis
 	func toPercentageChartXAxis(withTimeInterval: TimeInterval) -> PercentageChart.Data.XAxis

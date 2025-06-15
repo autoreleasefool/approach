@@ -75,7 +75,7 @@ public struct ArchiveList: Reducer, Sendable {
 		case didTapConfirm
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case failedToLoadBowlers
 		case failedToLoadLeagues
 		case failedToLoadSeries

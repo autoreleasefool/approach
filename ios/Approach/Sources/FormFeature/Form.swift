@@ -3,7 +3,7 @@ import ErrorsFeature
 import FeatureActionLibrary
 import StringsLibrary
 
-public protocol FormRecord: Identifiable, Equatable, Sendable {
+public protocol FormRecord: Identifiable, Equatable, Sendable where ID: Sendable {
 	static var isSaveableWithoutChanges: Bool { get }
 	var name: String { get }
 	var isSaveable: Bool { get }
@@ -198,7 +198,7 @@ public struct Form<
 		case didTapCancelButton
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case failedToCreate
 		case failedToUpdate
 		case failedToDelete

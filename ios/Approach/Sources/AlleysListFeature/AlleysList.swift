@@ -110,7 +110,7 @@ public struct AlleysList: Reducer, Sendable {
 		case sortOrder(SortOrderLibrary.SortOrder<Alley.Ordering>)
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case failedToDeleteAlley
 		case alleyNotFound
 	}

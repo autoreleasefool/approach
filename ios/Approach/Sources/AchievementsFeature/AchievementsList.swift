@@ -56,7 +56,7 @@ public struct AchievementsList: Reducer, Sendable {
 		public var id: String { "\(first.id)-\(second?.id ?? "")-\(third?.id ?? "")" }
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case failedToLoadAchievements
 	}
 

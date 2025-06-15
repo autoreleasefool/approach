@@ -70,7 +70,7 @@ public struct LeaguesSection: Reducer, Sendable {
 		case games(GamesList)
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case leagueNotFound
 		case failedToLoadLeagues
 	}

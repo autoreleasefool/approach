@@ -100,7 +100,7 @@ public struct StatisticsWidgetEditor: Reducer, Sendable {
 		case loadingPreview
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case failedToLoadChart
 		case failedToSaveConfiguration
 	}

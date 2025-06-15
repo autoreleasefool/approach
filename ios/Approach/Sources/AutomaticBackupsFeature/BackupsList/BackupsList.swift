@@ -82,7 +82,7 @@ public struct BackupsList: Reducer, Sendable {
 		case delete
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case failedToLoadBackups
 		case failedToCreateBackup
 		case failedToRestore

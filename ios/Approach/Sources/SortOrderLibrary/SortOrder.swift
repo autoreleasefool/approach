@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import FeatureActionLibrary
 
-public typealias Orderable = Hashable & Equatable & CaseIterable & CustomStringConvertible
+public typealias Orderable = Hashable & Equatable & CaseIterable & CustomStringConvertible & Sendable
 
 @Reducer
 public struct SortOrder<Ordering: Orderable>: Reducer, Sendable {

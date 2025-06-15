@@ -12,7 +12,7 @@ import ToastLibrary
 private let ERROR_REPORT_THRESHOLD = 3
 
 @Reducer
-public struct Errors<ErrorID: Hashable>: Reducer, Sendable {
+public struct Errors<ErrorID: Hashable & Sendable>: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var errorCount: [ErrorID: Int] = [:]
@@ -233,7 +233,7 @@ extension Errors {
 
 // MARK: - View
 
-public struct ErrorsViewModifier<ErrorID: Hashable>: ViewModifier {
+public struct ErrorsViewModifier<ErrorID: Hashable & Sendable>: ViewModifier {
 	@SwiftUI.State var store: StoreOf<Errors<ErrorID>>
 
 	public func body(content: Content) -> some View {

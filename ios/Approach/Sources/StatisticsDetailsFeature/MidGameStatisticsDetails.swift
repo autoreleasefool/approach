@@ -63,7 +63,7 @@ public struct MidGameStatisticsDetails: Reducer, Sendable {
 		case loadingStaticValues
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case failedToLoadList
 	}
 

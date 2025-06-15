@@ -81,7 +81,7 @@ public struct SeriesSharing: Reducer, Sendable {
 		case binding(BindingAction<State>)
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case seriesNotFound
 	}
 

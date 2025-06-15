@@ -126,7 +126,7 @@ public struct BowlersList: Reducer, Sendable {
 		case games(GamesList)
 	}
 
-	public enum ErrorID {
+	public enum ErrorID: Hashable, Sendable {
 		case bowlerNotFound
 		case failedToArchiveBowler
 	}

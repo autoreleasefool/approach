@@ -195,7 +195,7 @@ public struct GamesEditor: Reducer, Sendable {
 
 	enum CancelID: Sendable { case observation }
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case outdatedFramesLoaded
 		case failedToLoadBowler
 		case failedToLoadFrames

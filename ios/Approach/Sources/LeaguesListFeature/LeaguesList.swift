@@ -137,7 +137,7 @@ public struct LeaguesList: Reducer, Sendable {
 		case events
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case leagueNotFound
 		case failedToArchiveLeague
 		case failedToLoadPreferredGear

@@ -5,7 +5,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 @Reducer
-public struct Reorderable<Content: View, Item: Identifiable & Equatable>: Reducer, Sendable {
+public struct Reorderable<Item: Identifiable & Equatable & Sendable>: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
 		public var items: IdentifiedArrayOf<Item>
@@ -58,11 +58,11 @@ public struct Reorderable<Content: View, Item: Identifiable & Equatable>: Reduce
 	}
 }
 
-public struct ReorderableView<Content: View, Item: Identifiable & Equatable>: View {
-	public let store: StoreOf<Reorderable<Content, Item>>
+public struct ReorderableView<Content: View, Item: Identifiable & Equatable & Sendable>: View {
+	public let store: StoreOf<Reorderable<Item>>
 	let content: (Item) -> Content
 
-	public init(store: StoreOf<Reorderable<Content, Item>>, @ViewBuilder content: @escaping (Item) -> Content) {
+	public init(store: StoreOf<Reorderable<Item>>, @ViewBuilder content: @escaping (Item) -> Content) {
 		self.store = store
 		self.content = content
 	}

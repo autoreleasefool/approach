@@ -100,7 +100,7 @@ public struct GearList: Reducer, Sendable {
 		case sortOrder(SortOrderLibrary.SortOrder<Gear.Ordering>)
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case gearNotFound
 		case failedToDeleteGear
 	}

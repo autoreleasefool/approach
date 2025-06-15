@@ -75,7 +75,7 @@ public struct StatisticsWidgetSharing: Reducer, Sendable {
 		case loadingPreview
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case failedToLoadChart
 	}
 

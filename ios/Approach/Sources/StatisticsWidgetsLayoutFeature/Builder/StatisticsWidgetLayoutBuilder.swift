@@ -21,7 +21,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer, Sendable {
 
 		public var widgets: IdentifiedArrayOf<StatisticsWidget.Configuration> = []
 		public var widgetData: [StatisticsWidget.ID: Statistics.ChartContent] = [:]
-		public var reordering: Reorderable<MoveableWidget, StatisticsWidget.Configuration>.State = .init(items: [])
+		public var reordering: Reorderable<StatisticsWidget.Configuration>.State = .init(items: [])
 
 		public var isDeleting = false
 		public var isAnimatingWidgets = false
@@ -66,7 +66,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer, Sendable {
 
 			case errors(Errors<ErrorID>.Action)
 			case editor(PresentationAction<StatisticsWidgetEditor.Action>)
-			case reordering(Reorderable<MoveableWidget, StatisticsWidget.Configuration>.Action)
+			case reordering(Reorderable<StatisticsWidget.Configuration>.Action)
 		}
 
 		case view(View)
@@ -77,7 +77,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer, Sendable {
 
 	enum CancelID: Sendable { case updatePriorities }
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case failedToLoadWidgets
 		case failedToLoadChart
 		case failedToSaveOrder

@@ -95,7 +95,7 @@ public struct OpponentsList: Reducer, Sendable {
 		case sortOrder(SortOrder<Bowler.Ordering>)
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case opponentNotFound
 		case failedToArchiveOpponent
 	}

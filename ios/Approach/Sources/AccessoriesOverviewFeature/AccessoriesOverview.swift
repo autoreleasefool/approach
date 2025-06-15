@@ -92,7 +92,7 @@ public struct AccessoriesOverview: Reducer, Sendable {
 		case observeGear
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case itemNotFound
 		case loadingItemsFailed
 		case failedToDeleteItem

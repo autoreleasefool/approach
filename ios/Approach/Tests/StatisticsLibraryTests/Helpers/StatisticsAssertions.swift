@@ -3,7 +3,7 @@ import StringsLibrary
 import Testing
 import XCTest
 
-// TODO: enable deprecation warning
+// FIXME: enable deprecation warning
 // @available(*, deprecated, renamed: "expectCounting")
 func AssertCounting<T>(
 	_ statistic: T,
@@ -30,7 +30,7 @@ func expectCounting<T>(
 	#expect(statistic.isEmpty == (count == 0), sourceLocation: sourceLocation)
 }
 
-// TODO: enable deprecation warning
+// FIXME: enable deprecation warning
 // @available(*, deprecated, renamed: "expectHighestOf")
 func AssertHighestOf<T>(
 	_ statistic: T,
@@ -53,7 +53,7 @@ func expectHighestOf<T>(
 	#expect(statistic.isEmpty == (highest == 0), sourceLocation: sourceLocation)
 }
 
-// TODO: enable deprecation warning
+// FIXME: enable deprecation warning
 // @available(*, deprecated, renamed: "expectAveraging")
 func AssertAveraging<T>(
 	_ statistic: T,
@@ -86,7 +86,7 @@ func expectAveraging<T>(
 	#expect(statistic.formattedValue == formattedValue, sourceLocation: sourceLocation)
 }
 
-// TODO: enable deprecation warning
+// FIXME: enable deprecation warning
 // @available(*, deprecated, renamed: "expectPercentage")
 func AssertPercentage<T>(
 	_ statistic: T,

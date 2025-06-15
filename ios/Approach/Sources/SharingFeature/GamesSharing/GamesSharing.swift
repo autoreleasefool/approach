@@ -107,7 +107,7 @@ public struct GamesSharing: Reducer, Sendable {
 		case binding(BindingAction<State>)
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case seriesNotFound
 		case gamesNotFound
 		case failedToCalculateScore

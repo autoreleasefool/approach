@@ -117,7 +117,7 @@ public struct SeriesList: Reducer, Sendable {
 		case delegate(Delegate)
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case leagueNotFound
 		case seriesNotFound
 		case failedToArchiveSeries

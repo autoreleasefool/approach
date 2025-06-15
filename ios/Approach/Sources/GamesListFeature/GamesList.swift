@@ -90,7 +90,7 @@ public struct GamesList: Reducer, Sendable {
 		case seriesEditor(SeriesEditor)
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case gamesNotFound
 		case gameNotFound
 		case seriesNotFound
