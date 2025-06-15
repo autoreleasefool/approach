@@ -95,7 +95,7 @@ public struct Overview: Reducer, Sendable {
 		case teamSortOrder(SortOrderLibrary.SortOrder<Team.List.FetchRequest>)
 	}
 
-	public enum ErrorID: Hashable {
+	public enum ErrorID: Hashable, Sendable {
 		case bowlers(BowlersSection.ErrorID)
 		case teams(TeamsSection.ErrorID)
 	}
@@ -136,7 +136,7 @@ public struct Overview: Reducer, Sendable {
 					return .merge(
 						.run { _ in
 							try await games.lockStaleGames()
-						} catch: { error, send in
+						} catch: { error, _ in
 							errors.captureError(error)
 						},
 						.send(.internal(.showingWidgetsPreferenceDidChange))

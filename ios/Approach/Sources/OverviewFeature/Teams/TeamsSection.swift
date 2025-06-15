@@ -57,7 +57,7 @@ public struct TeamsSection: Reducer, Sendable {
 		case `internal`(Internal)
 	}
 
-	public enum ErrorID {
+	public enum ErrorID: Hashable, Sendable {
 		case teamNotFound
 		case failedToArchive
 	}

@@ -63,7 +63,7 @@ public struct BowlersSection: Reducer, Sendable {
 		case `internal`(Internal)
 	}
 
-	public enum ErrorID {
+	public enum ErrorID: Hashable, Sendable {
 		case bowlerNotFound
 		case failedToArchiveBowler
 	}

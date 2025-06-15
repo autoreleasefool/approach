@@ -218,7 +218,7 @@ public struct ResourceListSection<
 			ResourceListSectionEmpty()
 		}
 
-		// TODO: Add ErrorHandler to ResourceListSection
+		// FIXME: Add ErrorHandler to ResourceListSection
 	}
 }
 
