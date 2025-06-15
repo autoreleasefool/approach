@@ -17,8 +17,18 @@ import SeriesEditorFeature
 import SortOrderLibrary
 import StatisticsWidgetsLayoutFeature
 import StringsLibrary
+import TeamsRepositoryInterface
 
 extension Bowler.Ordering: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .byRecentlyUsed: Strings.Ordering.mostRecentlyUsed
+		case .byName: Strings.Ordering.alphabetical
+		}
+	}
+}
+
+extension Team.Ordering: CustomStringConvertible {
 	public var description: String {
 		switch self {
 		case .byRecentlyUsed: Strings.Ordering.mostRecentlyUsed
@@ -78,10 +88,11 @@ public struct Overview: Reducer, Sendable {
 	public enum Destination {
 		case bowlerDetails(BowlerDetails)
 		case bowlerEditor(BowlerEditor)
+		case bowlerSortOrder(SortOrderLibrary.SortOrder<Bowler.List.FetchRequest>)
 		case leaguesList(LeaguesList)
 		case gamesList(GamesList)
 		case seriesEditor(SeriesEditor)
-		case bowlerSortOrder(SortOrderLibrary.SortOrder<Bowler.List.FetchRequest>)
+		case teamSortOrder(SortOrderLibrary.SortOrder<Team.List.FetchRequest>)
 	}
 
 	public enum ErrorID: Hashable {
@@ -183,6 +194,10 @@ public struct Overview: Reducer, Sendable {
 
 				case let .teams(.delegate(delegateAction)):
 					switch delegateAction {
+					case .showSortOrder:
+						state.destination = .teamSortOrder(.init(initialValue: state.teams.$teamsFetchRequest))
+						return .none
+
 					case let .didReceiveError(id, error, message):
 						return state.errors
 							.enqueue(.teams(id), thrownError: error, toastMessage: message)
@@ -208,6 +223,9 @@ public struct Overview: Reducer, Sendable {
 						.destination(.presented(.bowlerEditor(.view))),
 						.destination(.presented(.bowlerEditor(.internal))),
 						.destination(.presented(.bowlerEditor(.binding))),
+						.destination(.presented(.bowlerSortOrder(.internal))),
+						.destination(.presented(.bowlerSortOrder(.view))),
+						.destination(.presented(.bowlerSortOrder(.delegate(.doNothing)))),
 						.destination(.presented(.gamesList(.delegate(.doNothing)))),
 						.destination(.presented(.gamesList(.view))),
 						.destination(.presented(.gamesList(.internal))),
@@ -217,9 +235,9 @@ public struct Overview: Reducer, Sendable {
 						.destination(.presented(.seriesEditor(.internal))),
 						.destination(.presented(.seriesEditor(.view))),
 						.destination(.presented(.seriesEditor(.binding))),
-						.destination(.presented(.bowlerSortOrder(.internal))),
-						.destination(.presented(.bowlerSortOrder(.view))),
-						.destination(.presented(.bowlerSortOrder(.delegate(.doNothing)))),
+						.destination(.presented(.teamSortOrder(.internal))),
+						.destination(.presented(.teamSortOrder(.view))),
+						.destination(.presented(.teamSortOrder(.delegate(.doNothing)))),
 						.announcements(.internal), .announcements(.view), .announcements(.delegate(.doNothing)),
 						.bowlers(.internal), .bowlers(.view),
 						.errors(.view), .errors(.internal), .errors(.delegate(.doNothing)),

@@ -26,7 +26,6 @@ public struct BowlersSection: Reducer, Sendable {
 				features: [.swipeToArchive, .swipeToEdit],
 				query: SharedReader(bowlersFetchRequest),
 				emptyContent: .init(
-					image: Asset.Media.EmptyState.bowlers,
 					title: Strings.Bowler.Error.Empty.title,
 					message: Strings.Bowler.Error.Empty.message,
 					action: Strings.Bowler.List.add
@@ -166,20 +165,29 @@ public struct BowlersSectionView: View {
 				LabeledContent(bowler.name, value: format(average: bowler.average))
 			}
 		} header: {
+			header
+		}
+	}
+
+	@ViewBuilder private var header: some View {
+		if !store.bowlers.isEmpty {
 			HStack(alignment: .firstTextBaseline) {
 				Text(Strings.Overview.List.bowlers)
+
 				Spacer()
+
 				Menu {
 					Button {
 						send(.didTapSortOrderButton)
 					} label: {
-						Label("Sort bowlers", systemImage: "arrow.up.arrow.down.square")
+						Label(Strings.Overview.List.Bowlers.sort, systemImage: "arrow.up.arrow.down.square")
 					}
 				} label: {
 					Image(systemName: "ellipsis")
 						.frame(width: .smallerIcon, height: .smallerIcon)
 						.contentShape(.rect)
 				}
+				.menuStyle(ButtonMenuStyle())
 			}
 		}
 	}

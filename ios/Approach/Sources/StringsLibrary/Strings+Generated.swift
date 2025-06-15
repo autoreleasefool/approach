@@ -1290,6 +1290,14 @@ public enum Strings {
       public static let bowlers = Strings.tr("Localizable", "overview.list.bowlers", fallback: "Bowlers")
       /// Teams
       public static let teams = Strings.tr("Localizable", "overview.list.teams", fallback: "Teams")
+      public enum Bowlers {
+        /// Sort bowlers
+        public static let sort = Strings.tr("Localizable", "overview.list.bowlers.sort", fallback: "Sort bowlers")
+      }
+      public enum Teams {
+        /// Sort teams
+        public static let sort = Strings.tr("Localizable", "overview.list.teams.sort", fallback: "Sort teams")
+      }
     }
   }
   public enum Picker {

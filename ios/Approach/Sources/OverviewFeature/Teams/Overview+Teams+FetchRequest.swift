@@ -1,6 +1,6 @@
 import ModelsLibrary
-import TeamsRepositoryInterface
 import Sharing
+import TeamsRepositoryInterface
 
 extension Team.List {
 	public typealias FetchRequest = Team.Ordering

@@ -20,8 +20,8 @@ public struct ResourceListSection<
 		public var resources: IdentifiedArrayOf<R>?
 		public var listTitle: String?
 
-		public var emptyState: ResourceListEmpty.State
-		public var errorState: ResourceListEmpty.State?
+		public var emptyState: ResourceListSectionEmpty.State
+		public var errorState: ResourceListSectionEmpty.State?
 
 		public let features: [Feature]
 
@@ -35,6 +35,11 @@ public struct ResourceListSection<
 			} else {
 				.notLoaded
 			}
+		}
+
+		public var isEmpty: Bool {
+			guard let resources else { return true }
+			return resources.isEmpty
 		}
 
 		public func findResource(byId: R.ID) -> R? {
@@ -53,7 +58,7 @@ public struct ResourceListSection<
 			features: [Feature],
 			query: SharedReader<Q>,
 			listTitle: String? = nil,
-			emptyContent: ResourceListEmptyContent
+			emptyContent: ResourceListSectionEmptyContent
 		) {
 			self.features = features
 			self._query = query
@@ -83,8 +88,8 @@ public struct ResourceListSection<
 		public enum Internal {
 			case observe(query: Q)
 			case resourcesResponse(Result<[R], Error>)
-			case empty(ResourceListEmpty.Action)
-			case error(ResourceListEmpty.Action)
+			case empty(ResourceListSectionEmpty.Action)
+			case error(ResourceListSectionEmpty.Action)
 		}
 
 		case view(View)
@@ -127,7 +132,7 @@ public struct ResourceListSection<
 
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.emptyState, action: \.internal.empty) {
-			ResourceListEmpty()
+			ResourceListSectionEmpty()
 		}
 
 		Reduce<State, Action> { state, action in
@@ -210,7 +215,7 @@ public struct ResourceListSection<
 			}
 		}
 		.ifLet(\.errorState, action: \.internal.error) {
-			ResourceListEmpty()
+			ResourceListSectionEmpty()
 		}
 
 		// TODO: Add ErrorHandler to ResourceListSection
@@ -252,7 +257,7 @@ public struct ResourceListSectionView<
 
 		case let .loaded(resources):
 			if resources.isEmpty {
-				ResourceListEmptyView(
+				ResourceListSectionEmptyView(
 					store: store.scope(state: \.emptyState, action: \.internal.empty)
 				)
 			} else {
@@ -276,7 +281,7 @@ public struct ResourceListSectionView<
 
 		case .error:
 			if let store = store.scope(state: \.errorState, action: \.internal.error) {
-				ResourceListEmptyView(store: store)
+				ResourceListSectionEmptyView(store: store)
 			}
 		}
 	}

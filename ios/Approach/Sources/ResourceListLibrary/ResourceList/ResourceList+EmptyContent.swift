@@ -36,8 +36,8 @@ public struct ResourceListEmptyContent: Equatable, Sendable {
 public struct ResourceListEmpty: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable, Sendable {
-		public var content: ResourceListEmptyContent
-		public var style: Style
+		public let content: ResourceListEmptyContent
+		public let style: Style
 
 		public init(
 			content: ResourceListEmptyContent,
@@ -105,7 +105,7 @@ public struct ResourceListEmpty: Reducer, Sendable {
 public struct ResourceListEmptyView: View {
 	@ScaledMetric private var unit: CGFloat = 20
 
-	public var store: StoreOf<ResourceListEmpty>
+	public let store: StoreOf<ResourceListEmpty>
 
 	public init(store: StoreOf<ResourceListEmpty>) {
 		self.store = store

@@ -25,7 +25,6 @@ public struct TeamsSection: Reducer, Sendable {
 				features: [.swipeToArchive, .swipeToEdit],
 				query: SharedReader(teamsFetchRequest),
 				emptyContent: .init(
-					image: Asset.Media.EmptyState.teams,
 					title: Strings.Team.Error.Empty.title,
 					message: Strings.Team.Error.Empty.message,
 					action: Strings.Team.List.add
@@ -38,6 +37,7 @@ public struct TeamsSection: Reducer, Sendable {
 		@CasePathable
 		public enum View {
 			case didTapTeam(Team.ID)
+			case didTapSortOrderButton
 		}
 
 		@CasePathable
@@ -48,6 +48,7 @@ public struct TeamsSection: Reducer, Sendable {
 
 		@CasePathable
 		public enum Delegate {
+			case showSortOrder
 			case didReceiveError(ErrorID, Error, message: String)
 		}
 
@@ -77,6 +78,9 @@ public struct TeamsSection: Reducer, Sendable {
 				case let .didTapTeam(id):
 					guard let team = state.teams.findResource(byId: id) else { return .none }
 					return recentlyUsed.didRecentlyUse(.teams, id: team.id, in: self)
+
+				case .didTapSortOrderButton:
+					return .send(.delegate(.showSortOrder))
 				}
 
 			case let .internal(internalAction):
@@ -133,7 +137,7 @@ public struct TeamsSectionView: View {
 	}
 
 	public var body: some View {
-		Section(Strings.Overview.List.teams) {
+		Section {
 			ResourceListSectionView(
 				store: store.scope(state: \.teams, action: \.internal.teams)
 			) { team in
@@ -141,6 +145,31 @@ public struct TeamsSectionView: View {
 					Text(team.name)
 					Text(team.bowlers.map(\.name).joined(separator: ", "))
 				}
+			}
+		} header: {
+			header
+		}
+	}
+
+	@ViewBuilder private var header: some View {
+		if !store.teams.isEmpty {
+			HStack(alignment: .firstTextBaseline) {
+				Text(Strings.Overview.List.teams)
+
+				Spacer()
+
+				Menu {
+					Button {
+						send(.didTapSortOrderButton)
+					} label: {
+						Label(Strings.Overview.List.Teams.sort, systemImage: "arrow.up.arrow.down.square")
+					}
+				} label: {
+					Image(systemName: "ellipsis")
+						.frame(width: .smallerIcon, height: .smallerIcon)
+						.contentShape(.rect)
+				}
+				.menuStyle(ButtonMenuStyle())
 			}
 		}
 	}

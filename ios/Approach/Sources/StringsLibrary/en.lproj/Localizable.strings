@@ -63,7 +63,9 @@
 
 "overview.title" = "Overview";
 "overview.list.bowlers" = "Bowlers";
+"overview.list.bowlers.sort" = "Sort bowlers";
 "overview.list.teams" = "Teams";
+"overview.list.teams.sort" = "Sort teams";
 
 // MARK: - Opponents
 

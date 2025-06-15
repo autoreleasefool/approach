@@ -54,6 +54,7 @@ extension View {
 			.gamesList(store.scope(state: \.destination?.gamesList, action: \.internal.destination.gamesList))
 			.leaguesList(store.scope(state: \.destination?.leaguesList, action: \.internal.destination.leaguesList))
 			.seriesEditor(store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
+			.teamSortOrder(store.scope(state: \.destination?.teamSortOrder, action: \.internal.destination.teamSortOrder))
 	}
 
 	fileprivate func bowlerDetails(_ store: Binding<StoreOf<BowlerDetails>?>) -> some View {
@@ -98,6 +99,15 @@ extension View {
 			NavigationStack {
 				SeriesEditorView(store: store)
 			}
+		}
+	}
+
+	fileprivate func teamSortOrder(
+		_ store: Binding<StoreOf<SortOrderLibrary.SortOrder<Team.List.FetchRequest>>?>
+	) -> some View {
+		sheet(item: store) { (store: StoreOf<SortOrderLibrary.SortOrder<Team.List.FetchRequest>>) in
+			SortOrderView(store: store)
+				.presentationDetents([.medium])
 		}
 	}
 }
