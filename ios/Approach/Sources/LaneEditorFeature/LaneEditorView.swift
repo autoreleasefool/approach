@@ -33,7 +33,7 @@ public struct LaneEditorView: View {
 			}
 		}
 		.swipeActions(allowsFullSwipe: true) {
-			DeleteButton { send(.didSwipe(.delete)) }
+			DeleteButton(role: nil) { send(.didSwipe(.delete)) }
 		}
 	}
 }

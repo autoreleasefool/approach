@@ -103,11 +103,11 @@ public struct SectionResourceListView<
 											}
 
 											if store.features.contains(.swipeToDelete) {
-												DeleteButton { store.send(.view(.didSwipe(.delete, element))) }
+												DeleteButton(role: nil) { store.send(.view(.didSwipe(.delete, element))) }
 											}
 
 											if store.features.contains(.swipeToArchive) {
-												ArchiveButton { store.send(.view(.didSwipe(.archive, element))) }
+												ArchiveButton(role: nil) { store.send(.view(.didSwipe(.archive, element))) }
 											}
 										}
 									}

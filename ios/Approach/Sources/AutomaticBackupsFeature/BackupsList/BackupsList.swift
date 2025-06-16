@@ -396,7 +396,7 @@ public struct BackupsListView: View {
 					}
 					.buttonStyle(.navigation)
 					.swipeActions(allowsFullSwipe: true) {
-						DeleteButton { send(.didSwipe(backup.id, .delete)) }
+						DeleteButton(role: nil) { send(.didSwipe(backup.id, .delete)) }
 					}
 				}
 			}
