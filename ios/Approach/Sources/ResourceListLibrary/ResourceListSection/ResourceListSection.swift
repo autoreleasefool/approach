@@ -48,7 +48,8 @@ public struct ResourceListSection<
 
 		func hasFeature(_ feature: Feature) -> Bool {
 			if !features.contains(feature) {
-				fatalError("\(Self.self) did not specify \(feature) as a feature.")
+				assertionFailure("\(Self.self) did not specify \(feature) as a feature.")
+				return false
 			}
 
 			return true

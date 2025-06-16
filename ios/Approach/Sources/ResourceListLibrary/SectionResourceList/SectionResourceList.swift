@@ -170,7 +170,8 @@ public struct SectionResourceList<
 
 				case let .didSwipe(.delete, resource):
 					guard state.features.contains(.swipeToDelete) else {
-						fatalError("\(Self.self) did not specify `swipeToDelete` feature")
+						assertionFailure("\(Self.self) did not specify `swipeToDelete` feature")
+						return .none
 					}
 
 					state.alert = Self.alert(toDelete: resource)
@@ -178,14 +179,16 @@ public struct SectionResourceList<
 
 				case let .didSwipe(.edit, resource):
 					guard state.features.contains(.swipeToEdit) else {
-						fatalError("\(Self.self) did not specify `swipeToEdit` feature")
+						assertionFailure("\(Self.self) did not specify `swipeToEdit` feature")
+						return .none
 					}
 
 					return .send(.delegate(.didEdit(resource)))
 
 				case let .didSwipe(.archive, resource):
 					guard state.features.contains(.swipeToArchive) else {
-						fatalError("\(Self.self) did not specify `swipeToArchive` feature")
+						assertionFailure("\(Self.self) did not specify `swipeToArchive` feature")
+						return .none
 					}
 
 					state.alert = Self.alert(toArchive: resource)
@@ -193,21 +196,24 @@ public struct SectionResourceList<
 
 				case let .didTap(resource):
 					guard state.features.contains(.tappable) else {
-						fatalError("\(Self.self) did not specify `didTap` feature")
+						assertionFailure("\(Self.self) did not specify `didTap` feature")
+						return .none
 					}
 
 					return .send(.delegate(.didTap(resource)))
 
 				case .didTapAddButton:
 					guard state.features.contains(.add) else {
-						fatalError("\(Self.self) did not specify `add` feature")
+						assertionFailure("\(Self.self) did not specify `add` feature")
+						return .none
 					}
 
 					return .send(.delegate(.didAddNew))
 
 				case let .didMove(sectionId, source, destination):
 					guard state.features.contains(.moveable) else {
-						fatalError("\(Self.self) did not specify `moveable` feature")
+						assertionFailure("\(Self.self) did not specify `moveable` feature")
+						return .none
 					}
 
 					guard var section = state.sections?[id: sectionId] else { return .none }
