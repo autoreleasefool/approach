@@ -39,6 +39,8 @@ public struct OverviewView: View {
 		.onAppear { send(.onAppear) }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		.announcements(store: store.scope(state: \.announcements, action: \.internal.announcements))
+		.connectingDataSource(store.scope(state: \.bowlers.list, action: \.internal.bowlers.internal.list))
+		.connectingDataSource(store.scope(state: \.teams.list, action: \.internal.teams.internal.list))
 		.destinations($store)
 	}
 }

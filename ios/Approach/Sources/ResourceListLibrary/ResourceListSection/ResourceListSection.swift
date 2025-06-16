@@ -242,13 +242,6 @@ public struct ResourceListSectionView<
 	}
 
 	public var body: some View {
-		listContent
-			.alert($store.scope(state: \.alert, action: \.view.alert))
-			.onAppear { store.send(.view(.onAppear)) }
-			.task { await store.send(.view(.task)).finish() }
-	}
-
-	@ViewBuilder private var listContent: some View {
 		switch store.listContent {
 		case .notLoaded:
 			Color.clear
@@ -285,5 +278,30 @@ public struct ResourceListSectionView<
 				ResourceListSectionEmptyView(store: store)
 			}
 		}
+	}
+}
+
+public struct ResourceListSectionViewModifier<
+	R: ResourceListSectionItem,
+	Q: Equatable & Sendable
+>: ViewModifier {
+	@Bindable public var store: StoreOf<ResourceListSection<R, Q>>
+
+	public func body(content: Content) -> some View {
+		content
+			.alert($store.scope(state: \.alert, action: \.view.alert))
+			.onAppear { store.send(.view(.onAppear)) }
+			.task { await store.send(.view(.task)).finish() }
+	}
+}
+
+extension View {
+	public func connectingDataSource<
+		R: ResourceListSectionItem,
+		Q: Equatable & Sendable
+	>(
+		_ store: StoreOf<ResourceListSection<R, Q>>
+	) -> some View {
+		self.modifier(ResourceListSectionViewModifier<R, Q>(store: store))
 	}
 }

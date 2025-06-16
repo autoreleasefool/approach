@@ -15,14 +15,14 @@ extension Bowler.List: ResourceListSectionItem {}
 public struct BowlersSection: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
-		@Shared(.bowlersFetchRequest) public var bowlersFetchRequest
-		public var bowlers: ResourceListSection<Bowler.List, Bowler.List.FetchRequest>.State
+		@Shared(.bowlersFetchRequest) public var fetchRequest
+		public var list: ResourceListSection<Bowler.List, Bowler.List.FetchRequest>.State
 
 		init() {
 			let bowlersFetchRequest = Shared(.bowlersFetchRequest)
-			self._bowlersFetchRequest = bowlersFetchRequest
+			self._fetchRequest = bowlersFetchRequest
 
-			self.bowlers = .init(
+			self.list = .init(
 				features: [.swipeToArchive, .swipeToEdit],
 				query: SharedReader(bowlersFetchRequest),
 				emptyContent: .init(
@@ -46,7 +46,7 @@ public struct BowlersSection: Reducer, Sendable {
 			case didLoadEditableBowler(Result<Bowler.Edit, Error>)
 			case didArchiveBowler(Result<Bowler.List, Error>)
 
-			case bowlers(ResourceListSection<Bowler.List, Bowler.List.FetchRequest>.Action)
+			case list(ResourceListSection<Bowler.List, Bowler.List.FetchRequest>.Action)
 		}
 
 		@CasePathable
@@ -73,7 +73,7 @@ public struct BowlersSection: Reducer, Sendable {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.bowlers, action: \.internal.bowlers) {
+		Scope(state: \.list, action: \.internal.list) {
 			ResourceListSection(fetchResources: bowlers.list)
 		}
 
@@ -82,7 +82,7 @@ public struct BowlersSection: Reducer, Sendable {
 			case let .view(viewAction):
 				switch viewAction {
 				case let .didTapBowler(id):
-					guard let bowler = state.bowlers.findResource(byId: id) else { return .none }
+					guard let bowler = state.list.findResource(byId: id) else { return .none }
 					return .merge(
 						.send(.delegate(.showBowlerDetails(bowler.summary))),
 						recentlyUsed.didRecentlyUse(.bowlers, id: id, in: self),
@@ -114,7 +114,7 @@ public struct BowlersSection: Reducer, Sendable {
 						message: Strings.Error.Toast.failedToArchive
 					)))
 
-				case let .bowlers(.delegate(delegateAction)):
+				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didEdit(bowler):
 						return .run { send in
@@ -138,7 +138,7 @@ public struct BowlersSection: Reducer, Sendable {
 						return .none
 					}
 
-				case .bowlers(.internal), .bowlers(.view):
+				case .list(.internal), .list(.view):
 					return .none
 				}
 
@@ -160,7 +160,7 @@ public struct BowlersSectionView: View {
 	public var body: some View {
 		Section {
 			ResourceListSectionView(
-				store: store.scope(state: \.bowlers, action: \.internal.bowlers)
+				store: store.scope(state: \.list, action: \.internal.list)
 			) { bowler in
 				LabeledContent(bowler.name, value: format(average: bowler.average))
 			}
@@ -170,7 +170,7 @@ public struct BowlersSectionView: View {
 	}
 
 	@ViewBuilder private var header: some View {
-		if !store.bowlers.isEmpty {
+		if !store.list.isEmpty {
 			HStack(alignment: .firstTextBaseline) {
 				Text(Strings.Overview.List.bowlers)
 

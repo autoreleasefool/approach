@@ -176,7 +176,7 @@ public struct Overview: Reducer, Sendable {
 						return .none
 
 					case .showSortOrder:
-						state.destination = .bowlerSortOrder(.init(initialValue: state.bowlers.$bowlersFetchRequest))
+						state.destination = .bowlerSortOrder(.init(initialValue: state.bowlers.$fetchRequest))
 						return .none
 
 					case let .didReceiveError(id, error, message):
@@ -195,7 +195,7 @@ public struct Overview: Reducer, Sendable {
 				case let .teams(.delegate(delegateAction)):
 					switch delegateAction {
 					case .showSortOrder:
-						state.destination = .teamSortOrder(.init(initialValue: state.teams.$teamsFetchRequest))
+						state.destination = .teamSortOrder(.init(initialValue: state.teams.$fetchRequest))
 						return .none
 
 					case let .didReceiveError(id, error, message):

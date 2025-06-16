@@ -14,14 +14,14 @@ extension Team.List: ResourceListSectionItem {}
 public struct TeamsSection: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
-		@Shared(.teamsFetchRequest) public var teamsFetchRequest
-		public var teams: ResourceListSection<Team.List, Team.List.FetchRequest>.State
+		@Shared(.teamsFetchRequest) public var fetchRequest
+		public var list: ResourceListSection<Team.List, Team.List.FetchRequest>.State
 
 		init() {
 			let teamsFetchRequest = Shared(.teamsFetchRequest)
-			self._teamsFetchRequest = teamsFetchRequest
+			self._fetchRequest = teamsFetchRequest
 
-			self.teams = .init(
+			self.list = .init(
 				features: [.swipeToArchive, .swipeToEdit],
 				query: SharedReader(teamsFetchRequest),
 				emptyContent: .init(
@@ -43,7 +43,8 @@ public struct TeamsSection: Reducer, Sendable {
 		@CasePathable
 		public enum Internal {
 			case didArchiveTeam(Result<Team.List, Error>)
-			case teams(ResourceListSection<Team.List, Team.List.FetchRequest>.Action)
+
+			case list(ResourceListSection<Team.List, Team.List.FetchRequest>.Action)
 		}
 
 		@CasePathable
@@ -67,7 +68,7 @@ public struct TeamsSection: Reducer, Sendable {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.teams, action: \.internal.teams) {
+		Scope(state: \.list, action: \.internal.list) {
 			ResourceListSection(fetchResources: teams.list)
 		}
 
@@ -76,7 +77,7 @@ public struct TeamsSection: Reducer, Sendable {
 			case let .view(viewAction):
 				switch viewAction {
 				case let .didTapTeam(id):
-					guard let team = state.teams.findResource(byId: id) else { return .none }
+					guard let team = state.list.findResource(byId: id) else { return .none }
 					return recentlyUsed.didRecentlyUse(.teams, id: team.id, in: self)
 
 				case .didTapSortOrderButton:
@@ -95,7 +96,7 @@ public struct TeamsSection: Reducer, Sendable {
 						message: Strings.Error.Toast.failedToArchive
 					)))
 
-				case let .teams(.delegate(delegateAction)):
+				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didEdit:
 						// TODO: edit team
@@ -117,7 +118,7 @@ public struct TeamsSection: Reducer, Sendable {
 						return .none
 					}
 
-				case .teams(.internal), .teams(.view):
+				case .list(.internal), .list(.view):
 					return .none
 				}
 
@@ -139,7 +140,7 @@ public struct TeamsSectionView: View {
 	public var body: some View {
 		Section {
 			ResourceListSectionView(
-				store: store.scope(state: \.teams, action: \.internal.teams)
+				store: store.scope(state: \.list, action: \.internal.list)
 			) { team in
 				VStack(spacing: .unitSpacing) {
 					Text(team.name)
@@ -152,7 +153,7 @@ public struct TeamsSectionView: View {
 	}
 
 	@ViewBuilder private var header: some View {
-		if !store.teams.isEmpty {
+		if !store.list.isEmpty {
 			HStack(alignment: .firstTextBaseline) {
 				Text(Strings.Overview.List.teams)
 
