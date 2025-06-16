@@ -32,6 +32,7 @@ public struct OverviewView: View {
 			}
 
 			BowlersSectionView(store: store.scope(state: \.bowlers, action: \.internal.bowlers))
+
 			TeamsSectionView(store: store.scope(state: \.teams, action: \.internal.teams))
 		}
 		.navigationTitle(Strings.Overview.title)
@@ -39,7 +40,7 @@ public struct OverviewView: View {
 		.onAppear { send(.onAppear) }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		.announcements(store: store.scope(state: \.announcements, action: \.internal.announcements))
-		.connectingDataSource(store.scope(state: \.bowlers.list, action: \.internal.bowlers.internal.list))
+		.connectingBowlersSection(store.scope(state: \.bowlers, action: \.internal.bowlers))
 		.connectingDataSource(store.scope(state: \.teams.list, action: \.internal.teams.internal.list))
 		.destinations($store)
 	}
@@ -50,49 +51,14 @@ public struct OverviewView: View {
 extension View {
 	fileprivate func destinations(_ store: Bindable<StoreOf<Overview>>) -> some View {
 		self
-			.bowlerDetails(store.scope(state: \.destination?.bowlerDetails, action: \.internal.destination.bowlerDetails))
-			.bowlerEditor(store.scope(state: \.destination?.bowlerEditor, action: \.internal.destination.bowlerEditor))
-			.bowlerSortOrder(store.scope(state: \.destination?.bowlerSortOrder, action: \.internal.destination.bowlerSortOrder))
 			.gamesList(store.scope(state: \.destination?.gamesList, action: \.internal.destination.gamesList))
-			.leaguesList(store.scope(state: \.destination?.leaguesList, action: \.internal.destination.leaguesList))
 			.seriesEditor(store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
 			.teamSortOrder(store.scope(state: \.destination?.teamSortOrder, action: \.internal.destination.teamSortOrder))
-	}
-
-	fileprivate func bowlerDetails(_ store: Binding<StoreOf<BowlerDetails>?>) -> some View {
-		navigationDestination(item: store) { (store: StoreOf<BowlerDetails>) in
-			BowlerDetailsView(store: store)
-		}
-	}
-
-	fileprivate func bowlerEditor(_ store: Binding<StoreOf<BowlerEditor>?>) -> some View {
-		sheet(item: store) { (store: StoreOf<BowlerEditor>) in
-			NavigationStack {
-				BowlerEditorView(store: store)
-			}
-		}
-	}
-
-	fileprivate func bowlerSortOrder(
-		_ store: Binding<StoreOf<SortOrderLibrary.SortOrder<Bowler.List.FetchRequest>>?>
-	) -> some View {
-		sheet(item: store) { (store: StoreOf<SortOrderLibrary.SortOrder<Bowler.List.FetchRequest>>) in
-			NavigationStack {
-				SortOrderView(store: store)
-			}
-			.presentationDetents([.medium])
-		}
 	}
 
 	fileprivate func gamesList(_ store: Binding<StoreOf<GamesList>?>) -> some View {
 		navigationDestination(item: store) { (store: StoreOf<GamesList>) in
 			GamesListView(store: store)
-		}
-	}
-
-	fileprivate func leaguesList(_ store: Binding<StoreOf<LeaguesList>?>) -> some View {
-		navigationDestination(item: store) { (store: StoreOf<LeaguesList>) in
-			LeaguesListView(store: store)
 		}
 	}
 

@@ -1,41 +1,16 @@
 import AnalyticsServiceInterface
 import AnnouncementsFeature
-import BowlerDetailsFeature
-import BowlerEditorFeature
-import BowlersRepositoryInterface
 import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
-import FeatureFlagsLibrary
 import GamesListFeature
 import GamesRepositoryInterface
-import LeaguesListFeature
 import ModelsLibrary
 import PreferenceServiceInterface
 import QuickLaunchRepositoryInterface
 import SeriesEditorFeature
 import SortOrderLibrary
 import StatisticsWidgetsLayoutFeature
-import StringsLibrary
-import TeamsRepositoryInterface
-
-extension Bowler.Ordering: CustomStringConvertible {
-	public var description: String {
-		switch self {
-		case .byRecentlyUsed: Strings.Ordering.mostRecentlyUsed
-		case .byName: Strings.Ordering.alphabetical
-		}
-	}
-}
-
-extension Team.Ordering: CustomStringConvertible {
-	public var description: String {
-		switch self {
-		case .byRecentlyUsed: Strings.Ordering.mostRecentlyUsed
-		case .byName: Strings.Ordering.alphabetical
-		}
-	}
-}
 
 @Reducer
 public struct Overview: Reducer, Sendable {
@@ -86,24 +61,18 @@ public struct Overview: Reducer, Sendable {
 
 	@Reducer(state: .equatable)
 	public enum Destination {
-		case bowlerDetails(BowlerDetails)
-		case bowlerEditor(BowlerEditor)
-		case bowlerSortOrder(SortOrderLibrary.SortOrder<Bowler.List.FetchRequest>)
-		case leaguesList(LeaguesList)
 		case gamesList(GamesList)
 		case seriesEditor(SeriesEditor)
 		case teamSortOrder(SortOrderLibrary.SortOrder<Team.List.FetchRequest>)
 	}
 
 	public enum ErrorID: Hashable, Sendable {
-		case bowlers(BowlersSection.ErrorID)
 		case teams(TeamsSection.ErrorID)
 	}
 
 	public init() {}
 
 	@Dependency(\.errors) var errors
-	@Dependency(\.featureFlags) var featureFlags
 	@Dependency(GamesRepository.self) var games
 	@Dependency(\.preferences) var preferences
 
@@ -157,34 +126,6 @@ public struct Overview: Reducer, Sendable {
 					state.widgets = isShowingWidgets ? .init(context: Overview.widgetContext, newWidgetSource: nil) : nil
 					return .none
 
-				case let .bowlers(.delegate(delegateAction)):
-					switch delegateAction {
-					case let .createBowler(bowler):
-						state.destination = .bowlerEditor(BowlerEditor.State(value: .create(bowler)))
-						return .none
-
-					case let .editBowler(bowler):
-						state.destination = .bowlerEditor(BowlerEditor.State(value: .edit(bowler)))
-						return .none
-
-					case let .showBowlerDetails(bowler):
-						state.destination = if featureFlags.isFlagEnabled(.bowlerDetails) {
-							.bowlerDetails(BowlerDetails.State(bowler: bowler))
-						} else {
-							.leaguesList(LeaguesList.State(bowler: bowler))
-						}
-						return .none
-
-					case .showSortOrder:
-						state.destination = .bowlerSortOrder(.init(initialValue: state.bowlers.$fetchRequest))
-						return .none
-
-					case let .didReceiveError(id, error, message):
-						return state.errors
-							.enqueue(.bowlers(id), thrownError: error, toastMessage: message)
-							.map { .internal(.errors($0)) }
-					}
-
 				case let .quickLaunch(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .createSeries(series, league):
@@ -216,22 +157,9 @@ public struct Overview: Reducer, Sendable {
 					}
 
 				case .destination(.dismiss),
-						.destination(.presented(.bowlerDetails(.delegate(.doNothing)))),
-						.destination(.presented(.bowlerDetails(.view))),
-						.destination(.presented(.bowlerDetails(.internal))),
-						.destination(.presented(.bowlerEditor(.delegate(.doNothing)))),
-						.destination(.presented(.bowlerEditor(.view))),
-						.destination(.presented(.bowlerEditor(.internal))),
-						.destination(.presented(.bowlerEditor(.binding))),
-						.destination(.presented(.bowlerSortOrder(.internal))),
-						.destination(.presented(.bowlerSortOrder(.view))),
-						.destination(.presented(.bowlerSortOrder(.delegate(.doNothing)))),
 						.destination(.presented(.gamesList(.delegate(.doNothing)))),
 						.destination(.presented(.gamesList(.view))),
 						.destination(.presented(.gamesList(.internal))),
-						.destination(.presented(.leaguesList(.delegate(.doNothing)))),
-						.destination(.presented(.leaguesList(.view))),
-						.destination(.presented(.leaguesList(.internal))),
 						.destination(.presented(.seriesEditor(.internal))),
 						.destination(.presented(.seriesEditor(.view))),
 						.destination(.presented(.seriesEditor(.binding))),
@@ -239,7 +167,7 @@ public struct Overview: Reducer, Sendable {
 						.destination(.presented(.teamSortOrder(.view))),
 						.destination(.presented(.teamSortOrder(.delegate(.doNothing)))),
 						.announcements(.internal), .announcements(.view), .announcements(.delegate(.doNothing)),
-						.bowlers(.internal), .bowlers(.view),
+						.bowlers(.internal), .bowlers(.view), .bowlers(.delegate(.doNothing)),
 						.errors(.view), .errors(.internal), .errors(.delegate(.doNothing)),
 						.quickLaunch(.view), .quickLaunch(.internal),
 						.teams(.internal), .teams(.view),
@@ -260,15 +188,6 @@ public struct Overview: Reducer, Sendable {
 			switch action {
 			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
 			default: return nil
-			}
-		}
-
-		ErrorHandlerReducer<State, Action> { _, action in
-			switch action {
-			case let .internal(.bowlers(.delegate(.didReceiveError(_, error, _)))):
-				return error
-			default:
-				return nil
 			}
 		}
 	}
