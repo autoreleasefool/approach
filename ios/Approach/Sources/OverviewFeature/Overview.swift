@@ -1,7 +1,7 @@
 import AnalyticsServiceInterface
 import AnnouncementsFeature
 import ComposableArchitecture
-import ErrorsFeature
+import ErrorReportingClientPackageLibrary
 import FeatureActionLibrary
 import GamesListFeature
 import GamesRepositoryInterface
@@ -9,7 +9,6 @@ import ModelsLibrary
 import PreferenceServiceInterface
 import QuickLaunchRepositoryInterface
 import SeriesEditorFeature
-import SortOrderLibrary
 import StatisticsWidgetsLayoutFeature
 
 @Reducer
@@ -25,7 +24,6 @@ public struct Overview: Reducer, Sendable {
 		public var widgets: StatisticsWidgetLayout.State?
 
 		@Presents public var destination: Destination.State?
-		public var errors: Errors<ErrorID>.State = .init()
 
 		public init() {}
 	}
@@ -49,7 +47,6 @@ public struct Overview: Reducer, Sendable {
 			case quickLaunch(QuickLaunch.Action)
 			case teams(TeamsSection.Action)
 			case widgets(StatisticsWidgetLayout.Action)
-			case errors(Errors<ErrorID>.Action)
 
 			case destination(PresentationAction<Destination.Action>)
 		}
@@ -63,11 +60,6 @@ public struct Overview: Reducer, Sendable {
 	public enum Destination {
 		case gamesList(GamesList)
 		case seriesEditor(SeriesEditor)
-		case teamSortOrder(SortOrderLibrary.SortOrder<Team.List.FetchRequest>)
-	}
-
-	public enum ErrorID: Hashable, Sendable {
-		case teams(TeamsSection.ErrorID)
 	}
 
 	public init() {}
@@ -87,10 +79,6 @@ public struct Overview: Reducer, Sendable {
 
 		Scope(state: \.teams, action: \.internal.teams) {
 			TeamsSection()
-		}
-
-		Scope(state: \.errors, action: \.internal.errors) {
-			Errors()
 		}
 
 		Scope(state: \.quickLaunch, action: \.internal.quickLaunch) {
@@ -133,18 +121,6 @@ public struct Overview: Reducer, Sendable {
 						return .none
 					}
 
-				case let .teams(.delegate(delegateAction)):
-					switch delegateAction {
-					case .showSortOrder:
-						state.destination = .teamSortOrder(.init(initialValue: state.teams.$fetchRequest))
-						return .none
-
-					case let .didReceiveError(id, error, message):
-						return state.errors
-							.enqueue(.teams(id), thrownError: error, toastMessage: message)
-							.map { .internal(.errors($0)) }
-					}
-
 				case let .destination(.presented(.seriesEditor(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didFinishCreating(created):
@@ -163,15 +139,11 @@ public struct Overview: Reducer, Sendable {
 						.destination(.presented(.seriesEditor(.internal))),
 						.destination(.presented(.seriesEditor(.view))),
 						.destination(.presented(.seriesEditor(.binding))),
-						.destination(.presented(.teamSortOrder(.internal))),
-						.destination(.presented(.teamSortOrder(.view))),
-						.destination(.presented(.teamSortOrder(.delegate(.doNothing)))),
 						.announcements(.internal), .announcements(.view), .announcements(.delegate(.doNothing)),
 						.bowlers(.internal), .bowlers(.view), .bowlers(.delegate(.doNothing)),
-						.errors(.view), .errors(.internal), .errors(.delegate(.doNothing)),
 						.quickLaunch(.view), .quickLaunch(.internal),
-						.teams(.internal), .teams(.view),
-						.widgets(.delegate(.doNothing)), .widgets(.view), .widgets(.internal):
+						.teams(.internal), .teams(.view), .teams(.delegate(.doNothing)),
+						.widgets(.view), .widgets(.internal), .widgets(.delegate(.doNothing)):
 					return .none
 				}
 

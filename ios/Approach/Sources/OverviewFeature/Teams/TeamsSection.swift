@@ -1,9 +1,12 @@
+import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import ModelsLibrary
 import RecentlyUsedServiceInterface
 import ResourceListLibrary
+import SortOrderLibrary
 import StringsLibrary
 import SwiftUI
 import TeamsRepositoryInterface
@@ -16,6 +19,9 @@ public struct TeamsSection: Reducer, Sendable {
 	public struct State: Equatable {
 		@Shared(.teamsFetchRequest) public var fetchRequest
 		public var list: ResourceListSection<Team.List, Team.List.FetchRequest>.State
+
+		@Presents public var destination: Destination.State?
+		public var errors: Errors<ErrorID>.State = .init()
 
 		init() {
 			let teamsFetchRequest = Shared(.teamsFetchRequest)
@@ -44,18 +50,22 @@ public struct TeamsSection: Reducer, Sendable {
 		public enum Internal {
 			case didArchiveTeam(Result<Team.List, Error>)
 
+			case errors(Errors<ErrorID>.Action)
 			case list(ResourceListSection<Team.List, Team.List.FetchRequest>.Action)
+			case destination(PresentationAction<Destination.Action>)
 		}
 
 		@CasePathable
-		public enum Delegate {
-			case showSortOrder
-			case didReceiveError(ErrorID, Error, message: String)
-		}
+		public enum Delegate { case doNothing }
 
 		case view(View)
 		case delegate(Delegate)
 		case `internal`(Internal)
+	}
+
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case sortOrder(SortOrderLibrary.SortOrder<Team.List.FetchRequest>)
 	}
 
 	public enum ErrorID: Hashable, Sendable {
@@ -72,16 +82,22 @@ public struct TeamsSection: Reducer, Sendable {
 			ResourceListSection(fetchResources: teams.list)
 		}
 
+		Scope(state: \.errors, action: \.internal.errors) {
+			Errors()
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
 				case let .didTapTeam(id):
 					guard let team = state.list.findResource(byId: id) else { return .none }
+					// TODO: Show team details
 					return recentlyUsed.didRecentlyUse(.teams, id: team.id, in: self)
 
 				case .didTapSortOrderButton:
-					return .send(.delegate(.showSortOrder))
+					state.destination = .sortOrder(.init(initialValue: state.$fetchRequest))
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -90,11 +106,9 @@ public struct TeamsSection: Reducer, Sendable {
 					return .none
 
 				case let .didArchiveTeam(.failure(error)):
-					return .send(.delegate(.didReceiveError(
-						.failedToArchive,
-						error,
-						message: Strings.Error.Toast.failedToArchive
-					)))
+					return state.errors
+						.enqueue(.failedToArchive, thrownError: error, toastMessage: Strings.Error.Toast.failedToArchive)
+						.map { .internal(.errors($0)) }
 
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
@@ -118,7 +132,12 @@ public struct TeamsSection: Reducer, Sendable {
 						return .none
 					}
 
-				case .list(.internal), .list(.view):
+				case .destination(.dismiss),
+						.destination(.presented(.sortOrder(.internal))),
+						.destination(.presented(.sortOrder(.view))),
+						.destination(.presented(.sortOrder(.delegate(.doNothing)))),
+						.errors(.view), .errors(.internal), .errors(.delegate(.doNothing)),
+						.list(.internal), .list(.view):
 					return .none
 				}
 
@@ -126,12 +145,25 @@ public struct TeamsSection: Reducer, Sendable {
 				return .none
 			}
 		}
+		.ifLet(\.$destination, action: \.internal.destination)
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			// TODO: Return error for failing to edit team
+			case let .internal(.didArchiveTeam(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 }
 
+// MARK: - View
+
 @ViewAction(for: TeamsSection.self)
 public struct TeamsSectionView: View {
-	@Bindable public var store: StoreOf<TeamsSection>
+	public let store: StoreOf<TeamsSection>
 
 	init(store: StoreOf<TeamsSection>) {
 		self.store = store
@@ -172,6 +204,39 @@ public struct TeamsSectionView: View {
 				}
 				.menuStyle(ButtonMenuStyle())
 			}
+		}
+	}
+}
+
+// MARK: - ViewModifier
+
+public struct TeamsSectionViewModifier: ViewModifier {
+	@Bindable public var store: StoreOf<TeamsSection>
+
+	public func body(content: Content) -> some View {
+		content
+			.connectingDataSource(store.scope(state: \.list, action: \.internal.list))
+			.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
+	}
+}
+
+extension View {
+	func connectingTeamsSection(_ store: StoreOf<TeamsSection>) -> some View {
+		self.modifier(TeamsSectionViewModifier(store: store))
+	}
+}
+
+// MARK: - Destinations
+
+extension View {
+	fileprivate func sortOrder(
+		_ store: Binding<StoreOf<SortOrderLibrary.SortOrder<Team.List.FetchRequest>>?>
+	) -> some View {
+		sheet(item: store) { (store: StoreOf<SortOrderLibrary.SortOrder<Team.List.FetchRequest>>) in
+			NavigationStack {
+				SortOrderView(store: store)
+			}
+			.presentationDetents([.medium])
 		}
 	}
 }

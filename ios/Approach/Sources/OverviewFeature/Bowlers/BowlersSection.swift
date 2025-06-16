@@ -83,7 +83,6 @@ public struct BowlersSection: Reducer, Sendable {
 	}
 
 	@Dependency(BowlersRepository.self) var bowlers
-	@Dependency(\.errors) var errors
 	@Dependency(\.featureFlags) var featureFlags
 	@Dependency(RecentlyUsedService.self) var recentlyUsed
 	@Dependency(\.uuid) var uuid
