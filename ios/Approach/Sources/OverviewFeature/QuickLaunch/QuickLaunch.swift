@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
@@ -92,6 +93,15 @@ public struct QuickLaunch: Reducer, Sendable {
 
 			case .delegate:
 				return .none
+			}
+		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didLoadSource(.failure(error))):
+				return error
+			default:
+				return nil
 			}
 		}
 	}
