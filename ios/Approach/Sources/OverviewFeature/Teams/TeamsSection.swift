@@ -9,6 +9,7 @@ import ResourceListLibrary
 import SortOrderLibrary
 import StringsLibrary
 import SwiftUI
+import TeamEditorFeature
 import TeamsRepositoryInterface
 
 extension Team.List: ResourceListSectionItem {}
@@ -65,6 +66,7 @@ public struct TeamsSection: Reducer, Sendable {
 
 	@Reducer(state: .equatable)
 	public enum Destination {
+		case editor(TeamEditor)
 		case sortOrder(SortOrderLibrary.SortOrder<Team.List.FetchRequest>)
 	}
 
@@ -125,7 +127,7 @@ public struct TeamsSection: Reducer, Sendable {
 						}
 
 					case .didTapEmptyStateButton:
-						// TODO: create team
+						state.destination = .editor(TeamEditor.State(value: .create(.defaultTeam(withId: uuid()))))
 						return .none
 
 					case .didDelete:
@@ -133,6 +135,10 @@ public struct TeamsSection: Reducer, Sendable {
 					}
 
 				case .destination(.dismiss),
+						.destination(.presented(.editor(.delegate(.doNothing)))),
+						.destination(.presented(.editor(.internal))),
+						.destination(.presented(.editor(.view))),
+						.destination(.presented(.editor(.binding))),
 						.destination(.presented(.sortOrder(.internal))),
 						.destination(.presented(.sortOrder(.view))),
 						.destination(.presented(.sortOrder(.delegate(.doNothing)))),
@@ -216,6 +222,7 @@ public struct TeamsSectionViewModifier: ViewModifier {
 	public func body(content: Content) -> some View {
 		content
 			.connectingDataSource(store.scope(state: \.list, action: \.internal.list))
+			.editor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
 			.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
 	}
 }
@@ -229,6 +236,14 @@ extension View {
 // MARK: - Destinations
 
 extension View {
+	fileprivate func editor(_ store: Binding<StoreOf<TeamEditor>?>) -> some View {
+		sheet(item: store) { (store: StoreOf<TeamEditor>) in
+			NavigationStack {
+				TeamEditorView(store: store)
+			}
+		}
+	}
+
 	fileprivate func sortOrder(
 		_ store: Binding<StoreOf<SortOrderLibrary.SortOrder<Team.List.FetchRequest>>?>
 	) -> some View {

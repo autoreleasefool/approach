@@ -140,8 +140,8 @@ libraries = [ "Views" ]
 dependencies = [ "ExtensionsPackageLibrary", "SwiftUIExtensionsPackageLibrary" ]
 
 [features.Overview]
-features = [ "Announcements", "BowlerDetails" ]
-repositories = [ "QuickLaunch", "Teams" ]
+features = [ "Announcements", "BowlerDetails", "TeamEditor" ]
+repositories = [ "QuickLaunch" ]
 
 [features.SeriesEditor]
 features = [ "Form" ]
@@ -179,6 +179,11 @@ dependencies = [ "ExtensionsPackageLibrary" ]
 [features.StatisticsWidgetsLayout]
 features = [ "StatisticsDetails" ]
 libraries = [ "Reordering" ]
+
+[features.TeamEditor]
+features = [ "Form" ]
+repositories = [ "Teams" ]
+libraries = [ "ModelsViews" ]
 
 # Repositories
 

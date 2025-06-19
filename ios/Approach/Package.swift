@@ -46,6 +46,7 @@ let package = Package(
 		.library(name: "StatisticsOverviewFeature", targets: ["StatisticsOverviewFeature"]),
 		.library(name: "StatisticsWidgetEditorFeature", targets: ["StatisticsWidgetEditorFeature"]),
 		.library(name: "StatisticsWidgetsLayoutFeature", targets: ["StatisticsWidgetsLayoutFeature"]),
+		.library(name: "TeamEditorFeature", targets: ["TeamEditorFeature"]),
 
 		// MARK: - Repositories
 		.library(name: "AchievementsRepository", targets: ["AchievementsRepository"]),
@@ -705,7 +706,7 @@ let package = Package(
 				"AnnouncementsFeature",
 				"BowlerDetailsFeature",
 				"QuickLaunchRepositoryInterface",
-				"TeamsRepositoryInterface",
+				"TeamEditorFeature",
 			]
 		),
 		.testTarget(
@@ -864,6 +865,23 @@ let package = Package(
 				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"StatisticsWidgetsLayoutFeature",
+				"TestUtilitiesLibrary",
+			]
+		),
+		.target(
+			name: "TeamEditorFeature",
+			dependencies: [
+				"FormFeature",
+				"ModelsViewsLibrary",
+				"TeamsRepositoryInterface",
+			]
+		),
+		.testTarget(
+			name: "TeamEditorFeatureTests",
+			dependencies: [
+				.product(name: "DependenciesTestSupport", package: "swift-dependencies"),
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"TeamEditorFeature",
 				"TestUtilitiesLibrary",
 			]
 		),

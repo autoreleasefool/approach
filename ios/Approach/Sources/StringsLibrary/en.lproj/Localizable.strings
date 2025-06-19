@@ -55,6 +55,7 @@
 
 // MARK: - Teams
 
+"team.title" = "Team";
 "team.list.add" = "Add Team";
 "team.error.empty.title" = "No teams found";
 "team.error.empty.message" = "You haven't added any teams yet.";

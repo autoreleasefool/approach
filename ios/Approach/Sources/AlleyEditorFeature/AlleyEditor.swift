@@ -90,8 +90,8 @@ public struct AlleyEditor: Reducer, Sendable {
 
 		var alleyId: Alley.ID {
 			switch initialValue {
-			case let .create(create): return create.id
-			case let .edit(edit): return edit.id
+			case let .create(create): create.id
+			case let .edit(edit): edit.id
 			}
 		}
 	}

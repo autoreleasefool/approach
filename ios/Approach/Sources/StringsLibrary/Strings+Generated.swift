@@ -2309,6 +2309,8 @@ public enum Strings {
     }
   }
   public enum Team {
+    /// Team
+    public static let title = Strings.tr("Localizable", "team.title", fallback: "Team")
     public enum Error {
       public enum Empty {
         /// You haven't added any teams yet.
