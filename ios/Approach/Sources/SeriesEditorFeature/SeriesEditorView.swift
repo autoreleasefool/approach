@@ -33,7 +33,7 @@ public struct SeriesEditorView: View {
 				statisticsSection
 			}
 
-			if store.isEditing && store.isMovingSeriesBetweenLeaguesEnabled {
+			if store.isMovingSeriesBetweenLeaguesEnabled && store.isEditing && store.initialLeague.recurrence == .repeating {
 				leagueSection
 			}
 		}
