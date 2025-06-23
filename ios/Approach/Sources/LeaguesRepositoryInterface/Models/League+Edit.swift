@@ -3,6 +3,7 @@ import ModelsLibrary
 extension League {
 	public struct Edit: Identifiable, Equatable, Codable, Sendable {
 		public let id: League.ID
+		public let bowlerId: Bowler.ID
 		public let recurrence: League.Recurrence
 
 		public var name: String
@@ -15,6 +16,7 @@ extension League {
 		public var asSeriesHost: SeriesHost {
 			.init(
 				id: id,
+				bowlerId: bowlerId,
 				name: name,
 				defaultNumberOfGames: defaultNumberOfGames,
 				alley: location,
@@ -25,6 +27,7 @@ extension League {
 
 		public static let placeholder = Edit(
 			id: League.ID(),
+			bowlerId: Bowler.ID(),
 			recurrence: .repeating,
 			name: "",
 			defaultNumberOfGames: nil,

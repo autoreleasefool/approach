@@ -699,6 +699,7 @@ let package = Package(
 			name: "SeriesEditorFeature",
 			dependencies: [
 				"AlleysRepositoryInterface",
+				"FeatureFlagsLibrary",
 				"FormFeature",
 				"LeaguesRepositoryInterface",
 				"ModelsViewsLibrary",

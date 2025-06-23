@@ -4,9 +4,11 @@ import ComposableArchitecture
 import DateTimeLibrary
 import EquatablePackageLibrary
 import FeatureActionLibrary
+import FeatureFlagsLibrary
 import FormFeature
 import Foundation
 import LanesRepositoryInterface
+import LeaguesRepositoryInterface
 import MapKit
 import ModelsLibrary
 import PickableModelsLibrary
@@ -21,7 +23,8 @@ public typealias SeriesForm = FormFeature.Form<Series.Create, Series.Edit>
 public struct SeriesEditor: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
-		public let league: League.SeriesHost
+		public let initialLeague: League.SeriesHost
+		public var updatedLeague: League.Summary
 
 		public var numberOfGames: Int
 		public var date: Date
@@ -37,11 +40,18 @@ public struct SeriesEditor: Reducer, Sendable {
 		public let initialValue: SeriesForm.Value
 		public var form: SeriesForm.State
 
+		public let isMovingSeriesBetweenLeaguesEnabled: Bool
+
+		@Presents public var destination: Destination.State?
+
 		var isExcludeFromStatisticsToggleEnabled: Bool {
-			(preBowl == .preBowl && !isUsingPreBowl) || league.excludeFromStatistics == .exclude
+			(preBowl == .preBowl && !isUsingPreBowl) || initialLeague.excludeFromStatistics == .exclude
 		}
 
-		var isDismissDisabled: Bool { alleyPicker != nil }
+		var currentLeague: League.Summary { updatedLeague }
+		var hasLeagueChanged: Bool { updatedLeague.id != initialLeague.id }
+
+		var isDismissDisabled: Bool { destination != nil }
 		var isEditing: Bool {
 			switch initialValue {
 			case .create: false
@@ -49,12 +59,11 @@ public struct SeriesEditor: Reducer, Sendable {
 			}
 		}
 
-		@Presents public var alleyPicker: ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.State?
-
 		public init(value: InitialValue, inLeague: League.SeriesHost) {
 			@Dependency(\.date) var date
 
-			self.league = inLeague
+			self.initialLeague = inLeague
+			self.updatedLeague = inLeague.asSummary
 			switch value {
 			case let .create(new):
 				self.numberOfGames = new.numberOfGames
@@ -78,6 +87,9 @@ public struct SeriesEditor: Reducer, Sendable {
 				self.initialValue = .edit(existing)
 			}
 			self.form = .init(initialValue: self.initialValue)
+
+			@Dependency(\.featureFlags) var featureFlags
+			self.isMovingSeriesBetweenLeaguesEnabled = featureFlags.isFlagEnabled(.movingSeriesBetweenLeagues)
 		}
 
 		mutating func syncFormSharedState() {
@@ -92,6 +104,7 @@ public struct SeriesEditor: Reducer, Sendable {
 				new.manualScores = isCreatingManualSeries ? manualScores.map { $0.score } : nil
 				form.value = .create(new)
 			case var .edit(existing):
+				existing.leagueId = currentLeague.id
 				existing.date = date
 				existing.appliedDate = isUsingPreBowl ? appliedDate : nil
 				existing.preBowl = preBowl
@@ -107,6 +120,7 @@ public struct SeriesEditor: Reducer, Sendable {
 		public enum View {
 			case onAppear
 			case didTapAlley
+			case didTapLeague
 		}
 		@CasePathable
 		public enum Delegate {
@@ -116,15 +130,44 @@ public struct SeriesEditor: Reducer, Sendable {
 		}
 		@CasePathable
 		public enum Internal {
+			case changeLeague(League.Summary)
 			case form(SeriesForm.Action)
-			case alleyPicker(PresentationAction<ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.Action>)
 			case manualSeriesGame(IdentifiedActionOf<ManualSeriesGameEditor>)
+			case destination(PresentationAction<Destination.Action>)
 		}
 
 		case view(View)
 		case `internal`(Internal)
 		case delegate(Delegate)
 		case binding(BindingAction<State>)
+	}
+
+	@Reducer
+	public struct Destination: Reducer, Sendable {
+		public enum State: Equatable {
+			case alleyPicker(ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.State)
+			case leaguePicker(ResourcePicker<League.Summary, Bowler.ID>.State)
+		}
+
+		public enum Action {
+			case alleyPicker(ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.Action)
+			case leaguePicker(ResourcePicker<League.Summary, Bowler.ID>.Action)
+		}
+
+		@Dependency(AlleysRepository.self) var alleys
+		@Dependency(LeaguesRepository.self) var leagues
+
+		public var body: some ReducerOf<Self> {
+			Scope(state: \.alleyPicker, action: \.alleyPicker) {
+				ResourcePicker { _ in alleys.pickable() }
+			}
+
+			Scope(state: \.leaguePicker, action: \.leaguePicker) {
+				ResourcePicker { bowler in
+					leagues.pickable(bowledBy: bowler, withRecurrence: .repeating, ordering: .byName)
+				}
+			}
+		}
 	}
 
 	public enum InitialValue {
@@ -138,6 +181,7 @@ public struct SeriesEditor: Reducer, Sendable {
 	@Dependency(\.calendar) var calendar
 	@Dependency(\.date) var date
 	@Dependency(\.dismiss) var dismiss
+	@Dependency(LeaguesRepository.self) var leagues
 	@Dependency(SeriesRepository.self) var series
 	@Dependency(\.uuid) var uuid
 
@@ -162,17 +206,31 @@ public struct SeriesEditor: Reducer, Sendable {
 					return .none
 
 				case .didTapAlley:
-					state.alleyPicker = .init(
+					state.destination = .alleyPicker(.init(
 						selected: Set([state.location?.id].compactMap { $0 }),
 						query: .init(()),
 						limit: 1,
 						showsCancelHeaderButton: false
-					)
+					))
+					return .none
+
+				case .didTapLeague:
+					state.destination = .leaguePicker(.init(
+						selected: Set([state.currentLeague.id]),
+						query: state.initialLeague.bowlerId,
+						limit: 1,
+						showsCancelHeaderButton: false
+					))
 					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .changeLeague(newLeague):
+					state.updatedLeague = newLeague
+					state.syncFormSharedState()
+					return .none
+
 				case .manualSeriesGame(.element(_, .delegate(.doNothing))):
 					return .none
 
@@ -180,13 +238,22 @@ public struct SeriesEditor: Reducer, Sendable {
 					state.syncFormSharedState()
 					return .none
 
-				case let .alleyPicker(.presented(.delegate(delegateAction))):
+				case let .destination(.presented(.alleyPicker(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didChangeSelection(alley):
 						state.location = alley.first
 						state.mapPosition = state.location?.location?.coordinate.mapPosition ?? .automatic
 						state.syncFormSharedState()
 						return .none
+					}
+
+				case let .destination(.presented(.leaguePicker(.delegate(delegateAction)))):
+					switch delegateAction {
+					case let .didChangeSelection(league):
+						return .send(
+							.internal(.changeLeague(league.first ?? state.initialLeague.asSummary)),
+							animation: .easeInOut
+						)
 					}
 
 				case let .form(.delegate(delegateAction)):
@@ -225,8 +292,12 @@ public struct SeriesEditor: Reducer, Sendable {
 						return .run { _ in await dismiss() }
 					}
 
-				case .form(.view), .form(.internal),
-						.alleyPicker(.presented(.internal)), .alleyPicker(.presented(.view)), .alleyPicker(.dismiss),
+				case .destination(.dismiss),
+						.destination(.presented(.alleyPicker(.internal))),
+						.destination(.presented(.alleyPicker(.view))),
+						.destination(.presented(.leaguePicker(.internal))),
+						.destination(.presented(.leaguePicker(.view))),
+						.form(.view), .form(.internal),
 						.manualSeriesGame(.element(_, .view)), .manualSeriesGame(.element(_, .internal)),
 						.manualSeriesGame(.element(_, .binding)):
 					return .none
@@ -238,7 +309,7 @@ public struct SeriesEditor: Reducer, Sendable {
 				return .none
 
 			case .binding(\.excludeFromStatistics):
-				switch (state.league.excludeFromStatistics, state.preBowl) {
+				switch (state.initialLeague.excludeFromStatistics, state.preBowl) {
 				case (.exclude, _):
 					state.excludeFromStatistics = .exclude
 				case (_, .preBowl):
@@ -252,7 +323,7 @@ public struct SeriesEditor: Reducer, Sendable {
 				return .none
 
 			case .binding(\.preBowl):
-				switch (state.league.excludeFromStatistics, state.preBowl) {
+				switch (state.initialLeague.excludeFromStatistics, state.preBowl) {
 				case (.exclude, _):
 					state.excludeFromStatistics = .exclude
 				case (_, .preBowl):
@@ -306,10 +377,8 @@ public struct SeriesEditor: Reducer, Sendable {
 				return .none
 			}
 		}
-		.ifLet(\.$alleyPicker, action: \.internal.alleyPicker) {
-			ResourcePicker { _ in
-				alleys.pickable()
-			}
+		.ifLet(\.$destination, action: \.internal.destination) {
+			Destination()
 		}
 		.forEach(\.manualScores, action: \.internal.manualSeriesGame) {
 			ManualSeriesGameEditor()

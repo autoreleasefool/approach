@@ -4,7 +4,7 @@ import ModelsLibrary
 
 extension Series {
 	public struct Edit: Identifiable, Equatable, Codable, Sendable, CanPreBowl {
-		public let leagueId: League.ID
+		public var leagueId: League.ID
 		public let id: Series.ID
 		public let numberOfGames: Int
 		public let leagueRecurrence: League.Recurrence
@@ -32,5 +32,17 @@ extension Series {
 			preBowl: .regular,
 			excludeFromStatistics: .include
 		)
+	}
+}
+
+extension Series {
+	public struct EditLeague: Identifiable, Equatable, Codable, Sendable {
+		public let leagueId: League.ID
+		public let id: Series.ID
+
+		public init(leagueId: League.ID, id: Series.ID) {
+			self.leagueId = leagueId
+			self.id = id
+		}
 	}
 }

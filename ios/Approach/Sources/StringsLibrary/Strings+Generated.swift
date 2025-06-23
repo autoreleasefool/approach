@@ -1377,6 +1377,18 @@ public enum Strings {
           /// Statistics
           public static let title = Strings.tr("Localizable", "series.editor.fields.excludeFromStatistics.title", fallback: "Statistics")
         }
+        public enum League {
+          /// You can move this series and all of its games and statistics to another league by changing it here. You can always move it back.
+          public static let help = Strings.tr("Localizable", "series.editor.fields.league.help", fallback: "You can move this series and all of its games and statistics to another league by changing it here. You can always move it back.")
+          /// Move this series to another league?
+          public static let label = Strings.tr("Localizable", "series.editor.fields.league.label", fallback: "Move this series to another league?")
+          /// When moving a series to a new league, no other properties can be edited.
+          public static let otherFieldsDisabled = Strings.tr("Localizable", "series.editor.fields.league.otherFieldsDisabled", fallback: "When moving a series to a new league, no other properties can be edited.")
+          /// By moving a series, your average and statistics may change.
+          public static let statistics = Strings.tr("Localizable", "series.editor.fields.league.statistics", fallback: "By moving a series, your average and statistics may change.")
+          /// League
+          public static let title = Strings.tr("Localizable", "series.editor.fields.league.title", fallback: "League")
+        }
         public enum Manual {
           /// Add a series without recording the frames. The scores will count towards your average and high series. You can still edit the game details later.
           public static let footer = Strings.tr("Localizable", "series.editor.fields.manual.footer", fallback: "Add a series without recording the frames. The scores will count towards your average and high series. You can still edit the game details later.")

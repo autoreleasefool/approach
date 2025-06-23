@@ -21,6 +21,16 @@ extension Series.Edit: FetchableRecord, PersistableRecord {
 	}
 }
 
+extension Series.EditLeague: PersistableRecord {
+	public static let databaseTableName = Series.Database.databaseTableName
+	public typealias Columns = Series.Database.Columns
+
+	public func encode(to container: inout PersistenceContainer) throws {
+		container[Columns.leagueId] = leagueId
+		container[Columns.id] = id
+	}
+}
+
 // MARK: - Create
 
 extension Series.Create: PersistableRecord {

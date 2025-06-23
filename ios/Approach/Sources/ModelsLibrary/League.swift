@@ -53,6 +53,7 @@ extension League {
 extension League {
 	public struct SeriesHost: Identifiable, Codable, Equatable, Sendable {
 		public let id: League.ID
+		public let bowlerId: Bowler.ID
 		public let name: String
 		public let defaultNumberOfGames: Int?
 		public let alley: Alley.Summary?
@@ -61,6 +62,7 @@ extension League {
 
 		public init(
 			id: League.ID,
+			bowlerId: Bowler.ID,
 			name: String,
 			defaultNumberOfGames: Int?,
 			alley: Alley.Summary?,
@@ -68,6 +70,7 @@ extension League {
 			recurrence: League.Recurrence
 		) {
 			self.id = id
+			self.bowlerId = bowlerId
 			self.name = name
 			self.defaultNumberOfGames = defaultNumberOfGames
 			self.alley = alley
@@ -75,8 +78,13 @@ extension League {
 			self.recurrence = recurrence
 		}
 
+		public var asSummary: Summary {
+			League.Summary(id: id, name: name)
+		}
+
 		public static let placeholder = SeriesHost(
 			id: League.ID(),
+			bowlerId: Bowler.ID(),
 			name: "",
 			defaultNumberOfGames: nil,
 			alley: nil,

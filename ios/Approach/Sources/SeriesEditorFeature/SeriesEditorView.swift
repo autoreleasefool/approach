@@ -1,5 +1,6 @@
 import AssetsLibrary
 import ComposableArchitecture
+import EquatablePackageLibrary
 import FeatureActionLibrary
 import FormFeature
 import MapKit
@@ -20,25 +21,25 @@ public struct SeriesEditorView: View {
 
 	public var body: some View {
 		FormView(store: store.scope(state: \.form, action: \.internal.form)) {
-			detailsSection
+			if !store.hasLeagueChanged {
+				detailsSection
 
-			if !store.isEditing {
-				manualSection
+				if !store.isEditing {
+					manualSection
+				}
+
+				locationSection
+				preBowlSection
+				statisticsSection
 			}
 
-			locationSection
-			preBowlSection
-			statisticsSection
+			if store.isEditing && store.isMovingSeriesBetweenLeaguesEnabled {
+				leagueSection
+			}
 		}
 		.interactiveDismissDisabled(store.isDismissDisabled)
 		.onAppear { send(.onAppear) }
-		.navigationDestination(
-			item: $store.scope(state: \.alleyPicker, action: \.internal.alleyPicker)
-		) { store in
-			ResourcePickerView(store: store) { alley in
-				Alley.View(alley)
-			}
-		}
+		.destinations($store)
 	}
 
 	private var detailsSection: some View {
@@ -158,7 +159,7 @@ public struct SeriesEditorView: View {
 	}
 
 	@ViewBuilder private var excludeFromStatisticsHelp: some View {
-		switch store.league.excludeFromStatistics {
+		switch store.initialLeague.excludeFromStatistics {
 		case .exclude:
 			Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.excludedWhenLeagueExcluded)
 				.foregroundStyle(Asset.Colors.Warning.default)
@@ -171,6 +172,45 @@ public struct SeriesEditorView: View {
 				Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.help)
 			}
 		}
+	}
+
+	@ViewBuilder private var leagueSection: some View {
+		if store.hasLeagueChanged {
+			Section {
+				Text(Strings.Series.Editor.Fields.League.otherFieldsDisabled)
+			}
+		}
+
+		Section {
+			VStack(alignment: .leading, spacing: .smallSpacing) {
+				Text(Strings.Series.Editor.Fields.League.label)
+			}
+
+			Button {
+				send(.didTapLeague)
+			} label: {
+				LabeledContent(Strings.League.title, value: store.currentLeague.name)
+			}
+			.buttonStyle(.navigation)
+		} header: {
+			Text(Strings.Series.Editor.Fields.League.title)
+		} footer: {
+			VStack(alignment: .leading, spacing: .unitSpacing) {
+				Text(Strings.Series.Editor.Fields.League.help)
+					.frame(maxWidth: .infinity, alignment: .leading)
+
+				HStack(alignment: .center, spacing: .smallSpacing) {
+					Image(systemName: "exclamationmark.triangle")
+						.resizable()
+						.frame(width: .tinyIcon, height: .tinyIcon)
+						.foregroundStyle(Asset.Colors.Warning.default)
+
+					Text(Strings.Series.Editor.Fields.League.statistics)
+						.frame(maxWidth: .infinity, alignment: .leading)
+				}
+			}
+		}
+		.listRowSeparator(.hidden)
 	}
 }
 
@@ -189,5 +229,51 @@ extension Series.ExcludeFromStatistics: CustomStringConvertible {
 		case .exclude: Strings.Series.Properties.ExcludeFromStatistics.exclude
 		case .include: Strings.Series.Properties.ExcludeFromStatistics.include
 		}
+	}
+}
+
+// MARK: - Destinations
+
+extension View {
+	fileprivate func destinations(_ store: Bindable<StoreOf<SeriesEditor>>) -> some View {
+		self
+			.alleyPicker(store.scope(state: \.destination?.alleyPicker, action: \.internal.destination.alleyPicker))
+			.leaguePicker(store.scope(state: \.destination?.leaguePicker, action: \.internal.destination.leaguePicker))
+	}
+
+	fileprivate func alleyPicker(
+		_ store: Binding<StoreOf<ResourcePicker<Alley.Summary, AlwaysEqual<Void>>>?>
+	) -> some View {
+		navigationDestination(item: store) {
+			ResourcePickerView(store: $0) { alley in
+				Alley.View(alley)
+			}
+		}
+	}
+
+	fileprivate func leaguePicker(
+		_ store: Binding<StoreOf<ResourcePicker<League.Summary, Bowler.ID>>?>
+	) -> some View {
+		navigationDestination(item: store) {
+			ResourcePickerView(store: $0) { league in
+				Text(league.name)
+			}
+		}
+	}
+}
+
+// MARK: - Preview
+
+#Preview {
+	NavigationStack {
+		SeriesEditorView(
+			store: Store(
+				initialState: SeriesEditor.State(
+					value: .edit(.placeholder),
+					inLeague: .placeholder
+				),
+				reducer: { SeriesEditor() }
+			)
+		)
 	}
 }

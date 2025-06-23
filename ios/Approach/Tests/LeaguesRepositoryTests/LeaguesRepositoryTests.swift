@@ -413,6 +413,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 			league,
 			.init(
 				id: UUID(0),
+				bowlerId: UUID(0),
 				name: "Majors",
 				defaultNumberOfGames: 4,
 				alley: nil,
@@ -618,6 +619,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// Editing the league
 		let existing = League.Edit(
 			id: UUID(0),
+			bowlerId: UUID(0),
 			recurrence: .repeating,
 			name: "Minors",
 			defaultNumberOfGames: 4,
@@ -649,6 +651,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// Editing a league
 		let existing = League.Edit(
 			id: UUID(0),
+			bowlerId: UUID(0),
 			recurrence: .once,
 			name: "Minors",
 			defaultNumberOfGames: 1,
@@ -694,6 +697,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 			league,
 			.init(
 				id: UUID(0),
+				bowlerId: UUID(0),
 				recurrence: .repeating,
 				name: "Majors",
 				defaultNumberOfGames: 4,

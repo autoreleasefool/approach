@@ -196,6 +196,11 @@
 "series.editor.fields.excludeFromStatistics.help" = "This series and all of its games will not count towards any statistics. They will still appear in the app, but won't affect your average or other statistics.";
 "series.editor.fields.excludeFromStatistics.excludedWhenPreBowl" = "Pre-bowls are automatically excluded from all statistics until you use them.";
 "series.editor.fields.excludeFromStatistics.excludedWhenLeagueExcluded" = "All of this league's series have been excluded from statistics. You must toggle this setting for the league before this series can be counted towards any statistics.";
+"series.editor.fields.league.title" = "League";
+"series.editor.fields.league.label" = "Move this series to another league?";
+"series.editor.fields.league.help" = "You can move this series and all of its games and statistics to another league by changing it here. You can always move it back.";
+"series.editor.fields.league.statistics" = "By moving a series, your average and statistics may change.";
+"series.editor.fields.league.otherFieldsDisabled" = "When moving a series to a new league, no other properties can be edited.";
 "series.preBowlEditor.description.chooseToApply" = "You can choose to use a pre-bowl on a date different than when you first bowled it.";
 "series.preBowlEditor.description.affectsLeagueAverage" = "A pre-bowl will appear in your league as if you had bowled it on the latter date, to match your league stats and average.";
 "series.preBowlEditor.description.affectsBowlerAverage" = "But it will affect your stats as a bowler as if you had bowled it on the original date, because you did!";

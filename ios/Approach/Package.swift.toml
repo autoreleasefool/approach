@@ -142,7 +142,7 @@ dependencies = [ "ExtensionsPackageLibrary", "SwiftUIExtensionsPackageLibrary" ]
 [features.SeriesEditor]
 features = [ "Form" ]
 repositories = [ "Alleys", "Leagues", "Series" ]
-libraries = [ "ModelsViews", "PickableModels" ]
+libraries = [ "FeatureFlags", "ModelsViews", "PickableModels" ]
 
 [features.SeriesList]
 features = [ "GamesList", "LeagueEditor" ]

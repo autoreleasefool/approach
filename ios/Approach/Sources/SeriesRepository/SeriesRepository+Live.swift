@@ -212,6 +212,13 @@ extension SeriesRepository: DependencyKey {
 
 				try await database.writer().write {
 					if let existing = try Series.Database.fetchOne($0, id: series.id) {
+						// When the league has changed, we only update the league
+						guard series.leagueId == existing.leagueId else {
+							let leagueUpdate = Series.EditLeague(leagueId: series.leagueId, id: series.id)
+							try leagueUpdate.update($0)
+							return
+						}
+
 						switch (existing.preBowl, series.preBowl, series.appliedDate) {
 						case (.preBowl, .regular, _), (.regular, .preBowl, .some), (.preBowl, .preBowl, .some):
 							try Game.Database

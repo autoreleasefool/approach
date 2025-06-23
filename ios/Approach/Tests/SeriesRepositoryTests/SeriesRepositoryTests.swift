@@ -785,6 +785,84 @@ final class SeriesRepositoryTests: XCTestCase {
 		XCTAssertEqual(count, 1)
 	}
 
+	func testUpdate_WhenSeriesExists_CanChangeLeague() async throws {
+		// Given a database with an existing series
+		let league1 = League.Database.mock(id: UUID(0), name: "League 1")
+		let league2 = League.Database.mock(id: UUID(1), name: "League 2")
+		let series = Series.Database.mock(leagueId: league1.id, id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1, league2]), withSeries: .custom([series]))
+
+		// Editing the series
+		let editable = Series.Edit(
+			leagueId: league2.id, // Given a new league ID
+			id: series.id,
+			numberOfGames: 3,
+			leagueRecurrence: .repeating,
+			date: series.date,
+			preBowl: series.preBowl,
+			excludeFromStatistics: series.excludeFromStatistics
+		)
+		try await withDependencies {
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
+		} operation: {
+			try await self.series.update(editable)
+		}
+
+		// Updates the database
+		let updated = try await db.read { try Series.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(updated?.id, UUID(0))
+		XCTAssertEqual(updated?.leagueId, league2.id)
+
+		// Does not insert any records
+		let count = try await db.read { try Series.Database.fetchCount($0) }
+		XCTAssertEqual(count, 1)
+	}
+
+	func testUpdate_WhenSeriesExists_CannotEditFields_WhenLeagueChanges() async throws {
+		// Given a database with an existing series
+		let league1 = League.Database.mock(id: UUID(0), name: "League 1")
+		let league2 = League.Database.mock(id: UUID(1), name: "League 2")
+		let series = Series.Database.mock(
+			leagueId: league1.id,
+			id: UUID(0),
+			date: Date(timeIntervalSince1970: 123_456_001),
+			appliedDate: nil,
+			preBowl: .regular,
+			excludeFromStatistics: .include
+		)
+		let db = try initializeApproachDatabase(withLeagues: .custom([league1, league2]), withSeries: .custom([series]))
+
+		// Editing the series
+		let editable = Series.Edit(
+			leagueId: league2.id, // Given a new league ID
+			id: series.id,
+			numberOfGames: 3,
+			leagueRecurrence: .repeating,
+			date: Date(timeIntervalSince1970: 123_456_002),
+			appliedDate: Date(timeIntervalSince1970: 123_456_002),
+			preBowl: .preBowl,
+			excludeFromStatistics: .exclude
+		)
+		try await withDependencies {
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
+		} operation: {
+			try await self.series.update(editable)
+		}
+
+		// Updates the database
+		let updated = try await db.read { try Series.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(updated?.id, UUID(0))
+		XCTAssertEqual(updated?.leagueId, league2.id)
+
+		// Does not change other fields
+		XCTAssertEqual(updated?.excludeFromStatistics, .include)
+		XCTAssertEqual(updated?.date, Date(timeIntervalSince1970: 123_456_001))
+		XCTAssertEqual(updated?.preBowl, .regular)
+		XCTAssertNil(updated?.appliedDate)
+	}
+
 	func testUpdate_WhenSeriesNotExists_ThrowsError() async throws {
 		// Given a database with no series
 		let db = try initializeApproachDatabase(withSeries: nil)
