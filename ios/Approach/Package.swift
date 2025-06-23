@@ -252,9 +252,11 @@ let package = Package(
 			name: "AlleysListFeature",
 			dependencies: [
 				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
+				.product(name: "Sharing", package: "swift-sharing"),
 				"AlleyEditorFeature",
 				"FeatureFlagsLibrary",
 				"ResourceListLibrary",
+				"SortOrderLibrary",
 			]
 		),
 		.testTarget(
@@ -543,6 +545,7 @@ let package = Package(
 		.target(
 			name: "GearListFeature",
 			dependencies: [
+				.product(name: "Sharing", package: "swift-sharing"),
 				"GearEditorFeature",
 				"RecentlyUsedServiceInterface",
 				"ResourceListLibrary",
@@ -675,6 +678,7 @@ let package = Package(
 			name: "OpponentsListFeature",
 			dependencies: [
 				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
+				.product(name: "Sharing", package: "swift-sharing"),
 				"FeatureFlagsLibrary",
 				"ModelsViewsLibrary",
 				"OpponentDetailsFeature",
@@ -696,6 +700,7 @@ let package = Package(
 			dependencies: [
 				"AlleysRepositoryInterface",
 				"FormFeature",
+				"LeaguesRepositoryInterface",
 				"ModelsViewsLibrary",
 				"PickableModelsLibrary",
 				"SeriesRepositoryInterface",
