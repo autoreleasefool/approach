@@ -12,7 +12,6 @@ import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
-import ca.josephroque.bowlingcompanion.core.model.SeriesDetailsProperties
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesListProperties
@@ -106,14 +105,10 @@ fun SeriesUpdate.asEntity(): SeriesUpdateEntity = SeriesUpdateEntity(
 )
 
 data class SeriesDetailsEntity(
-	@Embedded
-	val properties: SeriesDetailsProperties,
-	@Relation(
-		parentColumn = "alleyId",
-		entityColumn = "id",
-		entity = AlleyEntity::class,
-	)
-	val alley: AlleyDetailsEntity?,
+	@Embedded val properties: SeriesDetails.Properties,
+	@Embedded(prefix = "alley_") val alley: SeriesDetails.Alley?,
+	@Embedded(prefix = "league_") val league: SeriesDetails.League,
+	@Embedded(prefix = "bowler_") val bowler: SeriesDetails.Bowler,
 	@Relation(
 		parentColumn = "id",
 		entityColumn = "series_id",
@@ -129,8 +124,10 @@ data class SeriesDetailsEntity(
 
 	fun asModel(): SeriesDetails = SeriesDetails(
 		properties = properties,
+		alley = this.alley,
+		league = this.league,
+		bowler = this.bowler,
 		scores = games.filter { it.archivedOn == null }.map { it.score },
-		alley = alley?.asModel(),
 	)
 }
 

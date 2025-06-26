@@ -1,7 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.seriesform.ui
 
-import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import kotlinx.datetime.LocalDate
 
@@ -15,7 +15,7 @@ data class SeriesFormUiState(
 	val preBowl: SeriesPreBowl,
 	val excludeFromStatistics: ExcludeFromStatistics,
 	val leagueExcludeFromStatistics: ExcludeFromStatistics,
-	val alley: AlleyDetails?,
+	val alley: SeriesDetails.Alley?,
 	val isShowingArchiveDialog: Boolean,
 	val isArchiveButtonEnabled: Boolean,
 	val isShowingDiscardChangesDialog: Boolean,

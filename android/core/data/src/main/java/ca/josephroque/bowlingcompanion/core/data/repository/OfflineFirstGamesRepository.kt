@@ -41,7 +41,6 @@ import kotlinx.datetime.minus
 class OfflineFirstGamesRepository @Inject constructor(
 	private val bowlerDao: BowlerDao,
 	private val gameDao: GameDao,
-	private val seriesDao: SeriesDao,
 	private val gearDao: GearDao,
 	private val framesRepository: FramesRepository,
 	private val userDataRepository: UserDataRepository,

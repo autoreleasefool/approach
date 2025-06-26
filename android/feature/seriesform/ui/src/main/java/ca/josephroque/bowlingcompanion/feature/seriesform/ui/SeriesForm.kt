@@ -29,9 +29,9 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSec
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSwitch
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.PickableResourceCard
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.Stepper
-import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.components.SeriesDatePicker
 import kotlinx.datetime.LocalDate
@@ -180,7 +180,7 @@ private fun DetailsSection(
 }
 
 @Composable
-private fun AlleySection(alley: AlleyDetails?, onClick: () -> Unit) {
+private fun AlleySection(alley: SeriesDetails.Alley?, onClick: () -> Unit) {
 	FormSection {
 		PickableResourceCard(
 			resourceName = stringResource(R.string.series_form_bowling_alley),
@@ -351,13 +351,9 @@ private fun SeriesFormPreview() {
 				preBowl = SeriesPreBowl.REGULAR,
 				excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 				leagueExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
-				alley = AlleyDetails(
+				alley = SeriesDetails.Alley(
 					id = AlleyID.randomID(),
 					name = "Test Alley",
-					material = null,
-					mechanism = null,
-					pinBase = null,
-					pinFall = null,
 				),
 				isDatePickerVisible = false,
 				isAppliedDatePickerVisible = false,

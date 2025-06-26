@@ -28,16 +28,23 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 	@Query(
 		"""
 			SELECT
-				series.league_id AS leagueId,
-				series.alley_id AS alleyId,
 				series.id AS id,
 				series.'date' AS 'date',
 				series.applied_date AS appliedDate,
 				series.pre_bowl AS preBowl,
 				series.exclude_from_statistics AS excludeFromStatistics,
 				COUNT(games.id) AS numberOfGames,
-				SUM(games.score) AS 'total'
+				SUM(games.score) AS 'total',
+				leagues.id AS league_id,
+				leagues.name as league_name,
+				bowlers.id AS bowler_id,
+				bowlers.name AS bowler_name,
+				alleys.id AS alley_id,
+				alleys.name AS alley_name
 			FROM series
+			JOIN leagues ON leagues.id = series.league_id
+			JOIN bowlers ON bowlers.id = leagues.bowler_id
+			LEFT JOIN alleys ON alleys.id = series.alley_id
 			LEFT JOIN games
 				ON games.series_id = series.id AND games.archived_on IS NULL
 			WHERE series.id = :seriesId

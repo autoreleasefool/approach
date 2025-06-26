@@ -32,7 +32,7 @@ class MainActivityViewModel @Inject constructor(
 	private val analyticsClient: AnalyticsClient,
 	private val gamesRepository: GamesRepository,
 	private val userDataRepository: UserDataRepository,
-	private val featureFlagsClient: FeatureFlagsClient,
+	featureFlagsClient: FeatureFlagsClient,
 ) : ViewModel() {
 	private val isLaunchComplete: MutableStateFlow<Boolean> = MutableStateFlow(false)
 	private val observingAchievementsLock = Mutex()

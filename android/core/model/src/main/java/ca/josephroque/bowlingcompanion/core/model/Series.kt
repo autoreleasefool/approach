@@ -81,22 +81,37 @@ data class ShareableSeries(
 }
 
 data class SeriesDetails(
-	val properties: SeriesDetailsProperties,
-	val alley: AlleyDetails?,
+	val properties: Properties,
+	val alley: Alley?,
+	val league: League,
+	val bowler: Bowler,
 	val scores: List<Int>,
-)
+) {
+	data class Properties(
+		val id: SeriesID,
+		val date: LocalDate,
+		val appliedDate: LocalDate?,
+		val total: Int,
+		val numberOfGames: Int,
+		val preBowl: SeriesPreBowl,
+		val excludeFromStatistics: ExcludeFromStatistics,
+	)
 
-data class SeriesDetailsProperties(
-	val leagueId: LeagueID,
-	val alleyId: AlleyID?,
-	val id: SeriesID,
-	val date: LocalDate,
-	val appliedDate: LocalDate?,
-	val total: Int,
-	val numberOfGames: Int,
-	val preBowl: SeriesPreBowl,
-	val excludeFromStatistics: ExcludeFromStatistics,
-)
+	data class Alley(
+		val id: AlleyID,
+		val name: String,
+	)
+
+	data class League(
+		val id: LeagueID,
+		val name: String,
+	)
+
+	data class Bowler(
+		val id: BowlerID,
+		val name: String,
+	)
+}
 
 data class SeriesCreate(
 	val leagueId: LeagueID,
