@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.SeriesLeagueUpdate
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesListProperties
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
@@ -102,6 +103,16 @@ fun SeriesUpdate.asEntity(): SeriesUpdateEntity = SeriesUpdateEntity(
 	excludeFromStatistics = excludeFromStatistics,
 	appliedDate = appliedDate,
 	alleyId = alleyId,
+)
+
+data class SeriesLeagueUpdateEntity(
+	val id: SeriesID,
+	@ColumnInfo(name = "league_id") val leagueId: LeagueID,
+)
+
+fun SeriesLeagueUpdate.asEntity(): SeriesLeagueUpdateEntity = SeriesLeagueUpdateEntity(
+	id = id,
+	leagueId = leagueId,
 )
 
 data class SeriesDetailsEntity(

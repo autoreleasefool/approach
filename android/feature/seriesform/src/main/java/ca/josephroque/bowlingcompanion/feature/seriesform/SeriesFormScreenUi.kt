@@ -1,8 +1,10 @@
 package ca.josephroque.bowlingcompanion.feature.seriesform
 
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameID
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
@@ -41,7 +43,8 @@ sealed interface SeriesFormScreenUiState {
 	) : SeriesFormScreenUiState {
 		override fun isSavable(): Boolean = form.updatedModel(existing = initialValue) != initialValue
 
-		override fun hasAnyChanges(): Boolean = form.updatedModel(existing = initialValue) != initialValue
+		override fun hasAnyChanges(): Boolean =
+			form.updatedModel(existing = initialValue) != initialValue || form.hasLeagueChanged
 	}
 }
 
@@ -60,6 +63,7 @@ fun SeriesFormUiState.updatedModel(existing: SeriesUpdate): SeriesUpdate = exist
 sealed interface SeriesFormScreenUiAction {
 	data object LoadSeries : SeriesFormScreenUiAction
 	data class AlleyUpdated(val alleyId: AlleyID?) : SeriesFormScreenUiAction
+	data class LeagueUpdated(val leagueId: LeagueID?) : SeriesFormScreenUiAction
 
 	data class SeriesForm(val action: SeriesFormUiAction) : SeriesFormScreenUiAction
 }
@@ -67,6 +71,7 @@ sealed interface SeriesFormScreenUiAction {
 sealed interface SeriesFormScreenEvent {
 	data class Dismissed(val seriesId: SeriesID?) : SeriesFormScreenEvent
 	data class EditAlley(val alleyId: AlleyID?) : SeriesFormScreenEvent
+	data class EditLeague(val bowlerId: BowlerID, val leagueId: LeagueID) : SeriesFormScreenEvent
 	data class StartTeamSeries(val teamSeriesId: TeamSeriesID, val initialGameId: GameID) :
 		SeriesFormScreenEvent
 }

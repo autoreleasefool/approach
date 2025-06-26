@@ -16,7 +16,9 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.navigation.ResourcePickerResultKey
@@ -34,6 +36,7 @@ internal fun SeriesFormRoute(
 	onDismissWithResult: (SeriesID?) -> Unit,
 	onStartTeamSeries: (TeamSeriesID, GameID) -> Unit,
 	onEditAlley: (AlleyID?, ResourcePickerResultKey) -> Unit,
+	onEditLeague: (BowlerID, LeagueID, ResourcePickerResultKey) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: SeriesFormViewModel = hiltViewModel(),
 	resultViewModel: ResourcePickerResultViewModel = hiltViewModel(),
@@ -43,6 +46,12 @@ internal fun SeriesFormRoute(
 	LaunchedEffect(Unit) {
 		resultViewModel.getSelectedIds(SERIES_FORM_ALLEY_PICKER_RESULT_KEY) { AlleyID(it) }
 			.onEach { viewModel.handleAction(SeriesFormScreenUiAction.AlleyUpdated(it.firstOrNull())) }
+			.launchIn(this)
+	}
+
+	LaunchedEffect(Unit) {
+		resultViewModel.getSelectedIds(SERIES_FORM_LEAGUE_PICKER_RESULT_KEY) { LeagueID(it) }
+			.onEach { viewModel.handleAction(SeriesFormScreenUiAction.LeagueUpdated(it.firstOrNull())) }
 			.launchIn(this)
 	}
 
@@ -56,6 +65,8 @@ internal fun SeriesFormRoute(
 						is SeriesFormScreenEvent.Dismissed -> onDismissWithResult(it.seriesId)
 						is SeriesFormScreenEvent.EditAlley ->
 							onEditAlley(it.alleyId, SERIES_FORM_ALLEY_PICKER_RESULT_KEY)
+						is SeriesFormScreenEvent.EditLeague ->
+							onEditLeague(it.bowlerId, it.leagueId, SERIES_FORM_LEAGUE_PICKER_RESULT_KEY)
 						is SeriesFormScreenEvent.StartTeamSeries -> onStartTeamSeries(
 							it.teamSeriesId,
 							it.initialGameId,

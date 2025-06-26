@@ -8,6 +8,7 @@ import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesDetailsEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
+import ca.josephroque.bowlingcompanion.core.database.model.SeriesLeagueUpdateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesListEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesUpdateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.ShareableSeriesEntity
@@ -153,6 +154,9 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 
 	@Update(entity = SeriesEntity::class)
 	abstract fun updateSeries(series: SeriesUpdateEntity)
+
+	@Update(entity = SeriesEntity::class)
+	abstract fun updateSeriesLeague(series: SeriesLeagueUpdateEntity)
 
 	@Query("UPDATE series SET archived_on = :archivedOn WHERE id = :seriesId")
 	abstract fun archiveSeries(seriesId: SeriesID, archivedOn: Instant)

@@ -165,6 +165,15 @@ fun NavGraphBuilder.overviewGraph(
 				resultKey = resultKey,
 			)
 		},
+		onEditLeague = { bowler, league, resultKey ->
+			navController.navigateToLeaguePickerForResult(
+				selectedIds = setOf(league),
+				limit = 1,
+				resultKey = resultKey,
+				bowlerId = bowler,
+				recurrence = LeagueRecurrence.REPEATING,
+			)
+		},
 	)
 	seriesPreBowlFormScreen(
 		onDismiss = navController::popBackStack,

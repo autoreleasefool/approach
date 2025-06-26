@@ -9,6 +9,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
@@ -39,6 +40,7 @@ fun NavGraphBuilder.seriesFormScreen(
 	navController: NavController,
 	onDismiss: () -> Unit,
 	onEditAlley: (AlleyID?, ResourcePickerResultKey) -> Unit,
+	onEditLeague: (BowlerID, LeagueID, ResourcePickerResultKey) -> Unit,
 ) {
 	composable(
 		route = Route.EditSeries.route,
@@ -62,6 +64,7 @@ fun NavGraphBuilder.seriesFormScreen(
 				onDismiss()
 			},
 			onEditAlley = onEditAlley,
+			onEditLeague = onEditLeague,
 			onStartTeamSeries = { _, _ ->
 				throw NotImplementedError("SeriesFormRoute should not start Team Series")
 			},
@@ -89,6 +92,9 @@ fun NavGraphBuilder.seriesFormScreen(
 				onDismiss()
 			},
 			onEditAlley = onEditAlley,
+			onEditLeague = { _, _, _ ->
+				throw NotImplementedError("SeriesFormRoute should not edit league when adding a series")
+			},
 			onStartTeamSeries = { _, _ ->
 				throw NotImplementedError("SeriesFormRoute should not start Team Series")
 			},
@@ -112,6 +118,9 @@ fun NavGraphBuilder.teamSeriesFormScreen(
 			onDismissWithResult = { _ -> onDismiss() },
 			onStartTeamSeries = onStartTeamSeries,
 			onEditAlley = onEditAlley,
+			onEditLeague = { _, _, _ ->
+				throw NotImplementedError("SeriesFormRoute should not edit League in Team Series Form")
+			}
 		)
 	}
 }

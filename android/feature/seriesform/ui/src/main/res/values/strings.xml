@@ -29,6 +29,12 @@
 	<string name="series_form_exclude_include">Include</string>
 	<string name="series_form_exclude_exclude">Exclude</string>
 
+	<string name="series_form_section_league">League</string>
+	<string name="series_form_section_league_description">Move this series to another league?</string>
+	<string name="series_form_section_league_description_footer">You can move this series and all of its games and statistics to another league by changing it here. You can always move it back.</string>
+	<string name="series_form_section_league_description_footer_statistics_change">By moving a series, your average and statistics may change.</string>
+	<string name="series_form_section_league_description_other_fields_disabled">When moving a series to a new league, no other properties can be edited.</string>
+
 	<string name="series_form_archive">Archive Series</string>
 
 	<string name="series_pre_bowl_form_title">Use a pre-bowl</string>

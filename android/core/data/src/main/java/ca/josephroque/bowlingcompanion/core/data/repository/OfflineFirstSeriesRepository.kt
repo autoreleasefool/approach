@@ -19,6 +19,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.SeriesLeagueUpdate
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
@@ -144,6 +145,10 @@ class OfflineFirstSeriesRepository @Inject constructor(
 
 			seriesDao.updateSeries(series.asEntity())
 		}
+	}
+
+	override suspend fun updateSeriesLeague(series: SeriesLeagueUpdate) = withContext(ioDispatcher) {
+		seriesDao.updateSeriesLeague(series.asEntity())
 	}
 
 	override suspend fun archiveSeries(id: SeriesID) = withContext(ioDispatcher) {

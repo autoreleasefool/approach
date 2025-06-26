@@ -19,9 +19,13 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.League
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
+import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.Series
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
+import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.SeriesLeagueUpdate
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesCreate
@@ -43,6 +47,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 
 val SERIES_FORM_ALLEY_PICKER_RESULT_KEY = ResourcePickerResultKey("SeriesFormAlleyPickerResultKey")
+val SERIES_FORM_LEAGUE_PICKER_RESULT_KEY = ResourcePickerResultKey("SeriesFormLeaguePickerResultKey")
 
 @HiltViewModel
 class SeriesFormViewModel @Inject constructor(
@@ -71,6 +76,7 @@ class SeriesFormViewModel @Inject constructor(
 		when (action) {
 			SeriesFormScreenUiAction.LoadSeries -> loadSeries()
 			is SeriesFormScreenUiAction.AlleyUpdated -> updateAlley(alleyId = action.alleyId)
+			is SeriesFormScreenUiAction.LeagueUpdated -> updateLeague(leagueId = action.leagueId)
 			is SeriesFormScreenUiAction.SeriesForm -> handleSeriesFormAction(action.action)
 		}
 	}
@@ -83,6 +89,7 @@ class SeriesFormViewModel @Inject constructor(
 			SeriesFormUiAction.ConfirmArchiveClicked -> archiveSeries()
 			SeriesFormUiAction.DismissArchiveClicked -> setArchiveSeriesPrompt(isVisible = false)
 			SeriesFormUiAction.AlleyClicked -> editAlley()
+			SeriesFormUiAction.LeagueClicked -> editLeague()
 			SeriesFormUiAction.DateClicked -> setDatePicker(isVisible = true)
 			SeriesFormUiAction.DatePickerDismissed -> setDatePicker(isVisible = false)
 			SeriesFormUiAction.DiscardChangesClicked -> dismiss()
@@ -107,7 +114,7 @@ class SeriesFormViewModel @Inject constructor(
 
 		viewModelScope.launch {
 			val series = seriesId?.let { seriesRepository.getSeriesDetails(it).first() }
-			val league = (leagueId ?: series?.properties?.leagueId)?.let {
+			val league = (leagueId ?: series?.league?.id)?.let {
 				leaguesRepository.getLeagueDetails(it).first()
 			}
 
@@ -115,6 +122,7 @@ class SeriesFormViewModel @Inject constructor(
 				val currentDate = Clock.System.todayIn(TimeZone.currentSystemDefault())
 				SeriesFormScreenUiState.TeamCreate(
 					form = SeriesFormUiState(
+						league = SeriesFormUiState.SeriesLeague.NoLeague,
 						numberOfGames = Series.DEFAULT_NUMBER_OF_GAMES,
 						date = currentDate,
 						appliedDate = currentDate,
@@ -133,6 +141,7 @@ class SeriesFormViewModel @Inject constructor(
 						isCreatingManualSeries = false,
 						manualScores = emptyList(),
 						isManualSeriesEnabled = featureFlags.isEnabled(FeatureFlag.MANUAL_TEAM_SERIES_FORM),
+						isMovingSeriesEnabled = false,
 					),
 					topBar = SeriesFormTopBarUiState(
 						existingDate = null,
@@ -143,6 +152,7 @@ class SeriesFormViewModel @Inject constructor(
 				val currentDate = Clock.System.todayIn(TimeZone.currentSystemDefault())
 				SeriesFormScreenUiState.Create(
 					form = SeriesFormUiState(
+						league = SeriesFormUiState.SeriesLeague.InitialLeague(league.asSummary()),
 						numberOfGames = league.numberOfGames ?: Series.DEFAULT_NUMBER_OF_GAMES,
 						date = currentDate,
 						appliedDate = currentDate,
@@ -161,6 +171,7 @@ class SeriesFormViewModel @Inject constructor(
 						isCreatingManualSeries = false,
 						manualScores = emptyList(),
 						isManualSeriesEnabled = featureFlags.isEnabled(FeatureFlag.MANUAL_SERIES_FORM),
+						isMovingSeriesEnabled = false,
 					),
 					topBar = SeriesFormTopBarUiState(
 						existingDate = null,
@@ -178,6 +189,7 @@ class SeriesFormViewModel @Inject constructor(
 						excludeFromStatistics = series.properties.excludeFromStatistics,
 					),
 					form = SeriesFormUiState(
+						league = SeriesFormUiState.SeriesLeague.InitialLeague(league.asSummary()),
 						numberOfGames = null,
 						date = series.properties.date,
 						appliedDate = series.properties.appliedDate ?: series.properties.date,
@@ -197,6 +209,10 @@ class SeriesFormViewModel @Inject constructor(
 						isCreatingManualSeries = false,
 						manualScores = emptyList(),
 						isManualSeriesEnabled = false,
+						isMovingSeriesEnabled = when (league.recurrence) {
+							LeagueRecurrence.ONCE -> false
+							LeagueRecurrence.REPEATING -> featureFlags.isEnabled(FeatureFlag.MOVING_SERIES_BETWEEN_LEAGUES)
+						},
 					),
 					topBar = SeriesFormTopBarUiState(
 						existingDate = series.properties.date,
@@ -221,11 +237,42 @@ class SeriesFormViewModel @Inject constructor(
 		)
 	}
 
+	private fun editLeague() {
+		when (val state = _uiState.value) {
+			SeriesFormScreenUiState.Loading -> return
+			is SeriesFormScreenUiState.TeamCreate -> return
+			is SeriesFormScreenUiState.Create -> return
+			is SeriesFormScreenUiState.Edit -> viewModelScope.launch {
+				val series = seriesId?.let { seriesRepository.getSeriesDetails(it).first() } ?: return@launch
+				sendEvent(
+					SeriesFormScreenEvent.EditLeague(
+						bowlerId = series.bowler.id,
+						leagueId = state.form.league.id,
+					)
+				)
+			}
+		}
+	}
+
 	private fun updateAlley(alleyId: AlleyID?) {
 		if (!hasLoadedInitialState) return
 		viewModelScope.launch {
-			val alleyDetails = alleyId?.let { alleysRepository.getAlleyDetails(it).first() }
-			_uiState.updateForm { it.copy(alley = alleyDetails) }
+			val alley = alleyId?.let { alleysRepository.getAlleyDetails(it).first() }
+			_uiState.updateForm {
+				it.copy(alley = if (alley == null) {
+					null
+				} else {
+					SeriesDetails.Alley(id = alley.id, name = alley.name)
+				})
+			}
+		}
+	}
+
+	private fun updateLeague(leagueId: LeagueID?) {
+		if (!hasLoadedInitialState) return
+		viewModelScope.launch {
+			val leagueDetails = leagueId?.let { leaguesRepository.getLeagueDetails(it).first() } ?: return@launch
+			_uiState.updateForm { it.copy(league = it.league.changedTo(leagueDetails.asSummary())) }
 		}
 	}
 
@@ -447,8 +494,17 @@ class SeriesFormViewModel @Inject constructor(
 					analyticsClient.trackEvent(SeriesCreated)
 				}
 				is SeriesFormScreenUiState.Edit -> {
-					val series = state.form.updatedModel(state.initialValue)
-					seriesRepository.updateSeries(series)
+					when (state.form.league) {
+						SeriesFormUiState.SeriesLeague.NoLeague, is SeriesFormUiState.SeriesLeague.InitialLeague -> {
+							val series = state.form.updatedModel(state.initialValue)
+							seriesRepository.updateSeries(series)
+						}
+						is SeriesFormUiState.SeriesLeague.UpdatedLeague -> {
+							val series = SeriesLeagueUpdate(id = state.initialValue.id, leagueId = state.form.league.id)
+							seriesRepository.updateSeriesLeague(series)
+						}
+					}
+
 					dismiss()
 					analyticsClient.trackEvent(SeriesUpdated)
 				}

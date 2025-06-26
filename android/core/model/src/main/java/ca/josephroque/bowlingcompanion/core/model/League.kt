@@ -35,7 +35,12 @@ data class LeagueDetails(
 	val additionalPinFall: Int?,
 	val additionalGames: Int?,
 	val excludeFromStatistics: ExcludeFromStatistics,
-)
+) {
+	fun asSummary(): LeagueSummary = LeagueSummary(
+		id = id,
+		name = name,
+	)
+}
 
 data class LeagueListItem(
 	val id: LeagueID,

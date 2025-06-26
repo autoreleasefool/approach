@@ -1,20 +1,26 @@
 package ca.josephroque.bowlingcompanion.feature.seriesform.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -31,6 +37,8 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.form.Pickabl
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.Stepper
 import ca.josephroque.bowlingcompanion.core.model.AlleyID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
+import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.components.SeriesDatePicker
@@ -58,71 +66,86 @@ fun SeriesForm(state: SeriesFormUiState, onAction: (SeriesFormUiAction) -> Unit,
 			.verticalScroll(rememberScrollState())
 			.imePadding(),
 	) {
-		DetailsSection(
-			numberOfGames = state.numberOfGames,
-			onNumberOfGamesChanged = { onAction(SeriesFormUiAction.NumberOfGamesChanged(it)) },
-			isDatePickerVisible = state.isDatePickerVisible,
-			currentDate = state.date,
-			onDateClicked = { onAction(SeriesFormUiAction.DateClicked) },
-			onDatePickerDismissed = { onAction(SeriesFormUiAction.DatePickerDismissed) },
-			onDateChanged = { onAction(SeriesFormUiAction.DateChanged(it)) },
-			modifier = Modifier.padding(bottom = 16.dp),
-		)
 
-		HorizontalDivider()
-
-		AlleySection(
-			alley = state.alley,
-			onClick = { onAction(SeriesFormUiAction.AlleyClicked) },
-		)
-
-		HorizontalDivider()
-
-		if (state.isManualSeriesEnabled) {
-			ManualSeriesSection(
-				isCreatingManualSeries = state.isCreatingManualSeries,
-				manualScores = state.manualScores,
-				onManualScoreChanged = { index, score ->
-					onAction(SeriesFormUiAction.ManualScoreChanged(index, score))
-				},
-				onIsCreatingManualSeriesChanged = {
-					onAction(SeriesFormUiAction.IsCreatingManualSeriesChanged(it))
-				},
-				modifier = Modifier.padding(top = 16.dp),
-			)
-		}
-
-		HorizontalDivider()
-
-		if (state.isPreBowlSectionVisible) {
-			PreBowlSection(
-				preBowl = state.preBowl,
-				isPreBowlFormEnabled = state.isPreBowlFormEnabled,
-				onPreBowlChanged = { onAction(SeriesFormUiAction.PreBowlChanged(it)) },
-				isAppliedDatePickerVisible = state.isAppliedDatePickerVisible,
-				appliedDate = state.appliedDate,
-				onAppliedDateClicked = { onAction(SeriesFormUiAction.AppliedDateClicked) },
-				onAppliedDatePickerDismissed = { onAction(SeriesFormUiAction.AppliedDatePickerDismissed) },
-				onAppliedDateChanged = { onAction(SeriesFormUiAction.AppliedDateChanged(it)) },
-				isUsingPreBowl = state.isUsingPreBowl,
-				onIsUsingPreBowlChanged = { onAction(SeriesFormUiAction.IsUsingPreBowlChanged(it)) },
-				modifier = Modifier.padding(top = 16.dp),
+		if (!state.hasLeagueChanged) {
+			DetailsSection(
+				numberOfGames = state.numberOfGames,
+				onNumberOfGamesChanged = { onAction(SeriesFormUiAction.NumberOfGamesChanged(it)) },
+				isDatePickerVisible = state.isDatePickerVisible,
+				currentDate = state.date,
+				onDateClicked = { onAction(SeriesFormUiAction.DateClicked) },
+				onDatePickerDismissed = { onAction(SeriesFormUiAction.DatePickerDismissed) },
+				onDateChanged = { onAction(SeriesFormUiAction.DateChanged(it)) },
+				modifier = Modifier.padding(bottom = 16.dp),
 			)
 
 			HorizontalDivider()
+
+			AlleySection(
+				alley = state.alley,
+				onClick = { onAction(SeriesFormUiAction.AlleyClicked) },
+			)
+
+			HorizontalDivider()
+
+			if (state.isManualSeriesEnabled) {
+				ManualSeriesSection(
+					isCreatingManualSeries = state.isCreatingManualSeries,
+					manualScores = state.manualScores,
+					onManualScoreChanged = { index, score ->
+						onAction(SeriesFormUiAction.ManualScoreChanged(index, score))
+					},
+					onIsCreatingManualSeriesChanged = {
+						onAction(SeriesFormUiAction.IsCreatingManualSeriesChanged(it))
+					},
+					modifier = Modifier.padding(top = 16.dp),
+				)
+			}
+
+			HorizontalDivider()
+
+			if (state.isPreBowlSectionVisible) {
+				PreBowlSection(
+					preBowl = state.preBowl,
+					isPreBowlFormEnabled = state.isPreBowlFormEnabled,
+					onPreBowlChanged = { onAction(SeriesFormUiAction.PreBowlChanged(it)) },
+					isAppliedDatePickerVisible = state.isAppliedDatePickerVisible,
+					appliedDate = state.appliedDate,
+					onAppliedDateClicked = { onAction(SeriesFormUiAction.AppliedDateClicked) },
+					onAppliedDatePickerDismissed = { onAction(SeriesFormUiAction.AppliedDatePickerDismissed) },
+					onAppliedDateChanged = { onAction(SeriesFormUiAction.AppliedDateChanged(it)) },
+					isUsingPreBowl = state.isUsingPreBowl,
+					onIsUsingPreBowlChanged = { onAction(SeriesFormUiAction.IsUsingPreBowlChanged(it)) },
+					modifier = Modifier.padding(top = 16.dp),
+				)
+
+				HorizontalDivider()
+			}
+
+			ExcludeFromStatisticsSection(
+				excludeFromStatistics = state.excludeFromStatistics,
+				leagueExcludeFromStatistics = state.leagueExcludeFromStatistics,
+				seriesPreBowl = state.preBowl,
+				onExcludeFromStatisticsChanged = {
+					onAction(
+						SeriesFormUiAction.ExcludeFromStatisticsChanged(it),
+					)
+				},
+				modifier = Modifier.padding(top = 16.dp),
+			)
+		} else {
+			LeagueChangeAlertSection()
 		}
 
-		ExcludeFromStatisticsSection(
-			excludeFromStatistics = state.excludeFromStatistics,
-			leagueExcludeFromStatistics = state.leagueExcludeFromStatistics,
-			seriesPreBowl = state.preBowl,
-			onExcludeFromStatisticsChanged = {
-				onAction(
-					SeriesFormUiAction.ExcludeFromStatisticsChanged(it),
-				)
-			},
-			modifier = Modifier.padding(top = 16.dp),
-		)
+		if (state.isMovingSeriesEnabled) {
+			HorizontalDivider()
+
+			LeagueSection(
+				league = state.league,
+				onClick = { onAction(SeriesFormUiAction.LeagueClicked) },
+				modifier = Modifier.padding(top = 16.dp),
+			)
+		}
 
 		HorizontalDivider()
 
@@ -338,12 +361,63 @@ private fun ExcludeFromStatisticsSection(
 	}
 }
 
+@Composable
+private fun LeagueChangeAlertSection() {
+	FormSection {
+		Row(
+			verticalAlignment = Alignment.CenterVertically,
+			horizontalArrangement = Arrangement.spacedBy(8.dp),
+			modifier = Modifier.padding(16.dp),
+		) {
+			Icon(
+				Icons.Default.Warning,
+				contentDescription = null,
+				tint = MaterialTheme.colorScheme.error,
+			)
+
+			Text(
+				text = stringResource(R.string.series_form_section_league_description_other_fields_disabled),
+				style = MaterialTheme.typography.bodyMedium,
+			)
+		}
+	}
+}
+
+@Composable
+private fun LeagueSection(
+	league: SeriesFormUiState.SeriesLeague,
+	onClick: () -> Unit,
+	modifier: Modifier = Modifier,
+) {
+	FormSection(
+		modifier = modifier,
+		titleResourceId = R.string.series_form_section_league_description,
+		footerResourceId = R.string.series_form_section_league_description_footer
+	) {
+		PickableResourceCard(
+			resourceName = stringResource(R.string.series_form_section_league),
+			selectedName = league.name,
+			onClick = onClick,
+		)
+	}
+}
+
 @Preview
 @Composable
 private fun SeriesFormPreview() {
 	Surface {
 		SeriesForm(
 			state = SeriesFormUiState(
+				league = SeriesFormUiState.SeriesLeague.UpdatedLeague(
+					league = LeagueSummary(
+						id = LeagueID.randomID(),
+						name = "Test League",
+					),
+					original = LeagueSummary(
+						id = LeagueID.randomID(),
+						name = "Original League",
+					)
+				),
 				numberOfGames = 4,
 				date = LocalDate(2021, 1, 1),
 				appliedDate = LocalDate(2021, 1, 1),
@@ -365,6 +439,7 @@ private fun SeriesFormPreview() {
 				isCreatingManualSeries = true,
 				manualScores = listOf(100, 200),
 				isManualSeriesEnabled = false,
+				isMovingSeriesEnabled = true,
 			),
 			onAction = {},
 		)

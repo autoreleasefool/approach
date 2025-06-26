@@ -134,6 +134,11 @@ data class SeriesUpdate(
 	val alleyId: AlleyID?,
 )
 
+data class SeriesLeagueUpdate(
+	val id: SeriesID,
+	val leagueId: LeagueID,
+)
+
 enum class SeriesPreBowl {
 	REGULAR,
 	PRE_BOWL,

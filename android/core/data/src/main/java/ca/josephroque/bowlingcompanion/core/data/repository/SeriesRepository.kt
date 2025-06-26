@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.SeriesLeagueUpdate
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
@@ -31,6 +32,7 @@ interface SeriesRepository {
 
 	suspend fun insertSeries(series: SeriesCreate)
 	suspend fun updateSeries(series: SeriesUpdate)
+	suspend fun updateSeriesLeague(series: SeriesLeagueUpdate)
 
 	suspend fun archiveSeries(id: SeriesID)
 	suspend fun unarchiveSeries(id: SeriesID)
