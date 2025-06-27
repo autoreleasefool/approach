@@ -79,7 +79,7 @@ public struct ScoreSheet: View {
 			}
 			.frame(maxHeight: .infinity)
 
-			FinalScoreView(score: game.score ?? 0)
+			FinalScoreView(score: game.score ?? 0, width: (contentSize.width / 5) * 2)
 		}
 		.fixedSize(horizontal: false, vertical: true)
 	}
