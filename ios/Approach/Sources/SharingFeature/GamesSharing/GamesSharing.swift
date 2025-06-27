@@ -80,9 +80,9 @@ public struct GamesSharing: Reducer, Sendable {
 		public init(seriesId: Series.ID, gameId: Game.ID?) {
 			self.seriesId = seriesId
 			self.selectedGame = gameId
-			self.layout = gameId == nil ? .horizontal : .rectangular
 
 			@Dependency(\.featureFlags) var featureFlags
+			self.layout = gameId == nil || !featureFlags.isFlagEnabled(.sharingRectangular) ? .horizontal : .rectangular
 			self.isRectangularSharingEnabled = featureFlags.isFlagEnabled(.sharingRectangular)
 		}
 	}
@@ -141,6 +141,7 @@ public struct GamesSharing: Reducer, Sendable {
 	public init() {}
 
 	@Dependency(GamesRepository.self) var games
+	@Dependency(\.featureFlags) var featureFlags
 	@Dependency(ScoresRepository.self) var scores
 	@Dependency(SeriesRepository.self) var series
 
@@ -192,7 +193,7 @@ public struct GamesSharing: Reducer, Sendable {
 					case let .loadGamesResponse(.success(games)):
 						state.games = games
 						state.selectedGame = games.first?.id
-						state.layout = games.count > 1 ? .horizontal : .rectangular
+						state.layout = !featureFlags.isFlagEnabled(.sharingRectangular) || games.count > 1 ? .horizontal : .rectangular
 						state.isGameIncluded = games
 							.map { GameWithInclude(id: $0.id, ordinal: $0.index + 1, isIncluded: true) }
 							.eraseToIdentifiedArray()
