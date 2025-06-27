@@ -1,5 +1,13 @@
 # Most recent version
 
+## iOS 1.13.0b36
+
+```
+Feat: Sort order now generally persists throughout the app
+Feat: Support moving series between leagues
+Fix: Animation when switching frames works again
+```
+
 ## iOS 1.12.0b35
 
 ```
