@@ -1,6 +1,7 @@
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
+import FeatureFlagsLibrary
 import StringsLibrary
 import SwiftUI
 import UserDefaultsPackageServiceInterface
@@ -55,10 +56,15 @@ extension WhatsNewAnnouncement {
 
 	public static func shouldShow() async -> Bool {
 		@Dependency(\.userDefaults) var userDefaults
+		@Dependency(\.featureFlags) var featureFlags
 
 		let isNotDismissed = !(userDefaults.bool(forKey: isVersionDismissedKey(version)) ?? false)
+		let shouldShowVersion = switch version {
+		case 1: featureFlags.isFlagEnabled(.sharingRectangular)
+		default: true
+		}
 
-		return isNotDismissed
+		return isNotDismissed && shouldShowVersion
 	}
 
 	public static func didDismiss() async {
