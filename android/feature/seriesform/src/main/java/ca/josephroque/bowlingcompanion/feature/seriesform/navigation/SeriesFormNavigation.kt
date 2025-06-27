@@ -120,7 +120,7 @@ fun NavGraphBuilder.teamSeriesFormScreen(
 			onEditAlley = onEditAlley,
 			onEditLeague = { _, _, _ ->
 				throw NotImplementedError("SeriesFormRoute should not edit League in Team Series Form")
-			}
+			},
 		)
 	}
 }

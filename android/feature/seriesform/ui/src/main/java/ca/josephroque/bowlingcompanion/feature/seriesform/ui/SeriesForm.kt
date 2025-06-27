@@ -66,7 +66,6 @@ fun SeriesForm(state: SeriesFormUiState, onAction: (SeriesFormUiAction) -> Unit,
 			.verticalScroll(rememberScrollState())
 			.imePadding(),
 	) {
-
 		if (!state.hasLeagueChanged) {
 			DetailsSection(
 				numberOfGames = state.numberOfGames,
@@ -384,15 +383,11 @@ private fun LeagueChangeAlertSection() {
 }
 
 @Composable
-private fun LeagueSection(
-	league: SeriesFormUiState.SeriesLeague,
-	onClick: () -> Unit,
-	modifier: Modifier = Modifier,
-) {
+private fun LeagueSection(league: SeriesFormUiState.SeriesLeague, onClick: () -> Unit, modifier: Modifier = Modifier) {
 	FormSection(
 		modifier = modifier,
 		titleResourceId = R.string.series_form_section_league_description,
-		footerResourceId = R.string.series_form_section_league_description_footer
+		footerResourceId = R.string.series_form_section_league_description_footer,
 	) {
 		PickableResourceCard(
 			resourceName = stringResource(R.string.series_form_section_league),
@@ -416,7 +411,7 @@ private fun SeriesFormPreview() {
 					original = LeagueSummary(
 						id = LeagueID.randomID(),
 						name = "Original League",
-					)
+					),
 				),
 				numberOfGames = 4,
 				date = LocalDate(2021, 1, 1),

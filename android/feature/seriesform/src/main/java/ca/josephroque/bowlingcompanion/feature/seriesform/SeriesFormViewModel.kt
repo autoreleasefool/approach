@@ -248,7 +248,7 @@ class SeriesFormViewModel @Inject constructor(
 					SeriesFormScreenEvent.EditLeague(
 						bowlerId = series.bowler.id,
 						leagueId = state.form.league.id,
-					)
+					),
 				)
 			}
 		}
@@ -259,11 +259,13 @@ class SeriesFormViewModel @Inject constructor(
 		viewModelScope.launch {
 			val alley = alleyId?.let { alleysRepository.getAlleyDetails(it).first() }
 			_uiState.updateForm {
-				it.copy(alley = if (alley == null) {
-					null
-				} else {
-					SeriesDetails.Alley(id = alley.id, name = alley.name)
-				})
+				it.copy(
+					alley = if (alley == null) {
+						null
+					} else {
+						SeriesDetails.Alley(id = alley.id, name = alley.name)
+					},
+				)
 			}
 		}
 	}
