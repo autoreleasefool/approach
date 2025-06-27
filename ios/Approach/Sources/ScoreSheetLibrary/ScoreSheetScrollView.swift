@@ -23,12 +23,12 @@ public struct ScoreSheetScrollView: View {
 			}
 			.cornerRadius(.standardRadius)
 			.onChange(of: selection) {
-				withAnimation(.easeInOut(duration: 300)) {
+				withAnimation {
 					proxy.scrollTo(selection.frameId, anchor: selection.isLast ? .trailing : .leading)
 				}
 			}
 			.onAppear {
-				withAnimation(.easeInOut(duration: 300)) {
+				withAnimation {
 					proxy.scrollTo(selection.frameId, anchor: selection.isLast ? .trailing : .leading)
 				}
 			}
