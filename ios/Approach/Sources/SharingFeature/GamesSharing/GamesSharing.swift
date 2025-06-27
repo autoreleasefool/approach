@@ -5,6 +5,7 @@ import ComposableArchitecture
 import ComposableExtensionsLibrary
 import ErrorsFeature
 import FeatureActionLibrary
+import FeatureFlagsLibrary
 import GamesRepositoryInterface
 import ModelsLibrary
 import ScoresRepositoryInterface
@@ -36,6 +37,8 @@ public struct GamesSharing: Reducer, Sendable {
 		public var preferredAppearance: Appearance = .dark
 
 		public var errors: Errors<ErrorID>.State = .init()
+
+		public let isRectangularSharingEnabled: Bool
 
 		var horizontalConfiguration: HorizontalShareableGamesImage.Configuration? {
 			guard layout == .horizontal else { return nil }
@@ -78,6 +81,9 @@ public struct GamesSharing: Reducer, Sendable {
 			self.seriesId = seriesId
 			self.selectedGame = gameId
 			self.layout = gameId == nil ? .horizontal : .rectangular
+
+			@Dependency(\.featureFlags) var featureFlags
+			self.isRectangularSharingEnabled = featureFlags.isFlagEnabled(.sharingRectangular)
 		}
 	}
 
@@ -434,20 +440,22 @@ public struct GamesSharingView: View {
 
 	private var appearanceSection: some View {
 		Section(Strings.Sharing.Game.Details.Appearance.title) {
-			VStack(alignment: .leading) {
-				Picker(
-					Strings.Sharing.Game.Details.Layout.title,
-					selection: $store.layout
-				) {
-					ForEach(GamesSharing.Layout.allCases) { layout in
-						Text(layout.title)
-							.tag(layout)
+			if store.isRectangularSharingEnabled {
+				VStack(alignment: .leading) {
+					Picker(
+						Strings.Sharing.Game.Details.Layout.title,
+						selection: $store.layout
+					) {
+						ForEach(GamesSharing.Layout.allCases) { layout in
+							Text(layout.title)
+								.tag(layout)
+						}
 					}
-				}
 
-				Text(Strings.Sharing.Game.Details.Layout.description)
-					.font(.caption)
-					.frame(maxWidth: .infinity, alignment: .leading)
+					Text(Strings.Sharing.Game.Details.Layout.description)
+						.font(.caption)
+						.frame(maxWidth: .infinity, alignment: .leading)
+				}
 			}
 
 			Picker(
