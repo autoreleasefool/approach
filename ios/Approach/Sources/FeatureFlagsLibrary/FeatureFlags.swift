@@ -14,7 +14,7 @@ extension FeatureFlag {
 	public static let automaticBackups = Self(name: "automaticBackups", introduced: "2024-10-05", stage: .development)
 	public static let achievements = Self(name: "achievements", introduced: "2025-03-15", stage: .release)
 	public static let tipJar = Self(name: "tipJar", introduced: "2025-05-02", stage: .development)
-	public static let movingSeriesBetweenLeagues = Self(name: "movingSeriesBetweenLeagues", introduced: "2025-06-18", stage: .development)
+	public static let movingSeriesBetweenLeagues = Self(name: "movingSeriesBetweenLeagues", introduced: "2025-06-18", stage: .release)
 	// swiftlint:enable line_length
 
 	public static let allFlags: [Self] = [
