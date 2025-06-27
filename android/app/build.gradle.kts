@@ -31,8 +31,8 @@ android {
 
 	defaultConfig {
 		applicationId = "ca.josephroque.bowlingcompanion"
-		versionCode = 342
-		versionName = "4.5.2"
+		versionCode = 343
+		versionName = "4.6.0"
 
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 		vectorDrawables {
