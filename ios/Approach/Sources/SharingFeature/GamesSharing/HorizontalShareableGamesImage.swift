@@ -68,7 +68,7 @@ public struct HorizontalShareableGamesImage: View {
 						Text(Strings.Game.titleWithOrdinal(game.index + 1))
 							.font(.headline)
 							.padding(.horizontal)
-							.foregroundStyle(baseScoreSheetConfiguration.foreground)
+							.foregroundStyle(scoreSheetConfiguration.foreground)
 							.matchHeight(byKey: GridItemHeightKey.self, to: $gridItemHeight)
 
 						ScoreSheet(
@@ -83,6 +83,7 @@ public struct HorizontalShareableGamesImage: View {
 							width: 3,
 							color: scoreSheetConfiguration.border
 						)
+						.environment(\.scoreSheetConfiguration, scoreSheetConfiguration)
 					}
 
 					GridRow {
