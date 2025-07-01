@@ -10,7 +10,6 @@ plugins {
 
 	id("io.sentry.android.gradle") version "5.3.0"
 	id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-	alias(libs.plugins.gradle.versions)
 	alias(libs.plugins.ktlint)
 	id("com.spotify.ruler")
 }
