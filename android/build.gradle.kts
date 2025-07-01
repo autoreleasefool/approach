@@ -17,7 +17,7 @@ plugins {
 	alias(libs.plugins.hilt) apply false
 	alias(libs.plugins.ksp) apply false
 	alias(libs.plugins.secrets) apply false
-	id("com.google.protobuf") version "0.9.4" apply false
+	id("com.google.protobuf") version "0.9.5" apply false
 	alias(libs.plugins.ktlint) apply false
 }
 

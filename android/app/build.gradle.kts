@@ -8,7 +8,7 @@ plugins {
 	id("approach.android.room")
 	id("approach.android.hilt")
 
-	id("io.sentry.android.gradle") version "5.3.0"
+	id("io.sentry.android.gradle") version "5.8.0"
 	id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 	alias(libs.plugins.ktlint)
 	id("com.spotify.ruler")
