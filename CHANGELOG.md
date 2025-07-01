@@ -3,15 +3,15 @@
 ## iOS 1.13.0b36
 
 ```
-Feat: Sort order now generally persists throughout the app
-Feat: Support moving series between leagues
-Fix: Animation when switching frames works again
+- Feat: Sort order now generally persists throughout the app
+- Feat: Support moving series between leagues
+- Fix: Animation when switching frames works again
 ```
 
 ## Android 4.6.0
 
 ```
-Feat: Support moving series between leagues
+- Feat: Support moving series between leagues
 ```
 
 ---
@@ -268,8 +268,8 @@ First official release of Approach for iOS!
 ## Android 4.5.1b341
 
 ```
-Fix: De-obfuscated crash reports for Sentry
-Fix: Proguard no longer mangles datastore classes
+- Fix: De-obfuscated crash reports for Sentry
+- Fix: Proguard no longer mangles datastore classes
 ```
 
 ## Android 4.5.0b340
