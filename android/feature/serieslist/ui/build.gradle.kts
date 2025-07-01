@@ -14,5 +14,4 @@ dependencies {
 
 	implementation(libs.kotlinx.datetime)
 	implementation(libs.swipe)
-	implementation(libs.vico.compose)
 }

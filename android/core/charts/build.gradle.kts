@@ -10,5 +10,6 @@ android {
 dependencies {
 	implementation(projects.core.designsystem)
 
-	implementation(libs.vico.compose)
+	api(libs.vico.compose)
+	api(libs.vico.compose.m3)
 }

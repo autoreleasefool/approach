@@ -16,5 +16,4 @@ dependencies {
 	implementation(projects.feature.statisticswidget.ui)
 
 	implementation(libs.kotlinx.datetime)
-	implementation(libs.vico.compose)
 }

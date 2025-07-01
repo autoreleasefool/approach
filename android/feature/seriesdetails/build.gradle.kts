@@ -8,6 +8,7 @@ android {
 }
 
 dependencies {
+	implementation(projects.core.charts)
 	implementation(projects.core.featureflags)
 	implementation(projects.feature.gameslist.ui)
 	implementation(projects.feature.seriesdetails.ui)
@@ -15,5 +16,4 @@ dependencies {
 	implementation(projects.feature.sharing.ui)
 
 	implementation(libs.kotlinx.datetime)
-	implementation(libs.vico.compose)
 }

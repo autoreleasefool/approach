@@ -15,5 +15,4 @@ dependencies {
 	implementation(projects.feature.sharing.ui)
 
 	implementation(libs.kotlinx.datetime)
-	implementation(libs.vico.compose)
 }

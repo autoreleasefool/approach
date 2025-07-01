@@ -8,11 +8,10 @@ android {
 }
 
 dependencies {
-	implementation(projects.core.charts)
+	api(projects.core.charts)
 	implementation(projects.core.designsystem)
 	implementation(projects.core.model)
 	implementation(projects.core.statistics)
 
 	implementation(libs.kotlinx.datetime)
-	implementation(libs.vico.compose)
 }

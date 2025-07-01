@@ -15,5 +15,4 @@ dependencies {
 
 	implementation(libs.capturable.compose)
 	implementation(libs.kotlinx.datetime)
-	implementation(libs.vico.compose)
 }

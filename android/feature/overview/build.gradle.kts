@@ -17,5 +17,4 @@ dependencies {
 	implementation(projects.feature.teamslist.ui)
 
 	implementation(libs.kotlinx.datetime)
-	implementation(libs.vico.compose)
 }

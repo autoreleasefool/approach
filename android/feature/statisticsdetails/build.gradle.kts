@@ -11,6 +11,4 @@ dependencies {
 	implementation(projects.core.statistics)
 	implementation(projects.core.statistics.charts)
 	implementation(projects.feature.statisticsdetails.ui)
-
-	implementation(libs.vico.compose)
 }

@@ -15,5 +15,4 @@ dependencies {
 	implementation(projects.core.model.ui)
 
 	implementation(libs.kotlinx.datetime)
-	implementation(libs.vico.compose)
 }

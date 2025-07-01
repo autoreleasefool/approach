@@ -72,7 +72,7 @@ interface StatisticsDao {
 			FROM series
 			JOIN leagues ON leagues.id = series.league_id
 			JOIN bowlers ON bowlers.id = leagues.bowler_id
-			WHERE series.id = :seriesId 
+			WHERE series.id = :seriesId
 		""",
 	)
 	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
@@ -94,7 +94,7 @@ interface StatisticsDao {
 			JOIN series ON series.id = games.series_id
 			JOIN leagues ON leagues.id = series.league_id
 			JOIN bowlers ON bowlers.id = leagues.bowler_id
-			WHERE games.id = :gameId 
+			WHERE games.id = :gameId
 		""",
 	)
 	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)

@@ -8,8 +8,8 @@ android {
 }
 
 dependencies {
+	implementation(projects.core.charts)
 	implementation(projects.feature.teamdetails.ui)
 
 	implementation(libs.kotlinx.datetime)
-	implementation(libs.vico.compose)
 }

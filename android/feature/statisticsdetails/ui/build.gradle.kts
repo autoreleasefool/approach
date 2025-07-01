@@ -14,5 +14,4 @@ dependencies {
 	implementation(projects.core.statistics.charts)
 
 	implementation(libs.kotlinx.datetime)
-	implementation(libs.vico.compose)
 }

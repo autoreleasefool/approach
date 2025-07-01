@@ -8,9 +8,8 @@ android {
 }
 
 dependencies {
+	implementation(projects.core.charts)
 	implementation(projects.feature.gearlist.ui)
 	implementation(projects.feature.leagueslist.ui)
 	implementation(projects.feature.statisticswidget.ui)
-
-	implementation(libs.vico.compose)
 }

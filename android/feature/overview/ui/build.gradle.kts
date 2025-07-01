@@ -8,11 +8,11 @@ android {
 }
 
 dependencies {
+	implementation(projects.core.charts)
 	implementation(projects.feature.bowlerslist.ui)
 	implementation(projects.feature.statisticswidget.ui)
 	implementation(projects.feature.teamslist.ui)
 
 	implementation(libs.reorderable.compose)
 	implementation(libs.swipe)
-	implementation(libs.vico.compose)
 }
