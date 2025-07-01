@@ -8,10 +8,10 @@
 - Fix: Animation when switching frames works again
 ```
 
-## Android 4.6.0
+## Android 4.6.0b344
 
 ```
-- Feat: Support moving series between leagues
+- Chore: Updated dependencies
 ```
 
 ---
@@ -259,6 +259,14 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.6.0b343
+
+```
+- Feat: Support moving series between leagues
+```
+
+## Android 4.5.2b342
 
 ```
 - Fix: Migrating from 5 Pin Bowling Companion to Approach is working again. Issue was due to the Approach database being opened, then closed before migration.
