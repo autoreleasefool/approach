@@ -14,9 +14,11 @@ import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.GameListItemBySeries
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.IndexedGame
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 
@@ -86,6 +88,9 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 	)
 	abstract fun getGameIds(seriesId: SeriesID): Flow<List<GameID>>
 
+	@Query("SELECT games.series_id FROM games WHERE games.id = :gameId")
+	abstract fun getSeriesId(gameId: GameID): Flow<SeriesID>
+
 	@Query(
 		"""
 			SELECT
@@ -108,6 +113,18 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 		""",
 	)
 	abstract fun getGameIndex(gameId: GameID): Flow<Int>
+
+	@Query(
+		"""
+			SELECT
+				games.id AS id,
+				games.`index` AS `index`
+			FROM games
+			WHERE games.series_id = :seriesId AND games.archived_on IS NULL
+			ORDER BY games.`index` ASC
+		"""
+	)
+	abstract fun getGameIndices(seriesId: SeriesID): Flow<List<IndexedGame>>
 
 	@Query(
 		"""
@@ -164,6 +181,9 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 
 	@Query("UPDATE games SET exclude_from_statistics = :excludeFromStatistics WHERE id = :gameId")
 	abstract fun setGameExcludedFromStatistics(gameId: GameID, excludeFromStatistics: ExcludeFromStatistics)
+
+	@Query("UPDATE games SET `index` = :index WHERE id = :gameId")
+	abstract fun setGameIndex(gameId: GameID, index: Int)
 
 	@Query("DELETE FROM game_lanes WHERE game_id = :gameId")
 	abstract fun deleteGameLanes(gameId: GameID)

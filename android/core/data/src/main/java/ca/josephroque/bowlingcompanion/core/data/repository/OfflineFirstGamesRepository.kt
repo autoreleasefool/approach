@@ -168,16 +168,57 @@ class OfflineFirstGamesRepository @Inject constructor(
 	}
 
 	override suspend fun archiveGame(gameId: GameID) = withContext(ioDispatcher) {
-		gameDao.archiveGame(gameId, archivedOn = Clock.System.now())
+		transactionRunner {
+			gameDao.archiveGame(gameId, archivedOn = Clock.System.now())
+
+			val seriesId = gameDao.getSeriesId(gameId).first()
+			val games = gameDao.getGameIds(seriesId).first()
+			reorderGames(seriesId, games)
+		}
 	}
 
 	override suspend fun unarchiveGame(gameId: GameID) = withContext(ioDispatcher) {
-		gameDao.unarchiveGame(gameId)
+		transactionRunner {
+			val seriesId = gameDao.getSeriesId(gameId).first()
+			val games = gameDao.getGameIndices(seriesId).first()
+			gameDao.unarchiveGame(gameId)
+
+			val maxSeriesIndex = games.maxOfOrNull { it.index }
+			if (maxSeriesIndex == null || maxSeriesIndex < 0) {
+				gameDao.setGameIndex(gameId, 0)
+			} else {
+				gameDao.setGameIndex(gameId, maxSeriesIndex + 1)
+			}
+		}
 	}
 
 	override suspend fun lockStaleGames() = withContext(ioDispatcher) {
 		val currentDate = Clock.System.now().toLocalDate()
 		val staleDate = currentDate.minus(7, DateTimeUnit.DAY)
 		gameDao.lockStaleGames(staleDate)
+	}
+
+	private suspend fun reorderGames(seriesId: SeriesID, games: List<GameID>) = withContext(ioDispatcher) {
+		transactionRunner {
+			val gameIds = games.toSet()
+			val gamesForSeries = gameDao.getGameIds(seriesId).first().toSet()
+			if (gamesForSeries.size != games.size) throw IllegalStateException("Cannot reorder games: size mismatch")
+			if (!gamesForSeries.containsAll(gameIds)) {
+				val missingGames = gamesForSeries - gameIds
+				val extraGames = gameIds - gamesForSeries
+				if (missingGames.isNotEmpty()) {
+					throw IllegalStateException("Cannot reorder games: missing game IDs $missingGames")
+				} else if (extraGames.isNotEmpty()) {
+					throw IllegalStateException("Cannot reorder games: extra game IDs $extraGames")
+				}
+
+				throw IllegalStateException("Cannot reorder games: game IDs do not match")
+			}
+
+			val newGameIndices = games.zip(games.indices)
+			for ((gameId, index) in newGameIndices) {
+				gameDao.setGameIndex(gameId, index)
+			}
+		}
 	}
 }
