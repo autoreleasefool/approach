@@ -26,6 +26,7 @@ import ca.josephroque.bowlingcompanion.core.database.dao.TeamSeriesDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunnerDao
 import ca.josephroque.bowlingcompanion.core.database.legacy.dao.LegacyIDMappingDao
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyIDMappingEntity
+import ca.josephroque.bowlingcompanion.core.database.migration.MIGRATION_6_7
 import ca.josephroque.bowlingcompanion.core.database.model.AchievementEntity
 import ca.josephroque.bowlingcompanion.core.database.model.AchievementEventEntity
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyEntity
@@ -57,7 +58,7 @@ const val DATABASE_SHM_NAME = "$DATABASE_NAME-shm"
 const val DATABASE_WAL_NAME = "$DATABASE_NAME-wal"
 
 @Database(
-	version = 6,
+	version = 7,
 	autoMigrations = [
 		AutoMigration(from = 1, to = 2),
 		AutoMigration(from = 2, to = 3),
@@ -135,7 +136,9 @@ abstract class ApproachDatabase : RoomDatabase() {
 						context,
 						ApproachDatabase::class.java,
 						DATABASE_NAME,
-					).build()
+					)
+						.addMigrations(MIGRATION_6_7)
+						.build()
 
 					INSTANCE = instance
 				}
