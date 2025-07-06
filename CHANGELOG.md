@@ -8,10 +8,11 @@
 - Fix: Animation when switching frames works again
 ```
 
-## Android 4.6.0b344
+## Android 4.6.1b345
 
 ```
-- Chore: Updated dependencies
+- Feat: Add haptics to reorderable lists
+- Fix: Reorderable lists no longer crash
 ```
 
 ---
@@ -259,6 +260,12 @@ First official release of Approach for iOS!
 ---
 
 # Legacy Android Versions
+
+## Android 4.6.0b344
+
+```
+- Chore: Updated dependencies
+```
 
 ## Android 4.6.0b343
 
