@@ -13,7 +13,6 @@ androidxHiltNavigationCompose = "1.2.0"
 androidxLifecycle = "2.9.1"
 capturable = "3.0.1"
 colorpickerCompose = "1.1.2"
-composeReorderable = "0.9.6"
 googleFonts = "1.8.3"
 hilt = "2.56.2"
 junit4 = "4.13.2"
@@ -26,6 +25,7 @@ navigationCompose = "2.9.0"
 paging = "3.3.6"
 protobuf = "4.31.1"
 protobufPlugin = "0.9.5"
+reorderableCompose = "2.5.1"
 room = "2.6.1"
 rulerGradlePlugin = "2.0.0-beta-3"
 secrets = "2.0.1"
@@ -61,7 +61,7 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
 protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobuf" }
 protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" } # ignore unused warning
-reorderable-compose = { group = "org.burnoutcrew.composereorderable", name = "reorderable", version.ref = "composeReorderable" }
+reorderable-compose = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderableCompose" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" } # ignore unused warning
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" } # ignore unused warning
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" } # ignore unused warning

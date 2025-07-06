@@ -1,6 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.teamform.ui
 
-import androidx.compose.foundation.background
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,18 +9,24 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
@@ -31,16 +37,21 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSec
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSectionFooter
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSectionHeader
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
-import org.burnoutcrew.reorderable.ReorderableItem
-import org.burnoutcrew.reorderable.detectReorderAfterLongPress
-import org.burnoutcrew.reorderable.rememberReorderableLazyListState
-import org.burnoutcrew.reorderable.reorderable
+import sh.calvin.reorderable.ReorderableCollectionItemScope
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @Composable
 fun TeamForm(state: TeamFormUiState, onAction: (TeamFormUiAction) -> Unit, modifier: Modifier = Modifier) {
-	val reorderableState = rememberReorderableLazyListState(
+	val hapticFeedback = LocalHapticFeedback.current
+
+	val lazyListState = rememberLazyListState()
+	val reorderableLazyListState = rememberReorderableLazyListState(
+		lazyListState = lazyListState,
 		onMove = { from, to ->
 			onAction(TeamFormUiAction.MemberMoved(from.index, to.index))
+
+			hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
 		},
 	)
 
@@ -60,10 +71,8 @@ fun TeamForm(state: TeamFormUiState, onAction: (TeamFormUiAction) -> Unit, modif
 	}
 	
 	LazyColumn(
-		state = reorderableState.listState,
+		state = lazyListState,
 		modifier = modifier
-			.reorderable(reorderableState)
-			.detectReorderAfterLongPress(reorderableState)
 			.fillMaxSize()
 			.imePadding(),
 	) {
@@ -107,10 +116,14 @@ fun TeamForm(state: TeamFormUiState, onAction: (TeamFormUiAction) -> Unit, modif
 			key = { it.id },
 		) { member ->
 			ReorderableItem(
-				reorderableState = reorderableState,
+				state = reorderableLazyListState,
 				key = member.id,
-			) { _ ->
-				MemberRow(name = member.name)
+			) { isDragging ->
+				val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp, label = "elevation")
+
+				Surface(shadowElevation = elevation) {
+					MemberRow(name = member.name)
+				}
 			}
 		}
 
@@ -154,20 +167,33 @@ private fun TeamNameField(name: String, onNameChanged: ((String) -> Unit)?, erro
 }
 
 @Composable
-private fun MemberRow(name: String, modifier: Modifier = Modifier) {
+private fun ReorderableCollectionItemScope.MemberRow(name: String, modifier: Modifier = Modifier) {
+	val hapticFeedback = LocalHapticFeedback.current
+
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		verticalAlignment = Alignment.CenterVertically,
 		modifier = modifier
-			.background(MaterialTheme.colorScheme.surface)
 			.fillMaxWidth()
 			.padding(16.dp),
 	) {
 		BowlerRow(name = name, modifier = Modifier.weight(1f))
 
-		Icon(
-			Icons.Default.Menu,
-			contentDescription = null,
-		)
+		IconButton(
+			modifier = Modifier.longPressDraggableHandle(
+				onDragStarted = {
+					hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+				},
+				onDragStopped = {
+					hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureEnd)
+				},
+			),
+			onClick = {},
+		) {
+			Icon(
+				Icons.Default.Menu,
+				contentDescription = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_reorder),
+			)
+		}
 	}
 }

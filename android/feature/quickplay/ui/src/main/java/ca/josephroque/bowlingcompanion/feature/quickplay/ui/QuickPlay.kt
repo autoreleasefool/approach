@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.quickplay.ui
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -20,15 +22,19 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -44,25 +50,27 @@ import ca.josephroque.bowlingcompanion.core.model.stub.BowlerSummaryStub
 import ca.josephroque.bowlingcompanion.core.model.stub.LeagueSummaryStub
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
-import org.burnoutcrew.reorderable.ReorderableItem
-import org.burnoutcrew.reorderable.detectReorderAfterLongPress
-import org.burnoutcrew.reorderable.rememberReorderableLazyListState
-import org.burnoutcrew.reorderable.reorderable
+import sh.calvin.reorderable.ReorderableCollectionItemScope
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @Composable
 fun QuickPlay(state: QuickPlayUiState, onAction: (QuickPlayUiAction) -> Unit, modifier: Modifier = Modifier) {
-	val reorderableState = rememberReorderableLazyListState(
+	val hapticFeedback = LocalHapticFeedback.current
+
+	val lazyListState = rememberLazyListState()
+	val reorderableLazyListState = rememberReorderableLazyListState(
+		lazyListState = lazyListState,
 		onMove = { from, to ->
 			onAction(QuickPlayUiAction.BowlerMoved(from.index, to.index))
+
+			hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
 		},
 	)
 
 	LazyColumn(
-		state = reorderableState.listState,
-		modifier = modifier
-			.reorderable(reorderableState)
-			.detectReorderAfterLongPress(reorderableState)
-			.padding(bottom = 8.dp),
+		state = lazyListState,
+		modifier = modifier.padding(bottom = 8.dp),
 	) {
 		item {
 			if (state.isShowingQuickPlayTip) {
@@ -112,16 +120,20 @@ fun QuickPlay(state: QuickPlayUiState, onAction: (QuickPlayUiAction) -> Unit, mo
 			}
 
 			ReorderableItem(
-				reorderableState = reorderableState,
+				state = reorderableLazyListState,
 				key = bowler.first.id,
-			) { _ ->
+			) { isDragging ->
+				val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp)
+
 				SwipeableActionsBox(
 					startActions = listOfNotNull(deleteAction),
 				) {
-					QuickPlayBowler(
-						bowler = bowler,
-						onAction = onAction,
-					)
+					Surface(shadowElevation = elevation) {
+						QuickPlayBowler(
+							bowler = bowler,
+							onAction = onAction,
+						)
+					}
 				}
 			}
 		}
@@ -159,12 +171,17 @@ fun QuickPlay(state: QuickPlayUiState, onAction: (QuickPlayUiAction) -> Unit, mo
 }
 
 @Composable
-private fun QuickPlayBowler(bowler: Pair<BowlerSummary, LeagueSummary?>, onAction: (QuickPlayUiAction) -> Unit) {
+private fun ReorderableCollectionItemScope.QuickPlayBowler(
+	bowler: Pair<BowlerSummary, LeagueSummary?>,
+	onAction: (QuickPlayUiAction) -> Unit,
+	modifier: Modifier = Modifier,
+) {
+	val hapticFeedback = LocalHapticFeedback.current
+
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		verticalAlignment = Alignment.CenterVertically,
-		modifier = Modifier
-			.background(MaterialTheme.colorScheme.surface)
+		modifier = modifier
 			.fillMaxWidth()
 			.clickable(onClick = { onAction(QuickPlayUiAction.BowlerClicked(bowler.first)) })
 			.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -196,11 +213,23 @@ private fun QuickPlayBowler(bowler: Pair<BowlerSummary, LeagueSummary?>, onActio
 			)
 		}
 
-		Icon(
-			Icons.Default.Menu,
-			contentDescription = null,
-			tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-		)
+		IconButton(
+			modifier = Modifier.longPressDraggableHandle(
+				onDragStarted = {
+					hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+				},
+				onDragStopped = {
+					hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureEnd)
+				},
+			),
+			onClick = {},
+		) {
+			Icon(
+				Icons.Default.Menu,
+				contentDescription = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_reorder),
+				tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+			)
+		}
 	}
 }
 

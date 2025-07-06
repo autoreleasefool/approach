@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,19 +11,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,10 +43,9 @@ import ca.josephroque.bowlingcompanion.core.model.stub.GameStub
 import ca.josephroque.bowlingcompanion.core.model.stub.TeamStub
 import ca.josephroque.bowlingcompanion.core.model.ui.GameRow
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
-import org.burnoutcrew.reorderable.ReorderableItem
-import org.burnoutcrew.reorderable.detectReorderAfterLongPress
-import org.burnoutcrew.reorderable.rememberReorderableLazyListState
-import org.burnoutcrew.reorderable.reorderable
+import sh.calvin.reorderable.ReorderableCollectionItemScope
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @Composable
 fun GamesSettings(
@@ -48,17 +53,21 @@ fun GamesSettings(
 	onAction: (GamesSettingsUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	val reorderableState = rememberReorderableLazyListState(
+	val hapticFeedback = LocalHapticFeedback.current
+
+	val lazyListState = rememberLazyListState()
+	val reorderableLazyListState = rememberReorderableLazyListState(
+		lazyListState = lazyListState,
 		onMove = { from, to ->
 			onAction(GamesSettingsUiAction.BowlerMoved(from.index, to.index))
+
+			hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
 		},
 	)
 
 	LazyColumn(
-		state = reorderableState.listState,
+		state = lazyListState,
 		modifier = modifier
-			.reorderable(reorderableState)
-			.detectReorderAfterLongPress(reorderableState),
 	) {
 		if (state.bowlerSettings.bowlers.size > 1) {
 			item {
@@ -94,14 +103,18 @@ fun GamesSettings(
 				key = { it.id },
 			) { bowler ->
 				ReorderableItem(
-					reorderableState = reorderableState,
+					state = reorderableLazyListState,
 					key = bowler.id,
-				) { _ ->
-					Bowler(
-						bowler = bowler,
-						isSelected = state.bowlerSettings.currentBowlerId == bowler.id,
-						onAction = onAction,
-					)
+				) { isDragging ->
+					val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp)
+
+					Surface(shadowElevation = elevation) {
+						Bowler(
+							bowler = bowler,
+							isSelected = state.bowlerSettings.currentBowlerId == bowler.id,
+							onAction = onAction,
+						)
+					}
 				}
 			}
 
@@ -141,12 +154,18 @@ fun GamesSettings(
 }
 
 @Composable
-private fun Bowler(bowler: BowlerSummary, isSelected: Boolean, onAction: (GamesSettingsUiAction) -> Unit) {
+private fun ReorderableCollectionItemScope.Bowler(
+	bowler: BowlerSummary,
+	isSelected: Boolean,
+	onAction: (GamesSettingsUiAction) -> Unit,
+	modifier: Modifier = Modifier,
+) {
+	val hapticFeedback = LocalHapticFeedback.current
+
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		verticalAlignment = Alignment.CenterVertically,
-		modifier = Modifier
-			.background(MaterialTheme.colorScheme.surface)
+		modifier = modifier
 			.fillMaxWidth()
 			.clickable(onClick = { onAction(GamesSettingsUiAction.BowlerClicked(bowler)) })
 			.padding(16.dp),
@@ -168,10 +187,22 @@ private fun Bowler(bowler: BowlerSummary, isSelected: Boolean, onAction: (GamesS
 			modifier = Modifier.weight(1f),
 		)
 
-		Icon(
-			Icons.Default.Menu,
-			contentDescription = null,
-		)
+		IconButton(
+			modifier = Modifier.longPressDraggableHandle(
+				onDragStarted = {
+					hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+				},
+				onDragStopped = {
+					hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureEnd)
+				},
+			),
+			onClick = {},
+		) {
+			Icon(
+				Icons.Default.Menu,
+				contentDescription = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_reorder),
+			)
+		}
 	}
 }
 

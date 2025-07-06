@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
@@ -24,6 +25,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -38,10 +41,8 @@ import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetSo
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetTimeline
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.R
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.widget.StatisticsWidgetCard
-import org.burnoutcrew.reorderable.ReorderableItem
-import org.burnoutcrew.reorderable.detectReorderAfterLongPress
-import org.burnoutcrew.reorderable.rememberReorderableLazyGridState
-import org.burnoutcrew.reorderable.reorderable
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyGridState
 
 @Composable
 fun StatisticsWidgetLayoutEditor(
@@ -49,22 +50,26 @@ fun StatisticsWidgetLayoutEditor(
 	onAction: (StatisticsWidgetLayoutEditorUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	val reorderableState = rememberReorderableLazyGridState(
+	val hapticFeedback = LocalHapticFeedback.current
+
+	val lazyGridState = rememberLazyGridState()
+	val reorderableLazyGridState = rememberReorderableLazyGridState(
+		lazyGridState = lazyGridState,
 		onMove = { from, to ->
 			onAction(StatisticsWidgetLayoutEditorUiAction.WidgetMoved(from.index, to.index))
+
+			hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
 		},
 	)
 
 	BoxWithConstraints {
-		val rowWidth = maxWidth
+		val rowWidth = this@BoxWithConstraints.maxWidth
 		val numberOfWidgetsPerRow = (rowWidth / 240.dp).toInt().coerceAtLeast(2)
 
 		LazyVerticalGrid(
 			columns = GridCells.Fixed(numberOfWidgetsPerRow),
-			state = reorderableState.gridState,
+			state = lazyGridState,
 			modifier = modifier
-				.reorderable(reorderableState)
-				.detectReorderAfterLongPress(reorderableState)
 				.padding(horizontal = 8.dp),
 		) {
 			items(
@@ -72,7 +77,7 @@ fun StatisticsWidgetLayoutEditor(
 				key = { it.id },
 			) { widget ->
 				ReorderableItem(
-					reorderableState = reorderableState,
+					state = reorderableLazyGridState,
 					key = widget.id,
 				) { isDragging ->
 					val elevation = animateDpAsState(if (isDragging) 16.dp else 0.dp, label = "elevation")
@@ -80,7 +85,14 @@ fun StatisticsWidgetLayoutEditor(
 					Wiggle { modifier ->
 						Box(
 							contentAlignment = Alignment.TopEnd,
-							modifier = modifier,
+							modifier = modifier.longPressDraggableHandle(
+								onDragStarted = {
+									hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+								},
+								onDragStopped = {
+									hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureEnd)
+								},
+							),
 						) {
 							val chart = state.widgetCharts[widget.id]
 
