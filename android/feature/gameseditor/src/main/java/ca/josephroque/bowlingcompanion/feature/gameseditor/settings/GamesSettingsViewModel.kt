@@ -130,7 +130,7 @@ class GamesSettingsViewModel @Inject constructor(
 		when (action) {
 			GamesSettingsUiAction.BackClicked -> dismiss()
 			is GamesSettingsUiAction.BowlerClicked -> setCurrentBowler(action.bowler.id)
-			is GamesSettingsUiAction.BowlerMoved -> moveBowler(action.from, action.to)
+			is GamesSettingsUiAction.BowlerMoved -> moveBowler(action.from, action.to, action.offset)
 			is GamesSettingsUiAction.GameClicked -> setCurrentGame(action.game.id)
 			is GamesSettingsUiAction.ShowTeamScoresInGameDetailsChanged ->
 				setIsShowingTeamScores(action.isChecked)
@@ -163,10 +163,9 @@ class GamesSettingsViewModel @Inject constructor(
 		}
 	}
 
-	private fun moveBowler(fromListIndex: Int, toListIndex: Int) {
-		// Depends on number of `item` before bowlers in `GamesSettings#LazyColumn`
-		val from = fromListIndex - 2
-		val to = toListIndex - 2
+	private fun moveBowler(fromListIndex: Int, toListIndex: Int, indexOffset: Int) {
+		val from = fromListIndex - indexOffset
+		val to = toListIndex - indexOffset
 		bowlers.update {
 			if (from == to || !it.indices.contains(from) || !it.indices.contains(to)) return@update it
 			it.toMutableList().apply { add(to, removeAt(from)) }

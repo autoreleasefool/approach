@@ -170,7 +170,7 @@ class QuickPlayViewModel @Inject constructor(
 			is QuickPlayUiAction.LeagueRecurrenceChanged -> updateLeagueRecurrence(action.recurrence)
 			is QuickPlayUiAction.BowlerClicked -> selectBowlerLeague(action.bowler.id)
 			is QuickPlayUiAction.BowlerDeleted -> removeBowler(action.bowler.id)
-			is QuickPlayUiAction.BowlerMoved -> moveBowler(action.from, action.to)
+			is QuickPlayUiAction.BowlerMoved -> moveBowler(action.from, action.to, action.offset)
 		}
 	}
 
@@ -347,11 +347,10 @@ class QuickPlayViewModel @Inject constructor(
 		bowlers.update { it.filter { bowler -> bowler.first.id != bowlerId } }
 	}
 
-	private fun moveBowler(fromListIndex: Int, toListIndex: Int) {
+	private fun moveBowler(fromListIndex: Int, toListIndex: Int, indexOffset: Int) {
 		viewModelScope.launch {
-			// Depends on number of `item` before bowlers in `QuickPlay#LazyColumn`
-			val from = fromListIndex - 1
-			val to = toListIndex - 1
+			val from = fromListIndex - indexOffset
+			val to = toListIndex - indexOffset
 			bowlers.update {
 				if (from == to || !it.indices.contains(from) || !it.indices.contains(to)) return@update it
 				it.toMutableList().apply { add(to, removeAt(from)) }

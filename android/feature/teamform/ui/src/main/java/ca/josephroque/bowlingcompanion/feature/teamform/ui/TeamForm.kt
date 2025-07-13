@@ -49,7 +49,7 @@ fun TeamForm(state: TeamFormUiState, onAction: (TeamFormUiAction) -> Unit, modif
 	val reorderableLazyListState = rememberReorderableLazyListState(
 		lazyListState = lazyListState,
 		onMove = { from, to ->
-			onAction(TeamFormUiAction.MemberMoved(from.index, to.index))
+			onAction(TeamFormUiAction.MemberMoved(from.index, to.index, 1))
 
 			hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
 		},
@@ -110,7 +110,7 @@ fun TeamForm(state: TeamFormUiState, onAction: (TeamFormUiAction) -> Unit, modif
 		}
 
 		// If number of items before reorderable list changes,
-		// TeamFormViewModel#moveMember must be updated
+		// reorderableLazyListState#onMove must be updated
 		items(
 			items = state.members,
 			key = { it.id },

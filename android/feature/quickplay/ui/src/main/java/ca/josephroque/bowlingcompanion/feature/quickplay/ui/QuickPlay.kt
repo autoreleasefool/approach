@@ -61,7 +61,7 @@ fun QuickPlay(state: QuickPlayUiState, onAction: (QuickPlayUiAction) -> Unit, mo
 	val reorderableLazyListState = rememberReorderableLazyListState(
 		lazyListState = lazyListState,
 		onMove = { from, to ->
-			onAction(QuickPlayUiAction.BowlerMoved(from.index, to.index))
+			onAction(QuickPlayUiAction.BowlerMoved(from.index, to.index, 1))
 
 			hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
 		},
@@ -101,7 +101,7 @@ fun QuickPlay(state: QuickPlayUiState, onAction: (QuickPlayUiAction) -> Unit, mo
 		}
 
 		// If number of items before reorderable list changes,
-		// QuickPlayViewModel#moveBowler must be updated
+		// reorderableLazyListState#onMove must be updated
 		items(
 			state.bowlers,
 			key = { it.first.id },

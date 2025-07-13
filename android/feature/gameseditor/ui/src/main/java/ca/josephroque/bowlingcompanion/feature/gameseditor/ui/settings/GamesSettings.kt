@@ -58,7 +58,7 @@ fun GamesSettings(
 	val reorderableLazyListState = rememberReorderableLazyListState(
 		lazyListState = lazyListState,
 		onMove = { from, to ->
-			onAction(GamesSettingsUiAction.BowlerMoved(from.index, to.index))
+			onAction(GamesSettingsUiAction.BowlerMoved(from.index, to.index, 2))
 
 			hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
 		},
@@ -96,7 +96,7 @@ fun GamesSettings(
 			}
 
 			// If number of items before reorderable list changes,
-			// GamesSettingsViewModel#moveBowler must be updated
+			// reorderableLazyListState#onMove must be updated
 			items(
 				state.bowlerSettings.bowlers,
 				key = { it.id },

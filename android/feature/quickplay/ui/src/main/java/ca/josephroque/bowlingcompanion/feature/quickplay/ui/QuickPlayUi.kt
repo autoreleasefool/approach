@@ -43,5 +43,5 @@ sealed interface QuickPlayUiAction {
 	data class LeagueNameChanged(val name: String) : QuickPlayUiAction
 	data class BowlerClicked(val bowler: BowlerSummary) : QuickPlayUiAction
 	data class BowlerDeleted(val bowler: BowlerSummary) : QuickPlayUiAction
-	data class BowlerMoved(val from: Int, val to: Int) : QuickPlayUiAction
+	data class BowlerMoved(val from: Int, val to: Int, val offset: Int = 0) : QuickPlayUiAction
 }

@@ -66,7 +66,7 @@ class TeamFormViewModel @Inject constructor(
 			TeamFormUiAction.DiscardChangesClicked -> sendEvent(TeamFormScreenEvent.Dismissed)
 			TeamFormUiAction.CancelDiscardChangesClicked -> setDiscardChangesDialog(isVisible = false)
 			is TeamFormUiAction.NameChanged -> updateName(action.name)
-			is TeamFormUiAction.MemberMoved -> moveMember(action.from, action.to)
+			is TeamFormUiAction.MemberMoved -> moveMember(action.from, action.to, action.offset)
 		}
 	}
 
@@ -210,10 +210,9 @@ class TeamFormViewModel @Inject constructor(
 		)
 	}
 
-	private fun moveMember(fromListIndex: Int, toListIndex: Int) {
-		// Depends on number of `item` before bowlers in `TeamForm#LazyColumn`
-		val from = fromListIndex - 1
-		val to = toListIndex - 1
+	private fun moveMember(fromListIndex: Int, toListIndex: Int, indexOffset: Int) {
+		val from = fromListIndex - indexOffset
+		val to = toListIndex - indexOffset
 		_uiState.updateForm {
 			if (from == to || !it.members.indices.contains(from) || !it.members.indices.contains(to)) {
 				return@updateForm it
