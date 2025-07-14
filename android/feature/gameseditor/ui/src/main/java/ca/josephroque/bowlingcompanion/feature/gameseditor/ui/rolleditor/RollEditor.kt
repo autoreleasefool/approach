@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.AssistChip
@@ -84,7 +83,6 @@ private fun BallPicker(
 						.padding(start = if (index == 0) 0.dp else 8.dp)
 						.dashedBorder(
 							color = if (ball.id == selectedBall?.id) Color.White else Color.Transparent,
-							shape = CircleShape,
 							strokeWidth = 2.dp,
 							gapWidth = 5.dp,
 						)

@@ -23,6 +23,7 @@ import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyLeague;
  * Copyright (C) 2015 Joseph Roque
  * Manages interactions with the application's database, including the creation,
  * updates and deletion.
+ * @noinspection deprecation
  */
 public final class LegacyDatabaseHelper extends SQLiteOpenHelper {
 

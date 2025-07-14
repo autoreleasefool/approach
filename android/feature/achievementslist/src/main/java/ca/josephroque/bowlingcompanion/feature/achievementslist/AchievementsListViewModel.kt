@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
 class AchievementsListViewModel @Inject constructor(
-	private val achievementsRepository: AchievementsRepository,
+	achievementsRepository: AchievementsRepository,
 ) : ApproachViewModel<AchievementsListScreenEvent>() {
 
 	val uiState = achievementsRepository

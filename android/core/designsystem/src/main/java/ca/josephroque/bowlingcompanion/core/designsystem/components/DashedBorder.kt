@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.designsystem.components
 
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
@@ -14,7 +15,7 @@ import androidx.compose.ui.unit.dp
 
 fun Modifier.dashedBorder(
 	color: Color,
-	shape: Shape,
+	shape: Shape = CircleShape,
 	strokeWidth: Dp = 1.dp,
 	dashWidth: Dp = 4.dp,
 	gapWidth: Dp = 4.dp,

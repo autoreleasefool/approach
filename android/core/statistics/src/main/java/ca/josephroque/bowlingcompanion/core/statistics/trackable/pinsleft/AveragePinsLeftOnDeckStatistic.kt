@@ -30,9 +30,9 @@ data class AveragePinsLeftOnDeckStatistic(
 			totalPinsLeftOnDeck = value
 		}
 
-	@Suppress("UNUSED_PARAMETER")
 	override var divisor: Int
 		get() = gamesPlayed.size
+		@Suppress("UNUSED_PARAMETER")
 		set(value) { /* No-op */ }
 
 	override fun adjustByFrame(frame: TrackableFrame, configuration: TrackablePerFrameConfiguration) {

@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.feature.sharing.ui.components
 
-import android.hardware.lights.Light
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

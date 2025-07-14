@@ -276,7 +276,7 @@ class OpponentMigrationViewModel @Inject constructor(
 				),
 				bottomBar = (it.bottomBar as? OpponentMigrationBottomBarUiState.Migrating)?.copy(
 					isMergeEnabled = false,
-					isUndoEnabled = opponentHistory.size > 0,
+					isUndoEnabled = opponentHistory.isNotEmpty(),
 				) ?: OpponentMigrationBottomBarUiState.Migrating(),
 			)
 		}

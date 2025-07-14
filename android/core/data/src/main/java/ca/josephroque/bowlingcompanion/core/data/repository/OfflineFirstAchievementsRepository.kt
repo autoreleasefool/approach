@@ -38,8 +38,8 @@ class OfflineFirstAchievementsRepository @Inject constructor(
 			.associate { it.value to it.index }
 
 		return achievementDao.getEarnedAchievements()
-			.map {
-				it.sortedBy { indexedOrder[it.title] ?: Int.MAX_VALUE }
+			.map { achievement ->
+				achievement.sortedBy { indexedOrder[it.title] ?: Int.MAX_VALUE }
 			}
 	}
 

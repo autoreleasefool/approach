@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.common.utils
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.core.net.toUri
 
 fun sendEmail(
 	recipient: String,
@@ -15,7 +16,7 @@ fun sendEmail(
 	val action = if (attachment == null) Intent.ACTION_SENDTO else Intent.ACTION_SEND
 	val emailIntent = Intent(action).apply {
 		if (attachment == null) {
-			data = Uri.parse("mailto:")
+			data = "mailto:".toUri()
 		} else {
 			type = "*/*"
 		}

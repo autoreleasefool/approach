@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 	<string name="archive_list_title">Archives</string>
 
 	<string name="archive_list_description">Here you will find all the bowlers, leagues, series, and games you\'ve previously archived. They\'re never deleted, just hidden. You can always recover this data by swiping the items below.</string>
@@ -8,11 +8,11 @@
 	<string name="archive_list_archived_on">Archived on %1$s</string>
 
 	<!-- FIXME: Plurals -->
-	<string name="archive_list_bowler_description">Archived with %1$d leagues, %2$d series, %3$d games</string>
+	<string name="archive_list_bowler_description" tools:ignore="PluralsCandidate">Archived with %1$d leagues, %2$d series, %3$d games</string>
 	<!-- FIXME: Plurals -->
-	<string name="archive_list_league_description">Belongs to %1$s, archived with %2$d series, %3$d games</string>
+	<string name="archive_list_league_description" tools:ignore="PluralsCandidate">Belongs to %1$s, archived with %2$d series, %3$d games</string>
 	<!-- FIXME: Plurals -->
-	<string name="archive_list_series_description">Belongs to %1$s, in %2$s, archived with %3$d games</string>
+	<string name="archive_list_series_description" tools:ignore="PluralsCandidate">Belongs to %1$s, in %2$s, archived with %3$d games</string>
 
 	<string name="archive_list_game_title">%1$s Game with score of %2$d</string>
 	<string name="archive_list_game_description">Belongs to %1$s, in %2$s, bowled on %3$s</string>
