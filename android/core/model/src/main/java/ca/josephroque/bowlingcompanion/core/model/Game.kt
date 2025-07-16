@@ -84,6 +84,21 @@ data class GameEdit(
 
 data class GameListItem(val id: GameID, val index: Int, val score: Int)
 
+data class ReorderableGameListItem(val id: GameID, val index: Int, val score: Int, val isReordering: Boolean) {
+	constructor(gameListItem: GameListItem, isReordering: Boolean) : this(
+		id = gameListItem.id,
+		index = gameListItem.index,
+		score = gameListItem.score,
+		isReordering = isReordering,
+	)
+
+	fun toGameListItem() = GameListItem(
+		id = id,
+		index = index,
+		score = score,
+	)
+}
+
 data class IndexedGame(val id: GameID, val index: Int)
 
 data class GameListItemBySeries(val seriesId: SeriesID, val id: GameID, val index: Int)

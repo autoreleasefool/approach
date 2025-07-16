@@ -36,6 +36,7 @@ interface GamesRepository {
 	suspend fun setGameLanes(gameId: GameID, lanes: Set<LaneID>)
 	suspend fun setGameDuration(gameId: GameID, durationMillis: Long)
 	suspend fun setAllGameLanes(seriesId: SeriesID, lanes: Set<LaneID>)
+	suspend fun setGameOrder(seriesId: SeriesID, games: List<GameID>)
 
 	suspend fun insertGames(games: List<GameCreate>)
 	suspend fun archiveGame(gameId: GameID)

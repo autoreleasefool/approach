@@ -24,10 +24,15 @@ sealed interface SeriesDetailsUiAction {
 data class SeriesDetailsTopBarUiState(
 	val seriesDate: LocalDate? = null,
 	val isSharingButtonVisible: Boolean = false,
+	val isReorderGamesButtonVisible: Boolean = false,
+	val isReorderingGames: Boolean = false,
 )
 
 sealed interface SeriesDetailsTopBarUiAction {
 	data object BackClicked : SeriesDetailsTopBarUiAction
 	data object ShareClicked : SeriesDetailsTopBarUiAction
 	data object AddGameClicked : SeriesDetailsTopBarUiAction
+	data object CancelReorderClicked : SeriesDetailsTopBarUiAction
+	data object ConfirmReorderClicked : SeriesDetailsTopBarUiAction
+	data object ReorderGamesClicked : SeriesDetailsTopBarUiAction
 }

@@ -198,6 +198,10 @@ class OfflineFirstGamesRepository @Inject constructor(
 		gameDao.lockStaleGames(staleDate)
 	}
 
+	override suspend fun setGameOrder(seriesId: SeriesID, games: List<GameID>) = withContext(ioDispatcher) {
+		reorderGames(seriesId, games)
+	}
+
 	private suspend fun reorderGames(seriesId: SeriesID, games: List<GameID>) = withContext(ioDispatcher) {
 		transactionRunner {
 			val gameIds = games.toSet()

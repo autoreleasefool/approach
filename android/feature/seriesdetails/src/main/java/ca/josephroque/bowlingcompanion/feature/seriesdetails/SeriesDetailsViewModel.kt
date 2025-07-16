@@ -30,8 +30,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -47,6 +47,7 @@ class SeriesDetailsViewModel @Inject constructor(
 	private val sharingSource = MutableStateFlow<SharingSource?>(null)
 
 	private val gameToArchive: MutableStateFlow<GameListItem?> = MutableStateFlow(null)
+	private val isReorderingGames: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
 	private val chartModelProducer = ChartEntryModelProducer()
 
@@ -54,24 +55,47 @@ class SeriesDetailsViewModel @Inject constructor(
 		.filterNotNull()
 		.flatMapLatest { seriesRepository.getSeriesDetails(it) }
 
-	private val gamesList = seriesId
+	private val seriesGamesList = seriesId
 		.filterNotNull()
 		.flatMapLatest { gamesRepository.getGamesList(it) }
+	private val reorderedGames: MutableStateFlow<List<GameListItem>> = MutableStateFlow(emptyList())
+
+	private val gamesList = combine(
+		seriesGamesList,
+		reorderedGames,
+		isReorderingGames,
+	) { seriesGamesList, reorderedGames, isReorderingGames ->
+		if (isReorderingGames) reorderedGames else seriesGamesList
+	}
 
 	private val topBarState = seriesDetails
-		.mapNotNull {
+		.filterNotNull()
+		.combine(isReorderingGames) { seriesDetails, isReorderingGames ->
 			SeriesDetailsTopBarUiState(
-				seriesDate = it.properties.appliedDate ?: it.properties.date,
+				seriesDate = seriesDetails.properties.appliedDate ?: seriesDetails.properties.date,
 				isSharingButtonVisible = featureFlags.isEnabled(FeatureFlag.SHARING_SERIES),
+				isReorderGamesButtonVisible = featureFlags.isEnabled(FeatureFlag.REORDER_GAMES),
+				isReorderingGames = isReorderingGames,
 			)
 		}
 
-	private val seriesDetailsState = combine(
+	private val gamesListState = combine(
 		gameToArchive,
-		seriesDetails,
 		gamesList,
+		isReorderingGames,
+	) { gameToArchive, gamesList, isReorderingGames ->
+		GamesListUiState(
+			gameToArchive = gameToArchive,
+			list = gamesList,
+			isReordering = isReorderingGames,
+		)
+	}
+
+	private val seriesDetailsState = combine(
+		seriesDetails,
+		gamesListState,
 		sharingSource,
-	) { gameToArchive, seriesDetails, games, sharingSource ->
+	) { seriesDetails, gamesList, sharingSource ->
 		val isShowingPlaceholder = seriesDetails.scores.all { it == 0 }
 		chartModelProducer.setEntriesSuspending(
 			if (isShowingPlaceholder) {
@@ -94,10 +118,7 @@ class SeriesDetailsViewModel @Inject constructor(
 			seriesLow = seriesDetails.scores.minOrNull(),
 			seriesHigh = seriesDetails.scores.maxOrNull(),
 			isShowingPlaceholder = isShowingPlaceholder,
-			gamesList = GamesListUiState(
-				list = games,
-				gameToArchive = gameToArchive,
-			),
+			gamesList = gamesList,
 			sharingSeries = sharingSource,
 		)
 	}
@@ -137,7 +158,10 @@ class SeriesDetailsViewModel @Inject constructor(
 		when (action) {
 			is SeriesDetailsTopBarUiAction.BackClicked -> sendEvent(SeriesDetailsScreenEvent.Dismissed)
 			is SeriesDetailsTopBarUiAction.AddGameClicked -> addGameToSeries()
-			SeriesDetailsTopBarUiAction.ShareClicked -> shareSeries()
+			is SeriesDetailsTopBarUiAction.ShareClicked -> shareSeries()
+			is SeriesDetailsTopBarUiAction.CancelReorderClicked -> finishReorderingGames(isCancelled = true)
+			is SeriesDetailsTopBarUiAction.ConfirmReorderClicked -> finishReorderingGames(isCancelled = false)
+			is SeriesDetailsTopBarUiAction.ReorderGamesClicked -> startReorderingGames()
 		}
 	}
 
@@ -154,6 +178,29 @@ class SeriesDetailsViewModel @Inject constructor(
 			is GamesListUiAction.ConfirmArchiveClicked -> archiveGame()
 			is GamesListUiAction.DismissArchiveClicked -> gameToArchive.value = null
 			is GamesListUiAction.GameClicked -> editGame(action.id)
+			is GamesListUiAction.GameMoved -> moveGame(action.from, action.to, action.offset)
+		}
+	}
+
+	private fun startReorderingGames() {
+		viewModelScope.launch {
+			reorderedGames.value = seriesGamesList.first()
+			isReorderingGames.value = true
+		}
+	}
+
+	private fun finishReorderingGames(isCancelled: Boolean) {
+		viewModelScope.launch {
+			isReorderingGames.value = false
+			if (!isCancelled) {
+				val seriesId = seriesId.value ?: return@launch
+				val orderedGames = reorderedGames.value
+				if (!orderedGames.isEmpty()) {
+					viewModelScope.launch {
+						gamesRepository.setGameOrder(seriesId, orderedGames.map(GameListItem::id))
+					}
+				}
+			}
 		}
 	}
 
@@ -183,6 +230,17 @@ class SeriesDetailsViewModel @Inject constructor(
 		viewModelScope.launch {
 			gamesRepository.archiveGame(gameToArchive.id)
 			this@SeriesDetailsViewModel.gameToArchive.value = null
+		}
+	}
+
+	private fun moveGame(fromListIndex: Int, toListIndex: Int, indexOffset: Int) {
+		viewModelScope.launch {
+			val from = fromListIndex - indexOffset
+			val to = toListIndex - indexOffset
+			reorderedGames.update {
+				if (from == to || !it.indices.contains(from) || !it.indices.contains(to)) return@update it
+				it.toMutableList().apply { add(to, removeAt(from)) }
+			}
 		}
 	}
 }

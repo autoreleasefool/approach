@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.core.designsystem.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,6 +28,17 @@ fun CloseButton(onClick: () -> Unit) {
 		Icon(
 			Icons.Default.Close,
 			contentDescription = stringResource(R.string.cd_close),
+			tint = MaterialTheme.colorScheme.onSurface,
+		)
+	}
+}
+
+@Composable
+fun CancelButton(onClick: () -> Unit) {
+	IconButton(onClick = onClick) {
+		Icon(
+			Icons.Default.Clear,
+			contentDescription = stringResource(R.string.action_cancel),
 			tint = MaterialTheme.colorScheme.onSurface,
 		)
 	}

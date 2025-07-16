@@ -21,7 +21,6 @@ fun GameRow(index: Int, score: Int?, modifier: Modifier = Modifier, onClick: (()
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = modifier
-			.fillMaxWidth()
 			.then(
 				if (onClick != null) {
 					Modifier
