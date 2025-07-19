@@ -128,6 +128,7 @@ public enum Asset: Sendable {
     }
     public enum Primary {
       public static let `default` = ColorAsset(name: "Primary/Default")
+      public static let defaultLight = ColorAsset(name: "Primary/DefaultLight")
       public static let light = ColorAsset(name: "Primary/Light")
     }
     public enum ScoreSheet {

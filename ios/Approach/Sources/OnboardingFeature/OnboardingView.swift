@@ -59,11 +59,16 @@ public struct OnboardingView: View {
 				.padding(.bottom, safeAreaInsetsProvider.get().bottom + .standardSpacing)
 				.background(OnboardingContainer(fadedEdges: [.top]))
 				.opacity(store.step.isShowingGetStarted ? 1 : 0)
+				.popover(isPresented: $store.isShowingBowlerNamePopover) {
+					Logbook(bowlerName: $store.bowlerName) {
+						send(.didTapAddBowler)
+					}
+					.padding(.horizontal)
+				}
 			}
 			.ignoresSafeArea(edges: .bottom)
 		}
-
-		.sheet(isPresented: $store.isShowingSheet) {
+		.sheet(isPresented: $store.isShowingBowlerNameSheet) {
 			Logbook(bowlerName: $store.bowlerName) {
 				send(.didTapAddBowler)
 			}

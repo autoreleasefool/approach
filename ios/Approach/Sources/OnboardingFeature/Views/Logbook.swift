@@ -6,6 +6,8 @@ struct Logbook: View {
 	@Binding var bowlerName: String
 	let didTapAddBowler: () -> Void
 
+	@FocusState private var isFocused
+
 	var body: some View {
 		VStack {
 			Text(Strings.Onboarding.Logbook.belongsTo)
@@ -21,6 +23,7 @@ struct Logbook: View {
 			.textContentType(.name)
 			.multilineTextAlignment(.center)
 			.fontWeight(.heavy)
+			.focused($isFocused)
 
 			Rectangle()
 				.fill(Color.black)
@@ -32,6 +35,7 @@ struct Logbook: View {
 					.frame(maxWidth: .infinity)
 			}
 			.modifier(PrimaryButton())
+			.disabled(bowlerName.isEmpty)
 			.padding(.vertical)
 		}
 	}

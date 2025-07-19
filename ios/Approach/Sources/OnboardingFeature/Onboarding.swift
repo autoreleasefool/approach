@@ -4,6 +4,7 @@ import ComposableArchitecture
 import ExtensionsPackageLibrary
 import FeatureActionLibrary
 import ModelsLibrary
+import UIKit
 
 @Reducer
 public struct Onboarding: Reducer, Sendable {
@@ -12,7 +13,8 @@ public struct Onboarding: Reducer, Sendable {
 		public var step: Step = .empty
 		public var isAddingBowler = false
 
-		public var isShowingSheet = false
+		public var isShowingBowlerNamePopover = false
+		public var isShowingBowlerNameSheet = false
 		public var bowlerName = ""
 
 		public init() {}
@@ -33,6 +35,8 @@ public struct Onboarding: Reducer, Sendable {
 		@CasePathable
 		public enum Internal {
 			case nextStep
+			case showBowlerNameSheet
+			case showBowlerNamePopover
 			case didCreateBowler(Result<Never, Error>)
 		}
 
@@ -113,8 +117,14 @@ public struct Onboarding: Reducer, Sendable {
 					.animation(.easeIn)
 
 				case .didTapGetStarted:
-					state.isShowingSheet = true
-					return .none
+					return .run { send in
+						let userInterfaceIdiom = await UIDevice.current.userInterfaceIdiom
+						if userInterfaceIdiom == .pad {
+							await send(.internal(.showBowlerNamePopover))
+						} else {
+							await send(.internal(.showBowlerNameSheet))
+						}
+					}
 
 				case .didTapAddBowler:
 					guard !state.bowlerName.trimmingCharacters(in: .whitespaces).isEmpty, !state.isAddingBowler else { return .none }
@@ -135,6 +145,14 @@ public struct Onboarding: Reducer, Sendable {
 				switch internalAction {
 				case .nextStep:
 					state.step.toNext()
+					return .none
+
+				case .showBowlerNameSheet:
+					state.isShowingBowlerNameSheet = true
+					return .none
+
+				case .showBowlerNamePopover:
+					state.isShowingBowlerNamePopover = true
 					return .none
 
 				case .didCreateBowler(.failure):
