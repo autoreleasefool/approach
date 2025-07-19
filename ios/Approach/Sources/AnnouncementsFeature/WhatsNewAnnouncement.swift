@@ -162,9 +162,10 @@ private struct NewItem: View {
 		HStack(alignment: .center, spacing: .standardSpacing) {
 			Image(uiImage: state.image)
 				.resizable()
+				.renderingMode(.template)
 				.scaledToFit()
 				.frame(width: .smallerIcon, height: .smallerIcon)
-				.foregroundStyle(Asset.Colors.Primary.default)
+				.foregroundStyle(Asset.Colors.Primary.defaultLight)
 
 			VStack(alignment: .leading, spacing: .tinySpacing) {
 				Text(state.title)
