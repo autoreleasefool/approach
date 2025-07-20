@@ -1,13 +1,9 @@
-import AccessoriesOverviewFeature
 import AchievementsFeature
 import AnalyticsServiceInterface
 import AutomaticBackupsFeature
-import BowlersListFeature
 import ComposableArchitecture
 import FeatureActionLibrary
 import HUDServiceInterface
-import SettingsFeature
-import StatisticsOverviewFeature
 
 @Reducer
 public struct TabbedContent: Reducer, Sendable {
@@ -18,10 +14,10 @@ public struct TabbedContent: Reducer, Sendable {
 
 		public var selectedTab: Tab = .overview
 
-		public var accessories = AccessoriesOverview.State()
-		public var bowlersList = BowlersList.State()
-		public var statistics = StatisticsOverview.State()
-		public var settings = Settings.State()
+		public var accessories = AccessoriesTabContent.State()
+		public var bowlers = BowlersTabContent.State()
+		public var statistics = StatisticsTabContent.State()
+		public var settings = SettingsTabContent.State()
 
 		public var achievements = AchievementsObserver.State()
 		public var backups = AutomaticBackups.State()
@@ -40,10 +36,11 @@ public struct TabbedContent: Reducer, Sendable {
 		public enum Internal {
 			case showHUD(Bool)
 
-			case accessories(AccessoriesOverview.Action)
-			case bowlersList(BowlersList.Action)
-			case settings(Settings.Action)
-			case statistics(StatisticsOverview.Action)
+			case accessories(AccessoriesTabContent.Action)
+			case bowlers(BowlersTabContent.Action)
+			case settings(SettingsTabContent.Action)
+			case statistics(StatisticsTabContent.Action)
+
 			case achievements(AchievementsObserver.Action)
 			case backups(AutomaticBackups.Action)
 		}
@@ -68,20 +65,20 @@ public struct TabbedContent: Reducer, Sendable {
 	public var body: some ReducerOf<Self> {
 		BindingReducer()
 
-		Scope(state: \.bowlersList, action: \.internal.bowlersList) {
-			BowlersList()
+		Scope(state: \.bowlers, action: \.internal.bowlers) {
+			BowlersTabContent()
 		}
 
 		Scope(state: \.settings, action: \.internal.settings) {
-			Settings()
+			SettingsTabContent()
 		}
 
 		Scope(state: \.accessories, action: \.internal.accessories) {
-			AccessoriesOverview()
+			AccessoriesTabContent()
 		}
 
 		Scope(state: \.statistics, action: \.internal.statistics) {
-			StatisticsOverview()
+			StatisticsTabContent()
 		}
 
 		Scope(state: \.achievements, action: \.internal.achievements) {
@@ -111,17 +108,17 @@ public struct TabbedContent: Reducer, Sendable {
 					return .none
 
 				// swiftlint:disable:next line_length
-				case .bowlersList(.internal(.announcements(.internal(.destination(.presented(.tenYearAnniversary(.view(.didTapClaimButton)))))))):
+				case .bowlers(.internal(.bowlersList(.internal(.announcements(.internal(.destination(.presented(.tenYearAnniversary(.view(.didTapClaimButton)))))))))):
 					state.selectedTab = .settings
-					return state.settings.showAchievementsList().map { .internal(.settings($0)) }
+					return state.settings.settings.showAchievementsList().map { .internal(.settings(.internal(.settings($0)))) }
 
 				case .backups(.internal(.backupFailure(.presented(.view(.didTapOpenSettingsButton))))):
 					state.selectedTab = .settings
-					return state.settings.showBackupsList().map { .internal(.settings($0)) }
+					return state.settings.settings.showBackupsList().map { .internal(.settings(.internal(.settings($0)))) }
 
 				case .accessories(.view), .accessories(.internal), .accessories(.delegate(.doNothing)),
-						.bowlersList(.view), .bowlersList(.internal), .bowlersList(.delegate(.doNothing)),
-						.settings(.view), .settings(.internal), .settings(.delegate(.doNothing)), .settings(.binding),
+						.bowlers(.view), .bowlers(.internal), .bowlers(.delegate(.doNothing)),
+						.settings(.view), .settings(.internal), .settings(.delegate(.doNothing)),
 						.statistics(.view), .statistics(.internal), .statistics(.delegate(.doNothing)),
 						.achievements(.view), .achievements(.internal), .achievements(.delegate(.doNothing)),
 						.backups(.view), .backups(.internal), .backups(.delegate(.doNothing)):
