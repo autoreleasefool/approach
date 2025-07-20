@@ -39,8 +39,9 @@ public struct OpponentsListView: View {
 				Text(Strings.Opponent.List.description)
 			}
 		}
-		.onAppear { send(.onAppear) }
 		.navigationTitle(Strings.Opponent.List.title)
+		.readableContentGuide()
+		.onAppear { send(.onAppear) }
 		.toolbar {
 			ToolbarItem(placement: .navigationBarTrailing) {
 				SortButton(isActive: false) { send(.didTapSortOrderButton) }

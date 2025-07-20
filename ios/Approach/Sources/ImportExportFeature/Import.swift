@@ -390,6 +390,7 @@ public struct ImportView: View {
 			.padding()
 		}
 		.navigationTitle(Strings.Import.title)
+		.readableContentGuide()
 		.onFirstAppear { send(.didFirstAppear) }
 		.onAppear { send(.didAppear) }
 		.alert($store.scope(state: \.destination?.alert, action: \.internal.destination.alert))

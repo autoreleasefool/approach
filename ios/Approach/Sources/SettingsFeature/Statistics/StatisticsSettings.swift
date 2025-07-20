@@ -4,6 +4,7 @@ import FeatureActionLibrary
 import PreferenceServiceInterface
 import StringsLibrary
 import SwiftUI
+import ViewsLibrary
 
 @Reducer
 public struct StatisticsSettings: Reducer, Sendable {
@@ -145,6 +146,7 @@ public struct StatisticsSettingsView: View {
 			}
 		}
 		.navigationTitle(Strings.Settings.Statistics.title)
+		.readableContentGuide()
 		.onAppear { send(.onAppear) }
 	}
 }

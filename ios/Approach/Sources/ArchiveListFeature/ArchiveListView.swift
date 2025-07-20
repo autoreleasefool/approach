@@ -34,6 +34,7 @@ public var body: some View {
 			}
 		}
 		.navigationTitle(Strings.Archive.title)
+		.readableContentGuide()
 		.task { await send(.observeData).finish() }
 		.onAppear { send(.onAppear) }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))

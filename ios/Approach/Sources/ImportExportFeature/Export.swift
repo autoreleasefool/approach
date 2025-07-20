@@ -187,6 +187,7 @@ public struct ExportView: View {
 			errorView
 		}
 		.navigationTitle(Strings.Export.title)
+		.readableContentGuide()
 		.onFirstAppear { send(.didFirstAppear) }
 		.onAppear { send(.onAppear) }
 	}

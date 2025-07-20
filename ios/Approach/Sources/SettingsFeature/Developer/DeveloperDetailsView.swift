@@ -1,6 +1,7 @@
 import ConstantsLibrary
 import StringsLibrary
 import SwiftUI
+import ViewsLibrary
 
 public struct DeveloperDetailsView: View {
 	public var body: some View {
@@ -20,5 +21,6 @@ public struct DeveloperDetailsView: View {
 			}
 		}
 		.navigationTitle(Strings.Settings.Developer.title)
+		.readableContentGuide()
 	}
 }

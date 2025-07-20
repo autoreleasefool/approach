@@ -2,6 +2,7 @@ import ComposableArchitecture
 import FeatureFlagsLibrary
 import StringsLibrary
 import SwiftUI
+import ViewsLibrary
 
 @ViewAction(for: FeatureFlagsList.self)
 public struct FeatureFlagsListView: View {
@@ -26,6 +27,7 @@ public struct FeatureFlagsListView: View {
 				}
 			}
 		}
+		.readableContentGuide()
 		.navigationTitle(Strings.Settings.FeatureFlags.title)
 		.task { await send(.didStartObservingFlags).finish() }
 	}

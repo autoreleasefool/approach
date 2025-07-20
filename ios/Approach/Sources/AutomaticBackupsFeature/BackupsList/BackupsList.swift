@@ -348,7 +348,7 @@ public struct BackupsListView: View {
 			}
 
 			Section {
-				HStack {
+				HStack(spacing: .standardSpacing) {
 					let (warningImage, warningImageColor) = store.daysSinceLastBackup.warningImage()
 
 					Image(systemName: warningImage)
@@ -356,7 +356,7 @@ public struct BackupsListView: View {
 
 					switch store.daysSinceLastBackup {
 					case .never:
-						VStack {
+						VStack(alignment: .leading) {
 							Text(Strings.Backups.List.NeverBackedUp.title)
 								.font(.headline)
 							Text(Strings.Backups.List.NeverBackedUp.description)
@@ -402,6 +402,7 @@ public struct BackupsListView: View {
 			}
 		}
 		.navigationTitle(Strings.Backups.List.title)
+		.readableContentGuide()
 		.task { await send(.didStartTask).finish() }
 		.onAppear { send(.didFirstAppear) }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))

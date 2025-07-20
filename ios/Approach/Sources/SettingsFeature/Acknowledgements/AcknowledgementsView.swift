@@ -1,6 +1,7 @@
 import ConstantsLibrary
 import StringsLibrary
 import SwiftUI
+import ViewsLibrary
 
 public struct AcknowledgementsView: View {
 	public var body: some View {
@@ -10,5 +11,6 @@ public struct AcknowledgementsView: View {
 			}
 		}
 		.navigationTitle(Strings.Settings.Acknowledgements.title)
+		.readableContentGuide()
 	}
 }
