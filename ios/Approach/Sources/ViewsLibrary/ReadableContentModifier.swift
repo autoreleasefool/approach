@@ -17,7 +17,6 @@ public struct ReadableContentModifier: ViewModifier {
 	}
 }
 
-
 extension View {
 	public func readableContentGuide() -> some View {
 		modifier(ReadableContentModifier())

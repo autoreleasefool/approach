@@ -47,12 +47,13 @@ public struct FormView<
 					.disabled(!store.isSaveable)
 			}
 
-			if store.hasChanges {
+			if store.hasChanges || store.isAlwaysShowingDiscard {
 				ToolbarItem(placement: .navigationBarLeading) {
 					Button(Strings.Action.discard) { store.send(.view(.didTapDiscardButton)) }
 				}
 			}
 		}
+		.onAppear { store.send(.view(.onAppear)) }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		.alert($store.scope(state: \.alert, action: \.view.alert))
 	}

@@ -2,6 +2,7 @@ import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
 import StringsLibrary
+import UIKit
 
 public protocol FormRecord: Identifiable, Equatable, Sendable where ID: Sendable {
 	static var isSaveableWithoutChanges: Bool { get }
@@ -56,6 +57,8 @@ public struct Form<
 		public var value: Value
 
 		public var errors: Errors<ErrorID>.State = .init()
+
+		public var isAlwaysShowingDiscard: Bool = false
 
 		public var hasChanges: Bool {
 			initialValue != value
@@ -161,6 +164,7 @@ public struct Form<
 	public enum Action: FeatureAction {
 		@CasePathable
 		public enum View {
+			case onAppear
 			case didTapSaveButton
 			case didTapDiscardButton
 			case didTapDeleteButton
@@ -170,6 +174,7 @@ public struct Form<
 
 		@CasePathable
 		public enum Internal {
+			case alwaysShowDiscardButton(Bool)
 			case errors(Errors<ErrorID>.Action)
 		}
 
@@ -219,6 +224,10 @@ public struct Form<
 
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .run { send in
+						await send(.internal(.alwaysShowDiscardButton(UIDevice.current.userInterfaceIdiom == .pad)))
+					}
 				case .didTapSaveButton:
 					guard state.isSaveable else { return .none }
 					state.isLoading = true
@@ -264,7 +273,11 @@ public struct Form<
 					return .none
 
 				case .didTapDiscardButton:
-					guard state.hasChanges else { return .none }
+					guard state.hasChanges else {
+						state.discard()
+						return .send(.delegate(.didDiscard))
+					}
+
 					state.alert = AlertState {
 						TextState(Strings.Form.Prompt.discardChanges)
 					} actions: {
@@ -306,6 +319,10 @@ public struct Form<
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .alwaysShowDiscardButton(alwaysShow):
+					state.isAlwaysShowingDiscard = alwaysShow
+					return .none
+
 				case .errors(.delegate(.doNothing)):
 					return .none
 
