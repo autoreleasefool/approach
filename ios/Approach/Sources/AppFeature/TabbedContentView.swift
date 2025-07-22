@@ -1,8 +1,12 @@
+import AccessoriesOverviewFeature
 import AchievementsFeature
 import AssetsLibrary
 import AutomaticBackupsFeature
+import BowlersListFeature
 import ComposableArchitecture
 import FeatureActionLibrary
+import SettingsFeature
+import StatisticsOverviewFeature
 import StringsLibrary
 import SwiftUI
 import ToastUI
@@ -17,27 +21,35 @@ public struct TabbedContentView: View {
 
 	public var body: some View {
 		TabView(selection: $store.selectedTab) {
-			BowlersTabContentView(
-				store: store.scope(state: \.bowlers, action: \.internal.bowlers)
-			)
+			NavigationStack {
+				BowlersListView(
+					store: store.scope(state: \.bowlersList, action: \.internal.bowlersList)
+				)
+			}
 			.tag(TabbedContent.Tab.overview)
 			.tabItem { TabbedContent.Tab.overview.label }
 
-			StatisticsTabContentView(
-				store: store.scope(state: \.statistics, action: \.internal.statistics)
-			)
+			NavigationStack {
+				StatisticsOverviewView(
+					store: store.scope(state: \.statistics, action: \.internal.statistics)
+				)
+			}
 			.tag(TabbedContent.Tab.statistics)
 			.tabItem { TabbedContent.Tab.statistics.label }
 
-			AccessoriesTabContentView(
-				store: store.scope(state: \.accessories, action: \.internal.accessories)
-			)
+			NavigationStack {
+				AccessoriesOverviewView(
+					store: store.scope(state: \.accessories, action: \.internal.accessories)
+				)
+			}
 			.tag(TabbedContent.Tab.accessories)
 			.tabItem { TabbedContent.Tab.accessories.label }
 
-			SettingsTabContentView(
-				store: store.scope(state: \.settings, action: \.internal.settings)
-			)
+			NavigationStack {
+				SettingsView(
+					store: store.scope(state: \.settings, action: \.internal.settings)
+				)
+			}
 			.tag(TabbedContent.Tab.settings)
 			.tabItem { TabbedContent.Tab.settings.label }
 		}
