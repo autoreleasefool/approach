@@ -86,7 +86,6 @@ public struct SettingsView: View {
 			)
 		}
 		.navigationTitle(Strings.Settings.title)
-		.readableContentGuide()
 		.onFirstAppear { send(.didFirstAppear) }
 		.onAppear { send(.onAppear) }
 		.destinations($store)

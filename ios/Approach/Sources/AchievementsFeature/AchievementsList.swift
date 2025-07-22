@@ -243,7 +243,6 @@ public struct AchievementsListView: View {
 			AchievementListItem(achievement: achievement)
 		}
 		.buttonStyle(.plain)
-		.frame(maxWidth: 400)
 	}
 }
 

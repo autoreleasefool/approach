@@ -123,7 +123,6 @@ public struct AnalyticsSettingsView: View {
 			}
 		}
 		.navigationTitle(Strings.Settings.Analytics.title)
-		.readableContentGuide()
 		.onAppear { send(.onAppear) }
 	}
 }
