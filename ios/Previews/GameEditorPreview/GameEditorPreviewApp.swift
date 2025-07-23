@@ -1,3 +1,4 @@
+import AppPreviewFeature
 import ComposableArchitecture
 import DatabaseServiceInterface
 import GamesEditorFeature
@@ -22,32 +23,14 @@ public struct GameEditorPreviewApp: App {
 			reducer: {
 				GamesEditor()
 					._printChanges()
-					.dependency(\.database, {
-						let db: any DatabaseWriter
-						do {
-							db = try initializeApproachDatabase(
-								withLocations: .default,
-								withAlleys: .default,
-								withLanes: .default,
-								withBowlers: .default,
-								withGear: .default,
-								withLeagues: .default,
-								withSeries: .default,
-								withGames: .default,
-								withFrames: .default
-							)
-						} catch {
-							fatalError("Could not initialize database: \(error)")
-						}
-
-						return DatabaseService(
-							initialize: {},
-							dbUrl: { fatalError() },
-							close: {},
-							reader: { db },
-							writer: { db }
-						)
-					}())
+			}, withDependencies: {
+				$0.analytics = .mock
+				$0.breadcrumbs = .mock
+				$0.database = .defaults
+				$0.errors = .mock
+				$0.userDefaults = .mock
+				$0.gameAnalytics = .init(trackEvent: { _ in }, resetGameSessionID: {})
+				$0.featureFlags = .allEnabled
 			}
 		)
 	}()

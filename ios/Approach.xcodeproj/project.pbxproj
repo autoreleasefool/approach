@@ -48,6 +48,15 @@
 		CA9E25F32A0FA66B00BA216C /* BowlersRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA9E25F22A0FA66B00BA216C /* BowlersRepository */; };
 		CAA3D74D29CFB48D00876EDC /* BowlersRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74C29CFB48D00876EDC /* BowlersRepository */; };
 		CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74E29CFB49200876EDC /* DatabaseService */; };
+		CAA657EA2E2F2E4C0054BB00 /* SettingsFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CAA657E92E2F2E4C0054BB00 /* SettingsFeature */; };
+		CAA657EE2E2FC5510054BB00 /* AppIconService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA657ED2E2FC5510054BB00 /* AppIconService */; };
+		CAA657F22E2FC58E0054BB00 /* BowlersRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAA657F12E2FC58E0054BB00 /* BowlersRepository */; };
+		CAA657F42E2FC5960054BB00 /* ImportExportService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA657F32E2FC5960054BB00 /* ImportExportService */; };
+		CAA657F62E2FC59D0054BB00 /* PreferenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA657F52E2FC59D0054BB00 /* PreferenceService */; };
+		CAA657F82E2FC6370054BB00 /* AchievementsService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA657F72E2FC6370054BB00 /* AchievementsService */; };
+		CAA658002E2FCDB50054BB00 /* AppPreviewFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CAA657FF2E2FCDB50054BB00 /* AppPreviewFeature */; };
+		CAA658022E2FCDBB0054BB00 /* AppPreviewFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CAA658012E2FCDBB0054BB00 /* AppPreviewFeature */; };
+		CAA658042E2FCDC10054BB00 /* AppPreviewFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CAA658032E2FCDC10054BB00 /* AppPreviewFeature */; };
 		CAA668BE2A8F29A800DF3E75 /* EmailService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA668BD2A8F29A800DF3E75 /* EmailService */; };
 		CABA39BF2C38AD7100F74E0C /* AvatarEditorPreviewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABA39BE2C38AD7100F74E0C /* AvatarEditorPreviewApp.swift */; };
 		CABA39C32C38AD7200F74E0C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CABA39C22C38AD7200F74E0C /* Assets.xcassets */; };
@@ -119,6 +128,7 @@
 				CA2B781F2AABC9E10044487E /* ScoresRepository in Frameworks */,
 				CAD15BBB29FDF8E40015E4CB /* GamesRepository in Frameworks */,
 				CA632F6629BD293E00272ADB /* GamesEditorFeature in Frameworks */,
+				CAA658042E2FCDC10054BB00 /* AppPreviewFeature in Frameworks */,
 				CA59011B2A05AD62000261C9 /* RecentlyUsedService in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -171,6 +181,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CAFD57632C38AF9E00004F4C /* AvatarService in Frameworks */,
+				CAA658022E2FCDBB0054BB00 /* AppPreviewFeature in Frameworks */,
 				CAFD57652C38AFA200004F4C /* AvatarEditorFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -179,6 +190,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CAA657F22E2FC58E0054BB00 /* BowlersRepository in Frameworks */,
+				CAA657F42E2FC5960054BB00 /* ImportExportService in Frameworks */,
+				CAA657F82E2FC6370054BB00 /* AchievementsService in Frameworks */,
+				CAA657EA2E2F2E4C0054BB00 /* SettingsFeature in Frameworks */,
+				CAA657F62E2FC59D0054BB00 /* PreferenceService in Frameworks */,
+				CAA658002E2FCDB50054BB00 /* AppPreviewFeature in Frameworks */,
+				CAA657EE2E2FC5510054BB00 /* AppIconService in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,6 +363,7 @@
 				CAFF2FCA2AB19B3000AE31BF /* AvatarService */,
 				CAECBAEA2ABD7323007713A8 /* LanesRepository */,
 				CA7E892B2AC5153B004972E1 /* StatisticsRepository */,
+				CAA658032E2FCDC10054BB00 /* AppPreviewFeature */,
 			);
 			productName = GameEditorPreview;
 			productReference = CA632F5529BD26E200272ADB /* GameEditorPreview.app */;
@@ -422,6 +441,7 @@
 			packageProductDependencies = (
 				CAFD57622C38AF9E00004F4C /* AvatarService */,
 				CAFD57642C38AFA200004F4C /* AvatarEditorFeature */,
+				CAA658012E2FCDBB0054BB00 /* AppPreviewFeature */,
 			);
 			productName = AvatarEditorPreview;
 			productReference = CABA39BC2C38AD7100F74E0C /* AvatarEditorPreview.app */;
@@ -441,6 +461,13 @@
 			);
 			name = SettingsPreview;
 			packageProductDependencies = (
+				CAA657E92E2F2E4C0054BB00 /* SettingsFeature */,
+				CAA657ED2E2FC5510054BB00 /* AppIconService */,
+				CAA657F12E2FC58E0054BB00 /* BowlersRepository */,
+				CAA657F32E2FC5960054BB00 /* ImportExportService */,
+				CAA657F52E2FC59D0054BB00 /* PreferenceService */,
+				CAA657F72E2FC6370054BB00 /* AchievementsService */,
+				CAA657FF2E2FCDB50054BB00 /* AppPreviewFeature */,
 			);
 			productName = SettingsPreview;
 			productReference = CABC036C2E2F260000BE6DC4 /* SettingsPreview.app */;
@@ -856,6 +883,42 @@
 		CAA3D74E29CFB49200876EDC /* DatabaseService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DatabaseService;
+		};
+		CAA657E92E2F2E4C0054BB00 /* SettingsFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SettingsFeature;
+		};
+		CAA657ED2E2FC5510054BB00 /* AppIconService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AppIconService;
+		};
+		CAA657F12E2FC58E0054BB00 /* BowlersRepository */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BowlersRepository;
+		};
+		CAA657F32E2FC5960054BB00 /* ImportExportService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ImportExportService;
+		};
+		CAA657F52E2FC59D0054BB00 /* PreferenceService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PreferenceService;
+		};
+		CAA657F72E2FC6370054BB00 /* AchievementsService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AchievementsService;
+		};
+		CAA657FF2E2FCDB50054BB00 /* AppPreviewFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AppPreviewFeature;
+		};
+		CAA658012E2FCDBB0054BB00 /* AppPreviewFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AppPreviewFeature;
+		};
+		CAA658032E2FCDC10054BB00 /* AppPreviewFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AppPreviewFeature;
 		};
 		CAA668BD2A8F29A800DF3E75 /* EmailService */ = {
 			isa = XCSwiftPackageProductDependency;

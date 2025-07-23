@@ -1,3 +1,4 @@
+import AppPreviewFeature
 import AvatarEditorFeature
 import ComposableArchitecture
 import FeatureFlagsLibrary
@@ -10,9 +11,11 @@ public struct AvatarEditorPreviewApp: App {
 			initialState: AvatarEditor.State(avatar: nil),
 			reducer: { AvatarEditor() },
 			withDependencies: {
-				$0.featureFlags.isEnabled = {
-					$0 == FeatureFlag.photoAvatars
-				}
+				$0.analytics = .mock
+				$0.breadcrumbs = .mock
+				$0.database = .defaults
+				$0.errors = .mock
+				$0.featureFlags = .enabling([.photoAvatars])
 			}
 		)
 	}()

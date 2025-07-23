@@ -14,6 +14,12 @@ features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "St
 services = [ "Launch" ]
 dependencies = [ "AppInfoPackageService", "BundlePackageService", "FeatureFlagsPackageService", "FileManagerPackageService", "GRDBDatabasePackageService", "PasteboardPackageService", "SentryErrorReportingPackageService", "StoreReviewPackageService", "TelemetryDeckAnalyticsPackageService", "UserDefaultsPackageService" ]
 
+[features.AppPreview]
+skip_tests = true
+services = [ "Database" ]
+libraries = [ "FeatureFlags", "TestDatabaseUtilities" ]
+dependencies = [ "UserDefaultsPackageServiceInterface" ]
+
 [features.AccessoriesOverview]
 features = [ "AlleysList", "GearList" ]
 dependencies = [ "Algorithms" ]
@@ -87,7 +93,6 @@ features = [ "Errors" ]
 features = [ "StatisticsDetails" ]
 repositories = [ "Frames", "Gear", "Lanes" ]
 services = [ "Avatar" ]
-libraries = [ "FeatureFlags" ]
 dependencies = [ "StoreReviewPackageServiceInterface" ]
 
 [features.GamesList]
@@ -156,7 +161,7 @@ dependencies = [ "BundlePackageServiceInterface" ]
 [features.Sharing]
 features = [ "StatisticsWidgetEditor" ]
 repositories = [ "Games", "Scores", "Series" ]
-libraries = [ "ScoreSheet" ]
+libraries = [ "FeatureFlags", "ScoreSheet" ]
 dependencies = [ "Algorithms" ]
 
 [features.StatisticsOverview]
@@ -452,7 +457,7 @@ libraries = [ "StatisticsChartsMocks" ]
 [libraries.Strings]
 
 [libraries.TestDatabaseUtilities]
-suitable_for_dependents_matching = "\\w+Tests$"
+suitable_for_dependents_matching = "(\\w+Tests$)|(^AppPreviewFeature$)"
 skip_tests = true
 libraries = [ "DatabaseMigrations", "DatabaseModels" ]
 dependencies = [ "GRDBDatabaseTestUtilitiesPackageLibrary" ]

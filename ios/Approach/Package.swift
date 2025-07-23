@@ -17,6 +17,7 @@ let package = Package(
 		.library(name: "AlleysListFeature", targets: ["AlleysListFeature"]),
 		.library(name: "AnnouncementsFeature", targets: ["AnnouncementsFeature"]),
 		.library(name: "AppFeature", targets: ["AppFeature"]),
+		.library(name: "AppPreviewFeature", targets: ["AppPreviewFeature"]),
 		.library(name: "ArchiveListFeature", targets: ["ArchiveListFeature"]),
 		.library(name: "AutomaticBackupsFeature", targets: ["AutomaticBackupsFeature"]),
 		.library(name: "AvatarEditorFeature", targets: ["AvatarEditorFeature"]),
@@ -316,6 +317,18 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "AppPreviewFeature",
+			dependencies: [
+				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
+				"AnalyticsServiceInterface",
+				"DatabaseServiceInterface",
+				"FeatureActionLibrary",
+				"FeatureFlagsLibrary",
+				"LoggingServiceInterface",
+				"TestDatabaseUtilitiesLibrary",
+			]
+		),
+		.target(
 			name: "ArchiveListFeature",
 			dependencies: [
 				"BowlersRepositoryInterface",
@@ -490,7 +503,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "StoreReviewPackageServiceInterface", package: "swift-utilities"),
 				"AvatarServiceInterface",
-				"FeatureFlagsLibrary",
 				"FramesRepositoryInterface",
 				"GearRepositoryInterface",
 				"LanesRepositoryInterface",
@@ -760,6 +772,7 @@ let package = Package(
 			name: "SharingFeature",
 			dependencies: [
 				.product(name: "Algorithms", package: "swift-algorithms"),
+				"FeatureFlagsLibrary",
 				"GamesRepositoryInterface",
 				"ScoreSheetLibrary",
 				"ScoresRepositoryInterface",
