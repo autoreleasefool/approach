@@ -599,6 +599,8 @@
 "settings.data.import" = "Import Data";
 "settings.data.export" = "Export Data";
 "settings.data.automaticBackups" = "Automatic Backups";
+"settings.development.title" = "Development";
+"settings.development.contributing" = "Contributing";
 "settings.developer.name" = "Joseph Roque";
 "settings.developer.contact" = "Contact";
 "settings.developer.mastodonHandle" = "@autoreleasefool@iosdev.space";
@@ -610,7 +612,10 @@
 "settings.developer.blog" = "https://runcode.blog";
 "settings.developer.title" = "Developer";
 "settings.developer.openSourceRepositoryUrl" = "https://tryapproach.app/view-source";
+"settings.developerOptions.title" = "Development";
 "settings.developerOptions.populateDatabase" = "Mock database";
+"settings.developerOptions.resetDatabase" = "Reset database";
+"settings.developerOptions.forceCrash" = "Force crash";
 "settings.help.title" = "Help";
 "settings.help.reportBug" = "Report Bug";
 "settings.help.reportBug.subject" = "Approach Bug Report (%@)";
@@ -622,6 +627,7 @@
 "settings.help.development.title" = "Development";
 "settings.help.development.help" = "You can view the source for %@ using the links above, to report issues or watch the development of new features";
 "settings.appIcon.title" = "App Icon";
+"settings.appIcon.message" = "Choose another App Icon";
 "settings.appInfo.title" = "App Info";
 "settings.appIcon.list.error.notFound" = "Could not find icon. Please try again.";
 "settings.appIcon.list.error.failedToChange" = "Could not change icon. Please try again.";

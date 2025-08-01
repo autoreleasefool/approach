@@ -1542,6 +1542,8 @@ public enum Strings {
       }
     }
     public enum AppIcon {
+      /// Choose another App Icon
+      public static let message = Strings.tr("Localizable", "settings.appIcon.message", fallback: "Choose another App Icon")
       /// App Icon
       public static let title = Strings.tr("Localizable", "settings.appIcon.title", fallback: "App Icon")
       public enum List {
@@ -1606,8 +1608,20 @@ public enum Strings {
       public static let websiteTitle = Strings.tr("Localizable", "settings.developer.websiteTitle", fallback: "Website")
     }
     public enum DeveloperOptions {
+      /// Force crash
+      public static let forceCrash = Strings.tr("Localizable", "settings.developerOptions.forceCrash", fallback: "Force crash")
       /// Mock database
       public static let populateDatabase = Strings.tr("Localizable", "settings.developerOptions.populateDatabase", fallback: "Mock database")
+      /// Reset database
+      public static let resetDatabase = Strings.tr("Localizable", "settings.developerOptions.resetDatabase", fallback: "Reset database")
+      /// Development
+      public static let title = Strings.tr("Localizable", "settings.developerOptions.title", fallback: "Development")
+    }
+    public enum Development {
+      /// Contributing
+      public static let contributing = Strings.tr("Localizable", "settings.development.contributing", fallback: "Contributing")
+      /// Development
+      public static let title = Strings.tr("Localizable", "settings.development.title", fallback: "Development")
     }
     public enum FeatureFlags {
       /// Match flags to Development

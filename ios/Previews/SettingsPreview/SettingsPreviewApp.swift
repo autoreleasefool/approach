@@ -2,6 +2,7 @@ import AppInfoPackageServiceInterface
 import AppPreviewFeature
 import ComposableArchitecture
 import FeatureFlagsPackageServiceInterface
+import PasteboardPackageServiceInterface
 import SettingsFeature
 import SwiftUI
 import UserDefaultsPackageServiceInterface
@@ -10,9 +11,9 @@ import UserDefaultsPackageServiceInterface
 public struct SettingsPreviewApp: App {
 	let store: Store = {
 		return Store(
-			initialState: Settings.State(),
+			initialState: SettingsList.State(),
 			reducer: {
-				Settings()
+				SettingsList()
 					._printChanges()
 			}, withDependencies: {
 				$0.analytics = .mock
@@ -21,6 +22,7 @@ public struct SettingsPreviewApp: App {
 				$0.errors = .mock
 				$0.userDefaults = .mock
 				$0.featureFlags = .allEnabled
+				$0.pasteboard.copyToClipboard = { _ in }
 
 				$0.appInfo = AppInfoService(
 					initialize: {},
@@ -38,9 +40,7 @@ public struct SettingsPreviewApp: App {
 
 	public var body: some Scene {
 		WindowGroup {
-			NavigationStack {
-				SettingsView(store: store)
-			}
+			SettingsListView(store: store)
 		}
 	}
 }

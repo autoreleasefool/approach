@@ -12,7 +12,7 @@ public struct AnalyticsSettings: Reducer, Sendable {
 	public struct State: Equatable {
 		public var analyticsOptIn: Bool
 
-		public init() {
+		init() {
 			@Dependency(\.analytics) var analytics
 			switch analytics.getOptInStatus() {
 			case .optedIn:
@@ -40,8 +40,6 @@ public struct AnalyticsSettings: Reducer, Sendable {
 		case `internal`(Internal)
 		case binding(BindingAction<State>)
 	}
-
-	public init() {}
 
 	@Dependency(\.analytics) var analytics
 

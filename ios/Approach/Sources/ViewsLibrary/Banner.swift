@@ -111,7 +111,7 @@ extension Banner {
 		)
 
 		public static let error: Self = .init(
-			foreground: Color(uiColor: .label),
+			foreground: Color.black,
 			background: Asset.Colors.Error.light.swiftUIColor
 		)
 

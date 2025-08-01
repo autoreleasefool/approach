@@ -57,6 +57,7 @@
 		CAA658002E2FCDB50054BB00 /* AppPreviewFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CAA657FF2E2FCDB50054BB00 /* AppPreviewFeature */; };
 		CAA658022E2FCDBB0054BB00 /* AppPreviewFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CAA658012E2FCDBB0054BB00 /* AppPreviewFeature */; };
 		CAA658042E2FCDC10054BB00 /* AppPreviewFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CAA658032E2FCDC10054BB00 /* AppPreviewFeature */; };
+		CAA658052E329ED00054BB00 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA8BBC5C28D59B8C00653A1E /* Assets.xcassets */; };
 		CAA668BE2A8F29A800DF3E75 /* EmailService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA668BD2A8F29A800DF3E75 /* EmailService */; };
 		CABA39BF2C38AD7100F74E0C /* AvatarEditorPreviewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABA39BE2C38AD7100F74E0C /* AvatarEditorPreviewApp.swift */; };
 		CABA39C32C38AD7200F74E0C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CABA39C22C38AD7200F74E0C /* Assets.xcassets */; };
@@ -551,6 +552,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CAA658052E329ED00054BB00 /* Assets.xcassets in Resources */,
 				CABC037D2E2F261F00BE6DC4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

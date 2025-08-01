@@ -1,18 +1,25 @@
 import AssetsLibrary
 import SwiftUI
 
-public struct AppIconView: View {
+struct AppIconView: View {
 	let icon: Icon
 	let title: String
+	let message: String?
 	let isCompact: Bool
 
-	init(_ title: String, icon: Icon, isCompact: Bool = false) {
+	init(
+		_ title: String,
+		message: String? = nil,
+		icon: Icon,
+		isCompact: Bool = false
+	) {
 		self.title = title
+		self.message = message
 		self.icon = icon
 		self.isCompact = isCompact
 	}
 
-	public var body: some View {
+	var body: some View {
 		HStack {
 			Image(uiImage: icon.image)
 				.resizable()
@@ -22,7 +29,15 @@ public struct AppIconView: View {
 				.shadow(radius: .standardRadius)
 				.padding(.horizontal, isCompact ? .unitSpacing : .smallSpacing)
 				.padding(.vertical, isCompact ? .unitSpacing : .standardSpacing)
-			Text(title)
+
+			VStack(alignment: .leading, spacing: .unitSpacing) {
+				Text(title)
+
+				if let message {
+					Text(message)
+						.font(.caption)
+				}
+			}
 		}
 	}
 }

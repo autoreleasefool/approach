@@ -41,3 +41,14 @@ struct DevelopmentSection: View {
 		}
 	}
 }
+
+struct DevelopmentListSection: View {
+	var body: some View {
+		Section(Strings.Settings.Development.title) {
+			SettingsLink(
+				title: Strings.Settings.Development.title,
+				destination: SettingsList.SettingsItem.development
+			)
+		}
+	}
+}
