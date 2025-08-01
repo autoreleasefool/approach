@@ -1,4 +1,5 @@
 import AchievementsFeature
+import AchievementsRepositoryInterface
 import AppIconServiceInterface
 import AppInfoPackageServiceInterface
 import AssetsLibrary
@@ -31,6 +32,8 @@ public struct SettingsList: Reducer, Sendable {
 		public let appVersion: String
 
 		public var appIcon: Loadable<AppIcon, Never> = .notLoaded
+		@Shared(.unseenAchievements) public var unseenAchievements: Int = 0
+
 		public var selectedItem: SettingsItem?
 
 		public var isShowingBugReportEmail: Bool = false
@@ -326,7 +329,8 @@ public struct SettingsListView: View {
 				}
 
 				UserSettingsListSection(
-					isAchievementsEnabled: store.isAchievementsEnabled
+					isAchievementsEnabled: store.isAchievementsEnabled,
+					unseenAchievements: store.unseenAchievements
 				)
 
 				DataListSection(

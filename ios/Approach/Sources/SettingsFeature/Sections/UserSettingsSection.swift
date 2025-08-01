@@ -3,6 +3,7 @@ import SwiftUI
 
 struct UserSettingsListSection: View {
 	let isAchievementsEnabled: Bool
+	let unseenAchievements: Int
 
 	var body: some View {
 		Section(Strings.Settings.title) {
@@ -22,6 +23,7 @@ struct UserSettingsListSection: View {
 				SettingsLink(
 					title: Strings.Settings.Achievements.title,
 					subtitle: Strings.Settings.Achievements.footer,
+					badge: unseenAchievements,
 					destination: SettingsList.SettingsItem.achievements
 				)
 			}
