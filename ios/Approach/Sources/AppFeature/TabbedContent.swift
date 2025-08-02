@@ -25,7 +25,7 @@ public struct TabbedContent: Reducer, Sendable {
 		public var accessories = AccessoriesOverview.State()
 		public var bowlersList = BowlersList.State()
 		public var statistics = StatisticsOverview.State()
-		public var settings = Settings.State()
+		public var settings = SettingsList.State()
 
 		public var achievements = AchievementsObserver.State()
 		public var backups = AutomaticBackups.State()
@@ -46,7 +46,7 @@ public struct TabbedContent: Reducer, Sendable {
 
 			case accessories(AccessoriesOverview.Action)
 			case bowlersList(BowlersList.Action)
-			case settings(Settings.Action)
+			case settings(SettingsList.Action)
 			case statistics(StatisticsOverview.Action)
 			case achievements(AchievementsObserver.Action)
 			case backups(AutomaticBackups.Action)
@@ -77,7 +77,7 @@ public struct TabbedContent: Reducer, Sendable {
 		}
 
 		Scope(state: \.settings, action: \.internal.settings) {
-			Settings()
+			SettingsList()
 		}
 
 		Scope(state: \.accessories, action: \.internal.accessories) {
@@ -184,11 +184,9 @@ public struct TabbedContentView: View {
 			.tag(TabbedContent.Tab.accessories)
 			.tabItem { TabbedContent.Tab.accessories.label }
 
-			NavigationStack {
-				SettingsView(
-					store: store.scope(state: \.settings, action: \.internal.settings)
-				)
-			}
+			SettingsListView(
+				store: store.scope(state: \.settings, action: \.internal.settings)
+			)
 			.tag(TabbedContent.Tab.settings)
 			.tabItem { TabbedContent.Tab.settings.label }
 		}

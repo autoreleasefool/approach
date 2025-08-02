@@ -1620,8 +1620,14 @@ public enum Strings {
     public enum Development {
       /// Contributing
       public static let contributing = Strings.tr("Localizable", "settings.development.contributing", fallback: "Contributing")
+      /// You can view the source for %@ using the links above, to report issues or watch the development of new features
+      public static func help(_ p1: Any) -> String {
+        return Strings.tr("Localizable", "settings.development.help", String(describing: p1), fallback: "You can view the source for %@ using the links above, to report issues or watch the development of new features")
+      }
       /// Development
       public static let title = Strings.tr("Localizable", "settings.development.title", fallback: "Development")
+      /// View Source
+      public static let viewSource = Strings.tr("Localizable", "settings.development.viewSource", fallback: "View Source")
     }
     public enum FeatureFlags {
       /// Match flags to Development
@@ -1634,28 +1640,12 @@ public enum Strings {
       public static let title = Strings.tr("Localizable", "settings.featureFlags.title", fallback: "Features")
     }
     public enum Help {
-      /// Acknowledgements
-      public static let acknowledgements = Strings.tr("Localizable", "settings.help.acknowledgements", fallback: "Acknowledgements")
-      /// Developer
-      public static let developer = Strings.tr("Localizable", "settings.help.developer", fallback: "Developer")
-      /// Force Crash
-      public static let forceCrash = Strings.tr("Localizable", "settings.help.forceCrash", fallback: "Force Crash")
       /// Report Bug
       public static let reportBug = Strings.tr("Localizable", "settings.help.reportBug", fallback: "Report Bug")
       /// Send Feedback
       public static let sendFeedback = Strings.tr("Localizable", "settings.help.sendFeedback", fallback: "Send Feedback")
       /// Help
       public static let title = Strings.tr("Localizable", "settings.help.title", fallback: "Help")
-      /// View Source
-      public static let viewSource = Strings.tr("Localizable", "settings.help.viewSource", fallback: "View Source")
-      public enum Development {
-        /// You can view the source for %@ using the links above, to report issues or watch the development of new features
-        public static func help(_ p1: Any) -> String {
-          return Strings.tr("Localizable", "settings.help.development.help", String(describing: p1), fallback: "You can view the source for %@ using the links above, to report issues or watch the development of new features")
-        }
-        /// Development
-        public static let title = Strings.tr("Localizable", "settings.help.development.title", fallback: "Development")
-      }
       public enum ReportBug {
         /// Approach Bug Report (%@)
         public static func subject(_ p1: Any) -> String {
@@ -1666,6 +1656,8 @@ public enum Strings {
     public enum Opponents {
       /// Logs of all your past opponents and a record of your match play.
       public static let footer = Strings.tr("Localizable", "settings.opponents.footer", fallback: "Logs of all your past opponents and a record of your match play.")
+      /// Opponents
+      public static let title = Strings.tr("Localizable", "settings.opponents.title", fallback: "Opponents")
     }
     public enum Statistics {
       /// Fine-tune your preferences when it comes to which statistics to show.

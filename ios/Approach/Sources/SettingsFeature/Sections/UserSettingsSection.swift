@@ -1,14 +1,14 @@
 import StringsLibrary
 import SwiftUI
 
-struct UserSettingsListSection: View {
+struct UserSettingsSection: View {
 	let isAchievementsEnabled: Bool
 	let unseenAchievements: Int
 
 	var body: some View {
 		Section(Strings.Settings.title) {
 			SettingsLink(
-				title: Strings.Opponent.List.title,
+				title: Strings.Settings.Opponents.title,
 				subtitle: Strings.Settings.Opponents.footer,
 				destination: SettingsList.SettingsItem.opponents
 			)

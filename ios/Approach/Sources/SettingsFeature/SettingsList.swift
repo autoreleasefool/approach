@@ -1,7 +1,9 @@
 import AchievementsFeature
 import AchievementsRepositoryInterface
+import AnalyticsServiceInterface
 import AppIconServiceInterface
 import AppInfoPackageServiceInterface
+import ArchiveListFeature
 import AssetsLibrary
 import AutomaticBackupsFeature
 import ComposableArchitecture
@@ -11,8 +13,8 @@ import EmailServiceInterface
 import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsListFeature
-import ImportExportServiceInterface
 import ImportExportFeature
+import ImportExportServiceInterface
 import ModelsLibrary
 import OpponentsListFeature
 import PasteboardPackageServiceInterface
@@ -62,6 +64,24 @@ public struct SettingsList: Reducer, Sendable {
 			daysSinceLastBackup = backups.lastSuccessfulBackupDate()?.daysSince(date()) ?? .never
 			daysSinceLastExport = export.lastExportDate()?.daysSince(date()) ?? .never
 		}
+
+		public mutating func showAppIconList() -> Effect<SettingsList.Action> {
+			self.selectedItem = .appIcon
+			self.destination = .appIcon(.init())
+			return .none
+		}
+
+		public mutating func showBackupsList() -> Effect<SettingsList.Action> {
+			self.selectedItem = .backups
+			self.destination = .backups(.init())
+			return .none
+		}
+
+		public mutating func showAchievementsList() -> Effect<SettingsList.Action> {
+			self.selectedItem = .achievements
+			self.destination = .achievements(.init())
+			return .none
+		}
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
@@ -99,6 +119,7 @@ public struct SettingsList: Reducer, Sendable {
 		case acknowledgements
 		case analytics(AnalyticsSettings)
 		case appIcon(AppIconList)
+		case archive(ArchiveList)
 		case backups(BackupsList)
 		case `import`(Import)
 		case developerOptions(DeveloperOptionsSettings)
@@ -113,6 +134,7 @@ public struct SettingsList: Reducer, Sendable {
 		case achievements
 		case acknowledgements
 		case analytics
+		case archive
 		case appIcon
 		case backups
 		case developerOptions
@@ -188,9 +210,7 @@ public struct SettingsList: Reducer, Sendable {
 					return .none
 
 				case .didTapViewSourceButton:
-					return .run { _ in
-						await openURL(AppConstants.openSourceRepositoryUrl)
-					}
+					return .run { _ in await openURL(AppConstants.openSourceRepositoryUrl) }
 				}
 
 			case let .internal(internalAction):
@@ -221,7 +241,14 @@ public struct SettingsList: Reducer, Sendable {
 					return .none
 
 				case .destination(.dismiss):
-					return .none
+					switch state.destination {
+					case .export, .backups:
+						return .run { _ in export.cleanUp() }
+					case .acknowledgements, .achievements, .analytics, .appIcon, .archive,
+							.developerOptions, .development, .featureFlags, .import,
+							.opponents, .statistics, .none:
+						return .none
+					}
 
 				case .baseSettings(.internal),
 						.baseSettings(.view),
@@ -236,6 +263,9 @@ public struct SettingsList: Reducer, Sendable {
 						.destination(.presented(.appIcon(.delegate(.doNothing)))),
 						.destination(.presented(.appIcon(.internal))),
 						.destination(.presented(.appIcon(.view))),
+						.destination(.presented(.archive(.delegate(.doNothing)))),
+						.destination(.presented(.archive(.internal))),
+						.destination(.presented(.archive(.view))),
 						.destination(.presented(.backups(.delegate(.doNothing)))),
 						.destination(.presented(.backups(.internal))),
 						.destination(.presented(.backups(.view))),
@@ -264,6 +294,7 @@ public struct SettingsList: Reducer, Sendable {
 				}
 
 			case .binding(\.selectedItem):
+				guard state.destination?.settingsItem != state.selectedItem else { return .none }
 				switch state.selectedItem {
 				case .achievements:
 					state.destination = .achievements(.init())
@@ -273,6 +304,8 @@ public struct SettingsList: Reducer, Sendable {
 					state.destination = .analytics(.init())
 				case .appIcon:
 					state.destination = .appIcon(.init())
+				case .archive:
+					state.destination = .archive(.init())
 				case .backups:
 					state.destination = .backups(.init())
 				case .developerOptions:
@@ -300,6 +333,66 @@ public struct SettingsList: Reducer, Sendable {
 		}
 		.ifLet(\.$destination, action: \.internal.destination)
 		.ifLet(\.$alert, action: \.internal.alert)
+
+		AnalyticsReducer<State, Action> { state, action in
+			switch action {
+			case .view(.didTapSendFeedbackButton):
+				return Analytics.Settings.SentFeedback()
+			case .view(.didTapReportBugButton):
+				return Analytics.Settings.ReportedBug()
+			case .view(.didTapViewSourceButton):
+				return Analytics.Settings.ViewedSource()
+
+			case .binding(\.selectedItem):
+				switch state.selectedItem {
+				case .achievements:
+					return Analytics.Settings.ViewedAchievements(
+						unseenAchievements: state.unseenAchievements
+					)
+				case .acknowledgements:
+					return Analytics.Settings.ViewedAcknowledgements()
+				case .analytics:
+					return Analytics.Settings.ViewedAnalytics()
+				case .appIcon:
+					return Analytics.Settings.ViewedAppIcons()
+				case .archive:
+					return Analytics.Settings.ViewedArchived()
+				case .backups:
+					return Analytics.Settings.ViewedBackups()
+				case .development:
+					return Analytics.Settings.ViewedDevelopment()
+				case .export:
+					return Analytics.Settings.ViewedDataExport()
+				case .import:
+					return Analytics.Settings.ViewedDataImport()
+				case .opponents:
+					return Analytics.Settings.ViewedOpponents()
+				case .statistics:
+					return Analytics.Settings.ViewedStatistics()
+				case .developerOptions, .featureFlags, .none:
+					return nil
+				}
+
+			default:
+				return nil
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
+			}
+		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didFetchIcon(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 
 	private func refreshAppIcon() -> Effect<Action> {
@@ -307,6 +400,26 @@ public struct SettingsList: Reducer, Sendable {
 			await send(.internal(.didFetchIcon(Result {
 				AppIcon(rawValue: await appIcon.getAppIconName() ?? "")
 			})))
+		}
+	}
+}
+
+extension SettingsList.Destination.State {
+	var settingsItem: SettingsList.SettingsItem {
+		switch self {
+		case .achievements: .achievements
+		case .acknowledgements: .acknowledgements
+		case .analytics: .analytics
+		case .appIcon: .appIcon
+		case .archive: .archive
+		case .backups: .backups
+		case .developerOptions: .developerOptions
+		case .development: .development
+		case .export: .export
+		case .featureFlags: .featureFlags
+		case .import: .import
+		case .opponents: .opponents
+		case .statistics: .statistics
 		}
 	}
 }
@@ -325,31 +438,31 @@ public struct SettingsListView: View {
 		NavigationSplitView {
 			List(selection: $store.selectedItem) {
 				if store.isDeveloperOptionsEnabled {
-					DeveloperOptionsListSection()
+					DeveloperOptionsSection()
 				}
 
-				UserSettingsListSection(
+				UserSettingsSection(
 					isAchievementsEnabled: store.isAchievementsEnabled,
 					unseenAchievements: store.unseenAchievements
 				)
 
-				DataListSection(
+				DataSection(
 					isBackupsButtonVisible: store.isAutomaticBackupsEnabled,
 					daysSinceLastBackup: store.daysSinceLastBackup,
 					daysSinceLastExport: store.daysSinceLastExport
 				)
 
 				if let appIcon = store.appIcon.value?.image {
-					AppIconListSection(appIcon: appIcon)
+					AppIconSection(appIcon: appIcon)
 				}
 
-				HelpListSection(
+				HelpSection(
 					onTapReportBugButton: { send(.didTapReportBugButton) },
 					onTapSendFeedbackButton: { send(.didTapSendFeedbackButton) },
 					onAcknowledgementsFirstAppear: { send(.didShowAcknowledgements) }
 				)
 
-				DevelopmentListSection()
+				DevelopmentSection()
 
 				AppInfoSection(
 					appVersion: store.appVersion,
@@ -384,6 +497,8 @@ public struct SettingsListView: View {
 					analyticsSettingsView
 				case .appIcon:
 					appIconListView
+				case .archive:
+					archiveListView
 				case .backups:
 					backupsListView
 				case .developerOptions:
@@ -428,6 +543,12 @@ public struct SettingsListView: View {
 	@ViewBuilder private var appIconListView: some View {
 		if let store = store.scope(state: \.destination?.appIcon, action: \.internal.destination.appIcon) {
 			AppIconListView(store: store)
+		}
+	}
+
+	@ViewBuilder private var archiveListView: some View {
+		if let store = store.scope(state: \.destination?.archive, action: \.internal.destination.archive) {
+			ArchiveListView(store: store)
 		}
 	}
 

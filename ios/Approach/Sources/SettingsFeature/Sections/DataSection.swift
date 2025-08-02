@@ -8,49 +8,15 @@ struct DataSection: View {
 	let isBackupsButtonVisible: Bool
 	let daysSinceLastBackup: DaysSince
 	let daysSinceLastExport: DaysSince
-	let onTapImportButton: () -> Void
-	let onTapExportButton: () -> Void
-	let onTapBackupsButton: () -> Void
 
 	var body: some View {
 		Section(Strings.Settings.Data.title) {
-			Button(Strings.Settings.Data.import, action: onTapImportButton)
-				.buttonStyle(.navigation)
+			SettingsLink(
+				title: Strings.Settings.Archive.title,
+				subtitle: Strings.Settings.Archive.footer,
+				destination: SettingsList.SettingsItem.archive
+			)
 
-			Button(action: onTapExportButton) {
-				HStack {
-					let (warningImage, warningImageColor) = daysSinceLastExport.warningImage()
-					Image(systemName: warningImage)
-						.foregroundStyle(warningImageColor)
-
-					Text(Strings.Settings.Data.export)
-				}
-			}
-			.buttonStyle(.navigation)
-
-			if isBackupsButtonVisible {
-				Button(action: onTapBackupsButton) {
-					HStack {
-						let (warningImage, warningImageColor) = daysSinceLastBackup.warningImage()
-						Image(systemName: warningImage)
-							.foregroundStyle(warningImageColor)
-
-						Text(Strings.Settings.Data.automaticBackups)
-					}
-				}
-				.buttonStyle(.navigation)
-			}
-		}
-	}
-}
-
-struct DataListSection: View {
-	let isBackupsButtonVisible: Bool
-	let daysSinceLastBackup: DaysSince
-	let daysSinceLastExport: DaysSince
-
-	var body: some View {
-		Section(Strings.Settings.Data.title) {
 			SettingsLink(
 				title: Strings.Settings.Data.import,
 				destination: SettingsList.SettingsItem.import
@@ -78,18 +44,5 @@ struct DataListSection: View {
 				}
 			}
 		}
-	}
-}
-
-#Preview {
-	List {
-		DataSection(
-			isBackupsButtonVisible: true,
-			daysSinceLastBackup: .days(15),
-			daysSinceLastExport: .never,
-			onTapImportButton: {},
-			onTapExportButton: {},
-			onTapBackupsButton: {}
-		)
 	}
 }

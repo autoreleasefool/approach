@@ -587,6 +587,7 @@
 
 // MARK: - Settings
 
+"settings.acknowledgements.title" = "Acknowledgements";
 "settings.analytics.title" = "Analytics";
 "settings.analytics.info.paragraphOne" = "Approach collects anonymous analytics, such as the number of people using a feature, to improve the app. These analytics are never shared or sold.";
 "settings.analytics.info.paragraphTwo" = "You can opt in or out of letting us collect these analytics below. This won't affect your usage of the app or any of its features.";
@@ -594,13 +595,24 @@
 "settings.analytics.shareAnonymousAnalytics.footer" = "You can opt out from sharing analytics anytime. When you do, you're anonymized activity stops being shared immediately.";
 "settings.analytics.privacyPolicy" = "Privacy Policy";
 "settings.analytics.privacyPolicy.url" = "https://tryapproach.app/privacy";
-"settings.acknowledgements.title" = "Acknowledgements";
+"settings.appIcon.title" = "App Icon";
+"settings.appIcon.message" = "Choose another App Icon";
+"settings.appInfo.title" = "App Info";
+"settings.appIcon.list.error.notFound" = "Could not find icon. Please try again.";
+"settings.appIcon.list.error.failedToChange" = "Could not change icon. Please try again.";
+"settings.appInfo.version" = "Version";
+"settings.appInfo.appVersion" = "%@ (%@)";
+"settings.appInfo.copyright" = "© 2022-2025, Joseph Roque";
+"settings.archive.title" = "Archive";
+"settings.archive.footer" = "An archive of your old data, hidden from the rest of the app.";
 "settings.data.title" = "Data";
 "settings.data.import" = "Import Data";
 "settings.data.export" = "Export Data";
 "settings.data.automaticBackups" = "Automatic Backups";
 "settings.development.title" = "Development";
 "settings.development.contributing" = "Contributing";
+"settings.development.viewSource" = "View Source";
+"settings.development.help" = "You can view the source for %@ using the links above, to report issues or watch the development of new features";
 "settings.developer.name" = "Joseph Roque";
 "settings.developer.contact" = "Contact";
 "settings.developer.mastodonHandle" = "@autoreleasefool@iosdev.space";
@@ -620,20 +632,6 @@
 "settings.help.reportBug" = "Report Bug";
 "settings.help.reportBug.subject" = "Approach Bug Report (%@)";
 "settings.help.sendFeedback" = "Send Feedback";
-"settings.help.forceCrash" = "Force Crash";
-"settings.help.acknowledgements" = "Acknowledgements";
-"settings.help.developer" = "Developer";
-"settings.help.viewSource" = "View Source";
-"settings.help.development.title" = "Development";
-"settings.help.development.help" = "You can view the source for %@ using the links above, to report issues or watch the development of new features";
-"settings.appIcon.title" = "App Icon";
-"settings.appIcon.message" = "Choose another App Icon";
-"settings.appInfo.title" = "App Info";
-"settings.appIcon.list.error.notFound" = "Could not find icon. Please try again.";
-"settings.appIcon.list.error.failedToChange" = "Could not change icon. Please try again.";
-"settings.appInfo.version" = "Version";
-"settings.appInfo.appVersion" = "%@ (%@)";
-"settings.appInfo.copyright" = "© 2022-2025, Joseph Roque";
 "settings.featureFlags.title" = "Features";
 "settings.featureFlags.matchRelease" = "Match flags to Release";
 "settings.featureFlags.matchTest" = "Match flags to Test";
@@ -651,9 +649,8 @@
 "settings.statistics.widgets.title" = "Widgets";
 "settings.statistics.widgets.hideInBowlerList" = "Hide widgets for bowlers";
 "settings.statistics.widgets.hideInLeagueList" = "Hide widgets for leagues";
+"settings.opponents.title" = "Opponents";
 "settings.opponents.footer" = "Logs of all your past opponents and a record of your match play.";
-"settings.archive.title" = "Archive";
-"settings.archive.footer" = "An archive of your old data, hidden from the rest of the app.";
 "settings.title" = "Settings";
 
 // MARK: - Archive

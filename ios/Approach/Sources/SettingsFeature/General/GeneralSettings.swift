@@ -94,12 +94,7 @@ public struct GeneralSettingsView: View {
 
 	public var body: some View {
 		List {
-			if let appIcon = store.appIcon.value?.image {
-				AppIconSection(
-					appIconImage: appIcon,
-					onTapAppIconButton: { send(.didTapAppIcon) }
-				)
-			}
+			
 		}
 		.onAppear { send(.onAppear) }
 	}
