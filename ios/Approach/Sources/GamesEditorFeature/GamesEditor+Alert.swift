@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import StringsLibrary
 
+// migrated
 extension GamesEditor {
 	func reduce(
 		into state: inout State,
@@ -28,6 +29,7 @@ extension GamesEditor {
 	}
 }
 
+// migrated
 extension AlertState where Action == GamesEditor.Destination.DuplicateLanesAlertAction {
 	static var duplicateLanes: Self {
 		Self {

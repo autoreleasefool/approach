@@ -4,6 +4,7 @@ import Foundation
 import ModelsLibrary
 
 extension GamesEditor {
+	// migrated
 	func loadBowlers(state: inout State) -> Effect<Action> {
 		state.elementsRefreshing.insert(.bowlers)
 		state.syncFrameEditorSharedState()
@@ -15,6 +16,7 @@ extension GamesEditor {
 		}
 	}
 
+	// migrated
 	func loadGameDetails(state: inout State) -> Effect<Action> {
 		state.elementsRefreshing.insert(.frames)
 		state.elementsRefreshing.insert(.game)
@@ -55,6 +57,7 @@ extension GamesEditor {
 		.cancellable(id: CancelID.observation, cancelInFlight: true)
 	}
 
+	// migrated
 	func save(frame: Frame.Edit?) -> Effect<Action> {
 		guard let frame else { return .none }
 		return .run { send in
@@ -69,6 +72,7 @@ extension GamesEditor {
 		.cancellable(id: frame.id, cancelInFlight: true)
 	}
 
+	// migrated
 	func save(game: Game.Edit?, in state: GamesEditor.State) -> Effect<Action> {
 		guard var game else { return .none }
 		game.duration = state.lastLoadedGameAt?.calculateDuration(at: date()) ?? game.duration
@@ -86,6 +90,7 @@ extension GamesEditor {
 		.cancellable(id: game.id, cancelInFlight: true)
 	}
 
+	// migrated
 	func save(matchPlay: MatchPlay.Edit?) -> Effect<Action> {
 		guard let matchPlay else { return .none }
 		return .run { send in
@@ -102,6 +107,7 @@ extension GamesEditor {
 }
 
 extension GamesEditor.GameLoadDate {
+	// migrated
 	func calculateDuration(at date: Date) -> TimeInterval {
 		durationWhenLoaded + loadedAt.distance(to: date)
 	}

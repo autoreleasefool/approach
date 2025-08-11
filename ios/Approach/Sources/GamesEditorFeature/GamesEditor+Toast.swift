@@ -2,6 +2,7 @@ import ComposableArchitecture
 import StringsLibrary
 import ToastLibrary
 
+// migrated
 extension GamesEditor {
 	public enum ToastAction: Equatable, ToastableAction {
 		case unlockGame
@@ -71,3 +72,45 @@ extension GamesEditor.State {
 		return .none
 	}
 }
+
+extension ToastState where Action == GamesEditorNext.ToastAction {
+	static var locked: Self {
+		ToastState(
+			content: .hud(
+				HUDContent(
+					title: Strings.Game.Editor.locked,
+					message: Strings.Game.Editor.Locked.message,
+					systemImage: "lock",
+					button: .init(
+						title: Strings.Game.Editor.Locked.unlock,
+						action: .unlockGame
+					)
+				)
+			),
+			style: .error
+		)
+	}
+
+	static func strikeOut(withFinalScore: Int) -> Self {
+		ToastState(
+			content: .toast(SnackContent(
+				message: Strings.Game.Editor.Fields.StrikeOut.ifYouStrikeOut(withFinalScore),
+				systemImage: "info.circle"
+			)),
+			duration: 4.0,
+			style: .primary
+		)
+	}
+}
+
+//extension GamesEditorNext.State {
+//	mutating func presentLockedAlert() -> Effect<GamesEditorNext.Action> {
+//		toast = .locked
+//		return .none
+//	}
+//
+//	mutating func presentStrikeOutAlert(withFinalScore: Int) -> Effect<GamesEditorNext.Action> {
+//		toast = .strikeOut(withFinalScore: withFinalScore)
+//		return .none
+//	}
+//}

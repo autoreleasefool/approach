@@ -3,6 +3,7 @@ import ComposableArchitecture
 import ModelsLibrary
 import StringsLibrary
 
+// migrated
 extension GameDetailsHeader {
 	func startShimmering(ifEnabled shimmerEnabled: Bool) -> Effect<Action> {
 		shimmerEnabled ? .run { send in
@@ -22,6 +23,7 @@ extension GameDetailsHeader {
 	}
 }
 
+// migrated
 extension GameDetailsHeader.State {
 	public enum NextElement: Equatable, CustomStringConvertible {
 		case bowler(name: String, id: Bowler.ID)
@@ -44,6 +46,7 @@ extension GameDetailsHeader.State {
 	}
 }
 
+// migrated
 extension GameDetailsHeader.State {
 	func shouldStartShimmering() -> Effect<GameDetailsHeader.Action> {
 		.send(.internal(.startShimmering))

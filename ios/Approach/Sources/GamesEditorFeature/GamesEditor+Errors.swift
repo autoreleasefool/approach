@@ -3,6 +3,7 @@ import ErrorsFeature
 import Foundation
 import ModelsLibrary
 
+// migrated, keeping
 enum GamesEditorError: LocalizedError {
 	case outdatedFrames(forGame: Game.ID?, expectedGame: Game.ID?)
 
@@ -17,6 +18,7 @@ enum GamesEditorError: LocalizedError {
 	}
 }
 
+// migrated
 extension GamesEditor {
 	func reduce(
 		into _: inout State,

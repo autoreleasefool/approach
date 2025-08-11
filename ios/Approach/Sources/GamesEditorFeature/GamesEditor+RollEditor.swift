@@ -1,6 +1,7 @@
 import ComposableArchitecture
 
 extension GamesEditor.State {
+	// migrated
 	mutating func syncRollEditorSharedState() {
 		guard let frames else { return }
 		let currentRoll = frames[currentFrameIndex].rolls[currentRollIndex]
@@ -15,12 +16,14 @@ extension GamesEditor {
 		switch rollEditorAction {
 		case let .delegate(delegateAction):
 			switch delegateAction {
+			// migrated
 			case let .didChangeBall(ball):
 				let currentFrameIndex = state.currentFrameIndex
 				let currentRollIndex = state.currentRollIndex
 				state.frames?[currentFrameIndex].setBowlingBall(ball, forRoll: currentRollIndex)
 				return save(frame: state.frames?[state.currentFrameIndex])
 
+			// TODO: migrate
 			case .didRequestBallPicker:
 				let bowlingBall = state.frames?[state.currentFrameIndex].rolls[state.currentRollIndex].bowlingBall?.id
 				state.destination = .sheets(.ballPicker(.init(
@@ -30,6 +33,7 @@ extension GamesEditor {
 				)))
 				return .none
 
+			// migrated
 			case .didEditRoll:
 				let currentFrameIndex = state.currentFrameIndex
 				let currentRollIndex = state.currentRollIndex

@@ -7,6 +7,30 @@ extension Frame {
 }
 
 extension Frame {
+	public struct Selection: Hashable, Sendable {
+		public var frameIndex: Int
+		public var rollIndex: Int
+
+		public init(frameIndex: Int, rollIndex: Int) {
+			self.frameIndex = frameIndex
+			self.rollIndex = rollIndex
+		}
+
+		public mutating func update(frameIndex: Int? = nil, rollIndex: Int? = nil) {
+			self.frameIndex = frameIndex ?? self.frameIndex
+			self.rollIndex = rollIndex ?? self.rollIndex
+		}
+
+		public var indices: (frame: Int, roll: Int) {
+			(frameIndex, rollIndex)
+		}
+
+		var isLast: Bool { Frame.isLast(frameIndex) }
+		public static let unselected: Self = .init(frameIndex: -1, rollIndex: -1)
+	}
+}
+
+extension Frame {
 	public struct Roll: Sendable, Equatable, Codable {
 		public var pinsDowned: Set<Pin>
 		public var didFoul: Bool

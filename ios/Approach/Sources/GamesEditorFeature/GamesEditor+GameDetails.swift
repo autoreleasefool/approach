@@ -10,16 +10,19 @@ extension GamesEditor {
 		switch gameDetailsAction {
 		case let .delegate(delegateAction):
 			switch delegateAction {
+			// migrated
 			case let .didEditMatchPlay(.success(matchPlay)):
 				guard state.game?.matchPlay == nil || state.game?.matchPlay?.id == matchPlay?.id else { return .none }
 				state.game?.matchPlay = matchPlay
 				return save(matchPlay: state.game?.matchPlay)
 
+			// migrated
 			case let .didEditMatchPlay(.failure(error)):
 				return state.errors
 					.enqueue(.failedToSaveMatchPlay, thrownError: error, toastMessage: Strings.Error.Toast.failedToSave)
 					.map { .internal(.errors($0)) }
 
+			// migrated
 			case let .didEditGame(game):
 				guard let game, state.currentGameId == game.id else { return .none }
 				state.game = game
@@ -28,6 +31,7 @@ extension GamesEditor {
 				state.syncRollEditorSharedState()
 				return save(game: state.game, in: state)
 
+			// migrated
 			case .didClearManualScore:
 				state.hideNextHeaderIfNecessary()
 				let gameScore = state.score?.frames.gameScore() ?? 0
@@ -35,6 +39,7 @@ extension GamesEditor {
 				state.game?.score = gameScore
 				return save(game: state.game, in: state)
 
+			// migrated
 			case .didSelectLanes:
 				let hasOtherGames = Set(state.bowlerGameIds.flatMap { $0.value }).count > 1
 				if hasOtherGames && !state.didPromptLaneDuplication {
@@ -44,9 +49,11 @@ extension GamesEditor {
 				}
 				return .none
 
+			// migrated
 			case .didProvokeLock:
 				return state.presentLockedAlert()
 
+			// migrated
 			case let .didMeasureMinimumSheetContentSize(size):
 				state.gameDetailsMinimumContentSize = size
 				if state.sheetDetent == .height(.zero) {
@@ -54,6 +61,7 @@ extension GamesEditor {
 				}
 				return .none
 
+			// migrated
 			case let .didMeasureSectionHeaderContentSize(size):
 				state.gameDetailsHeaderSize = size
 				return .none
@@ -65,6 +73,7 @@ extension GamesEditor {
 					})))
 				}
 
+			// migrated
 			case let .didProceed(next):
 				switch next {
 				case let .bowler(_, id):

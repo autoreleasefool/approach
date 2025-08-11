@@ -3,6 +3,7 @@ import Foundation
 import ModelsLibrary
 
 extension GameDetails {
+	// migrated
 	func observeGame(gameId: UUID) -> Effect<Action> {
 		.run { send in
 			for try await game in games.observe(gameId) {
@@ -14,6 +15,7 @@ extension GameDetails {
 		.cancellable(id: CancelID.observation, cancelInFlight: true)
 	}
 
+	// migrated
 	func createMatchPlay(_ matchPlay: MatchPlay.Edit) -> Effect<Action> {
 		.run { send in
 			await send(.delegate(.didEditMatchPlay(Result {
@@ -24,6 +26,7 @@ extension GameDetails {
 		.cancellable(id: CancelID.saveMatchPlay)
 	}
 
+	// migrated
 	func deleteMatchPlay(state: inout State) -> Effect<Action> {
 		guard let matchPlay = state.game?.matchPlay else { return .none }
 		state.game?.matchPlay = nil
@@ -40,6 +43,7 @@ extension GameDetails {
 }
 
 extension GameDetails.State {
+	// migrated
 	mutating func loadGameDetails(forGameId: Game.ID, didChangeBowler: Bool) -> Effect<GameDetails.Action> {
 		gameId = forGameId
 		shouldHeaderShimmer = didChangeBowler
@@ -49,6 +53,7 @@ extension GameDetails.State {
 		)
 	}
 
+	// migrated
 	mutating func startShimmer() -> Effect<GameDetails.Action> {
 		guard shouldHeaderShimmer else { return .none }
 		shouldHeaderShimmer = false
@@ -57,6 +62,7 @@ extension GameDetails.State {
 	}
 }
 
+// migrated
 extension GameDetails.State {
 	mutating func syncHeader() {
 		gameDetailsHeader.currentBowlerName = game?.bowler.name ?? ""

@@ -2,10 +2,8 @@ import AnalyticsServiceInterface
 import AssetsLibrary
 import AvatarServiceInterface
 import ComposableArchitecture
-import EquatablePackageLibrary
-import ExtensionsPackageLibrary
 import FeatureActionLibrary
-import FeatureFlagsLibrary
+import FramesRepositoryInterface
 import GearRepositoryInterface
 import ModelsLibrary
 import RecentlyUsedServiceInterface
@@ -14,25 +12,40 @@ import SwiftUI
 import ViewsLibrary
 
 @Reducer
-public struct RollEditor: Reducer, Sendable {
+public struct RollEditorNext: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
-		public var ballRolled: Gear.Summary?
-		public var didFoul: Bool
-		public var isEditable: Bool = true
+		@Shared(.frames) public var frames: [Frame.Edit]?
+		@Shared(.currentFrame) public var currentFrame: Frame.Selection
+		@Shared(.isEditable) public var isEditable: Bool
 
 		public var recentGear: IdentifiedArrayOf<Gear.Summary> = []
 
-		init(ballRolled: Gear.Summary? = nil, didFoul: Bool = false) {
-			self.ballRolled = ballRolled
-			self.didFoul = didFoul
+		var ballRolled: Gear.Summary? {
+			frames?[currentFrame.frameIndex].rolls[currentFrame.rollIndex].bowlingBall
+		}
+
+		var didFoul: Bool {
+			frames?[currentFrame.frameIndex].rolls[currentFrame.rollIndex].roll.didFoul ?? false
+		}
+
+		fileprivate mutating func updateBallRolled(to: Gear.Summary?) {
+			$frames.withLock {
+				$0?[currentFrame.frameIndex].setBowlingBall(to, forRoll: currentFrame.rollIndex)
+			}
+		}
+
+		fileprivate mutating func toggleDidFoul() {
+			$frames.withLock {
+				$0?[currentFrame.frameIndex].toggleDidFoul(forRoll: currentFrame.rollIndex)
+			}
 		}
 	}
 
 	public enum Action: FeatureAction, ViewAction {
 		@CasePathable
 		public enum View {
-			case didStartTask
+			case task
 			case didTapBall(Gear.ID)
 			case didTapOtherButton
 			case didToggleFoul
@@ -43,9 +56,7 @@ public struct RollEditor: Reducer, Sendable {
 		}
 		@CasePathable
 		public enum Delegate {
-			case didEditRoll
 			case didRequestBallPicker
-			case didChangeBall(Gear.Summary?)
 			case didProvokeLock
 		}
 
@@ -53,8 +64,6 @@ public struct RollEditor: Reducer, Sendable {
 		case `internal`(Internal)
 		case delegate(Delegate)
 	}
-
-	public init() {}
 
 	@Dependency(GearRepository.self) var gear
 	@Dependency(RecentlyUsedService.self) var recentlyUsed
@@ -64,8 +73,7 @@ public struct RollEditor: Reducer, Sendable {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				// migrated
-				case .didStartTask:
+				case .task:
 					return .run { send in
 						for try await recentlyUsed in gear.mostRecentlyUsed(ofKind: .bowlingBall, limit: 4) {
 							await send(.internal(.didLoadGear(.success(recentlyUsed.sorted(by: { $0.name < $1.name })))))
@@ -74,28 +82,23 @@ public struct RollEditor: Reducer, Sendable {
 						await send(.internal(.didLoadGear(.failure(error))))
 					}
 
-				// migrated
 				case let .didTapBall(id):
 					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					guard let ball = state.recentGear[id: id] else { return .send(.delegate(.didRequestBallPicker)) }
+
 					if state.ballRolled?.id == id {
-						state.ballRolled = nil
-						return .send(.delegate(.didChangeBall(nil)))
+						state.updateBallRolled(to: nil)
+						return .none
 					} else {
-						state.ballRolled = ball
-						return .merge(
-							.send(.delegate(.didChangeBall(ball))),
-							.run { [id = id] _ in recentlyUsed.didRecentlyUseResource(.gear, id) }
-						)
+						state.updateBallRolled(to: ball)
+						return .run { [id = id] _ in recentlyUsed.didRecentlyUseResource(.gear, id) }
 					}
 
-				// migrated
 				case .didToggleFoul:
 					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
-					state.didFoul.toggle()
-					return .send(.delegate(.didEditRoll))
+					state.toggleDidFoul()
+					return .none
 
-				// migrated
 				case .didTapOtherButton:
 					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					return .send(.delegate(.didRequestBallPicker))
@@ -103,7 +106,6 @@ public struct RollEditor: Reducer, Sendable {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				// migrated
 				case let .didLoadGear(.success(gear)):
 					state.recentGear = .init(uniqueElements: gear)
 					if let ballRolled = state.ballRolled {
@@ -111,7 +113,6 @@ public struct RollEditor: Reducer, Sendable {
 					}
 					return .none
 
-				// migrated
 				case .didLoadGear(.failure):
 					// FIXME: Should this error from loading recent gear be handled, or just let silently fail?
 					return .none
@@ -122,16 +123,22 @@ public struct RollEditor: Reducer, Sendable {
 			}
 		}
 
-
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didLoadGear(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 }
 
 // MARK: - View
 
-// migrated
-@ViewAction(for: RollEditor.self)
-public struct RollEditorView: View {
-	public let store: StoreOf<RollEditor>
+@ViewAction(for: RollEditorNext.self)
+public struct RollEditorNextView: View {
+	public let store: StoreOf<RollEditorNext>
 
 	private static let selectedStrokeStyle = StrokeStyle(lineWidth: 4, lineCap: .round, dash: [8])
 
@@ -181,14 +188,13 @@ public struct RollEditorView: View {
 			}
 			.buttonStyle(TappableElement())
 		}
-		.task { await send(.didStartTask).finish() }
+		.task { await send(.task).finish() }
 	}
 }
 
-// migrated
-//extension Color {
-//	var rgb: Avatar.Background.RGB {
-//		let (red, green, blue, _) = UIColor(self).rgba
-//		return .init(red, green, blue)
-//	}
-//}
+extension Color {
+	var rgb: Avatar.Background.RGB {
+		let (red, green, blue, _) = UIColor(self).rgba
+		return .init(red, green, blue)
+	}
+}

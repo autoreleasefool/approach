@@ -200,6 +200,7 @@ extension View {
 	}
 }
 
+// migrated
 private struct SheetContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct WindowContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct HeaderContentSizeKey: PreferenceKey, CGSizePreferenceKey {}

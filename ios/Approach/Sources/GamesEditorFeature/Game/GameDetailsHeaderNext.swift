@@ -8,37 +8,61 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
-// migrated
 @Reducer
-public struct GameDetailsHeader: Reducer, Sendable {
+public struct GameDetailsHeaderNext: Reducer, Sendable {
 	@ObservableState
 	public struct State: Equatable {
-		public var currentBowlerName: String
-		public var currentLeagueName: String
-		public var shimmerColor: Color?
-		public var next: NextElement?
+		@Shared(.currentBowlerId) public var currentBowlerId: Bowler.ID
+		@Shared(.game) public var game: Game.Edit?
+		@Shared(.nextHeaderElement) public var nextHeaderElement: NextElement?
 
 		public var isFlashEditorChangesEnabled: Bool
+		public var shimmerColor: Color?
 
-		init(currentBowlerName: String = "", currentLeagueName: String = "", nextElement: NextElement? = nil) {
-			self.currentBowlerName = currentBowlerName
-			self.currentLeagueName = currentLeagueName
-			self.next = nextElement
+		var currentBowlerName: String {
+			game?.bowler.name ?? ""
+		}
 
+		var currentLeagueName: String {
+			game?.league.name ?? ""
+		}
+
+		init() {
 			@Dependency(\.preferences) var preferences
 			self.isFlashEditorChangesEnabled = preferences.bool(forKey: .gameShouldNotifyEditorChanges) ?? true
+		}
+
+		public enum NextElement: Equatable, Sendable, CustomStringConvertible {
+			case bowler(name: String, id: Bowler.ID)
+			case roll(rollIndex: Int)
+			case frame(frameIndex: Int)
+			case game(gameIndex: Int, bowler: Bowler.ID, game: Game.ID)
+
+			public var description: String {
+				switch self {
+				case let .bowler(name, _):
+					name
+				case let .roll(rollIndex):
+					Strings.Roll.title(rollIndex + 1)
+				case let .frame(frameIndex):
+					Strings.Frame.title(frameIndex + 1)
+				case let .game(gameIndex, _, _):
+					Strings.Game.titleWithOrdinal(gameIndex + 1)
+				}
+			}
 		}
 	}
 
 	public enum Action: FeatureAction, ViewAction {
 		@CasePathable
 		public enum View {
-			case didStartTask
+			case task
+			case onAppear
 			case didTapNext(State.NextElement)
 		}
 		@CasePathable
 		public enum Internal {
-			case startShimmering
+			case bowlerIdDidChange(Bowler.ID)
 			case setShimmerColor(Color?)
 			case setFlashEditorChangesEnabled(Bool)
 		}
@@ -62,7 +86,13 @@ public struct GameDetailsHeader: Reducer, Sendable {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didStartTask:
+				case .onAppear:
+					return .publisher {
+						state.$currentBowlerId.publisher
+							.map { .internal(.bowlerIdDidChange($0)) }
+					}
+
+				case .task:
 					return .run { send in
 						for await key in preferences.observe(keys: [.gameShouldNotifyEditorChanges]) {
 							await send(.internal(.setFlashEditorChangesEnabled(preferences.bool(forKey: key) ?? true)))
@@ -70,23 +100,12 @@ public struct GameDetailsHeader: Reducer, Sendable {
 					}
 
 				case let .didTapNext(next):
-					let shimmeringEffect: Effect<Action>
-					switch next {
-					case .bowler:
-						shimmeringEffect = state.shouldStartShimmering()
-					case .frame, .game, .roll:
-						shimmeringEffect = .none
-					}
-
-					return .merge(
-						shimmeringEffect,
-						.send(.delegate(.didProceed(to: next)))
-					)
+					return .send(.delegate(.didProceed(to: next)))
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .startShimmering:
+				case .bowlerIdDidChange:
 					return startShimmering(ifEnabled: state.isFlashEditorChangesEnabled)
 
 				case let .setShimmerColor(color):
@@ -103,14 +122,30 @@ public struct GameDetailsHeader: Reducer, Sendable {
 			}
 		}
 	}
+
+	func startShimmering(ifEnabled shimmerEnabled: Bool) -> Effect<Action> {
+		shimmerEnabled ? .run { send in
+			for color in [
+				Asset.Colors.Primary.light.swiftUIColor,
+				Asset.Colors.Primary.light.swiftUIColor.opacity(0),
+				Asset.Colors.Primary.light.swiftUIColor,
+				Asset.Colors.Primary.light.swiftUIColor.opacity(0),
+				nil,
+			] {
+				guard !Task.isCancelled else { return }
+				await send(.internal(.setShimmerColor(color)), animation: .easeInOut(duration: 0.5))
+				try await clock.sleep(for: .milliseconds(500))
+			}
+		}
+		.cancellable(id: CancelID.shimmering, cancelInFlight: true) : .none
+	}
 }
 
 // MARK: - View
 
-// migrated
-@ViewAction(for: GameDetailsHeader.self)
-public struct GameDetailsHeaderView: View {
-	public let store: StoreOf<GameDetailsHeader>
+@ViewAction(for: GameDetailsHeaderNext.self)
+public struct GameDetailsHeaderNextView: View {
+	public let store: StoreOf<GameDetailsHeaderNext>
 
 	public var body: some View {
 		HStack(alignment: .center) {
@@ -134,7 +169,7 @@ public struct GameDetailsHeaderView: View {
 
 			Spacer()
 
-			if let next = store.next {
+			if let next = store.nextHeaderElement {
 				Button { send(.didTapNext(next)) } label: {
 					HStack {
 						Text(String(describing: next))
@@ -155,21 +190,6 @@ public struct GameDetailsHeaderView: View {
 				.buttonStyle(TappableElement())
 			}
 		}
-		.task { await send(.didStartTask).finish() }
+		.task { await send(.task).finish() }
 	}
 }
-
-#if DEBUG
-#Preview {
-	GameDetailsHeaderView(
-		store: .init(
-			initialState: GameDetailsHeader.State(
-				currentBowlerName: "Joseph Roque",
-				currentLeagueName: "Majors",
-				nextElement: .bowler(name: "Sarah", id: .init(0))
-			),
-			reducer: GameDetailsHeader.init
-		)
-	)
-}
-#endif

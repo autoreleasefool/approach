@@ -88,6 +88,10 @@ extension Frame.Edit {
 		rolls[rollIndex].roll.didFoul = didFoul
 	}
 
+	public mutating func toggleDidFoul(forRoll rollIndex: Int) {
+		rolls[rollIndex].roll.didFoul.toggle()
+	}
+
 	public mutating func setDownedPins(rollIndex: Int, to downedPins: Set<Pin>) {
 		rolls[rollIndex].roll.pinsDowned = downedPins
 		let clearRolledBall = !(Frame.isLast(index) || Frame.isLastRoll(index)) && deck(forRoll: rollIndex).arePinsCleared

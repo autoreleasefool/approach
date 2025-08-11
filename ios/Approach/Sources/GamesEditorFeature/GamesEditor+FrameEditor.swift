@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import ModelsLibrary
 
+// migrated
 extension GamesEditor.State {
 	mutating func syncFrameEditorSharedState() {
 		guard let frames else { return }
@@ -16,6 +17,7 @@ extension GamesEditor.State {
 	}
 }
 
+// migrated
 extension GamesEditor {
 	func reduce(into state: inout State, frameEditorAction: FrameEditor.Action) -> Effect<Action> {
 		switch frameEditorAction {

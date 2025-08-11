@@ -11,7 +11,7 @@ import TestDatabaseUtilitiesLibrary
 public struct GameEditorPreviewApp: App {
 	let store: Store = {
 		return .init(
-			initialState: GamesEditor.State(
+			initialState: GamesEditorNext.State(
 				bowlerIds: [UUID(0), UUID(1)],
 				bowlerGameIds: [
 					UUID(0): [UUID(1), UUID(2)],
@@ -21,7 +21,7 @@ public struct GameEditorPreviewApp: App {
 				initialGameId: UUID(1)
 			),
 			reducer: {
-				GamesEditor()
+				GamesEditorNext()
 					._printChanges()
 			}, withDependencies: {
 				$0.analytics = .mock
@@ -40,7 +40,7 @@ public struct GameEditorPreviewApp: App {
 	public var body: some Scene {
 		WindowGroup {
 			NavigationStack {
-				GamesEditorView(store: store)
+				GamesEditorNextView(store: store)
 			}
 		}
 	}
