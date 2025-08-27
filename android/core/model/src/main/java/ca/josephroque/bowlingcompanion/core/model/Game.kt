@@ -139,10 +139,9 @@ data class GameInProgress(
 data class ShareableGame(
 	val id: GameID,
 	val index: Int,
-	val score: Int,
-	val scoringMethod: GameScoringMethod,
 	val bowlerName: String,
 	val leagueName: String,
 	val seriesDate: LocalDate,
 	val alleyName: String?,
+	val score: ScoringGame,
 )

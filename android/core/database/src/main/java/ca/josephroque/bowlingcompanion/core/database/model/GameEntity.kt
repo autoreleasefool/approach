@@ -12,7 +12,6 @@ import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
-import ca.josephroque.bowlingcompanion.core.model.ShareableGame
 import ca.josephroque.bowlingcompanion.core.model.TrackableGame
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -86,21 +85,8 @@ data class GameEditEntity(
 data class ShareableGameEntity(
 	val id: GameID,
 	val index: Int,
-	val score: Int,
-	val scoringMethod: GameScoringMethod,
 	val bowlerName: String,
 	val leagueName: String,
 	val seriesDate: LocalDate,
 	val alleyName: String?,
-) {
-	fun asModel(): ShareableGame = ShareableGame(
-		id = id,
-		index = index,
-		score = score,
-		scoringMethod = scoringMethod,
-		bowlerName = bowlerName,
-		leagueName = leagueName,
-		seriesDate = seriesDate,
-		alleyName = alleyName,
-	)
-}
+)

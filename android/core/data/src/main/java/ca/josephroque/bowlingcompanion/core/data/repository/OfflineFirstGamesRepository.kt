@@ -30,6 +30,7 @@ import ca.josephroque.bowlingcompanion.core.model.isGameFinished
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -41,6 +42,7 @@ class OfflineFirstGamesRepository @Inject constructor(
 	private val bowlerDao: BowlerDao,
 	private val gameDao: GameDao,
 	private val gearDao: GearDao,
+	private val scoresRepository: ScoresRepository,
 	private val framesRepository: FramesRepository,
 	private val userDataRepository: UserDataRepository,
 	private val transactionRunner: TransactionRunner,
@@ -66,8 +68,20 @@ class OfflineFirstGamesRepository @Inject constructor(
 
 	override fun getGameIndex(gameId: GameID): Flow<Int> = gameDao.getGameIndex(gameId)
 
-	override fun getShareableGame(gameId: GameID): Flow<ShareableGame> = gameDao.getShareableGame(gameId)
-		.map { it.asModel() }
+	override fun getShareableGame(gameId: GameID): Flow<ShareableGame> = combine(
+		gameDao.getShareableGame(gameId),
+		scoresRepository.getScore(gameId),
+	) { game, score ->
+		ShareableGame(
+			id = game.id,
+			index = game.index,
+			score = score,
+			bowlerName = game.bowlerName,
+			leagueName = game.leagueName,
+			seriesDate = game.seriesDate,
+			alleyName = game.alleyName,
+		)
+	}
 
 	override suspend fun getGameInProgress(): GameInProgress? {
 		val userData = userDataRepository.userData.first()
