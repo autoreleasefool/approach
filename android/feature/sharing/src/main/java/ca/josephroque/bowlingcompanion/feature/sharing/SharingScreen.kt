@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -64,7 +65,10 @@ fun SharingSheet(
 		viewModel.handleAction(SharingScreenUiAction.DidStartSharing(source, isSystemInDarkTheme))
 	}
 
+	val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
 	ModalBottomSheet(
+		sheetState = sheetState,
 		onDismissRequest = onDismiss,
 		modifier = modifier,
 	) {
