@@ -18,5 +18,7 @@ dependencies {
 	api(libs.androidx.compose.ui.tooling.preview)
 	api(libs.androidx.core.ktx)
 
+	implementation(libs.androidx.activity.ktx)
+
 	debugApi(libs.androidx.compose.ui.tooling)
 }

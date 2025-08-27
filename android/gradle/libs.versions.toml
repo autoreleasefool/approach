@@ -3,6 +3,7 @@ minSdk = "26" # ignore unused warning
 compileSdk = "35" # ignore unused warning
 targetSdk = "35" # ignore unused warning
 
+activityKtx = "1.10.1"
 androidGradlePlugin = "8.11.0"
 androidxActivity = "1.10.1"
 androidxComposeBom = "2025.06.01"
@@ -37,6 +38,7 @@ vico = "1.16.1"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
+androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
