@@ -46,13 +46,17 @@ import ca.josephroque.bowlingcompanion.core.model.isLastRoll
 import ca.josephroque.bowlingcompanion.core.model.stub.ScoringStub
 
 @Composable
-fun ScoreSheet(state: ScoreSheetUiState, onAction: (ScoreSheetUiAction) -> Unit, modifier: Modifier = Modifier) {
+fun ScoreSheet(
+	state: ScoreSheetUiState,
+	onAction: (ScoreSheetUiAction) -> Unit,
+	modifier: Modifier = Modifier,
+) {
 	BoxWithConstraints(
 		modifier = modifier.width(120.dp * 12f),
 	) {
 		val scrollState = rememberScrollState()
 		val cellWidth = if (state.configuration.relativeContainerSizing) {
-			if (maxWidth >= 600.dp) maxWidth / 5f else maxWidth / 3f
+			if (this.maxWidth >= 600.dp) maxWidth / 5f else maxWidth / 3f
 		} else {
 			120.dp
 		}
@@ -71,11 +75,12 @@ fun ScoreSheet(state: ScoreSheetUiState, onAction: (ScoreSheetUiAction) -> Unit,
 			cellWidth = cellWidth,
 			modifier = Modifier.then(
 				if (state.configuration.scrollEnabled) {
-					Modifier.horizontalScroll(scrollState)
+					Modifier
+						.horizontalScroll(scrollState)
 				} else {
-					Modifier.width(120.dp * 12f)
+					Modifier
 				},
-			),
+			)
 		)
 	}
 }
@@ -94,6 +99,16 @@ fun LazyScoreSheet(
 		userScrollEnabled = userScrollEnabled,
 		modifier = modifier,
 	) {
+		if (state.configuration.gameIndexPosition.contains(GameIndexPosition.START)) {
+			item {
+				GameIndexCell(
+					index = state.game?.index ?: 0,
+					style = state.configuration.style,
+					modifier = Modifier.width(cellWidth),
+				)
+			}
+		}
+
 		if (state.configuration.scorePosition.contains(ScorePosition.START)) {
 			item {
 				ScoreCell(
@@ -169,6 +184,14 @@ fun ScoreSheetRow(
 	modifier: Modifier = Modifier,
 ) {
 	Row(modifier = modifier) {
+		if (state.configuration.gameIndexPosition.contains(GameIndexPosition.START)) {
+			GameIndexCell(
+				index = state.game?.index ?: 0,
+				style = state.configuration.style,
+				modifier = Modifier.width(cellWidth),
+			)
+		}
+
 		if (state.configuration.scorePosition.contains(ScorePosition.START)) {
 			ScoreCell(
 				score = state.game?.score ?: 0,
@@ -434,6 +457,31 @@ private fun RailCell(
 }
 
 @Composable
+private fun GameIndexCell(
+	index: Int,
+	style: ScoreSheetConfiguration.Style,
+	modifier: Modifier = Modifier,
+) {
+	Column(
+		horizontalAlignment = Alignment.CenterHorizontally,
+		modifier = modifier
+			.background(colorResource(style.backgroundColor))
+			.endBorder(4.dp, colorResource(style.borderColor))
+			.padding(horizontal = 16.dp, vertical = 8.dp)
+	) {
+		Spacer(modifier = Modifier.weight(1f))
+
+		Text(
+			text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.game_with_ordinal, index + 1),
+			style = MaterialTheme.typography.titleMedium,
+			color = colorResource(style.textColorOnBackground),
+		)
+
+		Spacer(modifier = Modifier.weight(1f))
+	}
+}
+
+@Composable
 private fun ScoreCell(
 	score: Int,
 	position: ScorePosition,
@@ -488,6 +536,7 @@ private fun ScoreSheetPreview(
 					scrollEnabled = false,
 					framePosition = setOf(framePosition),
 					scorePosition = setOf(ScorePosition.START, ScorePosition.END),
+					gameIndexPosition = setOf(GameIndexPosition.START),
 					style = ScoreSheetConfiguration.Style.PLAIN,
 				),
 				selection = ScoreSheetUiState.Selection(frameIndex = -1, rollIndex = -1),

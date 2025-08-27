@@ -54,7 +54,7 @@ fun ScoreSheetLazyList(
 		modifier = modifier
 			.fillMaxWidth(),
 	) {
-		val cellWidth = maxWidth / 3f
+		val cellWidth = this.maxWidth / 3f
 
 		val firstScoreSheet = state.bowlerScores.firstOrNull()?.firstOrNull()?.scoreSheet
 			?: return@BoxWithConstraints
@@ -93,7 +93,7 @@ fun ScoreSheetList(
 		modifier = modifier
 			.fillMaxWidth(),
 	) {
-		val cellWidth = maxWidth / 3f
+		val cellWidth = this.maxWidth / 3f
 
 		val firstScoreSheet = state.bowlerScores.firstOrNull()?.firstOrNull()?.scoreSheet
 			?: return@BoxWithConstraints

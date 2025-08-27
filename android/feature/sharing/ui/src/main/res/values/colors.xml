@@ -8,4 +8,9 @@
 
     <color name="marker_light">#8680DF</color>
     <color name="marker_dark">#FF8DC6</color>
+
+    <color name="chart_label_background_light">#33000000</color>
+    <color name="chart_label_background_dark">#CC999999</color>
+    <color name="chart_label_foreground_light">#000000</color>
+    <color name="chart_label_foreground_dark">#E6FFFFFF</color>
 </resources>

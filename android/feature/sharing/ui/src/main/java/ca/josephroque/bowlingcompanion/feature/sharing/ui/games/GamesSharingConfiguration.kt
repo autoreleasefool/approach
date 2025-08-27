@@ -39,9 +39,10 @@ fun GamesSharingConfiguration(
 
 			HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
 
-			GamesSection(state = state, onAction = onAction)
-
-			HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
+			if (state.isGameIncluded.size > 1) {
+				GamesSection(state = state, onAction = onAction)
+				HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
+			}
 
 			AppearanceSection(state = state, onAction = onAction)
 		}

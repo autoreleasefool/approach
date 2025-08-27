@@ -25,6 +25,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.layer.GraphicsLayer
+import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalDensity
@@ -36,12 +38,13 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.charts.rememberChartStyle
 import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
+import ca.josephroque.bowlingcompanion.core.designsystem.modifiers.drawToLayer
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.ShareableSeries
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.R
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingAppearance
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.components.ChartLabel
-import ca.josephroque.bowlingcompanion.feature.sharing.ui.components.ChartLabelStyle
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.components.ChartLabelAppearance
 import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
 import com.patrykandpatrick.vico.compose.chart.scroll.rememberChartScrollSpec
@@ -61,6 +64,7 @@ import kotlinx.datetime.LocalDate
 fun ShareableSeriesImage(
 	series: ShareableSeries,
 	configuration: SeriesSharingConfigurationUiState,
+	graphicsLayer: GraphicsLayer,
 	modifier: Modifier = Modifier,
 ) {
 	Box(
@@ -70,7 +74,8 @@ fun ShareableSeriesImage(
 					SharingAppearance.Light -> Color.White
 					SharingAppearance.Dark -> Color.Black
 				},
-			),
+			)
+			.drawToLayer(graphicsLayer),
 	) {
 		ScoreChart(
 			series = series,
@@ -127,7 +132,7 @@ private fun ScoreChart(series: ShareableSeries, configuration: SeriesSharingConf
 	val scoreMarkers = rememberScoreMarkers(series, configuration)
 
 	BoxWithConstraints {
-		val chartWidth = maxWidth
+		val chartWidth = this.maxWidth
 
 		ProvideChartStyle(
 			rememberChartStyle(lineChartColors = chartColors),
@@ -158,8 +163,7 @@ private fun BowlerPropertiesLabels(series: ShareableSeries, configuration: Serie
 			ChartLabel(
 				icon = rememberVectorPainter(Icons.Default.DateRange),
 				title = series.properties.date.simpleFormat(),
-				style = ChartLabelStyle.TITLE,
-				appearance = configuration.appearance,
+				appearance = configuration.appearance.titleChartLabel,
 			)
 		}
 
@@ -167,8 +171,7 @@ private fun BowlerPropertiesLabels(series: ShareableSeries, configuration: Serie
 			ChartLabel(
 				icon = rememberVectorPainter(Icons.Default.Person),
 				title = series.properties.bowlerName,
-				style = ChartLabelStyle.PLAIN,
-				appearance = configuration.appearance,
+				appearance = configuration.appearance.plainChartLabel,
 				modifier = Modifier.padding(top = 8.dp),
 			)
 		}
@@ -177,8 +180,7 @@ private fun BowlerPropertiesLabels(series: ShareableSeries, configuration: Serie
 			ChartLabel(
 				icon = rememberVectorPainter(Icons.Default.Refresh),
 				title = series.properties.leagueName,
-				style = ChartLabelStyle.PLAIN,
-				appearance = configuration.appearance,
+				appearance = configuration.appearance.plainChartLabel,
 				modifier = Modifier.padding(top = 8.dp),
 			)
 		}
@@ -205,8 +207,7 @@ private fun SeriesSummaryLabels(series: ShareableSeries, configuration: SeriesSh
 			ChartLabel(
 				icon = rememberVectorPainter(Icons.Default.Check),
 				title = stringResource(R.string.sharing_series_total_label, series.properties.total),
-				style = ChartLabelStyle.SMALL,
-				appearance = configuration.appearance,
+				appearance = configuration.appearance.smallChartLabel,
 			)
 		}
 
@@ -215,8 +216,7 @@ private fun SeriesSummaryLabels(series: ShareableSeries, configuration: SeriesSh
 			ChartLabel(
 				icon = rememberVectorPainter(Icons.Default.KeyboardArrowUp),
 				title = stringResource(R.string.sharing_series_high_score_label, highScore),
-				style = ChartLabelStyle.SMALL,
-				appearance = configuration.appearance,
+				appearance = configuration.appearance.smallChartLabel,
 			)
 		}
 
@@ -225,8 +225,7 @@ private fun SeriesSummaryLabels(series: ShareableSeries, configuration: SeriesSh
 			ChartLabel(
 				icon = rememberVectorPainter(Icons.Default.KeyboardArrowDown),
 				title = stringResource(R.string.sharing_series_low_score_label, lowScore),
-				style = ChartLabelStyle.SMALL,
-				appearance = configuration.appearance,
+				appearance = configuration.appearance.smallChartLabel,
 			)
 		}
 	}
@@ -280,6 +279,39 @@ private data class ScoreMarkerState(
 	)
 }
 
+val SharingAppearance.titleChartLabel: ChartLabelAppearance
+	get() = ChartLabelAppearance(
+		style = ChartLabelAppearance.Style.TITLE,
+		foregroundColor = this.chartLabelForegroundColor,
+		backgroundColor = this.chartLabelBackgroundColor,
+	)
+
+val SharingAppearance.plainChartLabel: ChartLabelAppearance
+	get() = ChartLabelAppearance(
+		style = ChartLabelAppearance.Style.PLAIN,
+		foregroundColor = this.chartLabelForegroundColor,
+		backgroundColor = this.chartLabelBackgroundColor,
+	)
+
+val SharingAppearance.smallChartLabel: ChartLabelAppearance
+	get() = ChartLabelAppearance(
+		style = ChartLabelAppearance.Style.SMALL,
+		foregroundColor = this.chartLabelForegroundColor,
+		backgroundColor = this.chartLabelBackgroundColor,
+	)
+
+val SharingAppearance.chartLabelForegroundColor: Int
+	get() = when (this) {
+		SharingAppearance.Light -> R.color.chart_label_foreground_light
+		SharingAppearance.Dark -> R.color.chart_label_foreground_dark
+	}
+
+val SharingAppearance.chartLabelBackgroundColor: Int
+	get() = when (this) {
+		SharingAppearance.Light -> R.color.chart_label_background_light
+		SharingAppearance.Dark -> R.color.chart_label_background_dark
+	}
+
 private class AppearancePreviewParameterProvider : PreviewParameterProvider<SharingAppearance> {
 	override val values = sequenceOf(SharingAppearance.Light, SharingAppearance.Dark)
 }
@@ -310,6 +342,7 @@ private fun ShareableSeriesImagePreview(
 				appearance = appearance,
 				chartRange = IntRange(150, 450),
 			),
+			graphicsLayer = rememberGraphicsLayer(),
 		)
 	}
 }
