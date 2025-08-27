@@ -32,6 +32,7 @@ data class AveragePinsLeftOnDeckStatistic(
 
 	override var divisor: Int
 		get() = gamesPlayed.size
+
 		@Suppress("UNUSED_PARAMETER")
 		set(value) { /* No-op */ }
 

@@ -47,7 +47,7 @@ data class GamesSharingConfigurationUiState(
 
 	fun includeGame(game: ShareableGame) = isGameIncluded.firstOrNull { it.gameId == game.id }?.isGameIncluded ?: false
 
-	fun title(game: ShareableGame): String? =  when {
+	fun title(game: ShareableGame): String? = when {
 		isSeriesDateChecked -> game.seriesDate.simpleFormat()
 		isBowlerNameChecked -> game.bowlerName
 		isLeagueNameChecked -> game.leagueName
@@ -60,25 +60,31 @@ data class GamesSharingConfigurationUiState(
 		when {
 			isSeriesDateChecked -> {
 				if (isBowlerNameChecked) {
-					labels.add(ChartLabelContent(
-						icon =rememberVectorPainter(Icons.Default.Person),
-						title = games.first().bowlerName,
-					))
+					labels.add(
+						ChartLabelContent(
+							icon = rememberVectorPainter(Icons.Default.Person),
+							title = games.first().bowlerName,
+						),
+					)
 				}
 
 				if (isLeagueNameChecked) {
-					labels.add(ChartLabelContent(
-						icon = rememberVectorPainter(Icons.Default.Refresh),
-						title = games.first().leagueName,
-					))
+					labels.add(
+						ChartLabelContent(
+							icon = rememberVectorPainter(Icons.Default.Refresh),
+							title = games.first().leagueName,
+						),
+					)
 				}
 			}
 			isBowlerNameChecked -> {
 				if (isLeagueNameChecked) {
-					labels.add(ChartLabelContent(
-						icon = rememberVectorPainter(Icons.Default.Refresh),
-						title = games.first().leagueName,
-					))
+					labels.add(
+						ChartLabelContent(
+							icon = rememberVectorPainter(Icons.Default.Refresh),
+							title = games.first().leagueName,
+						),
+					)
 				}
 			}
 			else -> Unit
@@ -86,22 +92,28 @@ data class GamesSharingConfigurationUiState(
 
 		if (isSeriesDetailChecked) {
 			val total = games.sumOf { it.score.score ?: 0 }
-			labels.add(ChartLabelContent(
-				icon = rememberVectorPainter(Icons.Default.Check),
-				title = stringResource(R.string.sharing_series_total_label, total),
-			))
+			labels.add(
+				ChartLabelContent(
+					icon = rememberVectorPainter(Icons.Default.Check),
+					title = stringResource(R.string.sharing_series_total_label, total),
+				),
+			)
 
 			val highScore = games.maxOf { it.score.score ?: 0 }
-			labels.add(ChartLabelContent(
-				icon = rememberVectorPainter(Icons.Default.KeyboardArrowUp),
-				title = stringResource(R.string.sharing_series_high_score_label, highScore),
-			))
+			labels.add(
+				ChartLabelContent(
+					icon = rememberVectorPainter(Icons.Default.KeyboardArrowUp),
+					title = stringResource(R.string.sharing_series_high_score_label, highScore),
+				),
+			)
 
 			val lowScore = games.minOf { it.score.score ?: 0 }
-			labels.add(ChartLabelContent(
-				icon = rememberVectorPainter(Icons.Default.KeyboardArrowDown),
-				title = stringResource(R.string.sharing_series_low_score_label, lowScore),
-			))
+			labels.add(
+				ChartLabelContent(
+					icon = rememberVectorPainter(Icons.Default.KeyboardArrowDown),
+					title = stringResource(R.string.sharing_series_low_score_label, lowScore),
+				),
+			)
 		}
 
 		return labels

@@ -33,14 +33,21 @@ fun InvisibleContent(content: @Composable () -> Unit) {
 		}
 
 		windowManager.addView(
-			/* view = */ composeView,
-			/* params = */ WindowManager.LayoutParams(
-				/* w = */ WindowManager.LayoutParams.WRAP_CONTENT,
-				/* h = */ WindowManager.LayoutParams.WRAP_CONTENT,
-				/* _type = */ WindowManager.LayoutParams.TYPE_APPLICATION_PANEL,
-				/* _flags = */ WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-				/* _format = */ PixelFormat.TRANSLUCENT
-			)
+			/* view = */
+			composeView,
+			/* params = */
+			WindowManager.LayoutParams(
+				/* w = */
+				WindowManager.LayoutParams.WRAP_CONTENT,
+				/* h = */
+				WindowManager.LayoutParams.WRAP_CONTENT,
+				/* _type = */
+				WindowManager.LayoutParams.TYPE_APPLICATION_PANEL,
+				/* _flags = */
+				WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+				/* _format = */
+				PixelFormat.TRANSLUCENT,
+			),
 		)
 
 		onDispose { windowManager.removeView(composeView) }

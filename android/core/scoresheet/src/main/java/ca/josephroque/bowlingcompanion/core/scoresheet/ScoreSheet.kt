@@ -46,11 +46,7 @@ import ca.josephroque.bowlingcompanion.core.model.isLastRoll
 import ca.josephroque.bowlingcompanion.core.model.stub.ScoringStub
 
 @Composable
-fun ScoreSheet(
-	state: ScoreSheetUiState,
-	onAction: (ScoreSheetUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun ScoreSheet(state: ScoreSheetUiState, onAction: (ScoreSheetUiAction) -> Unit, modifier: Modifier = Modifier) {
 	BoxWithConstraints(
 		modifier = modifier.width(120.dp * 12f),
 	) {
@@ -80,7 +76,7 @@ fun ScoreSheet(
 				} else {
 					Modifier
 				},
-			)
+			),
 		)
 	}
 }
@@ -457,17 +453,13 @@ private fun RailCell(
 }
 
 @Composable
-private fun GameIndexCell(
-	index: Int,
-	style: ScoreSheetConfiguration.Style,
-	modifier: Modifier = Modifier,
-) {
+private fun GameIndexCell(index: Int, style: ScoreSheetConfiguration.Style, modifier: Modifier = Modifier) {
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,
 		modifier = modifier
 			.background(colorResource(style.backgroundColor))
 			.endBorder(4.dp, colorResource(style.borderColor))
-			.padding(horizontal = 16.dp, vertical = 8.dp)
+			.padding(horizontal = 16.dp, vertical = 8.dp),
 	) {
 		Spacer(modifier = Modifier.weight(1f))
 

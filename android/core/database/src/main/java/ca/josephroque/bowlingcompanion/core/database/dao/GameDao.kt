@@ -18,7 +18,6 @@ import ca.josephroque.bowlingcompanion.core.model.IndexedGame
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 
@@ -122,7 +121,7 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 			FROM games
 			WHERE games.series_id = :seriesId AND games.archived_on IS NULL
 			ORDER BY games.`index` ASC
-		"""
+		""",
 	)
 	abstract fun getGameIndices(seriesId: SeriesID): Flow<List<IndexedGame>>
 

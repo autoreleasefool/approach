@@ -66,7 +66,7 @@ fun GamesSettings(
 
 	LazyColumn(
 		state = lazyListState,
-		modifier = modifier
+		modifier = modifier,
 	) {
 		if (state.bowlerSettings.bowlers.size > 1) {
 			item {

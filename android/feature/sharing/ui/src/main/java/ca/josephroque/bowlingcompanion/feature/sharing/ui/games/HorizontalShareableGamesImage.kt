@@ -59,7 +59,7 @@ fun HorizontalShareableGamesImage(
 				configuration,
 				modifier = Modifier
 					.padding(horizontal = 16.dp)
-					.padding(top = 16.dp)
+					.padding(top = 16.dp),
 			)
 		}
 
@@ -72,9 +72,9 @@ fun HorizontalShareableGamesImage(
 					modifier = Modifier
 						.topBorder(
 							2.dp,
-							colorResource(configuration.scoreSheetConfiguration.style.borderColor)
+							colorResource(configuration.scoreSheetConfiguration.style.borderColor),
 						)
-						.padding(top = 2.dp)
+						.padding(top = 2.dp),
 				)
 			}
 	}
@@ -94,7 +94,7 @@ fun HorizontalSingleShareableGameImage(
 				game = game.score,
 			),
 			onAction = {},
-			modifier = Modifier.height(100.dp)
+			modifier = Modifier.height(100.dp),
 		)
 	}
 }
@@ -108,7 +108,7 @@ private fun Header(
 	Column(
 		verticalArrangement = Arrangement.spacedBy(4.dp),
 		horizontalAlignment = Alignment.Start,
-		modifier = modifier
+		modifier = modifier,
 	) {
 		configuration.title(games.first())?.let {
 			Text(
@@ -143,19 +143,21 @@ fun GamesSharingConfigurationUiState.plainChartLabel() = ChartLabelAppearance(
 @Composable
 fun GamesSharingConfigurationUiState.chartLabelForegroundColor(): Int {
 	val backgroundColor = colorResource(style.backgroundColor)
-	return if (backgroundColor.luminance() > 0.5f)
+	return if (backgroundColor.luminance() > 0.5f) {
 		R.color.chart_label_foreground_light
-	else
+	} else {
 		R.color.chart_label_foreground_dark
+	}
 }
 
 @Composable
 fun GamesSharingConfigurationUiState.chartLabelBackgroundColor(): Int {
 	val backgroundColor = colorResource(style.backgroundColor)
-	return if (backgroundColor.luminance() > 0.5f)
+	return if (backgroundColor.luminance() > 0.5f) {
 		R.color.chart_label_background_light
-	else
+	} else {
 		R.color.chart_label_background_dark
+	}
 }
 
 private class AppearancePreviewParameterProvider : PreviewParameterProvider<SharingAppearance> {
@@ -177,8 +179,8 @@ private fun HorizontalShareableGamesImagePreview(
 					leagueName = "Majors",
 					seriesDate = LocalDate(2024, 6, 15),
 					alleyName = "Alley 1",
-					score = ScoringStub.stub()
-				)
+					score = ScoringStub.stub(),
+				),
 			),
 			configuration = GamesSharingConfigurationUiState(
 				appearance = appearance,

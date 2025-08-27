@@ -57,14 +57,16 @@ fun GamesList(
 		lazyListState = lazyListState,
 		onMove = { from, to ->
 			if (!state.isReordering) return@rememberReorderableLazyListState
-			onAction(GamesListUiAction.GameMoved(
-				from = from.index,
-				to = to.index,
-				offset = if (header == null) 0 else 1
-			))
+			onAction(
+				GamesListUiAction.GameMoved(
+					from = from.index,
+					to = to.index,
+					offset = if (header == null) 0 else 1,
+				),
+			)
 
 			hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
-		}
+		},
 	)
 
 	val itemsList = remember(state.list, state.isReordering) {
@@ -122,7 +124,6 @@ fun LazyListScope.gamesList(
 	onGameClick: (GameListItem) -> Unit,
 	onArchiveGame: (GameListItem) -> Unit,
 ) {
-
 	items(
 		items = list,
 		key = { it.id },
@@ -144,7 +145,7 @@ fun LazyListScope.gamesList(
 
 		ReorderableItem(
 			state = reorderableLazyListState,
-			key = it.id
+			key = it.id,
 		) { isDragging ->
 			val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp)
 
@@ -158,12 +159,16 @@ fun LazyListScope.gamesList(
 						verticalAlignment = Alignment.CenterVertically,
 						modifier = Modifier
 							.fillMaxWidth()
-							.padding(if (it.isReordering) 16.dp else 0.dp)
+							.padding(if (it.isReordering) 16.dp else 0.dp),
 					) {
 						GameRow(
 							index = it.index,
 							score = it.score,
-							onClick = if (it.isReordering) null else { { onGameClick(it.toGameListItem()) } },
+							onClick = if (it.isReordering) {
+								null
+							} else {
+								{ onGameClick(it.toGameListItem()) }
+							},
 							modifier = if (it.isReordering) Modifier.weight(1f) else Modifier.fillMaxWidth(),
 						)
 

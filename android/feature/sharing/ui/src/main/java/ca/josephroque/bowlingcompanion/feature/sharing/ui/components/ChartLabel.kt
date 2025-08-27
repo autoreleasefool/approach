@@ -29,12 +29,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ChartLabel(
-	icon: Painter,
-	title: String,
-	appearance: ChartLabelAppearance,
-	modifier: Modifier = Modifier,
-) {
+fun ChartLabel(icon: Painter, title: String, appearance: ChartLabelAppearance, modifier: Modifier = Modifier) {
 	Row(
 		modifier = modifier
 			.clip(RoundedCornerShape(8.dp))
@@ -59,11 +54,7 @@ fun ChartLabel(
 }
 
 @Composable
-fun ChartLabel(
-	content: ChartLabelContent,
-	appearance: ChartLabelAppearance,
-	modifier: Modifier = Modifier,
-) {
+fun ChartLabel(content: ChartLabelContent, appearance: ChartLabelAppearance, modifier: Modifier = Modifier) {
 	ChartLabel(
 		icon = content.icon,
 		title = content.title,
@@ -131,7 +122,7 @@ fun ChartLabelPreview() {
 			ChartLabel(
 				icon = rememberVectorPainter(Icons.Default.Star),
 				title = "450 TOTAL",
-				appearance  = ChartLabelAppearance.DEFAULT.copy(style = ChartLabelAppearance.Style.TITLE),
+				appearance = ChartLabelAppearance.DEFAULT.copy(style = ChartLabelAppearance.Style.TITLE),
 			)
 
 			ChartLabel(

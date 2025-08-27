@@ -55,11 +55,13 @@ fun Sharing(state: SharingUiState, onAction: (SharingUiAction) -> Unit, modifier
 		)
 
 		ShareButton {
-			onAction(SharingUiAction.ShareButtonClicked(
-				coroutineScope.async {
-					graphicsLayer.toImageBitmap()
-				}
-			))
+			onAction(
+				SharingUiAction.ShareButtonClicked(
+					coroutineScope.async {
+						graphicsLayer.toImageBitmap()
+					},
+				),
+			)
 		}
 	}
 }

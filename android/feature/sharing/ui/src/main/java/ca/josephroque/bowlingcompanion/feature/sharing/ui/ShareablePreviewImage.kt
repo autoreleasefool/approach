@@ -7,11 +7,7 @@ import ca.josephroque.bowlingcompanion.feature.sharing.ui.games.HorizontalSharea
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.ShareableSeriesImage
 
 @Composable
-fun ShareablePreviewImage(
-	state: SharingData,
-	graphicsLayer: GraphicsLayer,
-	modifier: Modifier = Modifier,
-) {
+fun ShareablePreviewImage(state: SharingData, graphicsLayer: GraphicsLayer, modifier: Modifier = Modifier) {
 	when (state) {
 		is SharingData.Series -> ShareableSeriesImage(
 			series = state.series,
