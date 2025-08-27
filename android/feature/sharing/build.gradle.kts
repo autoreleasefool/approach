@@ -11,5 +11,6 @@ android {
 }
 
 dependencies {
+	implementation(projects.core.scoresheet)
 	implementation(projects.feature.sharing.ui)
 }

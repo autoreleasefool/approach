@@ -12,7 +12,6 @@ androidxCore = "1.16.0"
 androidxDataStore = "1.1.7"
 androidxHiltNavigationCompose = "1.2.0"
 androidxLifecycle = "2.9.1"
-capturable = "3.0.1"
 colorpickerCompose = "1.1.2"
 googleFonts = "1.8.3"
 hilt = "2.56.2"
@@ -53,7 +52,6 @@ androidx-dataStore-core = { group = "androidx.datastore", name = "datastore", ve
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" } # ignore unused warning
 androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" } # ignore unused warning
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
-capturable-compose = { group = "dev.shreyaspatil", name = "capturable", version.ref = "capturable" }
 colorpicker-compose = { group = "com.github.skydoves", name = "colorpicker-compose", version.ref = "colorpickerCompose" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" } # ignore unused warning

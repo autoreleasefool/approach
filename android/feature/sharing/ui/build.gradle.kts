@@ -13,6 +13,5 @@ dependencies {
 	implementation(projects.core.model.charts.ui)
 	implementation(projects.core.scoresheet)
 
-	implementation(libs.capturable.compose)
 	implementation(libs.kotlinx.datetime)
 }
