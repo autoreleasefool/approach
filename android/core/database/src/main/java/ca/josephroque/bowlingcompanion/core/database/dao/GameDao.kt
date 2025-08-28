@@ -166,6 +166,28 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 	)
 	abstract fun getShareableGame(gameId: GameID): Flow<ShareableGameEntity>
 
+	@Query(
+		"""
+			SELECT
+				games.id AS id,
+				games.`index` AS `index`,
+				games.score AS score,
+				games.scoring_method AS scoringMethod,
+				series.date AS seriesDate,
+				bowlers.name AS bowlerName,
+				leagues.name AS leagueName,
+				alley.name AS alleyName
+			FROM games
+			JOIN series ON series.id = games.series_id
+			JOIN leagues ON leagues.id = series.league_id
+			JOIN bowlers ON bowlers.id = leagues.bowler_id
+			LEFT JOIN alleys AS alley ON alley.id = series.alley_id
+			WHERE games.series_id = :seriesId AND games.archived_on IS NULL
+			ORDER BY games.`index` ASC
+		""",
+	)
+	abstract fun getShareableGames(seriesId: SeriesID): Flow<List<ShareableGameEntity>>
+
 	@Query("UPDATE games SET scoring_method = :scoringMethod, score = :score WHERE id = :gameId")
 	abstract fun setGameScoringMethod(gameId: GameID, scoringMethod: GameScoringMethod, score: Int)
 

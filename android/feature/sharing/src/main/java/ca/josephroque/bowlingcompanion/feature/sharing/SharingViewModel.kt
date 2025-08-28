@@ -64,8 +64,8 @@ class SharingViewModel @Inject constructor(
 	) { source, seriesSharingState, gamesSharingState ->
 		when (source) {
 			is SharingSource.Series ->
-				seriesRepository.getShareableSeries(source.seriesId)
-					.map { SharingData.Series(it, seriesSharingState) }
+				gamesRepository.getShareableGames(source.seriesId)
+					.map { SharingData.Games(it, gamesSharingState) }
 			is SharingSource.Game ->
 				gamesRepository.getShareableGame(source.gameId)
 					.map { SharingData.Games(listOf(it), gamesSharingState) }

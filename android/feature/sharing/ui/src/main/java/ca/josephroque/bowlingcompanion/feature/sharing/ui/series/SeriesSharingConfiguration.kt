@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.DateRange
@@ -36,34 +34,29 @@ fun SeriesSharingConfiguration(
 	Column(
 		modifier = modifier,
 	) {
-		Column(
-			modifier = Modifier
-				.verticalScroll(rememberScrollState()),
-		) {
-			OverlaySection(
-				state = state,
-				onAction = onAction,
-			)
+		OverlaySection(
+			state = state,
+			onAction = onAction,
+		)
 
-			ScoresSection(
-				state = state,
-				onAction = onAction,
-			)
+		ScoresSection(
+			state = state,
+			onAction = onAction,
+		)
 
-			HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
+		HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
 
-			ScoreRangeSection(
-				state = state,
-				onAction = onAction,
-			)
+		ScoreRangeSection(
+			state = state,
+			onAction = onAction,
+		)
 
-			HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
+		HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
 
-			AppearanceSection(
-				state = state,
-				onAction = onAction,
-			)
-		}
+		AppearanceSection(
+			state = state,
+			onAction = onAction,
+		)
 	}
 }
 

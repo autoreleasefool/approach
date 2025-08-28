@@ -832,7 +832,9 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun openShareSheet() {
-		sharingSource.value = SharingSource.Game(currentGameId.value)
+		viewModelScope.launch {
+			sharingSource.value = SharingSource.Series(currentSeriesId())
+		}
 	}
 
 	private fun dismissShareSheet() {

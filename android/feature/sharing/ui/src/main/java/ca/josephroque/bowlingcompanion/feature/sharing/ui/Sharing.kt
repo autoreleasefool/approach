@@ -2,7 +2,9 @@ package ca.josephroque.bowlingcompanion.feature.sharing.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -28,7 +30,8 @@ fun Sharing(state: SharingUiState, onAction: (SharingUiAction) -> Unit, modifier
 	val graphicsLayer = rememberGraphicsLayer()
 
 	Column(
-		modifier = modifier,
+		modifier = modifier
+			.verticalScroll(rememberScrollState()),
 	) {
 		when (state) {
 			is SharingUiState.SharingGames -> GamesSharingConfiguration(

@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
 import ca.josephroque.bowlingcompanion.core.database.model.ScoreableFrameEntity
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.ScoringGame
+import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.scoring.ScoreKeeper
 import ca.josephroque.bowlingcompanion.core.scoring.ScoreKeeperInput
 import javax.inject.Inject
@@ -26,6 +27,19 @@ class OfflineFirstScoresRepository @Inject constructor(
 	) { gameIndex, frames ->
 		val scoringFrames = scoreKeeper.calculateScore(ScoreKeeperInput.fromFrames(frames))
 		ScoringGame(id = gameId, index = gameIndex, frames = scoringFrames)
+	}
+
+	override fun getScores(seriesId: SeriesID): Flow<List<ScoringGame>> = combine(
+		gameDao.getGamesList(seriesId),
+		frameDao
+			.getScoreableFrames(seriesId)
+			.map { it.map { entity -> entity.frames.map(ScoreableFrameEntity::asModel) } },
+	) { games, framesByGameId ->
+		games.zip(framesByGameId)
+			.map { (game, frames) ->
+				val scoringFrames = scoreKeeper.calculateScore(ScoreKeeperInput.fromFrames(frames))
+				ScoringGame(id = game.id, index = game.index, frames = scoringFrames)
+			}
 	}
 
 	override suspend fun getHighestScorePossible(gameId: GameID): Int {

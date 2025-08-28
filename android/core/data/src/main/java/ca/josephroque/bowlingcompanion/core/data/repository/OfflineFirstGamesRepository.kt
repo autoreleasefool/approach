@@ -68,6 +68,24 @@ class OfflineFirstGamesRepository @Inject constructor(
 
 	override fun getGameIndex(gameId: GameID): Flow<Int> = gameDao.getGameIndex(gameId)
 
+	override fun getShareableGames(seriesId: SeriesID): Flow<List<ShareableGame>> = combine(
+		gameDao.getShareableGames(seriesId),
+		scoresRepository.getScores(seriesId),
+	) { games, scores ->
+		games.map { game ->
+			val score = scores.first { it.id == game.id }
+			ShareableGame(
+				id = game.id,
+				index = game.index,
+				score = score,
+				bowlerName = game.bowlerName,
+				leagueName = game.leagueName,
+				seriesDate = game.seriesDate,
+				alleyName = game.alleyName,
+			)
+		}.sortedBy { it.index }
+	}
+
 	override fun getShareableGame(gameId: GameID): Flow<ShareableGame> = combine(
 		gameDao.getShareableGame(gameId),
 		scoresRepository.getScore(gameId),

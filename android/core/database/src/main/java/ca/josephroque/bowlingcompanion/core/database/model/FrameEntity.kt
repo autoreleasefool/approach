@@ -5,6 +5,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import androidx.room.Relation
 import ca.josephroque.bowlingcompanion.core.model.FrameCreate
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameID
@@ -159,6 +160,23 @@ data class FrameEditEntity(
 			this.properties.roll1?.let { FrameEdit.Roll(1, it.pinsDowned, it.didFoul, this.ball1) },
 			this.properties.roll2?.let { FrameEdit.Roll(2, it.pinsDowned, it.didFoul, this.ball2) },
 		),
+	)
+}
+
+data class ScoreableFramesEntity(
+	@Embedded
+	val properties: Properties,
+	@Relation(
+		parentColumn = "id",
+		entityColumn = "game_id",
+		entity = FrameEntity::class,
+		projection = ["index", "roll0", "roll1", "roll2"],
+	)
+	val frames: List<ScoreableFrameEntity>,
+) {
+	data class Properties(
+		val id: GameID,
+		val index: Int,
 	)
 }
 

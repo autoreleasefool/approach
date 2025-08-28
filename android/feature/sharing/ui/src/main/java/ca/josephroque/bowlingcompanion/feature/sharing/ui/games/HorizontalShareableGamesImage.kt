@@ -47,7 +47,6 @@ fun HorizontalShareableGamesImage(
 	val scrollState = rememberScrollState()
 
 	Column(
-		verticalArrangement = Arrangement.spacedBy(8.dp),
 		modifier = modifier
 			.background(colorResource(configuration.scoreSheetConfiguration.style.backgroundColor))
 			.horizontalScroll(scrollState)
@@ -59,7 +58,7 @@ fun HorizontalShareableGamesImage(
 				configuration,
 				modifier = Modifier
 					.padding(horizontal = 16.dp)
-					.padding(top = 16.dp),
+					.padding(top = 16.dp, bottom = 8.dp),
 			)
 		}
 
@@ -71,10 +70,10 @@ fun HorizontalShareableGamesImage(
 					configuration = configuration,
 					modifier = Modifier
 						.topBorder(
-							2.dp,
+							4.dp,
 							colorResource(configuration.scoreSheetConfiguration.style.borderColor),
 						)
-						.padding(top = 2.dp),
+						.padding(top = 4.dp),
 				)
 			}
 	}
@@ -169,21 +168,29 @@ private class AppearancePreviewParameterProvider : PreviewParameterProvider<Shar
 private fun HorizontalShareableGamesImagePreview(
 	@PreviewParameter(AppearancePreviewParameterProvider::class) appearance: SharingAppearance,
 ) {
+	val gameIds = listOf(GameID.randomID(), GameID.randomID())
 	Surface {
 		HorizontalShareableGamesImage(
-			games = listOf(
+			games = gameIds.mapIndexed { index, id ->
 				ShareableGame(
-					id = GameID.randomID(),
-					index = 0,
+					id = id,
+					index = index,
 					bowlerName = "Joseph",
 					leagueName = "Majors",
 					seriesDate = LocalDate(2024, 6, 15),
 					alleyName = "Alley 1",
 					score = ScoringStub.stub(),
-				),
-			),
+				)
+			},
 			configuration = GamesSharingConfigurationUiState(
 				appearance = appearance,
+				isGameIncluded = gameIds.mapIndexed { index, id ->
+					GamesSharingConfigurationUiState.IncludedGame(
+						gameId = id,
+						index = index,
+						isGameIncluded = true,
+					)
+				},
 			),
 			graphicsLayer = rememberGraphicsLayer(),
 		)

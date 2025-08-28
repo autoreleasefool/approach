@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
@@ -34,18 +32,16 @@ fun GamesSharingConfiguration(
 	modifier: Modifier = Modifier,
 ) {
 	Column(modifier = modifier) {
-		Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-			HeaderSection(state = state, onAction = onAction)
+		HeaderSection(state = state, onAction = onAction)
 
+		HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
+
+		if (state.isGameIncluded.size > 1) {
+			GamesSection(state = state, onAction = onAction)
 			HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
-
-			if (state.isGameIncluded.size > 1) {
-				GamesSection(state = state, onAction = onAction)
-				HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
-			}
-
-			AppearanceSection(state = state, onAction = onAction)
 		}
+
+		AppearanceSection(state = state, onAction = onAction)
 	}
 }
 
@@ -100,26 +96,28 @@ private fun GamesSection(
 		title = stringResource(R.string.sharing_games_modifier_section_games),
 		footer = stringResource(R.string.sharing_games_modifier_section_games_description),
 	) {
-		state.isGameIncluded.forEach { game ->
-			CheckBoxRow(
-				isSelected = game.isGameIncluded,
-				onClick = {
-					onAction(
-						GamesSharingConfigurationUiAction.IsGameIncludedToggled(
-							game.gameId,
-							!game.isGameIncluded,
-						),
-					)
-				},
-				content = {
-					Text(
-						text = stringResource(
-							ca.josephroque.bowlingcompanion.core.designsystem.R.string.game_with_ordinal,
-							game.index + 1,
-						),
-					)
-				},
-			)
+		Column {
+			state.isGameIncluded.forEach { game ->
+				CheckBoxRow(
+					isSelected = game.isGameIncluded,
+					onClick = {
+						onAction(
+							GamesSharingConfigurationUiAction.IsGameIncludedToggled(
+								game.gameId,
+								!game.isGameIncluded,
+							),
+						)
+					},
+					content = {
+						Text(
+							text = stringResource(
+								ca.josephroque.bowlingcompanion.core.designsystem.R.string.game_with_ordinal,
+								game.index + 1,
+							),
+						)
+					},
+				)
+			}
 		}
 	}
 }
