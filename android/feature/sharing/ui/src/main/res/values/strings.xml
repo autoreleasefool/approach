@@ -35,6 +35,9 @@
 
 	<string name="sharing_made_with_tryapproach">Made with tryapproach.app</string>
 
+	<string name="sharing_source_format_series">Series</string>
+	<string name="sharing_source_format_games">Games</string>
+
 	<string name="sharing_appearance">Appearance</string>
 	<string name="sharing_appearance_dark">Dark</string>
 	<string name="sharing_appearance_light">Light</string>

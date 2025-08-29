@@ -19,6 +19,7 @@ import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsTop
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsUiState
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingSource
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingSourceFormat
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -211,7 +212,7 @@ class SeriesDetailsViewModel @Inject constructor(
 
 	private fun shareSeries() {
 		val seriesId = seriesId.value ?: return
-		sharingSource.value = SharingSource.Series(seriesId)
+		sharingSource.value = SharingSource.Series(seriesId, SharingSourceFormat.SERIES)
 	}
 
 	private fun dismissSharing() {

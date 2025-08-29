@@ -77,6 +77,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateGamesEdit
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateHeader
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateSelection
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingSource
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingSourceFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -833,7 +834,7 @@ class GamesEditorViewModel @Inject constructor(
 
 	private fun openShareSheet() {
 		viewModelScope.launch {
-			sharingSource.value = SharingSource.Series(currentSeriesId())
+			sharingSource.value = SharingSource.Series(currentSeriesId(), SharingSourceFormat.GAMES)
 		}
 	}
 

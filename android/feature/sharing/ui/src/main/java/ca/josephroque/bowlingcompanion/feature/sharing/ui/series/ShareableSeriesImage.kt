@@ -69,13 +69,13 @@ fun ShareableSeriesImage(
 ) {
 	Box(
 		modifier = modifier
+			.drawToLayer(graphicsLayer)
 			.background(
 				when (configuration.appearance) {
 					SharingAppearance.Light -> Color.White
 					SharingAppearance.Dark -> Color.Black
 				},
-			)
-			.drawToLayer(graphicsLayer),
+			),
 	) {
 		ScoreChart(
 			series = series,

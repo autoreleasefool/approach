@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.sharing.ui.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
@@ -12,9 +13,15 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingAppearance
 
 @Composable
-fun AppearanceSegmentedButton(selected: SharingAppearance, onAppearanceChanged: (SharingAppearance) -> Unit) {
+fun AppearanceSegmentedButton(
+	selected: SharingAppearance,
+	onAppearanceChanged: (SharingAppearance) -> Unit,
+	modifier: Modifier = Modifier,
+) {
 	SingleChoiceSegmentedButtonRow(
-		modifier = Modifier.padding(horizontal = 16.dp),
+		modifier = modifier
+			.fillMaxWidth()
+			.padding(horizontal = 16.dp),
 	) {
 		SharingAppearance.entries.forEachIndexed { index, appearance ->
 			SegmentedButton(
@@ -24,9 +31,10 @@ fun AppearanceSegmentedButton(selected: SharingAppearance, onAppearanceChanged: 
 					index = index,
 					count = SharingAppearance.entries.size,
 				),
+				modifier = Modifier.fillMaxWidth(),
 			) {
 				Text(
-					text = appearance.name,
+					text = appearance.title(),
 					style = MaterialTheme.typography.bodyMedium,
 				)
 			}

@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.model.ShareableGame
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingAppearance
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingData
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingSource
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingSourceFormat
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingUiAction
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingUiState
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.games.GamesSharingConfigurationUiAction
@@ -64,8 +65,12 @@ class SharingViewModel @Inject constructor(
 	) { source, seriesSharingState, gamesSharingState ->
 		when (source) {
 			is SharingSource.Series ->
-				gamesRepository.getShareableGames(source.seriesId)
-					.map { SharingData.Games(it, gamesSharingState) }
+				when (source.format) {
+					SharingSourceFormat.GAMES -> gamesRepository.getShareableGames(source.seriesId)
+						.map { SharingData.Games(it, gamesSharingState) }
+					SharingSourceFormat.SERIES -> seriesRepository.getShareableSeries(source.seriesId)
+						.map { SharingData.Series(it, seriesSharingState) }
+				}
 			is SharingSource.Game ->
 				gamesRepository.getShareableGame(source.gameId)
 					.map { SharingData.Games(listOf(it), gamesSharingState) }
@@ -76,13 +81,22 @@ class SharingViewModel @Inject constructor(
 		.flatMapLatest { it }
 
 	private val sharingUiState: Flow<SharingUiState> = combine(
+		sharingSource,
 		sharingData,
 		seriesSharingState,
 		gamesSharingState,
-	) { sharingData, seriesSharingState, gamesSharingState ->
+	) { sharingSource, sharingData, seriesSharingState, gamesSharingState ->
 		when (sharingData) {
-			is SharingData.Series -> SharingUiState.SharingSeries(seriesSharingState, sharingData)
-			is SharingData.Games -> SharingUiState.SharingGames(gamesSharingState, sharingData)
+			is SharingData.Series -> SharingUiState.SharingSeries(
+				seriesSharing = seriesSharingState,
+				series = sharingData,
+				supportedFormats = sharingSource?.supportedFormats ?: emptyList(),
+			)
+			is SharingData.Games -> SharingUiState.SharingGames(
+				gamesSharing = gamesSharingState,
+				games = sharingData,
+				supportedFormats = sharingSource?.supportedFormats ?: emptyList(),
+			)
 			is SharingData.Statistic -> SharingUiState.SharingStatistic
 			is SharingData.TeamSeries -> SharingUiState.SharingTeamSeries
 		}
@@ -122,6 +136,7 @@ class SharingViewModel @Inject constructor(
 	private fun handleSharingAction(action: SharingUiAction) {
 		when (action) {
 			is SharingUiAction.ShareButtonClicked -> shareImage(action.image)
+			is SharingUiAction.SourceFormatChanged -> updateSourceFormat(action.format)
 			is SharingUiAction.SeriesSharingAction -> handleSeriesSharingAction(action.action)
 			is SharingUiAction.GameSharingAction -> handleGamesSharingAction(action.action)
 			is SharingUiAction.StatisticSharingAction -> TODO()
@@ -134,6 +149,13 @@ class SharingViewModel @Inject constructor(
 
 	private fun handleGamesSharingAction(action: GamesSharingConfigurationUiAction) {
 		gamesSharingState.update { it.performAction(action) }
+	}
+
+	private fun updateSourceFormat(format: SharingSourceFormat) {
+		val source = sharingSource.value ?: return
+		if (source is SharingSource.Series) {
+			loadSource(source.copy(format = format))
+		}
 	}
 
 	private fun shareImage(image: Deferred<ImageBitmap>) {

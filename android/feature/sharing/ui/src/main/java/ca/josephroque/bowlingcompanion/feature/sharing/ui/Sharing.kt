@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.ShareableSeries
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.components.SharingSourceFormatSegmentedButton
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.games.GamesSharingConfiguration
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfiguration
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.series.SeriesSharingConfigurationUiState
@@ -33,6 +34,16 @@ fun Sharing(state: SharingUiState, onAction: (SharingUiAction) -> Unit, modifier
 		modifier = modifier
 			.verticalScroll(rememberScrollState()),
 	) {
+		if (state.supportedSharingFormats.size > 1) {
+			SharingSourceFormatSegmentedButton(
+				supportedFormats = state.supportedSharingFormats,
+				selected = state.sharingData.format ?: state.supportedSharingFormats.first(),
+				onFormatChanged = { onAction(SharingUiAction.SourceFormatChanged(it)) },
+			)
+
+			HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
+		}
+
 		when (state) {
 			is SharingUiState.SharingGames -> GamesSharingConfiguration(
 				state = state.gamesSharing,
@@ -89,6 +100,7 @@ private fun SharingPreview() {
 					),
 					configuration = SeriesSharingConfigurationUiState(),
 				),
+				supportedFormats = SharingSourceFormat.entries.toList(),
 			),
 			onAction = {},
 		)
