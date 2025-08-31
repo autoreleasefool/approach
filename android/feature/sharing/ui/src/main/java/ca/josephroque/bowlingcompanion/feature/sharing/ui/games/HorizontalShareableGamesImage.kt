@@ -50,7 +50,7 @@ fun HorizontalShareableGamesImage(
 		modifier = modifier
 			.horizontalScroll(scrollState)
 			.drawToLayer(graphicsLayer)
-			.background(colorResource(configuration.scoreSheetConfiguration.style.backgroundColor))
+			.background(colorResource(configuration.scoreSheetConfiguration.style.backgroundColor)),
 	) {
 		if (games.isNotEmpty()) {
 			Header(

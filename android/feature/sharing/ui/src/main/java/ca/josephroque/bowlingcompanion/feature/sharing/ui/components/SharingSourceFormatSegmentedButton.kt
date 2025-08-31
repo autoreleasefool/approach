@@ -25,7 +25,7 @@ fun SharingSourceFormatSegmentedButton(
 	SingleChoiceSegmentedButtonRow(
 		modifier = modifier
 			.fillMaxWidth()
-			.padding(horizontal = 16.dp)
+			.padding(horizontal = 16.dp),
 	) {
 		supportedFormats.forEachIndexed { index, format ->
 			SegmentedButton(
