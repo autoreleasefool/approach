@@ -35,7 +35,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDate
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 class OfflineFirstSeriesRepository @Inject constructor(
 	private val seriesDao: SeriesDao,
@@ -152,7 +151,6 @@ class OfflineFirstSeriesRepository @Inject constructor(
 		seriesDao.updateSeriesLeague(series.asEntity())
 	}
 
-	@OptIn(ExperimentalTime::class)
 	override suspend fun archiveSeries(id: SeriesID) = withContext(ioDispatcher) {
 		seriesDao.archiveSeries(id, archivedOn = Clock.System.now())
 	}

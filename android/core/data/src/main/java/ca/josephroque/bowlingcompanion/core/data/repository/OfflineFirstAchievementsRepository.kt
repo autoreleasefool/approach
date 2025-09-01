@@ -21,7 +21,6 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 class OfflineFirstAchievementsRepository @Inject constructor(
@@ -44,7 +43,6 @@ class OfflineFirstAchievementsRepository @Inject constructor(
 			}
 	}
 
-	@OptIn(ExperimentalTime::class)
 	override fun getLatestAchievement(startDate: Instant): Flow<Achievement?> {
 		return achievementDao.getLatestAchievement(startDate)
 	}
@@ -53,7 +51,6 @@ class OfflineFirstAchievementsRepository @Inject constructor(
 		return achievementDao.hasEarnedAchievement(achievement.id.name)
 	}
 
-	@OptIn(ExperimentalTime::class)
 	override suspend fun insertEvent(event: ConsumableAchievementEvent) = withContext(ioDispatcher) {
 		eventLock.withLock {
 			val achievement = EarnableAchievement.fromEvent(event) ?: return@withLock
@@ -91,7 +88,6 @@ class OfflineFirstAchievementsRepository @Inject constructor(
 	}
 }
 
-@OptIn(ExperimentalTime::class)
 fun EarnableAchievement.toCreateEntity(id: AchievementID, date: Instant) = AchievementCreateEntity(
 	id = id,
 	title = this.id.name,

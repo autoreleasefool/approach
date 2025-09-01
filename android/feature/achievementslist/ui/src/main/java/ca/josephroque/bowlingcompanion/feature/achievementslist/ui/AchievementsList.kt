@@ -18,9 +18,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.achievements.earnable
 import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.feature.achievementslist.ui.components.AchievementListGridItem
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 @Composable
 fun AchievementsList(
 	state: AchievementsListUiState,

@@ -23,12 +23,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 val SERIES_PRE_BOWL_FORM_SERIES_RESULT_KEY =
 	ResourcePickerResultKey("SeriesPreBowlFormSeriesResultKey")
 
-@OptIn(ExperimentalTime::class)
 @HiltViewModel
 class SeriesPreBowlFormViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,

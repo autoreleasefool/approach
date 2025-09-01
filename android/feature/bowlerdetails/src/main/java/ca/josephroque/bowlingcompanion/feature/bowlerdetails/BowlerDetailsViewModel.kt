@@ -45,7 +45,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 val BOWLER_DETAILS_PREFERRED_GEAR_PICKER_RESULT_KEY =
 	ResourcePickerResultKey("BowlerDetailsPreferredGearPickerResultKey")
@@ -236,7 +235,6 @@ class BowlerDetailsViewModel @Inject constructor(
 		}
 	}
 
-	@OptIn(ExperimentalTime::class)
 	private fun handleStatisticsWidgetLayoutAction(action: StatisticsWidgetLayoutUiAction) {
 		when (action) {
 			is StatisticsWidgetLayoutUiAction.WidgetClicked ->

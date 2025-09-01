@@ -19,7 +19,6 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @Dao
@@ -216,7 +215,6 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 	@Query("UPDATE games SET archived_on = NULL WHERE id = :gameId")
 	abstract fun unarchiveGame(gameId: GameID)
 
-	@OptIn(ExperimentalTime::class)
 	@Query("UPDATE games SET archived_on = :archivedOn WHERE id = :gameId")
 	abstract fun archiveGame(gameId: GameID, archivedOn: Instant)
 

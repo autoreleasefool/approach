@@ -57,7 +57,6 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @Composable
@@ -222,7 +221,7 @@ private fun MemberRow(name: String, modifier: Modifier = Modifier) {
 	}
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EditSeriesDialog(date: LocalDate, onDateChanged: (LocalDate) -> Unit, onDismiss: () -> Unit) {
 	val initialSelection = remember(date) {

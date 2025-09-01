@@ -27,7 +27,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 class OfflineFirstLeaguesRepository @Inject constructor(
 	private val leagueDao: LeagueDao,
@@ -50,7 +49,6 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 
 	override fun getArchivedLeagues(): Flow<List<ArchivedLeague>> = leagueDao.getArchivedLeagues()
 
-	@OptIn(ExperimentalTime::class)
 	override suspend fun insertLeague(league: LeagueCreate) = withContext(ioDispatcher) {
 		transactionRunner {
 			leagueDao.insertLeague(league.asEntity())
@@ -83,7 +81,6 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 		leagueDao.updateLeague(league.asEntity())
 	}
 
-	@OptIn(ExperimentalTime::class)
 	override suspend fun archiveLeague(id: LeagueID) = withContext(ioDispatcher) {
 		leagueDao.archiveLeague(id, archivedOn = Clock.System.now())
 	}

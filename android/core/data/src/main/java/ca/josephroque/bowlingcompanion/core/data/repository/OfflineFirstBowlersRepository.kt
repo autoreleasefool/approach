@@ -35,7 +35,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 class OfflineFirstBowlersRepository @Inject constructor(
 	private val teamDao: TeamDao,
@@ -114,7 +113,6 @@ class OfflineFirstBowlersRepository @Inject constructor(
 		bowlerDao.updateBowler(bowler.asEntity())
 	}
 
-	@OptIn(ExperimentalTime::class)
 	override suspend fun archiveBowler(bowlerId: BowlerID) = withContext(ioDispatcher) {
 		bowlerDao.archiveBowlers(listOf(bowlerId), archivedOn = Clock.System.now())
 	}
@@ -127,7 +125,6 @@ class OfflineFirstBowlersRepository @Inject constructor(
 		bowlerDao.getOpponentsList().first().any { it.kind == BowlerKind.OPPONENT }
 	}
 
-	@OptIn(ExperimentalTime::class)
 	override suspend fun mergeBowlers(bowlers: List<BowlerEntity>, associateBy: Map<BowlerID, BowlerID>) =
 		withContext(ioDispatcher) {
 			transactionRunner {

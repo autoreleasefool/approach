@@ -4,7 +4,6 @@ import android.os.Parcelable
 import java.util.UUID
 import kotlinx.datetime.LocalDate
 import kotlinx.parcelize.Parcelize
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @JvmInline
@@ -68,7 +67,6 @@ data class TeamSeriesCreate(
 
 data class TeamSeriesUpdate(val id: TeamSeriesID, val seriesIds: List<SeriesID>)
 
-@OptIn(ExperimentalTime::class)
 data class ArchivedTeamSeries(
 	val id: TeamSeriesID,
 	val date: LocalDate,

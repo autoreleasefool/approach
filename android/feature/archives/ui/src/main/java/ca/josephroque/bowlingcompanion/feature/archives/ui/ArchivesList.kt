@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.footer
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
-import kotlin.time.ExperimentalTime
 
 @Composable
 fun ArchivesList(state: ArchivesListUiState, onAction: (ArchivesListUiAction) -> Unit, modifier: Modifier = Modifier) {
@@ -76,7 +75,6 @@ fun LazyListScope.archivesList(list: List<ArchiveListItem>, onItemUnarchived: (A
 	}
 }
 
-@OptIn(ExperimentalTime::class)
 @Composable
 private fun ArchiveItemRow(item: ArchiveListItem) {
 	Row(

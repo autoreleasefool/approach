@@ -4,7 +4,6 @@ import androidx.room.TypeConverter
 import ca.josephroque.bowlingcompanion.core.database.model.FrameEntity
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import kotlinx.datetime.LocalDate
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 class AvatarConverter {
@@ -16,11 +15,9 @@ class AvatarConverter {
 }
 
 class InstantConverter {
-	@OptIn(ExperimentalTime::class)
 	@TypeConverter
 	fun longToInstant(value: Long?): Instant? = value?.let(Instant::fromEpochMilliseconds)
 
-	@OptIn(ExperimentalTime::class)
 	@TypeConverter
 	fun instantToLong(instant: Instant?): Long? = instant?.toEpochMilliseconds()
 }

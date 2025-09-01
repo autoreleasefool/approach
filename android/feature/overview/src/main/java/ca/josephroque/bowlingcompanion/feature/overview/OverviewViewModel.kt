@@ -48,7 +48,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 private const val STATISTICS_WIDGET_CONTEXT = "overview"
 
@@ -286,7 +285,6 @@ class OverviewViewModel @Inject constructor(
 		}
 	}
 
-	@OptIn(ExperimentalTime::class)
 	private fun handleStatisticsWidgetLayoutAction(action: StatisticsWidgetLayoutUiAction) {
 		when (action) {
 			is StatisticsWidgetLayoutUiAction.WidgetClicked ->

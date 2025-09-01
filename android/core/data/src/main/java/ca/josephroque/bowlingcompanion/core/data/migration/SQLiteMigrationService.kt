@@ -67,7 +67,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import kotlin.time.ExperimentalTime
+import kotlin.time.Clock
 import kotlin.time.Instant
 
 class SQLiteMigrationService @Inject constructor(
@@ -556,7 +556,6 @@ class SQLiteMigrationService @Inject constructor(
 		return series
 	}
 
-	@OptIn(ExperimentalTime::class)
 	private suspend fun migrateSeriesToRoom(series: List<LegacySeries>) {
 		val migratedSeries = mutableListOf<SeriesEntity>()
 		val idMappings = mutableListOf<LegacyIDMappingEntity>()
@@ -658,7 +657,6 @@ class SQLiteMigrationService @Inject constructor(
 		return games
 	}
 
-	@OptIn(ExperimentalTime::class)
 	private suspend fun migrateGamesToRoom(games: List<LegacyGame>) {
 		val migratedGames = mutableListOf<GameEntity>()
 		val migratedMatchPlays = mutableListOf<MatchPlayEntity>()

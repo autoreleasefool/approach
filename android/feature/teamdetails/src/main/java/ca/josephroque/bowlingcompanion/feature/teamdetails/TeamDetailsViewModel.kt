@@ -40,7 +40,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 @HiltViewModel
 class TeamDetailsViewModel @Inject constructor(
@@ -55,7 +54,6 @@ class TeamDetailsViewModel @Inject constructor(
 	private val seriesToArchive = MutableStateFlow<TeamSeriesListItem?>(null)
 
 	private val seriesToEdit = MutableStateFlow<TeamSeriesListItem?>(null)
-	@OptIn(ExperimentalTime::class)
 	private val seriesToEditDate = MutableStateFlow(Clock.System.now().toLocalDate())
 
 	private val seriesItemSize = userDataRepository.userData.map { it.seriesItemSize }

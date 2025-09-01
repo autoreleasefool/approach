@@ -14,7 +14,6 @@ import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSummary
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @Dao
@@ -105,7 +104,6 @@ abstract class TeamSeriesDao {
 	@Insert
 	abstract fun insertAll(series: List<TeamSeriesSeriesCrossRef>)
 
-	@OptIn(ExperimentalTime::class)
 	@Query("UPDATE team_series SET archived_on = :archivedOn WHERE id = :teamSeriesId")
 	abstract fun archiveSeries(teamSeriesId: TeamSeriesID, archivedOn: Instant)
 

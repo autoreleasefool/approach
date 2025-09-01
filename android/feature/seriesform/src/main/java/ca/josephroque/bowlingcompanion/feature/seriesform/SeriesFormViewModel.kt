@@ -45,7 +45,6 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 val SERIES_FORM_ALLEY_PICKER_RESULT_KEY = ResourcePickerResultKey("SeriesFormAlleyPickerResultKey")
 val SERIES_FORM_LEAGUE_PICKER_RESULT_KEY = ResourcePickerResultKey("SeriesFormLeaguePickerResultKey")
@@ -110,7 +109,6 @@ class SeriesFormViewModel @Inject constructor(
 		}
 	}
 
-	@OptIn(ExperimentalTime::class)
 	private fun loadSeries() {
 		if (hasLoadedInitialState) return
 

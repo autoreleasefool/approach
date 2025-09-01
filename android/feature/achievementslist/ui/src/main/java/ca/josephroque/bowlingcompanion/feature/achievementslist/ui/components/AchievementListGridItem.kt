@@ -25,7 +25,6 @@ import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.feature.achievementslist.ui.R
 import kotlinx.datetime.LocalDate
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 @Composable
 fun AchievementListGridItem(
@@ -81,7 +80,6 @@ fun AchievementListGridItem(
 	}
 }
 
-@OptIn(ExperimentalTime::class)
 @Preview
 @Composable
 fun AchievementListGridItemPreview() {

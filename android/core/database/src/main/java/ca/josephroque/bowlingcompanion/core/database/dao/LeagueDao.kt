@@ -17,7 +17,6 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueSortOrder
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import kotlinx.coroutines.flow.Flow
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @Dao
@@ -122,7 +121,6 @@ abstract class LeagueDao : LegacyMigratingDao<LeagueEntity> {
 	@Update(entity = LeagueEntity::class)
 	abstract fun updateLeague(league: LeagueUpdateEntity)
 
-	@OptIn(ExperimentalTime::class)
 	@Query("UPDATE leagues SET archived_on = :archivedOn WHERE id = :leagueId")
 	abstract fun archiveLeague(leagueId: LeagueID, archivedOn: Instant)
 

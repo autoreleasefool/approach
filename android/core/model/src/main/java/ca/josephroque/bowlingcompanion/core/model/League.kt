@@ -4,7 +4,6 @@ import android.os.Parcelable
 import java.util.UUID
 import kotlinx.datetime.LocalDate
 import kotlinx.parcelize.Parcelize
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 object League {
@@ -51,7 +50,6 @@ data class LeagueListItem(
 	val average: Double?,
 )
 
-@OptIn(ExperimentalTime::class)
 data class ArchivedLeague(
 	val id: LeagueID,
 	val name: String,

@@ -96,7 +96,7 @@ private fun aggregateEntriesByDate(
 	val daysBetweenStartAndEnd = lastEntry.date.toEpochDays() - firstEntry.date.toEpochDays()
 
 	dayPeriod = if (daysBetweenStartAndEnd > 7) {
-		maxOf(daysBetweenStartAndEnd / MAX_TIME_PERIODS, 7)
+		maxOf(daysBetweenStartAndEnd / MAX_TIME_PERIODS, 7).toInt()
 	} else {
 		1
 	}
@@ -187,7 +187,6 @@ fun <Key : ChartEntryKey> buildChartWithEntries(
 			entries as Map<ChartEntryKey.Game, Statistic>,
 			aggregation,
 		)
-		else -> throw IllegalStateException("Unsupported chart entry key type: ${entries.keys.first()}")
 	}
 
 	when (statistic) {

@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDate
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 class OfflineFirstTeamSeriesRepository @Inject constructor(
 	private val seriesDao: SeriesDao,
@@ -156,7 +155,6 @@ class OfflineFirstTeamSeriesRepository @Inject constructor(
 		teamSeriesDao.setTeamSeriesDate(teamSeriesId, date)
 	}
 
-	@OptIn(ExperimentalTime::class)
 	override suspend fun archiveTeamSeries(teamSeriesId: TeamSeriesID, archiveMemberSeries: Boolean) =
 		withContext(ioDispatcher) {
 			transactionRunner {

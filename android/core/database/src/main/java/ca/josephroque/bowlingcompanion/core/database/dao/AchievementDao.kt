@@ -9,7 +9,6 @@ import ca.josephroque.bowlingcompanion.core.database.model.AchievementEntity
 import ca.josephroque.bowlingcompanion.core.model.Achievement
 import ca.josephroque.bowlingcompanion.core.model.AchievementListItem
 import kotlinx.coroutines.flow.Flow
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @Dao
@@ -26,7 +25,6 @@ abstract class AchievementDao {
 	)
 	abstract fun getEarnedAchievements(): Flow<List<AchievementListItem>>
 
-	@OptIn(ExperimentalTime::class)
 	@Query(
 		"""
 			SELECT

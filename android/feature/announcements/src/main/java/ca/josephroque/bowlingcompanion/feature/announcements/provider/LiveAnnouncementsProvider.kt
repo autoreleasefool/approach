@@ -10,7 +10,6 @@ import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
 import kotlinx.coroutines.flow.first
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 class LiveAnnouncementsProvider @Inject constructor(
@@ -31,7 +30,6 @@ class LiveAnnouncementsProvider @Inject constructor(
 		}
 	}
 
-	@OptIn(ExperimentalTime::class)
 	private suspend fun shouldShowTenYearsAnnouncement(): Boolean {
 		val userData = userDataRepository.userData.first()
 

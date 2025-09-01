@@ -4,10 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.AchievementID
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-@OptIn(ExperimentalTime::class)
 @Entity(tableName = "achievements")
 data class AchievementEntity(
 	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: AchievementID,
@@ -15,7 +13,6 @@ data class AchievementEntity(
 	@ColumnInfo(name = "earned_at") val earnedAt: Instant,
 )
 
-@OptIn(ExperimentalTime::class)
 data class AchievementCreateEntity(
 	val id: AchievementID,
 	val title: String,

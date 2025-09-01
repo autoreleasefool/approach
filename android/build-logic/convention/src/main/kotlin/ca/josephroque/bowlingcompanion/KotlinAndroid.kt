@@ -58,5 +58,11 @@ private inline fun <reified T : KotlinBaseExtension> Project.configureKotlin() =
 	}.apply {
 		jvmTarget = JvmTarget.JVM_17
 		allWarningsAsErrors = warningsAsErrors.toBoolean()
+		freeCompilerArgs.addAll(
+			// Enable experimental coroutines APIs, including Flow
+			"-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+			// Enable experimental datetime APIs
+			"-opt-in=kotlin.time.ExperimentalTime",
+		)
 	}
 }
