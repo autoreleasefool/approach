@@ -9,7 +9,7 @@ import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 
 data class AlleyFormUiState(
 	val name: String = "",
-	@StringRes val nameErrorId: Int? = null,
+	@param:StringRes val nameErrorId: Int? = null,
 	val material: AlleyMaterial? = null,
 	val pinFall: AlleyPinFall? = null,
 	val mechanism: AlleyMechanism? = null,

@@ -94,7 +94,7 @@ sealed interface ResourcePickerUiAction {
 }
 
 data class ResourcePickerTopBarUiState(
-	@PluralsRes val titleResourceId: Int = R.plurals.base_picker_title,
+	@param:PluralsRes val titleResourceId: Int = R.plurals.base_picker_title,
 	val titleOverride: String? = null,
 	val limit: Int = 0,
 )

@@ -64,7 +64,7 @@ fun MutedEmptyState(
 }
 
 data class EmptyStateAction(
-	@StringRes val title: Int,
+	@param:StringRes val title: Int,
 	val onClick: () -> Unit,
 )
 

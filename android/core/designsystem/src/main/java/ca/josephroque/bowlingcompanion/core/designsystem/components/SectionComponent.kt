@@ -15,7 +15,7 @@ import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
-data class HeaderAction(@StringRes val actionResourceId: Int, val onClick: () -> Unit)
+data class HeaderAction(@param:StringRes val actionResourceId: Int, val onClick: () -> Unit)
 
 @Composable
 fun SectionHeader(title: String, modifier: Modifier = Modifier, headerAction: HeaderAction? = null) {

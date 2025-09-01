@@ -6,7 +6,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.datetime.Instant
 
-class LiveSystemInfoService @Inject constructor(@ApplicationContext private val context: Context) :
+class LiveSystemInfoService @Inject constructor(@param:ApplicationContext private val context: Context) :
 	SystemInfoService {
 	override val versionName: String
 		get() = context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: ""

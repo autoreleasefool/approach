@@ -17,7 +17,7 @@ data class LeagueFormTopBarUiState(
 data class LeagueFormUiState(
 	val isEditing: Boolean,
 	val name: String = "",
-	@StringRes val nameErrorId: Int? = null,
+	@param:StringRes val nameErrorId: Int? = null,
 	val excludeFromStatistics: ExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 	val includeAdditionalPinFall: IncludeAdditionalPinFall = IncludeAdditionalPinFall.NONE,
 	val additionalPinFall: Int = 0,

@@ -5,15 +5,15 @@ import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 
 data class StatisticListEntry(
 	val id: StatisticID,
-	@StringRes val description: Int?,
+	@param:StringRes val description: Int?,
 	val value: String,
 	val valueDescription: String?,
 	val isHighlightedAsNew: Boolean,
 )
 
 data class StatisticListEntryGroup(
-	@StringRes val title: Int,
-	@StringRes val description: Int?,
+	@param:StringRes val title: Int,
+	@param:StringRes val description: Int?,
 	val images: List<Int>?,
 	val entries: List<StatisticListEntry>,
 )

@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.settings.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -134,6 +135,7 @@ private fun ArchivesSection(onAction: (SettingsUiAction) -> Unit) {
 	)
 }
 
+@SuppressLint("LocalContextResourcesRead")
 @Composable
 private fun HelpSection(versionName: String, versionCode: String, onAction: (SettingsUiAction) -> Unit) {
 	Header(titleResourceId = R.string.settings_item_help)
@@ -209,6 +211,7 @@ private fun DataSection(
 	}
 }
 
+@SuppressLint("LocalContextResourcesRead")
 @Composable
 private fun DevelopmentSection(onAction: (SettingsUiAction) -> Unit) {
 	val context = LocalContext.current

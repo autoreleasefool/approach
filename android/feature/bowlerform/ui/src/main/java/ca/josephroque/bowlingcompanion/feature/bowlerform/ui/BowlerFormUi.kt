@@ -5,7 +5,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 
 data class BowlerFormUiState(
 	val name: String = "",
-	@StringRes val nameErrorId: Int? = null,
+	@param:StringRes val nameErrorId: Int? = null,
 	val isShowingArchiveDialog: Boolean = false,
 	val isArchiveButtonEnabled: Boolean = false,
 	val isShowingDiscardChangesDialog: Boolean = false,
