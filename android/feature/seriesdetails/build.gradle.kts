@@ -14,6 +14,4 @@ dependencies {
 	implementation(projects.feature.seriesdetails.ui)
 	implementation(projects.feature.sharing)
 	implementation(projects.feature.sharing.ui)
-
-	implementation(libs.kotlinx.datetime)
 }

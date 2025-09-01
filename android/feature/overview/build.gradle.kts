@@ -15,6 +15,4 @@ dependencies {
 	implementation(projects.feature.overview.ui)
 	implementation(projects.feature.statisticswidget.ui)
 	implementation(projects.feature.teamslist.ui)
-
-	implementation(libs.kotlinx.datetime)
 }

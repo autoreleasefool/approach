@@ -9,5 +9,4 @@ android {
 
 dependencies {
 	implementation(projects.feature.bowlerform.ui)
-	implementation(libs.kotlinx.datetime)
 }

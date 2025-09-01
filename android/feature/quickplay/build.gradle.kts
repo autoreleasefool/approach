@@ -9,6 +9,4 @@ android {
 
 dependencies {
 	implementation(projects.feature.quickplay.ui)
-
-	implementation(libs.kotlinx.datetime)
 }

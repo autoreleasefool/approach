@@ -13,6 +13,4 @@ dependencies {
 	implementation(projects.core.model.charts.ui)
 	implementation(projects.feature.gameslist.ui)
 	implementation(projects.feature.sharing.ui)
-
-	implementation(libs.kotlinx.datetime)
 }

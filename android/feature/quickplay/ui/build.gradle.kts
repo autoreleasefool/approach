@@ -10,7 +10,6 @@ android {
 dependencies {
 	implementation(projects.core.common)
 
-	implementation(libs.kotlinx.datetime)
 	implementation(libs.reorderable.compose)
 	implementation(libs.swipe)
 }

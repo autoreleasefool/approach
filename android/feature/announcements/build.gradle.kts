@@ -11,6 +11,4 @@ dependencies {
 	implementation(projects.core.achievements)
 	implementation(projects.core.featureflags)
 	implementation(projects.feature.announcements.ui)
-
-	implementation(libs.kotlinx.datetime)
 }

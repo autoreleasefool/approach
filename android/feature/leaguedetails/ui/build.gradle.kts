@@ -11,6 +11,4 @@ dependencies {
 	implementation(projects.core.common)
 	implementation(projects.feature.serieslist.ui)
 	implementation(projects.feature.statisticswidget.ui)
-
-	implementation(libs.kotlinx.datetime)
 }

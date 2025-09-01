@@ -132,7 +132,6 @@ dependencies {
 	implementation(libs.androidx.compose.ui.tooling.preview)
 	debugImplementation(libs.androidx.compose.ui.tooling.preview)
 
-	implementation(libs.kotlinx.datetime)
 	implementation(libs.sentry)
 	implementation(libs.sentry.compose)
 }

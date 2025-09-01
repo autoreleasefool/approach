@@ -9,6 +9,4 @@ android {
 
 dependencies {
 	implementation(projects.feature.archives.ui)
-
-	implementation(libs.kotlinx.datetime)
 }

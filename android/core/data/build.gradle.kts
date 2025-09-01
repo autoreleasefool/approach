@@ -17,6 +17,5 @@ dependencies {
 	implementation(projects.core.statistics)
 
 	implementation(libs.androidx.core.ktx)
-	implementation(libs.kotlinx.datetime)
 	implementation(libs.paging)
 }

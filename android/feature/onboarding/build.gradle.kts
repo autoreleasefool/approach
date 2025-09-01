@@ -10,6 +10,4 @@ android {
 dependencies {
 	implementation(projects.core.database)
 	implementation(projects.feature.onboarding.ui)
-
-	implementation(libs.kotlinx.datetime)
 }

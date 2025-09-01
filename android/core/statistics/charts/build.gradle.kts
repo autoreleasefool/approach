@@ -12,6 +12,4 @@ dependencies {
 	implementation(projects.core.designsystem)
 	implementation(projects.core.model)
 	implementation(projects.core.statistics)
-
-	implementation(libs.kotlinx.datetime)
 }

@@ -14,6 +14,4 @@ dependencies {
 	implementation(projects.feature.leagueslist.ui)
 	implementation(projects.feature.gearlist.ui)
 	implementation(projects.feature.statisticswidget.ui)
-
-	implementation(libs.kotlinx.datetime)
 }

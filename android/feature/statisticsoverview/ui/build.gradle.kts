@@ -10,6 +10,4 @@ android {
 dependencies {
 	implementation(projects.core.common)
 	implementation(projects.core.statistics)
-
-	implementation(libs.kotlinx.datetime)
 }

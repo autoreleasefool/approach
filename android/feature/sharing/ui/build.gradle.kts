@@ -12,6 +12,4 @@ dependencies {
 	implementation(projects.core.common)
 	implementation(projects.core.model.charts.ui)
 	implementation(projects.core.scoresheet)
-
-	implementation(libs.kotlinx.datetime)
 }

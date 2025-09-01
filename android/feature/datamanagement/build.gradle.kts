@@ -10,6 +10,4 @@ android {
 dependencies {
 	implementation(projects.core.error)
 	implementation(projects.feature.datamanagement.ui)
-
-	implementation(libs.kotlinx.datetime)
 }

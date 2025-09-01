@@ -10,5 +10,4 @@ android {
 dependencies {
 	implementation(projects.core.featureflags)
 	implementation(projects.feature.seriesform.ui)
-	implementation(libs.kotlinx.datetime)
 }

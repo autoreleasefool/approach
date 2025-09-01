@@ -13,6 +13,5 @@ dependencies {
 	implementation(projects.core.model.charts.ui)
 	implementation(projects.feature.gameslist.ui)
 
-	implementation(libs.kotlinx.datetime)
 	implementation(libs.swipe)
 }

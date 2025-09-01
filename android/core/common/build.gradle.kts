@@ -11,5 +11,5 @@ dependencies {
 	implementation(projects.core.error)
 
 	implementation(libs.androidx.navigation.compose)
-	implementation(libs.kotlinx.datetime)
+	api(libs.kotlinx.datetime)
 }
