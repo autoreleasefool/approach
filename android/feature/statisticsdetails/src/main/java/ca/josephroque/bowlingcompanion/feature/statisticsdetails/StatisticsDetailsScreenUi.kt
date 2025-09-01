@@ -8,9 +8,7 @@ import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.Statistics
 sealed interface StatisticsDetailsScreenUiState {
 	data object Loading : StatisticsDetailsScreenUiState
 
-	data class Loaded(
-		val list: StatisticsDetailsListUiState,
-	) : StatisticsDetailsScreenUiState
+	data class Loaded(val list: StatisticsDetailsListUiState) : StatisticsDetailsScreenUiState
 }
 
 sealed interface StatisticsDetailsScreenUiAction {
@@ -21,8 +19,5 @@ sealed interface StatisticsDetailsScreenUiAction {
 
 sealed interface StatisticsDetailsScreenEvent {
 	data object Dismissed : StatisticsDetailsScreenEvent
-	data class ShowStatisticChart(
-		val filter: TrackableFilter,
-		val id: StatisticID,
-	) : StatisticsDetailsScreenEvent
+	data class ShowStatisticChart(val filter: TrackableFilter, val id: StatisticID) : StatisticsDetailsScreenEvent
 }

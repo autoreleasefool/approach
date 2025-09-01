@@ -7,10 +7,10 @@ import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import ca.josephroque.bowlingcompanion.feature.announcements.ui.AnnouncementUiState
 import ca.josephroque.bowlingcompanion.feature.announcements.ui.tenyears.TenYearsAnnouncementUiState
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.days
-import kotlinx.coroutines.flow.first
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Instant
+import kotlinx.coroutines.flow.first
 
 class LiveAnnouncementsProvider @Inject constructor(
 	private val featureFlagsClient: FeatureFlagsClient,

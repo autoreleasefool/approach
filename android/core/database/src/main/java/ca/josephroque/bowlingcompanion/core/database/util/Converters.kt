@@ -3,8 +3,8 @@ package ca.josephroque.bowlingcompanion.core.database.util
 import androidx.room.TypeConverter
 import ca.josephroque.bowlingcompanion.core.database.model.FrameEntity
 import ca.josephroque.bowlingcompanion.core.model.Avatar
-import kotlinx.datetime.LocalDate
 import kotlin.time.Instant
+import kotlinx.datetime.LocalDate
 
 class AvatarConverter {
 	@TypeConverter

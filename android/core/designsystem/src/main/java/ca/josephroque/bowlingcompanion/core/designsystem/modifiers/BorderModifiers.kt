@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.designsystem.modifiers
 
+import android.annotation.SuppressLint
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
@@ -8,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 
-@Suppress("unused")
+@SuppressLint("UnnecessaryComposedModifier")
 fun Modifier.topBorder(width: Dp, color: Color): Modifier = composed(
 	factory = {
 		val density = LocalDensity.current
@@ -28,6 +29,7 @@ fun Modifier.topBorder(width: Dp, color: Color): Modifier = composed(
 	},
 )
 
+@SuppressLint("UnnecessaryComposedModifier")
 fun Modifier.bottomBorder(width: Dp, color: Color): Modifier = composed(
 	factory = {
 		val density = LocalDensity.current
@@ -47,6 +49,7 @@ fun Modifier.bottomBorder(width: Dp, color: Color): Modifier = composed(
 	},
 )
 
+@SuppressLint("UnnecessaryComposedModifier")
 fun Modifier.startBorder(width: Dp, color: Color): Modifier = composed(
 	factory = {
 		val density = LocalDensity.current
@@ -66,6 +69,7 @@ fun Modifier.startBorder(width: Dp, color: Color): Modifier = composed(
 	},
 )
 
+@SuppressLint("UnnecessaryComposedModifier")
 fun Modifier.endBorder(width: Dp, color: Color): Modifier = composed(
 	factory = {
 		val density = LocalDensity.current

@@ -13,9 +13,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
-class AcknowledgementsViewModel @Inject constructor(
-	acknowledgementsRepository: AcknowledgementsRepository,
-) : ApproachViewModel<AcknowledgementsSettingsScreenEvent>() {
+class AcknowledgementsViewModel @Inject constructor(acknowledgementsRepository: AcknowledgementsRepository) :
+	ApproachViewModel<AcknowledgementsSettingsScreenEvent>() {
 	private val acknowledgements = acknowledgementsRepository.getAcknowledgements()
 		.map { AcknowledgementsUiState(it) }
 

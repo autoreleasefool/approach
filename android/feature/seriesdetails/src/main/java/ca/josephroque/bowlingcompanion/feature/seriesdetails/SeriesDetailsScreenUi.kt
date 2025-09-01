@@ -8,10 +8,8 @@ import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsUiS
 sealed interface SeriesDetailsScreenUiState {
 	data object Loading : SeriesDetailsScreenUiState
 
-	data class Loaded(
-		val topBar: SeriesDetailsTopBarUiState,
-		val seriesDetails: SeriesDetailsUiState,
-	) : SeriesDetailsScreenUiState
+	data class Loaded(val topBar: SeriesDetailsTopBarUiState, val seriesDetails: SeriesDetailsUiState) :
+		SeriesDetailsScreenUiState
 }
 
 sealed interface SeriesDetailsScreenUiAction {

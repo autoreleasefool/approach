@@ -36,6 +36,7 @@ import ca.josephroque.bowlingcompanion.feature.teamslist.ui.TeamsListUiState
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlin.time.Clock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -47,7 +48,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
 
 private const val STATISTICS_WIDGET_CONTEXT = "overview"
 

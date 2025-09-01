@@ -18,18 +18,14 @@ sealed interface GearFormScreenUiState {
 		override fun isSavable(): Boolean = false
 	}
 
-	data class Create(val form: GearFormUiState, val topBar: GearFormTopBarUiState) :
-		GearFormScreenUiState {
+	data class Create(val form: GearFormUiState, val topBar: GearFormTopBarUiState) : GearFormScreenUiState {
 		override fun isSavable(): Boolean = form.name.isNotBlank()
 
 		override fun hasAnyChanges(): Boolean = form != GearFormUiState()
 	}
 
-	data class Edit(
-		val initialValue: GearUpdate,
-		val form: GearFormUiState,
-		val topBar: GearFormTopBarUiState,
-	) : GearFormScreenUiState {
+	data class Edit(val initialValue: GearUpdate, val form: GearFormUiState, val topBar: GearFormTopBarUiState) :
+		GearFormScreenUiState {
 		override fun isSavable(): Boolean =
 			form.name.isNotBlank() && form.updatedModel(existing = initialValue) != initialValue
 

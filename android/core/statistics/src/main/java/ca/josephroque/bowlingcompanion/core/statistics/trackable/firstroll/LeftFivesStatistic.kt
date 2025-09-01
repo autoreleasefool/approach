@@ -10,9 +10,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatistic
 
-data class LeftFivesStatistic(
-	var leftFives: Int = 0,
-) : TrackablePerFirstRoll, CountingStatistic {
+data class LeftFivesStatistic(var leftFives: Int = 0) :
+	TrackablePerFirstRoll,
+	CountingStatistic {
 	override val id = StatisticID.LEFT_FIVES
 	override val category = StatisticCategory.FIVES
 	override val isEligibleForNewLabel = true

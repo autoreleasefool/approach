@@ -13,10 +13,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfigur
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.PercentageStatistic
 import ca.josephroque.bowlingcompanion.core.statistics.utils.firstRolls
 
-data class StrikeMiddleHitsStatistic(
-	var middleHits: Int = 0,
-	var strikes: Int = 0,
-) : TrackablePerFrame, PercentageStatistic {
+data class StrikeMiddleHitsStatistic(var middleHits: Int = 0, var strikes: Int = 0) :
+	TrackablePerFrame,
+	PercentageStatistic {
 	override val id = StatisticID.STRIKE_MIDDLE_HITS
 	override val category = StatisticCategory.MIDDLE_HITS
 	override val isEligibleForNewLabel = false

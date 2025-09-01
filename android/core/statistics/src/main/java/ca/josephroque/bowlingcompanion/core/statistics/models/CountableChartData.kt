@@ -23,7 +23,4 @@ data class CountableChartData(
 		get() = entries.firstOrNull()?.key
 }
 
-data class CountableChartEntry(
-	val key: ChartEntryKey,
-	val value: Int,
-)
+data class CountableChartEntry(val key: ChartEntryKey, val value: Int)

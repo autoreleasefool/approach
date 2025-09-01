@@ -12,9 +12,8 @@ import kotlinx.coroutines.flow.onEach
 private const val STATISTIC_PICKER_RESULT_KEY = "StatisticPickerResultKey"
 
 @HiltViewModel
-class StatisticPickerResultViewModel @Inject constructor(
-	private val savedStateHandle: SavedStateHandle,
-) : ViewModel() {
+class StatisticPickerResultViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) :
+	ViewModel() {
 
 	fun getStatisticID() = savedStateHandle
 		.getStateFlow<String?>(STATISTIC_PICKER_RESULT_KEY, null)

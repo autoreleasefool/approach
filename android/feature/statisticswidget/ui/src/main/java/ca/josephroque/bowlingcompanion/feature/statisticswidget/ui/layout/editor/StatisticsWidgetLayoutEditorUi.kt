@@ -10,15 +10,10 @@ data class StatisticsWidgetLayoutEditorUiState(
 	val widgetCharts: Map<StatisticsWidgetID, ChartContent> = emptyMap(),
 	val isDeleteModeEnabled: Boolean = false,
 ) {
-	data class ChartContent(
-		val chart: StatisticChartContent,
-		val modelProducer: ChartEntryModelProducer,
-	)
+	data class ChartContent(val chart: StatisticChartContent, val modelProducer: ChartEntryModelProducer)
 }
 
-data class StatisticsWidgetLayoutEditorTopBarUiState(
-	val isDeleteModeEnabled: Boolean = false,
-)
+data class StatisticsWidgetLayoutEditorTopBarUiState(val isDeleteModeEnabled: Boolean = false)
 
 sealed interface StatisticsWidgetLayoutEditorUiAction {
 	data object BackClicked : StatisticsWidgetLayoutEditorUiAction

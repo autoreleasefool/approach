@@ -10,10 +10,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.PercentageStatistic
 
-data class FoulsStatistic(
-	var fouls: Int = 0,
-	var totalRolls: Int = 0,
-) : PercentageStatistic, TrackablePerFrame {
+data class FoulsStatistic(var fouls: Int = 0, var totalRolls: Int = 0) :
+	PercentageStatistic,
+	TrackablePerFrame {
 	override val id = StatisticID.FOULS
 	override val category = StatisticCategory.FOULS
 	override val isEligibleForNewLabel = false

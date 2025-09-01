@@ -9,10 +9,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-class BowlerPickerDataProvider @Inject constructor(
-	bowlersRepository: BowlersRepository,
-	kind: BowlerKind?,
-) : ResourcePickerDataProvider {
+class BowlerPickerDataProvider @Inject constructor(bowlersRepository: BowlersRepository, kind: BowlerKind?) :
+	ResourcePickerDataProvider {
 	private val bowlers: Flow<List<BowlerSummary>> = when (kind) {
 		BowlerKind.OPPONENT -> bowlersRepository.getOpponentsList().map { opponents ->
 			opponents.map { BowlerSummary(it.id, it.name) }

@@ -13,9 +13,8 @@ sealed interface AcknowledgementDetailsScreenUiState {
 }
 
 sealed interface AcknowledgementDetailsScreenUiAction {
-	data class AcknowledgementDetailsAction(
-		val action: AcknowledgementDetailsUiAction,
-	) : AcknowledgementDetailsScreenUiAction
+	data class AcknowledgementDetailsAction(val action: AcknowledgementDetailsUiAction) :
+		AcknowledgementDetailsScreenUiAction
 }
 
 sealed interface AcknowledgementDetailsScreenEvent {

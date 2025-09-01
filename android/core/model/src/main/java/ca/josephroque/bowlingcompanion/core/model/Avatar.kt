@@ -1,15 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.model
 
-data class Avatar(
-	val label: String,
-	val primaryColor: RGB,
-	val secondaryColor: RGB,
-) {
-	data class RGB(
-		val red: Int,
-		val green: Int,
-		val blue: Int,
-	) {
+data class Avatar(val label: String, val primaryColor: RGB, val secondaryColor: RGB) {
+	data class RGB(val red: Int, val green: Int, val blue: Int) {
 		override fun toString(): String = "$red,$green,$blue"
 
 		companion object

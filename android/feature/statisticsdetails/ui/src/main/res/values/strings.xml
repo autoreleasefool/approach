@@ -29,7 +29,6 @@
 	<string name="statistics_filter_label_series">Series</string>
 	<string name="statistics_filter_label_series_starts">Beginning from</string>
 	<string name="statistics_filter_label_series_ends">Ending on</string>
-	<string name="statistics_filter_label_series_alley">Alley</string>
 	<string name="statistics_filter_label_series_alley_material">Material</string>
 	<string name="statistics_filter_label_series_alley_mechanism">Mechanism</string>
 	<string name="statistics_filter_label_series_alley_pin_fall">Pin Fall</string>

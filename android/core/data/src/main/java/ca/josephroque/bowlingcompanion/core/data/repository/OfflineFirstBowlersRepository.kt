@@ -29,12 +29,12 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesBowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import javax.inject.Inject
+import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import kotlin.time.Clock
 
 class OfflineFirstBowlersRepository @Inject constructor(
 	private val teamDao: TeamDao,

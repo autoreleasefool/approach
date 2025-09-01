@@ -266,10 +266,7 @@ private fun rememberScoreMarkers(
 	}
 }
 
-private data class ScoreMarkerState(
-	val lowScoreIndex: Int?,
-	val highScoreIndex: Int?,
-) {
+private data class ScoreMarkerState(val lowScoreIndex: Int?, val highScoreIndex: Int?) {
 	constructor(
 		scores: List<Int>,
 		configuration: SeriesSharingConfigurationUiState,

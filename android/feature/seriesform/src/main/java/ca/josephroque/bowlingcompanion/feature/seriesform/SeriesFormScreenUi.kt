@@ -24,23 +24,18 @@ sealed interface SeriesFormScreenUiState {
 		override fun isSavable(): Boolean = false
 	}
 
-	data class TeamCreate(val form: SeriesFormUiState, val topBar: SeriesFormTopBarUiState) :
-		SeriesFormScreenUiState {
+	data class TeamCreate(val form: SeriesFormUiState, val topBar: SeriesFormTopBarUiState) : SeriesFormScreenUiState {
 		override fun isSavable(): Boolean = true
 		override fun hasAnyChanges(): Boolean = true
 	}
 
-	data class Create(val form: SeriesFormUiState, val topBar: SeriesFormTopBarUiState) :
-		SeriesFormScreenUiState {
+	data class Create(val form: SeriesFormUiState, val topBar: SeriesFormTopBarUiState) : SeriesFormScreenUiState {
 		override fun isSavable(): Boolean = true
 		override fun hasAnyChanges(): Boolean = true
 	}
 
-	data class Edit(
-		val initialValue: SeriesUpdate,
-		val form: SeriesFormUiState,
-		val topBar: SeriesFormTopBarUiState,
-	) : SeriesFormScreenUiState {
+	data class Edit(val initialValue: SeriesUpdate, val form: SeriesFormUiState, val topBar: SeriesFormTopBarUiState) :
+		SeriesFormScreenUiState {
 		override fun isSavable(): Boolean = form.updatedModel(existing = initialValue) != initialValue
 
 		override fun hasAnyChanges(): Boolean =
@@ -72,8 +67,7 @@ sealed interface SeriesFormScreenEvent {
 	data class Dismissed(val seriesId: SeriesID?) : SeriesFormScreenEvent
 	data class EditAlley(val alleyId: AlleyID?) : SeriesFormScreenEvent
 	data class EditLeague(val bowlerId: BowlerID, val leagueId: LeagueID) : SeriesFormScreenEvent
-	data class StartTeamSeries(val teamSeriesId: TeamSeriesID, val initialGameId: GameID) :
-		SeriesFormScreenEvent
+	data class StartTeamSeries(val teamSeriesId: TeamSeriesID, val initialGameId: GameID) : SeriesFormScreenEvent
 }
 
 fun MutableStateFlow<SeriesFormScreenUiState>.updateForm(function: (SeriesFormUiState) -> SeriesFormUiState) {

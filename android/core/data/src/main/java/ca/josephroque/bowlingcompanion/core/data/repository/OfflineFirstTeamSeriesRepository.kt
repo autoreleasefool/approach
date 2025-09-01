@@ -22,13 +22,13 @@ import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSummary
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesUpdate
 import javax.inject.Inject
+import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDate
-import kotlin.time.Clock
 
 class OfflineFirstTeamSeriesRepository @Inject constructor(
 	private val seriesDao: SeriesDao,

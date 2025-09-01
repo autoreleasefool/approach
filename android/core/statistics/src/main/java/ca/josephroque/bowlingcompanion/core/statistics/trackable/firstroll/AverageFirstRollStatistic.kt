@@ -10,10 +10,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.AveragingStatistic
 
-data class AverageFirstRollStatistic(
-	var totalFirstRollPinfall: Int = 0,
-	var totalFirstRolls: Int = 0,
-) : TrackablePerFirstRoll, AveragingStatistic {
+data class AverageFirstRollStatistic(var totalFirstRollPinfall: Int = 0, var totalFirstRolls: Int = 0) :
+	TrackablePerFirstRoll,
+	AveragingStatistic {
 	override val id = StatisticID.AVERAGE_FIRST_ROLL
 	override val category = StatisticCategory.FIRST_ROLL
 	override val isEligibleForNewLabel = true

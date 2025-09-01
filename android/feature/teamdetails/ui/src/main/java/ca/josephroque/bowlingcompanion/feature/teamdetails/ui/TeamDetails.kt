@@ -51,13 +51,13 @@ import ca.josephroque.bowlingcompanion.core.model.charts.ui.SeriesChartData
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
-import kotlin.time.Instant
 
 @Composable
 fun TeamDetails(

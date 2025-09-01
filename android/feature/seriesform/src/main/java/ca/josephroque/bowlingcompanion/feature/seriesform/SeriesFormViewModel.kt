@@ -37,6 +37,7 @@ import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlin.time.Clock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -44,7 +45,6 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
-import kotlin.time.Clock
 
 val SERIES_FORM_ALLEY_PICKER_RESULT_KEY = ResourcePickerResultKey("SeriesFormAlleyPickerResultKey")
 val SERIES_FORM_LEAGUE_PICKER_RESULT_KEY = ResourcePickerResultKey("SeriesFormLeaguePickerResultKey")

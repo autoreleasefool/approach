@@ -3,11 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.gameslist.ui
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 
-data class GamesListUiState(
-	val list: List<GameListItem>,
-	val gameToArchive: GameListItem?,
-	val isReordering: Boolean,
-)
+data class GamesListUiState(val list: List<GameListItem>, val gameToArchive: GameListItem?, val isReordering: Boolean)
 
 sealed interface GamesListUiAction {
 	data object AddGameClicked : GamesListUiAction

@@ -80,9 +80,7 @@ data class TrackableFilter(
 	}
 
 	sealed interface SourceSummaries {
-		data class Team(
-			val team: TeamSummary,
-		) : SourceSummaries
+		data class Team(val team: TeamSummary) : SourceSummaries
 
 		data class Bowler(
 			val bowler: BowlerSummary,

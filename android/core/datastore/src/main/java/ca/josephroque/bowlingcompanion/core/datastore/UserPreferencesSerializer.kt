@@ -7,9 +7,8 @@ import java.io.InputStream
 import java.io.OutputStream
 import javax.inject.Inject
 
-class UserPreferencesSerializer @Inject constructor(
-	private val errorReporting: ErrorReporting,
-) : Serializer<UserPreferences> {
+class UserPreferencesSerializer @Inject constructor(private val errorReporting: ErrorReporting) :
+	Serializer<UserPreferences> {
 	override val defaultValue: UserPreferences = UserPreferences.getDefaultInstance()
 
 	override suspend fun readFrom(input: InputStream): UserPreferences = try {

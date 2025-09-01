@@ -7,9 +7,7 @@ import ca.josephroque.bowlingcompanion.feature.achievementslist.ui.AchievementsL
 sealed interface AchievementsListScreenUiState {
 	data object Loading : AchievementsListScreenUiState
 
-	data class Loaded(
-		val list: AchievementsListUiState,
-	) : AchievementsListScreenUiState
+	data class Loaded(val list: AchievementsListUiState) : AchievementsListScreenUiState
 }
 
 sealed interface AchievementsListScreenUiAction {

@@ -11,9 +11,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatistic
 
-data class LeftSplitsStatistic(
-	var leftSplits: Int = 0,
-) : TrackablePerFirstRoll, CountingStatistic {
+data class LeftSplitsStatistic(var leftSplits: Int = 0) :
+	TrackablePerFirstRoll,
+	CountingStatistic {
 	override val id = StatisticID.LEFT_SPLITS
 	override val category = StatisticCategory.SPLITS
 	override val isEligibleForNewLabel = false

@@ -24,9 +24,9 @@ fun Stepper(
 	title: String,
 	value: Int,
 	onValueChanged: (Int) -> Unit,
+	modifier: Modifier = Modifier,
 	step: Int = 1,
 	range: IntRange? = null,
-	modifier: Modifier = Modifier,
 ) {
 	val changeValue = { newValue: Int ->
 		val coercedValue = newValue.coerceIn(range ?: Int.MIN_VALUE..Int.MAX_VALUE)

@@ -12,9 +12,7 @@ import kotlinx.coroutines.flow.onEach
 private const val AVATAR_FORM_RESULT_KEY = "AvatarFormResultKey"
 
 @HiltViewModel
-class AvatarFormResultViewModel @Inject constructor(
-	private val savedStateHandle: SavedStateHandle,
-) : ViewModel() {
+class AvatarFormResultViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
 	fun getAvatar() = savedStateHandle
 		.getStateFlow<String?>(AVATAR_FORM_RESULT_KEY, null)

@@ -13,9 +13,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 @HiltViewModel
-class StatisticPickerViewModel @Inject constructor(
-	savedStateHandle: SavedStateHandle,
-) : ApproachViewModel<StatisticPickerScreenEvent>() {
+class StatisticPickerViewModel @Inject constructor(savedStateHandle: SavedStateHandle) :
+	ApproachViewModel<StatisticPickerScreenEvent>() {
 	private val initiallySelectedStatisticTitle = Route.StatisticsPicker.getStatistic(
 		savedStateHandle,
 	)!!

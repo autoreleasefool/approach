@@ -28,6 +28,7 @@ import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlin.time.Clock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -39,7 +40,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
-import kotlin.time.Clock
 
 @HiltViewModel
 class TeamDetailsViewModel @Inject constructor(

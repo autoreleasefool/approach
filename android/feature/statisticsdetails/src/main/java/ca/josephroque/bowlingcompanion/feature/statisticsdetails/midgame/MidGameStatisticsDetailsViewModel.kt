@@ -55,10 +55,7 @@ class MidGameStatisticsDetailsViewModel @Inject constructor(
 		statisticsRepository.getSourceDetails(it.source)
 	}
 
-	private data class StatisticsSettings(
-		val isHidingZeroStatistics: Boolean,
-		val isHidingStatisticDescriptions: Boolean,
-	)
+	private data class StatisticsSettings(val isHidingZeroStatistics: Boolean, val isHidingStatisticDescriptions: Boolean)
 	private val statisticsSettings: Flow<StatisticsSettings> =
 		userDataRepository.userData.map {
 			StatisticsSettings(

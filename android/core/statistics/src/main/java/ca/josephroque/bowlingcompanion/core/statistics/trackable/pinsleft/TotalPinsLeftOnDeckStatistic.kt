@@ -10,9 +10,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfigur
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatistic
 import ca.josephroque.bowlingcompanion.core.statistics.utils.pinsLeftOnDeck
 
-data class TotalPinsLeftOnDeckStatistic(
-	var totalPinsLeftOnDeck: Int = 0,
-) : TrackablePerFrame, CountingStatistic {
+data class TotalPinsLeftOnDeckStatistic(var totalPinsLeftOnDeck: Int = 0) :
+	TrackablePerFrame,
+	CountingStatistic {
 	override val id = StatisticID.TOTAL_PINS_LEFT_ON_DECK
 	override val category = StatisticCategory.PINS_LEFT_ON_DECK
 	override val isEligibleForNewLabel = false

@@ -87,8 +87,7 @@ sealed interface GameDetailsUiAction {
 
 	data class LockToggled(val locked: Boolean) : GameDetailsUiAction
 	data class ExcludeFromStatisticsToggled(val excludeFromStatistics: Boolean) : GameDetailsUiAction
-	data class NextGameElementClicked(val nextGameElement: NextGameEditableElement) :
-		GameDetailsUiAction
+	data class NextGameElementClicked(val nextGameElement: NextGameEditableElement) : GameDetailsUiAction
 	data class HeaderHeightMeasured(val height: Float) : GameDetailsUiAction
 	data class CopyLanesDialog(val action: CopyLanesDialogUiAction) : GameDetailsUiAction
 	data class ScoreSheetList(val action: ScoreSheetUiAction) : GameDetailsUiAction

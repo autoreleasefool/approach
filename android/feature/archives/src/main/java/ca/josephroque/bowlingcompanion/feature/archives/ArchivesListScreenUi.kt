@@ -6,9 +6,7 @@ import ca.josephroque.bowlingcompanion.feature.archives.ui.ArchivesListUiState
 sealed interface ArchivesListScreenUiState {
 	data object Loading : ArchivesListScreenUiState
 
-	data class Loaded(
-		val archivesList: ArchivesListUiState,
-	) : ArchivesListScreenUiState
+	data class Loaded(val archivesList: ArchivesListUiState) : ArchivesListScreenUiState
 }
 
 sealed interface ArchivesListScreenUiAction {

@@ -45,12 +45,7 @@ data class FrameCreate(val gameId: GameID, val index: Int)
 data class FrameEdit(val properties: Properties, val rolls: List<Roll>) {
 	data class Properties(val gameId: GameID, val index: Int)
 
-	data class Roll(
-		val index: Int,
-		val pinsDowned: Set<Pin>,
-		val didFoul: Boolean,
-		val bowlingBall: Gear?,
-	)
+	data class Roll(val index: Int, val pinsDowned: Set<Pin>, val didFoul: Boolean, val bowlingBall: Gear?)
 
 	data class Gear(val id: GearID, val name: String, val kind: GearKind, val avatar: Avatar)
 

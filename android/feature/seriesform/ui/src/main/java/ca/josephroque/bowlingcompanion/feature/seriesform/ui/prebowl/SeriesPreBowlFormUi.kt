@@ -9,9 +9,7 @@ data class SeriesPreBowlFormUiState(
 	val isAppliedDatePickerVisible: Boolean = false,
 )
 
-data class SeriesPreBowlFormTopBarUiState(
-	val isDoneEnabled: Boolean = false,
-)
+data class SeriesPreBowlFormTopBarUiState(val isDoneEnabled: Boolean = false)
 
 sealed interface SeriesPreBowlFormTopBarUiAction {
 	data object BackClicked : SeriesPreBowlFormTopBarUiAction

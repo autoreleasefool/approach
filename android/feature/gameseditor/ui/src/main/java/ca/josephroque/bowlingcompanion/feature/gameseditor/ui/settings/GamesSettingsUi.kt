@@ -11,20 +11,11 @@ data class GamesSettingsUiState(
 	val bowlerSettings: BowlerSettings,
 	val gameSettings: GameSettings,
 ) {
-	data class BowlerSettings(
-		val currentBowlerId: BowlerID,
-		val bowlers: List<BowlerSummary> = emptyList(),
-	)
+	data class BowlerSettings(val currentBowlerId: BowlerID, val bowlers: List<BowlerSummary> = emptyList())
 
-	data class GameSettings(
-		val currentGameId: GameID,
-		val games: List<GameListItem> = emptyList(),
-	)
+	data class GameSettings(val currentGameId: GameID, val games: List<GameListItem> = emptyList())
 
-	data class TeamSettings(
-		val team: TeamSummary?,
-		val isShowingTeamScoresInGameDetails: Boolean,
-	)
+	data class TeamSettings(val team: TeamSummary?, val isShowingTeamScoresInGameDetails: Boolean)
 }
 
 sealed interface GamesSettingsUiAction {

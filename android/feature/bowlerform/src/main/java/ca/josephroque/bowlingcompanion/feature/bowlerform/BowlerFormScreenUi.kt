@@ -17,18 +17,14 @@ sealed interface BowlerFormScreenUiState {
 		override fun isSavable(): Boolean = false
 	}
 
-	data class Create(val form: BowlerFormUiState, val topBar: BowlerFormTopBarUiState) :
-		BowlerFormScreenUiState {
+	data class Create(val form: BowlerFormUiState, val topBar: BowlerFormTopBarUiState) : BowlerFormScreenUiState {
 		override fun isSavable(): Boolean = form.name.isNotBlank()
 
 		override fun hasAnyChanges(): Boolean = form != BowlerFormUiState()
 	}
 
-	data class Edit(
-		val initialValue: BowlerUpdate,
-		val form: BowlerFormUiState,
-		val topBar: BowlerFormTopBarUiState,
-	) : BowlerFormScreenUiState {
+	data class Edit(val initialValue: BowlerUpdate, val form: BowlerFormUiState, val topBar: BowlerFormTopBarUiState) :
+		BowlerFormScreenUiState {
 		override fun isSavable(): Boolean = form.name.isNotBlank() && form.updatedModel(id = initialValue.id) != initialValue
 
 		override fun hasAnyChanges(): Boolean = form.updatedModel(id = initialValue.id) != initialValue

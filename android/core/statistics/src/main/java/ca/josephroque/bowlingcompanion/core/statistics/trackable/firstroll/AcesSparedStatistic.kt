@@ -12,10 +12,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfigur
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSecondRoll
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.SecondRollStatistic
 
-data class AcesSparedStatistic(
-	var aces: Int = 0,
-	var acesSpared: Int = 0,
-) : TrackablePerSecondRoll, SecondRollStatistic {
+data class AcesSparedStatistic(var aces: Int = 0, var acesSpared: Int = 0) :
+	TrackablePerSecondRoll,
+	SecondRollStatistic {
 	override val id = StatisticID.ACES_SPARED
 	override val denominatorTitleResourceId: Int = R.string.statistic_title_aces
 	override val category = StatisticCategory.ACES

@@ -12,9 +12,9 @@ import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesSummary
+import kotlin.time.Instant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
-import kotlin.time.Instant
 
 @Dao
 abstract class TeamSeriesDao {

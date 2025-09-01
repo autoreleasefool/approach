@@ -83,15 +83,9 @@ enum class SharingSourceFormat {
 }
 
 sealed interface SharingData {
-	data class Series(
-		val series: ShareableSeries,
-		val configuration: SeriesSharingConfigurationUiState,
-	) : SharingData
+	data class Series(val series: ShareableSeries, val configuration: SeriesSharingConfigurationUiState) : SharingData
 
-	data class Games(
-		val games: List<ShareableGame>,
-		val configuration: GamesSharingConfigurationUiState,
-	) : SharingData
+	data class Games(val games: List<ShareableGame>, val configuration: GamesSharingConfigurationUiState) : SharingData
 
 	data object Statistic : SharingData
 	data object TeamSeries : SharingData

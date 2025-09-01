@@ -2,9 +2,9 @@ package ca.josephroque.bowlingcompanion.core.model
 
 import android.os.Parcelable
 import java.util.UUID
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.parcelize.Parcelize
-import kotlin.time.Instant
 
 @JvmInline
 @Parcelize
@@ -33,18 +33,9 @@ data class TeamSeriesDetails(
 	val members: List<TeamSeriesMemberDetails>,
 )
 
-data class TeamSeriesMemberDetails(
-	val id: BowlerID,
-	val name: String,
-	val games: List<TeamSeriesGameDetails>,
-)
+data class TeamSeriesMemberDetails(val id: BowlerID, val name: String, val games: List<TeamSeriesGameDetails>)
 
-data class TeamSeriesGameDetails(
-	val id: GameID,
-	val index: Int,
-	val score: Int,
-	val isArchived: Boolean,
-)
+data class TeamSeriesGameDetails(val id: GameID, val index: Int, val score: Int, val isArchived: Boolean)
 
 data class TeamSeriesConnect(
 	val id: TeamSeriesID,
@@ -67,9 +58,4 @@ data class TeamSeriesCreate(
 
 data class TeamSeriesUpdate(val id: TeamSeriesID, val seriesIds: List<SeriesID>)
 
-data class ArchivedTeamSeries(
-	val id: TeamSeriesID,
-	val date: LocalDate,
-	val teamName: String,
-	val archivedOn: Instant,
-)
+data class ArchivedTeamSeries(val id: TeamSeriesID, val date: LocalDate, val teamName: String, val archivedOn: Instant)

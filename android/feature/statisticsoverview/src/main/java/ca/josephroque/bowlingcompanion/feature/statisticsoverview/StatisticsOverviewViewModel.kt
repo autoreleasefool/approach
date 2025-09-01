@@ -8,8 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 @HiltViewModel
-class StatisticsOverviewViewModel @Inject constructor() :
-	ApproachViewModel<StatisticsOverviewScreenEvent>() {
+class StatisticsOverviewViewModel @Inject constructor() : ApproachViewModel<StatisticsOverviewScreenEvent>() {
 	private val _uiState: MutableStateFlow<StatisticsOverviewScreenUiState> =
 		MutableStateFlow(StatisticsOverviewScreenUiState.Loaded())
 	val uiState = _uiState.asStateFlow()

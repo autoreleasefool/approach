@@ -9,8 +9,8 @@ import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.TeamID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
-import kotlinx.datetime.LocalDate
 import kotlin.time.Instant
+import kotlinx.datetime.LocalDate
 
 @Entity(
 	tableName = "team_series",

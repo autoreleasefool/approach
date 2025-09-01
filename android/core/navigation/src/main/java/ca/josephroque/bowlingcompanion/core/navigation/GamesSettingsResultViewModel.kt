@@ -13,9 +13,7 @@ import kotlinx.coroutines.flow.onEach
 private const val GAMES_SETTINGS_RESULT_KEY = "GamesSettingsResultKey"
 
 @HiltViewModel
-class GamesSettingsResultViewModel @Inject constructor(
-	private val savedStateHandle: SavedStateHandle,
-) : ViewModel() {
+class GamesSettingsResultViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
 	fun getResult() = savedStateHandle
 		.getStateFlow<String?>(GAMES_SETTINGS_RESULT_KEY, null)

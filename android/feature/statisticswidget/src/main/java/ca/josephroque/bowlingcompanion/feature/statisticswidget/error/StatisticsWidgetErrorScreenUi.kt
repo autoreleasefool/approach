@@ -8,9 +8,7 @@ data class StatisticsWidgetErrorScreenUiState(
 )
 
 sealed interface StatisticsWidgetErrorScreenUiAction {
-	data class TopBar(
-		val action: StatisticsWidgetErrorTopBarUiAction,
-	) : StatisticsWidgetErrorScreenUiAction
+	data class TopBar(val action: StatisticsWidgetErrorTopBarUiAction) : StatisticsWidgetErrorScreenUiAction
 }
 
 sealed interface StatisticsWidgetErrorScreenEvent {

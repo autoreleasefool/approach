@@ -26,10 +26,7 @@ sealed interface GamesEditorUiAction {
 	data class ScoreSheet(val action: ScoreSheetUiAction) : GamesEditorUiAction
 }
 
-data class GamesEditorTopBarUiState(
-	val currentGameIndex: Int = 0,
-	val isSharingButtonVisible: Boolean = false,
-)
+data class GamesEditorTopBarUiState(val currentGameIndex: Int = 0, val isSharingButtonVisible: Boolean = false)
 
 sealed interface GamesEditorTopBarUiAction {
 	data object BackClicked : GamesEditorTopBarUiAction

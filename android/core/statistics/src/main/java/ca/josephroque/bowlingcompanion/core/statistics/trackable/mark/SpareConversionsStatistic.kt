@@ -15,10 +15,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfigur
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSecondRoll
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.SecondRollStatistic
 
-data class SpareConversionsStatistic(
-	var spareChances: Int = 0,
-	var spares: Int = 0,
-) : TrackablePerSecondRoll, SecondRollStatistic {
+data class SpareConversionsStatistic(var spareChances: Int = 0, var spares: Int = 0) :
+	TrackablePerSecondRoll,
+	SecondRollStatistic {
 	override val id = StatisticID.SPARE_CONVERSIONS
 	override val category = StatisticCategory.STRIKES_AND_SPARES
 	override val isEligibleForNewLabel = false
@@ -47,7 +46,8 @@ data class SpareConversionsStatistic(
 		val didSpare = secondRoll.pinsDowned.union(firstRoll.pinsDowned).arePinsCleared()
 
 		// Don't add a spare change if the first ball was a split / head pin / aces, unless the second shot was a spare
-		if (!didSpare && (
+		if (!didSpare &&
+			(
 				firstRoll.pinsDowned.isAce() ||
 					firstRoll.pinsDowned.isSplit() ||
 					firstRoll.pinsDowned.isHeadPin() ||

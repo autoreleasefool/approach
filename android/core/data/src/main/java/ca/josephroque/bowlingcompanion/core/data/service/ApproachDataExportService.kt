@@ -13,11 +13,11 @@ import ca.josephroque.bowlingcompanion.core.database.dao.CheckpointDao
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import javax.inject.Inject
+import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
-import kotlin.time.Clock
 
 class ApproachDataExportService @Inject constructor(
 	private val fileManager: FileManager,

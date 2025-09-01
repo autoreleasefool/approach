@@ -28,21 +28,9 @@ data class GearListItem(
 
 data class GearDetails(val id: GearID, val name: String, val kind: GearKind, val avatar: Avatar)
 
-data class GearCreate(
-	val id: GearID,
-	val name: String,
-	val kind: GearKind,
-	val avatar: Avatar,
-	val ownerId: BowlerID?,
-)
+data class GearCreate(val id: GearID, val name: String, val kind: GearKind, val avatar: Avatar, val ownerId: BowlerID?)
 
-data class GearUpdate(
-	val id: GearID,
-	val name: String,
-	val kind: GearKind,
-	val avatar: Avatar,
-	val ownerId: BowlerID?,
-)
+data class GearUpdate(val id: GearID, val name: String, val kind: GearKind, val avatar: Avatar, val ownerId: BowlerID?)
 
 enum class GearKind {
 	SHOES,

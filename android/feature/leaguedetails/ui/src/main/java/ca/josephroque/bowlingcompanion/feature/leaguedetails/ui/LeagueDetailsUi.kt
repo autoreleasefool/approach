@@ -14,10 +14,7 @@ data class LeagueDetailsTopBarUiState(
 	val seriesItemSize: SeriesItemSize = SeriesItemSize.DEFAULT,
 )
 
-data class LeagueDetailsUiState(
-	val seriesList: SeriesListUiState,
-	val topBar: LeagueDetailsTopBarUiState,
-)
+data class LeagueDetailsUiState(val seriesList: SeriesListUiState, val topBar: LeagueDetailsTopBarUiState)
 
 sealed interface LeagueDetailsUiAction {
 	data object BackClicked : LeagueDetailsUiAction

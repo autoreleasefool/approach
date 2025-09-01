@@ -7,8 +7,8 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import java.util.UUID
-import kotlinx.datetime.LocalDate
 import kotlin.time.Instant
+import kotlinx.datetime.LocalDate
 
 sealed interface ArchiveListItem {
 	val id: UUID
@@ -74,10 +74,7 @@ sealed interface ArchiveListItem {
 	}
 }
 
-data class ArchivesListUiState(
-	val list: List<ArchiveListItem>,
-	val itemToUnarchive: ArchiveListItem?,
-)
+data class ArchivesListUiState(val list: List<ArchiveListItem>, val itemToUnarchive: ArchiveListItem?)
 
 sealed interface ArchivesListUiAction {
 	data object BackClicked : ArchivesListUiAction

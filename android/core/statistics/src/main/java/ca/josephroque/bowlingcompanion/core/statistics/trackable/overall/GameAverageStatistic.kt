@@ -9,10 +9,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.AveragingStatistic
 
-data class GameAverageStatistic(
-	var totalPinFall: Int = 0,
-	var totalGames: Int = 0,
-) : TrackablePerGame, AveragingStatistic {
+data class GameAverageStatistic(var totalPinFall: Int = 0, var totalGames: Int = 0) :
+	TrackablePerGame,
+	AveragingStatistic {
 	override val id = StatisticID.GAME_AVERAGE
 	override val category = StatisticCategory.OVERALL
 	override val isEligibleForNewLabel = false

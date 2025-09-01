@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.TeamCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamDetailsUpdateEntity
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class TeamDao : LegacyMigratingDao<TeamEntity> {
+	@RewriteQueriesToDropUnusedColumns
 	@Query(
 		"""
 			SELECT

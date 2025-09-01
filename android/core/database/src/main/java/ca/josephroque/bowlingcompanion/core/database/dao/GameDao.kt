@@ -17,9 +17,9 @@ import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.IndexedGame
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
+import kotlin.time.Instant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
-import kotlin.time.Instant
 
 @Dao
 abstract class GameDao : LegacyMigratingDao<GameEntity> {
@@ -150,8 +150,6 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 			SELECT
 				games.id AS id,
 				games.`index` AS `index`,
-				games.score AS score,
-				games.scoring_method AS scoringMethod,
 				series.date AS seriesDate,
 				bowlers.name AS bowlerName,
 				leagues.name AS leagueName,
@@ -171,8 +169,6 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 			SELECT
 				games.id AS id,
 				games.`index` AS `index`,
-				games.score AS score,
-				games.scoring_method AS scoringMethod,
 				series.date AS seriesDate,
 				bowlers.name AS bowlerName,
 				leagues.name AS leagueName,

@@ -18,29 +18,22 @@ sealed interface StatisticsWidgetLayoutEditorScreenUiState {
 
 sealed interface StatisticsWidgetLayoutEditorScreenUiAction {
 	data object LoadWidgets : StatisticsWidgetLayoutEditorScreenUiAction
-	data class LayoutEditor(
-		val action: StatisticsWidgetLayoutEditorUiAction,
-	) : StatisticsWidgetLayoutEditorScreenUiAction
+	data class LayoutEditor(val action: StatisticsWidgetLayoutEditorUiAction) : StatisticsWidgetLayoutEditorScreenUiAction
 }
 
 sealed interface StatisticsWidgetLayoutEditorScreenEvent {
 	data object Dismissed : StatisticsWidgetLayoutEditorScreenEvent
-	data class AddWidget(
-		val context: String,
-		val initialSource: StatisticsWidgetInitialSource?,
-		val priority: Int,
-	) : StatisticsWidgetLayoutEditorScreenEvent
+	data class AddWidget(val context: String, val initialSource: StatisticsWidgetInitialSource?, val priority: Int) :
+		StatisticsWidgetLayoutEditorScreenEvent
 }
 
 inline fun MutableStateFlow<StatisticsWidgetLayoutEditorScreenUiState>.updateWidgets(
 	function: (
 		StatisticsWidgetLayoutEditorScreenUiState.Loaded,
 	) -> StatisticsWidgetLayoutEditorScreenUiState.Loaded,
-): StatisticsWidgetLayoutEditorScreenUiState.Loaded? {
-	return this.updateAndGet { state ->
-		when (state) {
-			StatisticsWidgetLayoutEditorScreenUiState.Loading -> state
-			is StatisticsWidgetLayoutEditorScreenUiState.Loaded -> function(state.copy())
-		}
-	} as? StatisticsWidgetLayoutEditorScreenUiState.Loaded
-}
+): StatisticsWidgetLayoutEditorScreenUiState.Loaded? = this.updateAndGet { state ->
+	when (state) {
+		StatisticsWidgetLayoutEditorScreenUiState.Loading -> state
+		is StatisticsWidgetLayoutEditorScreenUiState.Loaded -> function(state.copy())
+	}
+} as? StatisticsWidgetLayoutEditorScreenUiState.Loaded

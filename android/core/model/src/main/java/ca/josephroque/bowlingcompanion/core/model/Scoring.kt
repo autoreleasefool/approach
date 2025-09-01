@@ -1,11 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.model
 
-data class ScoringRoll(
-	val index: Int,
-	val display: String?,
-	val didFoul: Boolean,
-	val isSecondaryValue: Boolean,
-)
+data class ScoringRoll(val index: Int, val display: String?, val didFoul: Boolean, val isSecondaryValue: Boolean)
 
 fun ScoringRoll.isLastRoll(): Boolean = Roll.isLastRoll(index)
 

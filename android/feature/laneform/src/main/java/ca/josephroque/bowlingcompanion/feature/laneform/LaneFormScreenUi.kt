@@ -14,8 +14,7 @@ sealed interface LaneFormScreenUiState {
 		override fun isSavable(): Boolean = false
 	}
 
-	data class Loaded(val laneForm: LaneFormUiState, val topBar: LaneFormTopBarUiState) :
-		LaneFormScreenUiState {
+	data class Loaded(val laneForm: LaneFormUiState, val topBar: LaneFormTopBarUiState) : LaneFormScreenUiState {
 		override fun isSavable(): Boolean = true
 
 		override fun hasAnyChanges(): Boolean = laneForm.hasAnyChanges()

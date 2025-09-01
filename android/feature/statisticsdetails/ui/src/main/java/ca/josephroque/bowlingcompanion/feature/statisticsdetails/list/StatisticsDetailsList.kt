@@ -256,8 +256,7 @@ private fun Settings(
 	}
 }
 
-private class StatisticsListEntryGroupProvider :
-	PreviewParameterProvider<List<StatisticListEntryGroup>> {
+private class StatisticsListEntryGroupProvider : PreviewParameterProvider<List<StatisticListEntryGroup>> {
 
 	override val values: Sequence<List<StatisticListEntryGroup>> = sequenceOf(
 		emptyList(),

@@ -12,10 +12,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfigur
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSecondRoll
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.SecondRollStatistic
 
-data class ChopOffsSparedStatistic(
-	var chopOffs: Int = 0,
-	var chopOffsSpared: Int = 0,
-) : TrackablePerSecondRoll, SecondRollStatistic {
+data class ChopOffsSparedStatistic(var chopOffs: Int = 0, var chopOffsSpared: Int = 0) :
+	TrackablePerSecondRoll,
+	SecondRollStatistic {
 	override val id = StatisticID.CHOPS_SPARED
 	override val denominatorTitleResourceId: Int = R.string.statistic_title_chop_offs
 	override val category = StatisticCategory.CHOPS

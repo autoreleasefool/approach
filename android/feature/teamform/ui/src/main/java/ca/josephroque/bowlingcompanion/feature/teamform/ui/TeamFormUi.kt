@@ -32,7 +32,4 @@ sealed interface TeamFormUiAction {
 	data object ManageTeamMembersClicked : TeamFormUiAction
 }
 
-data class TeamFormTopBarUiState(
-	val existingName: String? = null,
-	val isSaveButtonEnabled: Boolean = false,
-)
+data class TeamFormTopBarUiState(val existingName: String? = null, val isSaveButtonEnabled: Boolean = false)

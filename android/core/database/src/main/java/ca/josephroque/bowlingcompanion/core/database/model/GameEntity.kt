@@ -13,8 +13,8 @@ import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableGame
-import kotlinx.datetime.LocalDate
 import kotlin.time.Instant
+import kotlinx.datetime.LocalDate
 
 @Entity(
 	tableName = "games",

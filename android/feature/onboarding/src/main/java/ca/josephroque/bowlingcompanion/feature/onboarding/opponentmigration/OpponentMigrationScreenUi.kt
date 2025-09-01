@@ -10,21 +10,16 @@ import kotlinx.coroutines.flow.update
 
 sealed interface OpponentMigrationScreenUiState {
 	data object Loading : OpponentMigrationScreenUiState
-	data class Loaded(
-		val opponentMigration: OpponentMigrationUiState,
-		val bottomBar: OpponentMigrationBottomBarUiState,
-	) : OpponentMigrationScreenUiState
+	data class Loaded(val opponentMigration: OpponentMigrationUiState, val bottomBar: OpponentMigrationBottomBarUiState) :
+		OpponentMigrationScreenUiState
 }
 
 sealed interface OpponentMigrationScreenUiAction {
-	data class OpponentMigration(val action: OpponentMigrationUiAction) :
-		OpponentMigrationScreenUiAction
+	data class OpponentMigration(val action: OpponentMigrationUiAction) : OpponentMigrationScreenUiAction
 
-	data class TopBar(val action: OpponentMigrationTopBarUiAction) :
-		OpponentMigrationScreenUiAction
+	data class TopBar(val action: OpponentMigrationTopBarUiAction) : OpponentMigrationScreenUiAction
 
-	data class BottomBar(val action: OpponentMigrationBottomBarUiAction) :
-		OpponentMigrationScreenUiAction
+	data class BottomBar(val action: OpponentMigrationBottomBarUiAction) : OpponentMigrationScreenUiAction
 }
 
 sealed interface OpponentMigrationScreenEvent {

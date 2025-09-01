@@ -18,18 +18,14 @@ sealed interface LeagueFormScreenUiState {
 		override fun isSavable(): Boolean = false
 	}
 
-	data class Create(val form: LeagueFormUiState, val topBar: LeagueFormTopBarUiState) :
-		LeagueFormScreenUiState {
+	data class Create(val form: LeagueFormUiState, val topBar: LeagueFormTopBarUiState) : LeagueFormScreenUiState {
 		override fun isSavable(): Boolean = form.name.isNotBlank()
 
 		override fun hasAnyChanges(): Boolean = form != LeagueFormUiState(isEditing = form.isEditing)
 	}
 
-	data class Edit(
-		val initialValue: LeagueUpdate,
-		val form: LeagueFormUiState,
-		val topBar: LeagueFormTopBarUiState,
-	) : LeagueFormScreenUiState {
+	data class Edit(val initialValue: LeagueUpdate, val form: LeagueFormUiState, val topBar: LeagueFormTopBarUiState) :
+		LeagueFormScreenUiState {
 		override fun isSavable(): Boolean = form.name.isNotBlank() && form.updatedModel(id = initialValue.id) != initialValue
 
 		override fun hasAnyChanges(): Boolean = form.updatedModel(id = initialValue.id) != initialValue

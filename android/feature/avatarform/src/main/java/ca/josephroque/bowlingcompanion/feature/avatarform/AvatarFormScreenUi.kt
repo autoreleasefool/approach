@@ -15,9 +15,7 @@ sealed interface AvatarFormScreenUiState {
 		override fun isSavable(): Boolean = false
 	}
 
-	data class Loaded(
-		val form: AvatarFormUiState,
-	) : AvatarFormScreenUiState {
+	data class Loaded(val form: AvatarFormUiState) : AvatarFormScreenUiState {
 		override fun isSavable(): Boolean = true
 		override fun hasAnyChanges(): Boolean = form.avatar != form.initialValue
 	}
@@ -26,9 +24,7 @@ sealed interface AvatarFormScreenUiState {
 sealed interface AvatarFormScreenUiAction {
 	data object LoadAvatar : AvatarFormScreenUiAction
 
-	data class AvatarFormAction(
-		val action: AvatarFormUiAction,
-	) : AvatarFormScreenUiAction
+	data class AvatarFormAction(val action: AvatarFormUiAction) : AvatarFormScreenUiAction
 }
 
 sealed interface AvatarFormScreenEvent {

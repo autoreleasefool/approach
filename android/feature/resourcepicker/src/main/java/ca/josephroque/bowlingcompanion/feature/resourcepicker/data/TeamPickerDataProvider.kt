@@ -7,9 +7,8 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-class TeamPickerDataProvider @Inject constructor(
-	private val teamsRepository: TeamsRepository,
-) : ResourcePickerDataProvider {
+class TeamPickerDataProvider @Inject constructor(private val teamsRepository: TeamsRepository) :
+	ResourcePickerDataProvider {
 	override suspend fun loadResources(): List<ResourceItem> =
 		teamsRepository.getTeamList(sortOrder = TeamSortOrder.ALPHABETICAL)
 			.map { teams -> teams.map { ResourceItem.Team(it.id, it.name, it.membersList()) } }

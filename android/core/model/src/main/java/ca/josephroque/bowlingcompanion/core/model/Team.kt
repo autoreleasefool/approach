@@ -25,12 +25,7 @@ data class TeamCreate(val id: TeamID, val name: String, val members: List<TeamMe
 
 data class TeamSummary(val id: TeamID, val name: String)
 
-data class TeamListItem(
-	val id: TeamID,
-	val name: String,
-	val members: String,
-	val average: Double?,
-) {
+data class TeamListItem(val id: TeamID, val name: String, val members: String, val average: Double?) {
 	fun membersList() = members.split(";").sorted()
 }
 

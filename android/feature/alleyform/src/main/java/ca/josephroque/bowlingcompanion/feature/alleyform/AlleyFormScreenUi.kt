@@ -17,18 +17,14 @@ sealed interface AlleyFormScreenUiState {
 		override fun isSavable(): Boolean = false
 	}
 
-	data class Create(val form: AlleyFormUiState, val topBar: AlleyFormTopBarUiState) :
-		AlleyFormScreenUiState {
+	data class Create(val form: AlleyFormUiState, val topBar: AlleyFormTopBarUiState) : AlleyFormScreenUiState {
 		override fun isSavable(): Boolean = form.name.isNotBlank()
 
 		override fun hasAnyChanges(): Boolean = form != AlleyFormUiState()
 	}
 
-	data class Edit(
-		val initialValue: AlleyUpdate,
-		val form: AlleyFormUiState,
-		val topBar: AlleyFormTopBarUiState,
-	) : AlleyFormScreenUiState {
+	data class Edit(val initialValue: AlleyUpdate, val form: AlleyFormUiState, val topBar: AlleyFormTopBarUiState) :
+		AlleyFormScreenUiState {
 		override fun isSavable(): Boolean =
 			form.name.isNotBlank() && form.updatedModel(existing = initialValue) != initialValue
 

@@ -11,10 +11,8 @@ import ca.josephroque.bowlingcompanion.core.database.model.TrackableGameEntity
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.TrackableGame
 
-data class TrackableGamesSequence(
-	val filter: TrackableFilter,
-	val statisticsDao: StatisticsDao,
-) : TrackableSequence<TrackableGameEntity, TrackableGame>() {
+data class TrackableGamesSequence(val filter: TrackableFilter, val statisticsDao: StatisticsDao) :
+	TrackableSequence<TrackableGameEntity, TrackableGame>() {
 	private val leaguesQuery = TrackableLeagueQueryComponents(filter = filter)
 	private val seriesQuery = TrackableSeriesQueryComponents(filter = filter)
 	private val gamesQuery = TrackableGameQueryComponents(filter = filter)

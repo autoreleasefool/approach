@@ -6,15 +6,11 @@ import ca.josephroque.bowlingcompanion.feature.settings.ui.statistics.Statistics
 sealed interface StatisticsSettingsScreenUiState {
 	data object Loading : StatisticsSettingsScreenUiState
 
-	data class Loaded(
-		val statisticsSettings: StatisticsSettingsUiState,
-	) : StatisticsSettingsScreenUiState
+	data class Loaded(val statisticsSettings: StatisticsSettingsUiState) : StatisticsSettingsScreenUiState
 }
 
 sealed interface StatisticsSettingsScreenUiAction {
-	data class StatisticsSettingsAction(
-		val action: StatisticsSettingsUiAction,
-	) : StatisticsSettingsScreenUiAction
+	data class StatisticsSettingsAction(val action: StatisticsSettingsUiAction) : StatisticsSettingsScreenUiAction
 }
 
 sealed interface StatisticsSettingsScreenEvent {

@@ -17,12 +17,12 @@ import ca.josephroque.bowlingcompanion.feature.seriesform.ui.prebowl.SeriesPreBo
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.prebowl.SeriesPreBowlFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlin.time.Clock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
-import kotlin.time.Clock
 
 val SERIES_PRE_BOWL_FORM_SERIES_RESULT_KEY =
 	ResourcePickerResultKey("SeriesPreBowlFormSeriesResultKey")

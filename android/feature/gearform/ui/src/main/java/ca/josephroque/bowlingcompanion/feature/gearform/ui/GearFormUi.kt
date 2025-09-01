@@ -36,7 +36,4 @@ sealed interface GearFormUiAction {
 	data class KindChanged(val kind: GearKind) : GearFormUiAction
 }
 
-data class GearFormTopBarUiState(
-	val existingName: String? = null,
-	val isSaveButtonEnabled: Boolean = false,
-)
+data class GearFormTopBarUiState(val existingName: String? = null, val isSaveButtonEnabled: Boolean = false)

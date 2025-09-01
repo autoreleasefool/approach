@@ -12,9 +12,7 @@ import kotlinx.coroutines.flow.onEach
 private const val SCORE_EDITOR_RESULT_KEY = "ScoreEditorResultKey"
 
 @HiltViewModel
-class ScoreEditorResultViewModel @Inject constructor(
-	private val savedStateHandle: SavedStateHandle,
-) : ViewModel() {
+class ScoreEditorResultViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
 	fun getScore() = savedStateHandle
 		.getStateFlow<String?>(SCORE_EDITOR_RESULT_KEY, null)

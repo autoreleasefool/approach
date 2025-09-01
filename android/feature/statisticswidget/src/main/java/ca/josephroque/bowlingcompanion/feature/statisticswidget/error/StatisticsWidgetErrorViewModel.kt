@@ -8,8 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 @HiltViewModel
-class StatisticsWidgetErrorViewModel @Inject constructor() :
-	ApproachViewModel<StatisticsWidgetErrorScreenEvent>() {
+class StatisticsWidgetErrorViewModel @Inject constructor() : ApproachViewModel<StatisticsWidgetErrorScreenEvent>() {
 	private val _uiState: MutableStateFlow<StatisticsWidgetErrorScreenUiState> =
 		MutableStateFlow(StatisticsWidgetErrorScreenUiState())
 	val uiState = _uiState.asStateFlow()

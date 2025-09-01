@@ -2,9 +2,9 @@ package ca.josephroque.bowlingcompanion.core.model
 
 import android.os.Parcelable
 import java.util.UUID
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.parcelize.Parcelize
-import kotlin.time.Instant
 
 object Series {
 	const val DEFAULT_NUMBER_OF_GAMES = 4
@@ -51,12 +51,7 @@ data class SeriesListProperties(
 	val appliedDate: LocalDate?,
 )
 
-data class TrackableSeries(
-	val id: SeriesID,
-	val numberOfGames: Int,
-	val total: Int,
-	val date: LocalDate,
-)
+data class TrackableSeries(val id: SeriesID, val numberOfGames: Int, val total: Int, val date: LocalDate)
 
 data class ArchivedSeries(
 	val id: SeriesID,
@@ -67,10 +62,7 @@ data class ArchivedSeries(
 	val archivedOn: Instant,
 )
 
-data class ShareableSeries(
-	val properties: Properties,
-	val scores: List<Int>,
-) {
+data class ShareableSeries(val properties: Properties, val scores: List<Int>) {
 	data class Properties(
 		val id: SeriesID,
 		val date: LocalDate,
@@ -97,20 +89,11 @@ data class SeriesDetails(
 		val excludeFromStatistics: ExcludeFromStatistics,
 	)
 
-	data class Alley(
-		val id: AlleyID,
-		val name: String,
-	)
+	data class Alley(val id: AlleyID, val name: String)
 
-	data class League(
-		val id: LeagueID,
-		val name: String,
-	)
+	data class League(val id: LeagueID, val name: String)
 
-	data class Bowler(
-		val id: BowlerID,
-		val name: String,
-	)
+	data class Bowler(val id: BowlerID, val name: String)
 }
 
 data class SeriesCreate(
@@ -134,10 +117,7 @@ data class SeriesUpdate(
 	val alleyId: AlleyID?,
 )
 
-data class SeriesLeagueUpdate(
-	val id: SeriesID,
-	val leagueId: LeagueID,
-)
+data class SeriesLeagueUpdate(val id: SeriesID, val leagueId: LeagueID)
 
 enum class SeriesPreBowl {
 	REGULAR,

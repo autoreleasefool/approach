@@ -13,10 +13,10 @@ import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetCr
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetID
 import ca.josephroque.bowlingcompanion.core.statistics.statisticInstanceFromID
 import javax.inject.Inject
+import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import kotlin.time.Clock
 
 class OfflineFirstStatisticsWidgetsRepository @Inject constructor(
 	private val statisticsRepository: StatisticsRepository,

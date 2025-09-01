@@ -13,10 +13,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfigur
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSecondRoll
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.SecondRollStatistic
 
-data class RightSplitsSparedStatistic(
-	var rightSplits: Int = 0,
-	var rightSplitsSpared: Int = 0,
-) : TrackablePerSecondRoll, SecondRollStatistic {
+data class RightSplitsSparedStatistic(var rightSplits: Int = 0, var rightSplitsSpared: Int = 0) :
+	TrackablePerSecondRoll,
+	SecondRollStatistic {
 	override val id = StatisticID.RIGHT_SPLITS_SPARED
 	override val denominatorTitleResourceId: Int = R.string.statistic_title_right_splits
 	override val category = StatisticCategory.SPLITS

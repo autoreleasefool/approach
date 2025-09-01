@@ -5,16 +5,12 @@ import ca.josephroque.bowlingcompanion.feature.statisticsdetails.StatisticsDetai
 sealed interface StatisticsDetailsChartScreenUiState {
 	data object Loading : StatisticsDetailsChartScreenUiState
 
-	data class Loaded(
-		val chart: StatisticsDetailsChartUiState,
-	) : StatisticsDetailsChartScreenUiState
+	data class Loaded(val chart: StatisticsDetailsChartUiState) : StatisticsDetailsChartScreenUiState
 }
 
 sealed interface StatisticsDetailsChartScreenUiAction {
 	data class Chart(val action: StatisticsDetailsChartUiAction) : StatisticsDetailsChartScreenUiAction
-	data class TopBar(
-		val action: StatisticsDetailsChartTopBarUiAction,
-	) : StatisticsDetailsChartScreenUiAction
+	data class TopBar(val action: StatisticsDetailsChartTopBarUiAction) : StatisticsDetailsChartScreenUiAction
 }
 
 sealed interface StatisticsDetailsChartScreenEvent {

@@ -17,18 +17,14 @@ sealed interface TeamFormScreenUiState {
 		override fun isSavable(): Boolean = false
 	}
 
-	data class Create(val form: TeamFormUiState, val topBar: TeamFormTopBarUiState) :
-		TeamFormScreenUiState {
+	data class Create(val form: TeamFormUiState, val topBar: TeamFormTopBarUiState) : TeamFormScreenUiState {
 		override fun isSavable(): Boolean = form.name.isNotBlank() && form.members.size >= 2
 
 		override fun hasAnyChanges(): Boolean = form != TeamFormUiState()
 	}
 
-	data class Edit(
-		val initialValue: TeamUpdate,
-		val form: TeamFormUiState,
-		val topBar: TeamFormTopBarUiState,
-	) : TeamFormScreenUiState {
+	data class Edit(val initialValue: TeamUpdate, val form: TeamFormUiState, val topBar: TeamFormTopBarUiState) :
+		TeamFormScreenUiState {
 		override fun isSavable(): Boolean = form.name.isNotBlank() &&
 			form.members.size >= 2 &&
 			form.updatedModel(existing = initialValue) != initialValue

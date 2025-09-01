@@ -2,9 +2,9 @@ package ca.josephroque.bowlingcompanion.core.model
 
 import android.os.Parcelable
 import java.util.UUID
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.parcelize.Parcelize
-import kotlin.time.Instant
 
 object League {
 	val NumberOfGamesRange = 1..40

@@ -22,7 +22,4 @@ sealed interface GearListUiAction {
 	data class FilterClicked(val filter: GearKind?) : GearListUiAction
 }
 
-data class GearListTopBarUiState(
-	val kindFilter: GearKind? = null,
-	val isFilterMenuVisible: Boolean = false,
-)
+data class GearListTopBarUiState(val kindFilter: GearKind? = null, val isFilterMenuVisible: Boolean = false)

@@ -7,9 +7,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scoreeditor.ScoreE
 sealed interface ScoreEditorScreenUiState {
 	data object Loading : ScoreEditorScreenUiState
 
-	data class Loaded(
-		val scoreEditor: ScoreEditorUiState,
-	) : ScoreEditorScreenUiState
+	data class Loaded(val scoreEditor: ScoreEditorUiState) : ScoreEditorScreenUiState
 }
 
 sealed interface ScoreEditorScreenUiAction {

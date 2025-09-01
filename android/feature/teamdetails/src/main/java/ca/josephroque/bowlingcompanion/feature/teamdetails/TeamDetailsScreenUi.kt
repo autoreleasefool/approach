@@ -16,8 +16,7 @@ sealed interface TeamDetailsScreenUiState {
 }
 
 sealed interface TeamDetailsScreenUiAction {
-	data class FloatingActionButton(val action: TeamDetailsFloatingActionButtonUiAction) :
-		TeamDetailsScreenUiAction
+	data class FloatingActionButton(val action: TeamDetailsFloatingActionButtonUiAction) : TeamDetailsScreenUiAction
 	data class TopBar(val action: TeamDetailsTopBarUiAction) : TeamDetailsScreenUiAction
 	data class TeamDetails(val action: TeamDetailsUiAction) : TeamDetailsScreenUiAction
 }

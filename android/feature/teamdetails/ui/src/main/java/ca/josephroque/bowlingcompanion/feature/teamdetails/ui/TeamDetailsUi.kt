@@ -57,10 +57,7 @@ data class TeamDetailsUiState(
 	val seriesToEdit: EditSeriesUiState,
 )
 
-data class ArchiveSeriesUiState(
-	val seriesToArchive: TeamSeriesListItem?,
-	val isArchiveMemberSeriesVisible: Boolean,
-)
+data class ArchiveSeriesUiState(val seriesToArchive: TeamSeriesListItem?, val isArchiveMemberSeriesVisible: Boolean)
 
 data class EditSeriesUiState(val seriesToEdit: TeamSeriesListItem?, val date: LocalDate)
 

@@ -10,9 +10,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatistic
 
-data class AcesStatistic(
-	var aces: Int = 0,
-) : TrackablePerFirstRoll, CountingStatistic {
+data class AcesStatistic(var aces: Int = 0) :
+	TrackablePerFirstRoll,
+	CountingStatistic {
 	override val id = StatisticID.ACES
 	override val category = StatisticCategory.ACES
 	override val isEligibleForNewLabel = false

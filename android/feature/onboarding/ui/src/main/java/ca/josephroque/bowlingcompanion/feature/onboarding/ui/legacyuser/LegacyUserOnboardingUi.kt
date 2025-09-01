@@ -9,10 +9,7 @@ sealed interface LegacyUserOnboardingUiState {
 		val isShowingDetails: Boolean = false,
 	) : LegacyUserOnboardingUiState
 
-	data class DataImport(
-		val versionName: String = "",
-		val versionCode: String = "",
-	) : LegacyUserOnboardingUiState
+	data class DataImport(val versionName: String = "", val versionCode: String = "") : LegacyUserOnboardingUiState
 
 	data class ImportError(
 		val versionName: String = "",

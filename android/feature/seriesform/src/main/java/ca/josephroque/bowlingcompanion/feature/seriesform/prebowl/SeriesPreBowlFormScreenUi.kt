@@ -11,10 +11,8 @@ import kotlinx.coroutines.flow.update
 
 sealed interface SeriesPreBowlFormScreenUiState {
 	data object Loading : SeriesPreBowlFormScreenUiState
-	data class Loaded(
-		val topBar: SeriesPreBowlFormTopBarUiState,
-		val form: SeriesPreBowlFormUiState,
-	) : SeriesPreBowlFormScreenUiState
+	data class Loaded(val topBar: SeriesPreBowlFormTopBarUiState, val form: SeriesPreBowlFormUiState) :
+		SeriesPreBowlFormScreenUiState
 }
 
 sealed interface SeriesPreBowlFormScreenUiAction {
@@ -25,8 +23,7 @@ sealed interface SeriesPreBowlFormScreenUiAction {
 
 sealed interface SeriesPreBowlFormScreenEvent {
 	data object Dismissed : SeriesPreBowlFormScreenEvent
-	data class ShowSeriesPicker(val leagueId: LeagueID, val seriesId: SeriesID?) :
-		SeriesPreBowlFormScreenEvent
+	data class ShowSeriesPicker(val leagueId: LeagueID, val seriesId: SeriesID?) : SeriesPreBowlFormScreenEvent
 }
 
 fun MutableStateFlow<SeriesPreBowlFormScreenUiState>.updateForm(

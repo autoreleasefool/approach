@@ -8,9 +8,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatistic
 
-data class TotalRollsStatistic(
-	var totalRolls: Int = 0,
-) : TrackablePerFrame, CountingStatistic {
+data class TotalRollsStatistic(var totalRolls: Int = 0) :
+	TrackablePerFrame,
+	CountingStatistic {
 	override val id = StatisticID.TOTAL_ROLLS
 	override val category = StatisticCategory.OVERALL
 	override val isEligibleForNewLabel = false

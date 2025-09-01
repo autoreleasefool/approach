@@ -14,9 +14,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
-class AchievementsListViewModel @Inject constructor(
-	achievementsRepository: AchievementsRepository,
-) : ApproachViewModel<AchievementsListScreenEvent>() {
+class AchievementsListViewModel @Inject constructor(achievementsRepository: AchievementsRepository) :
+	ApproachViewModel<AchievementsListScreenEvent>() {
 
 	val uiState = achievementsRepository
 		.getEarnedAchievements()

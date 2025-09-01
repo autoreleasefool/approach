@@ -2,8 +2,8 @@ package ca.josephroque.bowlingcompanion.core.model
 
 import android.os.Parcelable
 import java.util.UUID
-import kotlinx.parcelize.Parcelize
 import kotlin.time.Instant
+import kotlinx.parcelize.Parcelize
 
 @JvmInline
 @Parcelize
@@ -15,14 +15,6 @@ value class AchievementID(val value: UUID) : Parcelable {
 	}
 }
 
-data class Achievement(
-	val id: AchievementID,
-	val title: String,
-	val earnedAt: Instant,
-)
+data class Achievement(val id: AchievementID, val title: String, val earnedAt: Instant)
 
-data class AchievementListItem(
-	val title: String,
-	val firstEarnedAt: Instant,
-	val count: Int,
-)
+data class AchievementListItem(val title: String, val firstEarnedAt: Instant, val count: Int)

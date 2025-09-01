@@ -22,8 +22,7 @@ sealed interface ResourcePickerFilter {
 	data class Series(val id: SeriesID) : ResourcePickerFilter
 	data class Gear(val kind: GearKind) : ResourcePickerFilter
 	data class Alley(val id: AlleyID) : ResourcePickerFilter
-	data class BowlerKind(val kind: ca.josephroque.bowlingcompanion.core.model.BowlerKind) :
-		ResourcePickerFilter
+	data class BowlerKind(val kind: ca.josephroque.bowlingcompanion.core.model.BowlerKind) : ResourcePickerFilter
 }
 
 sealed interface ResourceItem {
@@ -67,14 +66,12 @@ sealed interface ResourceItem {
 			get() = alleyId.value
 	}
 
-	data class Lane(val laneId: LaneID, override val name: String, val position: LanePosition) :
-		ResourceItem {
+	data class Lane(val laneId: LaneID, override val name: String, val position: LanePosition) : ResourceItem {
 		override val id: UUID
 			get() = laneId.value
 	}
 
-	data class Team(val teamId: TeamID, override val name: String, val members: List<String>) :
-		ResourceItem {
+	data class Team(val teamId: TeamID, override val name: String, val members: List<String>) : ResourceItem {
 		override val id: UUID
 			get() = teamId.value
 	}

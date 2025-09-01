@@ -9,9 +9,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.HighestOfStatistic
 
-data class HighSingleStatistic(
-	var highSingle: Int = 0,
-) : TrackablePerGame, HighestOfStatistic {
+data class HighSingleStatistic(var highSingle: Int = 0) :
+	TrackablePerGame,
+	HighestOfStatistic {
 	override val id = StatisticID.HIGH_SINGLE_GAME
 	override val category = StatisticCategory.OVERALL
 	override val isEligibleForNewLabel = false

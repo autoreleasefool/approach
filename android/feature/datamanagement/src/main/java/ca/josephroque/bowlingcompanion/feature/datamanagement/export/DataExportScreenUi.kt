@@ -7,15 +7,11 @@ import java.io.File
 sealed interface DataExportScreenUiState {
 	data object Loading : DataExportScreenUiState
 
-	data class Loaded(
-		val dataExport: DataExportUiState,
-	) : DataExportScreenUiState
+	data class Loaded(val dataExport: DataExportUiState) : DataExportScreenUiState
 }
 
 sealed interface DataExportScreenUiAction {
-	data class DataExport(
-		val action: DataExportUiAction,
-	) : DataExportScreenUiAction
+	data class DataExport(val action: DataExportUiAction) : DataExportScreenUiAction
 }
 
 sealed interface DataExportScreenEvent {

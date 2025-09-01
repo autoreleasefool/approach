@@ -27,10 +27,7 @@ fun TeamCreate.asEntity() = TeamCreateEntity(
 	id = id,
 	name = name,
 )
-data class TeamDetailsUpdateEntity(
-	val id: TeamID,
-	val name: String,
-)
+data class TeamDetailsUpdateEntity(val id: TeamID, val name: String)
 
 fun TeamUpdate.asEntity() = TeamDetailsUpdateEntity(
 	id = id,

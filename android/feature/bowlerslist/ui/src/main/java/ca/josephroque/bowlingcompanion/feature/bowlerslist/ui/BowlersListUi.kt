@@ -2,10 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.bowlerslist.ui
 
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 
-data class BowlersListUiState(
-	val list: List<BowlerListItem>,
-	val bowlerToArchive: BowlerListItem?,
-)
+data class BowlersListUiState(val list: List<BowlerListItem>, val bowlerToArchive: BowlerListItem?)
 
 sealed interface BowlersListUiAction {
 	data object AddBowlerClicked : BowlersListUiAction

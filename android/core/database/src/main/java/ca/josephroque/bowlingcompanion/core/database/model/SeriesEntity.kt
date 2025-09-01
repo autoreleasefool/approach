@@ -20,8 +20,8 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.ShareableSeries
 import ca.josephroque.bowlingcompanion.core.model.TrackableSeries
-import kotlinx.datetime.LocalDate
 import kotlin.time.Instant
+import kotlinx.datetime.LocalDate
 
 @Entity(
 	tableName = "series",
@@ -53,12 +53,7 @@ data class SeriesEntity(
 	@ColumnInfo(name = "archived_on", defaultValue = "NULL") val archivedOn: Instant? = null,
 )
 
-data class TrackableSeriesEntity(
-	val id: SeriesID,
-	val numberOfGames: Int,
-	val total: Int,
-	val date: LocalDate,
-) {
+data class TrackableSeriesEntity(val id: SeriesID, val numberOfGames: Int, val total: Int, val date: LocalDate) {
 	fun asModel(): TrackableSeries = TrackableSeries(
 		id = this.id,
 		numberOfGames = this.numberOfGames,
@@ -105,10 +100,7 @@ fun SeriesUpdate.asEntity(): SeriesUpdateEntity = SeriesUpdateEntity(
 	alleyId = alleyId,
 )
 
-data class SeriesLeagueUpdateEntity(
-	val id: SeriesID,
-	@ColumnInfo(name = "league_id") val leagueId: LeagueID,
-)
+data class SeriesLeagueUpdateEntity(val id: SeriesID, @ColumnInfo(name = "league_id") val leagueId: LeagueID)
 
 fun SeriesLeagueUpdate.asEntity(): SeriesLeagueUpdateEntity = SeriesLeagueUpdateEntity(
 	id = id,
@@ -128,10 +120,7 @@ data class SeriesDetailsEntity(
 	)
 	val games: List<Game>,
 ) {
-	data class Game(
-		val score: Int,
-		@ColumnInfo(name = "archived_on") val archivedOn: Instant?,
-	)
+	data class Game(val score: Int, @ColumnInfo(name = "archived_on") val archivedOn: Instant?)
 
 	fun asModel(): SeriesDetails = SeriesDetails(
 		properties = properties,
@@ -153,10 +142,7 @@ data class SeriesListEntity(
 	)
 	val games: List<Game>,
 ) {
-	data class Game(
-		val score: Int,
-		@ColumnInfo(name = "archived_on") val archivedOn: Instant?,
-	)
+	data class Game(val score: Int, @ColumnInfo(name = "archived_on") val archivedOn: Instant?)
 
 	fun asModel(): SeriesListItem = SeriesListItem(
 		properties = properties,
@@ -175,10 +161,7 @@ data class ShareableSeriesEntity(
 	)
 	val games: List<Game>,
 ) {
-	data class Game(
-		val score: Int,
-		@ColumnInfo(name = "archived_on") val archivedOn: Instant?,
-	)
+	data class Game(val score: Int, @ColumnInfo(name = "archived_on") val archivedOn: Instant?)
 
 	fun asModel(): ShareableSeries = ShareableSeries(
 		properties = properties,

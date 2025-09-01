@@ -14,16 +14,14 @@ object LegacyFouls {
 	 * @param i integer representation of the number of fouls
 	 * @return string representation of the number of fouls
 	 */
-	fun foulIntToString(i: Int): String {
-		return when (i) {
-			24 -> "3"
-			25 -> "2"
-			26 -> "23"
-			27 -> "1"
-			28 -> "13"
-			29 -> "12"
-			30 -> "123"
-			else -> "0"
-		}
+	fun foulIntToString(i: Int): String = when (i) {
+		24 -> "3"
+		25 -> "2"
+		26 -> "23"
+		27 -> "1"
+		28 -> "13"
+		29 -> "12"
+		30 -> "123"
+		else -> "0"
 	}
 }

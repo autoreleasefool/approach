@@ -15,9 +15,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class AnalyticsSettingsViewModel @Inject constructor(
-	private val analyticsClient: AnalyticsClient,
-) : ApproachViewModel<AnalyticsSettingsScreenEvent>() {
+class AnalyticsSettingsViewModel @Inject constructor(private val analyticsClient: AnalyticsClient) :
+	ApproachViewModel<AnalyticsSettingsScreenEvent>() {
 
 	private val analyticsSettings = analyticsClient.optInStatus.map {
 		AnalyticsSettingsUiState(analyticsOptInStatus = it)

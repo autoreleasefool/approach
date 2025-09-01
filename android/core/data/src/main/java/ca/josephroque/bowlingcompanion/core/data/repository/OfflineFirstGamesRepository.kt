@@ -28,6 +28,7 @@ import ca.josephroque.bowlingcompanion.core.model.ShareableGame
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import ca.josephroque.bowlingcompanion.core.model.isGameFinished
 import javax.inject.Inject
+import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -36,7 +37,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.minus
-import kotlin.time.Clock
 
 class OfflineFirstGamesRepository @Inject constructor(
 	private val bowlerDao: BowlerDao,

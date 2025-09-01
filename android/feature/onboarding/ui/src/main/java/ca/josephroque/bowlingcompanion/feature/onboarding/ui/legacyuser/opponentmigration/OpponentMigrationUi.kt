@@ -3,12 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.opponen
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 
-data class MergedBowler(
-	val id: BowlerID,
-	val name: String,
-	val mergedBowlerNames: List<String>,
-	val kind: BowlerKind,
-)
+data class MergedBowler(val id: BowlerID, val name: String, val mergedBowlerNames: List<String>, val kind: BowlerKind)
 
 data class OpponentMigrationUiState(
 	val isMigrating: Boolean = false,
@@ -19,16 +14,13 @@ data class OpponentMigrationUiState(
 
 sealed interface OpponentMigrationUiAction {
 	data class OpponentClicked(val opponent: MergedBowler) : OpponentMigrationUiAction
-	data class OpponentNameDialog(val action: OpponentMigrationNameDialogUiAction) :
-		OpponentMigrationUiAction
-	data class TooManyBowlersDialog(val action: TooManyBowlersDialogUiAction) :
-		OpponentMigrationUiAction
+	data class OpponentNameDialog(val action: OpponentMigrationNameDialogUiAction) : OpponentMigrationUiAction
+	data class TooManyBowlersDialog(val action: TooManyBowlersDialogUiAction) : OpponentMigrationUiAction
 }
 
 sealed interface OpponentMigrationDialogUiState {
 	data class NameDialog(val name: String) : OpponentMigrationDialogUiState
-	data class TooManyBowlersDialog(val firstName: String, val secondName: String) :
-		OpponentMigrationDialogUiState
+	data class TooManyBowlersDialog(val firstName: String, val secondName: String) : OpponentMigrationDialogUiState
 }
 
 sealed interface TooManyBowlersDialogUiAction {

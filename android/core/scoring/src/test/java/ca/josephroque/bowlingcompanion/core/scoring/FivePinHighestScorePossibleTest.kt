@@ -113,7 +113,7 @@ class FivePinHighestScorePossibleTest {
 	fun testStrikeFrame_ReturnsCorrectScore() = runTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
-				strikeFrame(0),
+				strikeFrame(),
 			),
 		)
 
@@ -124,7 +124,7 @@ class FivePinHighestScorePossibleTest {
 	fun testStrikeFrame_ThenSpareFrame_ReturnsCorrectScore() = runTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
-				strikeFrame(0),
+				strikeFrame(),
 				spareFrame(1),
 			),
 		)
@@ -136,7 +136,7 @@ class FivePinHighestScorePossibleTest {
 	fun testStrikeFrame_ThenFifteenFrame_ReturnsCorrectScore() = runTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
-				strikeFrame(0),
+				strikeFrame(),
 				fifteenFrame(1),
 			),
 		)
@@ -148,7 +148,7 @@ class FivePinHighestScorePossibleTest {
 	fun testStrikeFrame_ThenOpenFrame_ReturnsCorrectScore() = runTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
-				strikeFrame(0),
+				strikeFrame(),
 				openFrame(1),
 			),
 		)
@@ -160,8 +160,8 @@ class FivePinHighestScorePossibleTest {
 	fun testStrikeFrame_ThenTwoRollsWithPins_ReturnsCorrectScore() = runTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
-				strikeFrame(0),
-				twoRollsWithPins(1),
+				strikeFrame(),
+				twoRollsWithPins(),
 			),
 		)
 
@@ -172,8 +172,8 @@ class FivePinHighestScorePossibleTest {
 	fun testStrikeFrame_ThenTwoRollsWithMisses_ReturnsCorrectScore() = runTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
-				strikeFrame(0),
-				twoRollsWithMisses(1),
+				strikeFrame(),
+				twoRollsWithMisses(),
 			),
 		)
 
@@ -184,8 +184,8 @@ class FivePinHighestScorePossibleTest {
 	fun testStrikeFrame_ThenOneRollWithPins_ReturnsCorrectScore() = runTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
-				strikeFrame(0),
-				oneRollWithPins(1),
+				strikeFrame(),
+				oneRollWithPins(),
 			),
 		)
 
@@ -196,8 +196,8 @@ class FivePinHighestScorePossibleTest {
 	fun testStrikeFrame_ThenOneRollWithMiss_ReturnsCorrectScore() = runTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
-				strikeFrame(0),
-				oneRollWithMiss(1),
+				strikeFrame(),
+				oneRollWithMiss(),
 			),
 		)
 
@@ -208,7 +208,7 @@ class FivePinHighestScorePossibleTest {
 	fun testStrikeFrame_ThenZeroRolls_ReturnsCorrectScore() = runTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
-				strikeFrame(0),
+				strikeFrame(),
 				zeroRolls(),
 			),
 		)
@@ -256,7 +256,7 @@ class FivePinHighestScorePossibleTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
 				spareFrame(0),
-				twoRollsWithPins(1),
+				twoRollsWithPins(),
 			),
 		)
 
@@ -268,7 +268,7 @@ class FivePinHighestScorePossibleTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
 				spareFrame(0),
-				twoRollsWithMisses(1),
+				twoRollsWithMisses(),
 			),
 		)
 
@@ -280,7 +280,7 @@ class FivePinHighestScorePossibleTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
 				spareFrame(0),
-				oneRollWithPins(1),
+				oneRollWithPins(),
 			),
 		)
 
@@ -292,7 +292,7 @@ class FivePinHighestScorePossibleTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
 				spareFrame(0),
-				oneRollWithMiss(1),
+				oneRollWithMiss(),
 			),
 		)
 
@@ -351,7 +351,7 @@ class FivePinHighestScorePossibleTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
 				fifteenFrame(0),
-				twoRollsWithPins(1),
+				twoRollsWithPins(),
 			),
 		)
 
@@ -363,7 +363,7 @@ class FivePinHighestScorePossibleTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
 				fifteenFrame(0),
-				twoRollsWithMisses(1),
+				twoRollsWithMisses(),
 			),
 		)
 
@@ -375,7 +375,7 @@ class FivePinHighestScorePossibleTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
 				fifteenFrame(0),
-				oneRollWithPins(1),
+				oneRollWithPins(),
 			),
 		)
 
@@ -387,7 +387,7 @@ class FivePinHighestScorePossibleTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
 				fifteenFrame(0),
-				oneRollWithMiss(1),
+				oneRollWithMiss(),
 			),
 		)
 
@@ -458,7 +458,7 @@ class FivePinHighestScorePossibleTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
 				openFrame(0),
-				twoRollsWithPins(1),
+				twoRollsWithPins(),
 			),
 		)
 
@@ -470,7 +470,7 @@ class FivePinHighestScorePossibleTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
 				openFrame(0),
-				twoRollsWithMisses(1),
+				twoRollsWithMisses(),
 			),
 		)
 
@@ -482,7 +482,7 @@ class FivePinHighestScorePossibleTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
 				openFrame(0),
-				oneRollWithPins(1),
+				oneRollWithPins(),
 			),
 		)
 
@@ -494,7 +494,7 @@ class FivePinHighestScorePossibleTest {
 		val input = ScoreKeeperInput(
 			rolls = listOf(
 				openFrame(0),
-				oneRollWithMiss(1),
+				oneRollWithMiss(),
 			),
 		)
 
@@ -513,8 +513,8 @@ class FivePinHighestScorePossibleTest {
 		assertHighestScorePossibleEquals(415, input)
 	}
 
-	private fun strikeFrame(index: Int, didFoul: Boolean = false): List<ScoreKeeperInput.Roll> = listOf(
-		ScoreKeeperInput.Roll(index, 0, Pin.fullDeck(), didFoul),
+	private fun strikeFrame(didFoul: Boolean = false): List<ScoreKeeperInput.Roll> = listOf(
+		ScoreKeeperInput.Roll(0, 0, Pin.fullDeck(), didFoul),
 	)
 
 	private fun spareFrame(index: Int, didFoul: Boolean = false): List<ScoreKeeperInput.Roll> = listOf(
@@ -534,22 +534,22 @@ class FivePinHighestScorePossibleTest {
 		ScoreKeeperInput.Roll(index, 2, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN), false),
 	)
 
-	private fun twoRollsWithPins(index: Int, didFoul: Boolean = false): List<ScoreKeeperInput.Roll> = listOf(
-		ScoreKeeperInput.Roll(index, 0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN), didFoul),
-		ScoreKeeperInput.Roll(index, 1, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN), false),
+	private fun twoRollsWithPins(didFoul: Boolean = false): List<ScoreKeeperInput.Roll> = listOf(
+		ScoreKeeperInput.Roll(1, 0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN), didFoul),
+		ScoreKeeperInput.Roll(1, 1, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN), false),
 	)
 
-	private fun twoRollsWithMisses(index: Int, didFoul: Boolean = false): List<ScoreKeeperInput.Roll> = listOf(
-		ScoreKeeperInput.Roll(index, 0, emptySet(), didFoul),
-		ScoreKeeperInput.Roll(index, 1, emptySet(), false),
+	private fun twoRollsWithMisses(didFoul: Boolean = false): List<ScoreKeeperInput.Roll> = listOf(
+		ScoreKeeperInput.Roll(1, 0, emptySet(), didFoul),
+		ScoreKeeperInput.Roll(1, 1, emptySet(), false),
 	)
 
-	private fun oneRollWithPins(index: Int, didFoul: Boolean = false): List<ScoreKeeperInput.Roll> = listOf(
-		ScoreKeeperInput.Roll(index, 0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN), didFoul),
+	private fun oneRollWithPins(didFoul: Boolean = false): List<ScoreKeeperInput.Roll> = listOf(
+		ScoreKeeperInput.Roll(1, 0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN), didFoul),
 	)
 
-	private fun oneRollWithMiss(index: Int, didFoul: Boolean = false): List<ScoreKeeperInput.Roll> = listOf(
-		ScoreKeeperInput.Roll(index, 0, emptySet(), didFoul),
+	private fun oneRollWithMiss(didFoul: Boolean = false): List<ScoreKeeperInput.Roll> = listOf(
+		ScoreKeeperInput.Roll(1, 0, emptySet(), didFoul),
 	)
 
 	private fun zeroRolls(): List<ScoreKeeperInput.Roll> = emptyList()

@@ -2,9 +2,9 @@ package ca.josephroque.bowlingcompanion.core.model
 
 import android.os.Parcelable
 import java.util.UUID
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.parcelize.Parcelize
-import kotlin.time.Instant
 
 object Game {
 	const val NUMBER_OF_FRAMES = 10
@@ -46,12 +46,7 @@ data class GameCreate(
 	val excludeFromStatistics: ExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 )
 
-data class GameEdit(
-	val properties: Properties,
-	val series: Series,
-	val league: League,
-	val bowler: Bowler,
-) {
+data class GameEdit(val properties: Properties, val series: Series, val league: League, val bowler: Bowler) {
 	data class Properties(
 		val id: GameID,
 		val index: Int,
@@ -69,11 +64,7 @@ data class GameEdit(
 		val excludeFromStatistics: ExcludeFromStatistics,
 	)
 
-	data class League(
-		val id: LeagueID,
-		val name: String,
-		val excludeFromStatistics: ExcludeFromStatistics,
-	) {
+	data class League(val id: LeagueID, val name: String, val excludeFromStatistics: ExcludeFromStatistics) {
 		fun toSummary(): LeagueSummary = LeagueSummary(id = id, name = name)
 	}
 
@@ -130,11 +121,7 @@ enum class GameScoringMethod {
 	BY_FRAME,
 }
 
-data class GameInProgress(
-	val teamSeriesId: TeamSeriesID?,
-	val seriesIds: List<SeriesID>,
-	val currentGameId: GameID,
-)
+data class GameInProgress(val teamSeriesId: TeamSeriesID?, val seriesIds: List<SeriesID>, val currentGameId: GameID)
 
 data class ShareableGame(
 	val id: GameID,

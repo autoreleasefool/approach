@@ -8,8 +8,7 @@ sealed interface QuickPlayOnboardingScreenUiState {
 }
 
 sealed interface QuickPlayOnboardingScreenUiAction {
-	data class QuickPlayOnboarding(val action: QuickPlayOnboardingUiAction) :
-		QuickPlayOnboardingScreenUiAction
+	data class QuickPlayOnboarding(val action: QuickPlayOnboardingUiAction) : QuickPlayOnboardingScreenUiAction
 }
 
 sealed interface QuickPlayOnboardingScreenEvent {

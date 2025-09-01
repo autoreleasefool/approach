@@ -17,9 +17,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
-class ScoreEditorViewModel @Inject constructor(
-	savedStateHandle: SavedStateHandle,
-) : ApproachViewModel<ScoreEditorScreenEvent>() {
+class ScoreEditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) :
+	ApproachViewModel<ScoreEditorScreenEvent>() {
 	private val initialScore = Route.ScoreEditor.getScore(savedStateHandle) ?: 0
 	private val initialScoringMethod = Route.ScoreEditor.getScoringMethod(
 		savedStateHandle,

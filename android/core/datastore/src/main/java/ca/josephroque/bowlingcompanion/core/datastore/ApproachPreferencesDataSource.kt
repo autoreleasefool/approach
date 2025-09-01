@@ -16,9 +16,7 @@ import kotlinx.coroutines.flow.map
 
 const val RECENTLY_USED_LIMIT = 10
 
-class ApproachPreferencesDataSource @Inject constructor(
-	private val userPreferences: DataStore<UserPreferences>,
-) {
+class ApproachPreferencesDataSource @Inject constructor(private val userPreferences: DataStore<UserPreferences>) {
 	val userData = userPreferences.data
 		.map {
 			UserData(

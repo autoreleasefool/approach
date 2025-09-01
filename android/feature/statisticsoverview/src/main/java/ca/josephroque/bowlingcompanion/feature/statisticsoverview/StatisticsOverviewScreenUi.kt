@@ -6,15 +6,12 @@ import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.StatisticsO
 sealed interface StatisticsOverviewScreenUiState {
 	data object Loading : StatisticsOverviewScreenUiState
 
-	data class Loaded(
-		val statisticsOverview: StatisticsOverviewUiState = StatisticsOverviewUiState,
-	) : StatisticsOverviewScreenUiState
+	data class Loaded(val statisticsOverview: StatisticsOverviewUiState = StatisticsOverviewUiState) :
+		StatisticsOverviewScreenUiState
 }
 
 sealed interface StatisticsOverviewScreenUiAction {
-	data class StatisticsOverview(
-		val action: StatisticsOverviewUiAction,
-	) : StatisticsOverviewScreenUiAction
+	data class StatisticsOverview(val action: StatisticsOverviewUiAction) : StatisticsOverviewScreenUiAction
 }
 
 sealed interface StatisticsOverviewScreenEvent {

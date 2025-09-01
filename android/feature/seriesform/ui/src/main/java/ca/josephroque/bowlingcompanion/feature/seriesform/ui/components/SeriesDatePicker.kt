@@ -24,11 +24,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
 import ca.josephroque.bowlingcompanion.core.designsystem.R
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

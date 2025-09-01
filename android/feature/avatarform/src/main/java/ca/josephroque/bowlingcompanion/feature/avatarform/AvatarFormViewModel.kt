@@ -17,9 +17,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 @HiltViewModel
-class AvatarFormViewModel @Inject constructor(
-	savedStateHandle: SavedStateHandle,
-) : ApproachViewModel<AvatarFormScreenEvent>() {
+class AvatarFormViewModel @Inject constructor(savedStateHandle: SavedStateHandle) :
+	ApproachViewModel<AvatarFormScreenEvent>() {
 	private val _uiState: MutableStateFlow<AvatarFormScreenUiState> =
 		MutableStateFlow(AvatarFormScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()

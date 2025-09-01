@@ -36,11 +36,7 @@ import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
 import kotlinx.datetime.LocalDate
 
-data class SeriesChartData(
-	val numberOfGames: Int,
-	val scoreRange: IntRange,
-	val model: ChartEntryModelProducer,
-)
+data class SeriesChartData(val numberOfGames: Int, val scoreRange: IntRange, val model: ChartEntryModelProducer)
 
 @Composable
 fun SeriesChartRow(

@@ -27,6 +27,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.ShareableSeries
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import javax.inject.Inject
+import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -34,7 +35,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDate
-import kotlin.time.Clock
 
 class OfflineFirstSeriesRepository @Inject constructor(
 	private val seriesDao: SeriesDao,

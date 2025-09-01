@@ -4,8 +4,8 @@ import ca.josephroque.bowlingcompanion.core.achievements.ConsumableAchievementEv
 import ca.josephroque.bowlingcompanion.core.achievements.EarnableAchievement
 import ca.josephroque.bowlingcompanion.core.model.Achievement
 import ca.josephroque.bowlingcompanion.core.model.AchievementListItem
-import kotlinx.coroutines.flow.Flow
 import kotlin.time.Instant
+import kotlinx.coroutines.flow.Flow
 
 interface AchievementsRepository {
 	fun getEarnedAchievements(): Flow<List<AchievementListItem>>

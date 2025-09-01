@@ -24,12 +24,7 @@ data class TeamSeriesDetailsUiState(
 	sealed interface ListItem {
 		data class GameHeader(val gameIndex: Int, val teamTotal: Int) : ListItem
 
-		data class GameRow(
-			val gameId: GameID,
-			val bowlerName: String,
-			val score: Int,
-			val isArchived: Boolean,
-		) : ListItem
+		data class GameRow(val gameId: GameID, val bowlerName: String, val score: Int, val isArchived: Boolean) : ListItem
 	}
 
 	data class GameToArchive(val gameId: GameID, val bowlerName: String, val gameIndex: Int)

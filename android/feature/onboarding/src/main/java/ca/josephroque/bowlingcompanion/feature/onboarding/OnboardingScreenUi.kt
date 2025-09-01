@@ -20,13 +20,9 @@ sealed interface OnboardingScreenUiState {
 }
 
 sealed interface OnboardingScreenUiAction {
-	data class LegacyUserOnboardingAction(
-		val action: LegacyUserOnboardingUiAction,
-	) : OnboardingScreenUiAction
+	data class LegacyUserOnboardingAction(val action: LegacyUserOnboardingUiAction) : OnboardingScreenUiAction
 
-	data class NewUserOnboardingAction(
-		val action: NewUserOnboardingUiAction,
-	) : OnboardingScreenUiAction
+	data class NewUserOnboardingAction(val action: NewUserOnboardingUiAction) : OnboardingScreenUiAction
 }
 
 sealed interface OnboardingScreenEvent {

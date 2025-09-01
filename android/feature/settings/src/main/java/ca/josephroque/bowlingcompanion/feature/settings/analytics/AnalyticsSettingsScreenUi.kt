@@ -6,15 +6,11 @@ import ca.josephroque.bowlingcompanion.feature.settings.ui.analytics.AnalyticsSe
 sealed interface AnalyticsSettingsScreenUiState {
 	data object Loading : AnalyticsSettingsScreenUiState
 
-	data class Loaded(
-		val analyticsSettings: AnalyticsSettingsUiState,
-	) : AnalyticsSettingsScreenUiState
+	data class Loaded(val analyticsSettings: AnalyticsSettingsUiState) : AnalyticsSettingsScreenUiState
 }
 
 sealed interface AnalyticsSettingsScreenUiAction {
-	data class AnalyticsSettingsAction(
-		val value: AnalyticsSettingsUiAction,
-	) : AnalyticsSettingsScreenUiAction
+	data class AnalyticsSettingsAction(val value: AnalyticsSettingsUiAction) : AnalyticsSettingsScreenUiAction
 }
 
 sealed interface AnalyticsSettingsScreenEvent {

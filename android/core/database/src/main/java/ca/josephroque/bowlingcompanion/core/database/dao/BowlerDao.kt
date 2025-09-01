@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
@@ -17,8 +18,8 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesBowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
-import kotlinx.coroutines.flow.Flow
 import kotlin.time.Instant
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
@@ -59,6 +60,7 @@ abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 	)
 	abstract fun getBowlerDetails(bowlerId: BowlerID): Flow<BowlerDetails>
 
+	@RewriteQueriesToDropUnusedColumns
 	@Query(
 		"""
 			SELECT

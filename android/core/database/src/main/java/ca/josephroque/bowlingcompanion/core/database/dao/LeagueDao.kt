@@ -16,8 +16,8 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueSortOrder
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
-import kotlinx.coroutines.flow.Flow
 import kotlin.time.Instant
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class LeagueDao : LegacyMigratingDao<LeagueEntity> {

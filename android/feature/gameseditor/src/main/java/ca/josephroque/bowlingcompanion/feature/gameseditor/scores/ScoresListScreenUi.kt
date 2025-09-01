@@ -5,9 +5,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scores.ScoresListU
 
 sealed interface ScoresListScreenUiState {
 	data object Loading : ScoresListScreenUiState
-	data class Loaded(
-		val scoresList: ScoresListUiState,
-	) : ScoresListScreenUiState
+	data class Loaded(val scoresList: ScoresListUiState) : ScoresListScreenUiState
 }
 
 sealed interface ScoresListScreenUiAction {

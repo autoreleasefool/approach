@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
 import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesCreateEntity
@@ -19,9 +20,9 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
+import kotlin.time.Instant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
-import kotlin.time.Instant
 
 @Dao
 abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
@@ -53,6 +54,7 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 	)
 	abstract fun getSeriesDetails(seriesId: SeriesID): Flow<SeriesDetailsEntity>
 
+	@RewriteQueriesToDropUnusedColumns
 	@Transaction
 	@Query(
 		"""

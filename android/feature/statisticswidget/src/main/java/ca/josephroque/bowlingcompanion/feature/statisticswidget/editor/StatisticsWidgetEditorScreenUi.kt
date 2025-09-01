@@ -14,13 +14,11 @@ sealed interface StatisticsWidgetInitialSource {
 sealed interface StatisticsWidgetEditorScreenUiState {
 	data object Loading : StatisticsWidgetEditorScreenUiState
 
-	data class Loaded(val statisticsWidgetEditor: StatisticsWidgetEditorUiState) :
-		StatisticsWidgetEditorScreenUiState
+	data class Loaded(val statisticsWidgetEditor: StatisticsWidgetEditorUiState) : StatisticsWidgetEditorScreenUiState
 }
 
 sealed interface StatisticsWidgetEditorScreenUiAction {
-	data class StatisticsWidgetEditor(val action: StatisticsWidgetEditorUiAction) :
-		StatisticsWidgetEditorScreenUiAction
+	data class StatisticsWidgetEditor(val action: StatisticsWidgetEditorUiAction) : StatisticsWidgetEditorScreenUiAction
 
 	data class UpdatedBowler(val bowler: BowlerID?) : StatisticsWidgetEditorScreenUiAction
 	data class UpdatedLeague(val league: LeagueID?) : StatisticsWidgetEditorScreenUiAction
@@ -32,6 +30,5 @@ sealed interface StatisticsWidgetEditorScreenEvent {
 
 	data class EditStatistic(val statistic: Statistic) : StatisticsWidgetEditorScreenEvent
 	data class EditBowler(val bowlerId: BowlerID?) : StatisticsWidgetEditorScreenEvent
-	data class EditLeague(val bowlerId: BowlerID, val leagueId: LeagueID?) :
-		StatisticsWidgetEditorScreenEvent
+	data class EditLeague(val bowlerId: BowlerID, val leagueId: LeagueID?) : StatisticsWidgetEditorScreenEvent
 }

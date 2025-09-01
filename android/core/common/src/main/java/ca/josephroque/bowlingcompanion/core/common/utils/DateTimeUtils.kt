@@ -1,11 +1,11 @@
 package ca.josephroque.bowlingcompanion.core.common.utils
 
 import java.time.format.DateTimeFormatter
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Instant
 
 fun Instant.toLocalDate(): LocalDate = toLocalDateTime(TimeZone.currentSystemDefault()).date
 

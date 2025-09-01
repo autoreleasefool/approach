@@ -11,10 +11,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.PercentageStatistic
 
-data class MatchesTiedStatistic(
-	var matchesPlayed: Int = 0,
-	var matchesTied: Int = 0,
-) : PercentageStatistic, TrackablePerGame {
+data class MatchesTiedStatistic(var matchesPlayed: Int = 0, var matchesTied: Int = 0) :
+	PercentageStatistic,
+	TrackablePerGame {
 	override val id = StatisticID.MATCHES_TIED
 	override val category = StatisticCategory.MATCH_PLAY_RESULTS
 	override val isEligibleForNewLabel = false

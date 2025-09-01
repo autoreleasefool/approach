@@ -33,6 +33,7 @@ import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.Statis
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlin.time.Clock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -44,7 +45,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
 
 val BOWLER_DETAILS_PREFERRED_GEAR_PICKER_RESULT_KEY =
 	ResourcePickerResultKey("BowlerDetailsPreferredGearPickerResultKey")

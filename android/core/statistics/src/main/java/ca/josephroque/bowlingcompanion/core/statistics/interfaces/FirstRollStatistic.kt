@@ -5,7 +5,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 
-interface FirstRollStatistic : PercentageStatistic, TrackablePerFirstRoll {
+interface FirstRollStatistic :
+	PercentageStatistic,
+	TrackablePerFirstRoll {
 	var totalRolls: Int
 
 	fun tracksRoll(firstRoll: TrackableFrame.Roll, configuration: TrackablePerFrameConfiguration): Boolean

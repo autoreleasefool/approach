@@ -41,7 +41,4 @@ sealed interface AlleyFormUiAction {
 	data class PinBaseChanged(val pinBase: AlleyPinBase?) : AlleyFormUiAction
 }
 
-data class AlleyFormTopBarUiState(
-	val existingName: String? = null,
-	val isSaveButtonEnabled: Boolean = false,
-)
+data class AlleyFormTopBarUiState(val existingName: String? = null, val isSaveButtonEnabled: Boolean = false)

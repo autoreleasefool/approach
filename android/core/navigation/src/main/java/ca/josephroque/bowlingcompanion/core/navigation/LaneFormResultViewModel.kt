@@ -12,8 +12,7 @@ import kotlinx.coroutines.flow.onEach
 private const val LANE_FORM_RESULT_KEY = "LaneFormResultKey"
 
 @HiltViewModel
-class LaneFormResultViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) :
-	ViewModel() {
+class LaneFormResultViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
 	fun getLanes() = savedStateHandle
 		.getStateFlow<String?>(LANE_FORM_RESULT_KEY, null)

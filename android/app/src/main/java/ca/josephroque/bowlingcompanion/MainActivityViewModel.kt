@@ -15,6 +15,7 @@ import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
 import ca.josephroque.bowlingcompanion.ui.ApproachAppUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlin.time.Clock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -24,7 +25,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.time.Clock
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(

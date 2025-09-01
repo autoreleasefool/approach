@@ -51,15 +51,13 @@ data class SeriesFormUiState(
 			override val id: LeagueID = league.id
 		}
 
-		fun changedTo(league: LeagueSummary): SeriesLeague {
-			return when (this) {
-				is NoLeague -> InitialLeague(league)
-				is InitialLeague -> if (league.id != this.id) UpdatedLeague(league, this.league) else this
-				is UpdatedLeague -> if (league.id == this.original.id) {
-					InitialLeague(league)
-				} else {
-					UpdatedLeague(league, this.original)
-				}
+		fun changedTo(league: LeagueSummary): SeriesLeague = when (this) {
+			is NoLeague -> InitialLeague(league)
+			is InitialLeague -> if (league.id != this.id) UpdatedLeague(league, this.league) else this
+			is UpdatedLeague -> if (league.id == this.original.id) {
+				InitialLeague(league)
+			} else {
+				UpdatedLeague(league, this.original)
 			}
 		}
 	}
@@ -89,13 +87,9 @@ sealed interface SeriesFormUiAction {
 	data class PreBowlChanged(val preBowl: SeriesPreBowl) : SeriesFormUiAction
 	data class IsUsingPreBowlChanged(val isUsingPreBowl: Boolean) : SeriesFormUiAction
 	data class AppliedDateChanged(val date: LocalDate) : SeriesFormUiAction
-	data class ExcludeFromStatisticsChanged(val excludeFromStatistics: ExcludeFromStatistics) :
-		SeriesFormUiAction
+	data class ExcludeFromStatisticsChanged(val excludeFromStatistics: ExcludeFromStatistics) : SeriesFormUiAction
 	data class IsCreatingManualSeriesChanged(val isCreatingManualSeries: Boolean) : SeriesFormUiAction
 	data class ManualScoreChanged(val index: Int, val score: String) : SeriesFormUiAction
 }
 
-data class SeriesFormTopBarUiState(
-	val existingDate: LocalDate? = null,
-	val isSaveButtonEnabled: Boolean = false,
-)
+data class SeriesFormTopBarUiState(val existingDate: LocalDate? = null, val isSaveButtonEnabled: Boolean = false)

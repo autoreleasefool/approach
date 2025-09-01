@@ -64,11 +64,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import kotlin.time.Clock
-import kotlin.time.Instant
 
 class SQLiteMigrationService @Inject constructor(
 	@ApplicationContext private val context: Context,

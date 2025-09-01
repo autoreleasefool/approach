@@ -32,7 +32,7 @@ abstract class AlleyDao {
 	)
 	abstract fun getAlleysList(): Flow<List<AlleyListItem>>
 
-	@Query("SELECT * FROM alleys WHERE alleys.id = :id")
+	@Query("SELECT id, name, material, pin_fall, mechanism, pin_base FROM alleys WHERE alleys.id = :id")
 	abstract fun getAlleyDetails(id: AlleyID): Flow<AlleyDetailsEntity>
 
 	@Query(

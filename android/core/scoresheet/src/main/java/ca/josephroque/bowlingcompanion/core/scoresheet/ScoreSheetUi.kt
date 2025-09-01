@@ -17,11 +17,7 @@ data class ScoreSheetUiState(
 	}
 }
 
-data class ScoreSheetListItem(
-	val bowler: BowlerSummary,
-	val league: LeagueSummary,
-	val scoreSheet: ScoreSheetUiState,
-)
+data class ScoreSheetListItem(val bowler: BowlerSummary, val league: LeagueSummary, val scoreSheet: ScoreSheetUiState)
 
 data class ScoreSheetListUiState(
 	val highlightedGame: HighlightedGame? = null,

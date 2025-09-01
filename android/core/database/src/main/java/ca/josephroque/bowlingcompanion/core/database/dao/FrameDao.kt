@@ -63,6 +63,7 @@ abstract class FrameDao : LegacyMigratingDao<FrameEntity> {
 	)
 	abstract fun getScoreableFrames(gameId: GameID): Flow<List<ScoreableFrameEntity>>
 
+	@Transaction
 	@Query(
 		"""
 			SELECT

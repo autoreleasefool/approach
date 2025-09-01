@@ -10,9 +10,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatistic
 
-data class RightThreesStatistic(
-	var rightThrees: Int = 0,
-) : TrackablePerFirstRoll, CountingStatistic {
+data class RightThreesStatistic(var rightThrees: Int = 0) :
+	TrackablePerFirstRoll,
+	CountingStatistic {
 	override val id = StatisticID.RIGHT_THREES
 	override val category = StatisticCategory.THREES
 	override val isEligibleForNewLabel = true

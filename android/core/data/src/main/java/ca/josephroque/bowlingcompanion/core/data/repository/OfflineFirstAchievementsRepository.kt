@@ -14,14 +14,14 @@ import ca.josephroque.bowlingcompanion.core.model.AchievementEventID
 import ca.josephroque.bowlingcompanion.core.model.AchievementID
 import ca.josephroque.bowlingcompanion.core.model.AchievementListItem
 import javax.inject.Inject
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import kotlin.time.Clock
-import kotlin.time.Instant
 
 class OfflineFirstAchievementsRepository @Inject constructor(
 	private val achievementDao: AchievementDao,
@@ -43,13 +43,11 @@ class OfflineFirstAchievementsRepository @Inject constructor(
 			}
 	}
 
-	override fun getLatestAchievement(startDate: Instant): Flow<Achievement?> {
-		return achievementDao.getLatestAchievement(startDate)
-	}
+	override fun getLatestAchievement(startDate: Instant): Flow<Achievement?> =
+		achievementDao.getLatestAchievement(startDate)
 
-	override suspend fun hasEarnedAchievement(achievement: EarnableAchievement): Boolean {
-		return achievementDao.hasEarnedAchievement(achievement.id.name)
-	}
+	override suspend fun hasEarnedAchievement(achievement: EarnableAchievement): Boolean =
+		achievementDao.hasEarnedAchievement(achievement.id.name)
 
 	override suspend fun insertEvent(event: ConsumableAchievementEvent) = withContext(ioDispatcher) {
 		eventLock.withLock {

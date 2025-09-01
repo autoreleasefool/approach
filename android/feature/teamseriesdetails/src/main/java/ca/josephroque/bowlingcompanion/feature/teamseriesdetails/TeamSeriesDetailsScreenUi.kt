@@ -10,21 +10,17 @@ import ca.josephroque.bowlingcompanion.feature.teamseriesdetails.ui.TeamSeriesDe
 sealed interface TeamSeriesDetailsScreenUiState {
 	data object Loading : TeamSeriesDetailsScreenUiState
 
-	data class Loaded(
-		val topBar: TeamSeriesDetailsTopBarUiState,
-		val teamSeriesDetails: TeamSeriesDetailsUiState,
-	) : TeamSeriesDetailsScreenUiState
+	data class Loaded(val topBar: TeamSeriesDetailsTopBarUiState, val teamSeriesDetails: TeamSeriesDetailsUiState) :
+		TeamSeriesDetailsScreenUiState
 }
 
 sealed interface TeamSeriesDetailsScreenUiAction {
 	data class TopBar(val action: TeamSeriesDetailsTopBarUiAction) : TeamSeriesDetailsScreenUiAction
-	data class TeamSeriesDetails(val action: TeamSeriesDetailsUiAction) :
-		TeamSeriesDetailsScreenUiAction
+	data class TeamSeriesDetails(val action: TeamSeriesDetailsUiAction) : TeamSeriesDetailsScreenUiAction
 }
 
 sealed interface TeamSeriesDetailsScreenEvent {
 	data object Dismissed : TeamSeriesDetailsScreenEvent
 
-	data class EditGame(val teamSeriesId: TeamSeriesID, val gameId: GameID) :
-		TeamSeriesDetailsScreenEvent
+	data class EditGame(val teamSeriesId: TeamSeriesID, val gameId: GameID) : TeamSeriesDetailsScreenEvent
 }

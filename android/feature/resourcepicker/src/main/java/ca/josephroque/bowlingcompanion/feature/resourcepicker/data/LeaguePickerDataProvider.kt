@@ -8,10 +8,8 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-class LeaguePickerDataProvider @Inject constructor(
-	private val leaguesRepository: LeaguesRepository,
-	filter: String,
-) : ResourcePickerDataProvider {
+class LeaguePickerDataProvider @Inject constructor(private val leaguesRepository: LeaguesRepository, filter: String) :
+	ResourcePickerDataProvider {
 	private val bowlerId: BowlerID?
 	private val recurrence: LeagueRecurrence?
 

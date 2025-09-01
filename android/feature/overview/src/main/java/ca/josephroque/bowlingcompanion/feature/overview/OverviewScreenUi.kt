@@ -36,11 +36,8 @@ sealed interface OverviewScreenEvent {
 
 	data class EditStatisticsWidget(val context: String) : OverviewScreenEvent
 	data class EditBowler(val id: BowlerID) : OverviewScreenEvent
-	data class ResumeGame(
-		val teamSeriesId: TeamSeriesID?,
-		val seriesIds: List<SeriesID>,
-		val currentGameId: GameID,
-	) : OverviewScreenEvent
+	data class ResumeGame(val teamSeriesId: TeamSeriesID?, val seriesIds: List<SeriesID>, val currentGameId: GameID) :
+		OverviewScreenEvent
 	data class ShowBowlerDetails(val id: BowlerID) : OverviewScreenEvent
 	data class EditTeam(val id: TeamID) : OverviewScreenEvent
 	data class ShowTeamDetails(val id: TeamID) : OverviewScreenEvent

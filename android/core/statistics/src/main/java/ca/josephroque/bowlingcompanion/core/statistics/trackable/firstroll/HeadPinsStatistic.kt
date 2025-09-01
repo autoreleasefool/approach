@@ -11,9 +11,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatistic
 
-data class HeadPinsStatistic(
-	var headPins: Int = 0,
-) : TrackablePerFirstRoll, CountingStatistic {
+data class HeadPinsStatistic(var headPins: Int = 0) :
+	TrackablePerFirstRoll,
+	CountingStatistic {
 	override val id = StatisticID.HEAD_PINS
 	override val category = StatisticCategory.HEAD_PINS
 	override val isEligibleForNewLabel = false

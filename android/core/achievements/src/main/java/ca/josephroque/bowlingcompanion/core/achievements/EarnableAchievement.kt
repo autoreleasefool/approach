@@ -29,13 +29,9 @@ interface EarnableAchievement {
 			fromId(it)
 		}
 
-		fun fromId(id: EarnableAchievementID): EarnableAchievement? {
-			return all.firstOrNull { it.id == id }
-		}
+		fun fromId(id: EarnableAchievementID): EarnableAchievement? = all.firstOrNull { it.id == id }
 
-		fun fromEvent(event: ConsumableAchievementEvent): EarnableAchievement? {
-			return all.firstOrNull { it.events.contains(event) }
-		}
+		fun fromEvent(event: ConsumableAchievementEvent): EarnableAchievement? = all.firstOrNull { it.events.contains(event) }
 	}
 }
 

@@ -10,9 +10,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatistic
 
-data class LeftTapsStatistic(
-	var leftTaps: Int = 0,
-) : TrackablePerFirstRoll, CountingStatistic {
+data class LeftTapsStatistic(var leftTaps: Int = 0) :
+	TrackablePerFirstRoll,
+	CountingStatistic {
 	override val id = StatisticID.LEFT_TAPS
 	override val category = StatisticCategory.TAPS
 	override val isEligibleForNewLabel = false

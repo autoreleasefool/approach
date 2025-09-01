@@ -17,9 +17,7 @@ value class ResourcePickerResultKey(val value: String) : Parcelable {
 }
 
 @HiltViewModel
-class ResourcePickerResultViewModel @Inject constructor(
-	private val savedStateHandle: SavedStateHandle,
-) : ViewModel() {
+class ResourcePickerResultViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
 	fun <T> getSelectedIds(key: ResourcePickerResultKey, parse: (UUID) -> T) = savedStateHandle
 		.getStateFlow<Set<UUID>?>(key.value, null)

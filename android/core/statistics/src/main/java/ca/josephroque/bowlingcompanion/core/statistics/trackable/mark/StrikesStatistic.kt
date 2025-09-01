@@ -10,10 +10,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.FirstRollStatistic
 
-data class StrikesStatistic(
-	var strikes: Int = 0,
-	override var totalRolls: Int = 0,
-) : TrackablePerFirstRoll, FirstRollStatistic {
+data class StrikesStatistic(var strikes: Int = 0, override var totalRolls: Int = 0) :
+	TrackablePerFirstRoll,
+	FirstRollStatistic {
 	override val id = StatisticID.STRIKES
 	override val category = StatisticCategory.STRIKES_AND_SPARES
 	override val isEligibleForNewLabel = false
@@ -26,9 +25,8 @@ data class StrikesStatistic(
 			strikes = value
 		}
 
-	override fun tracksRoll(firstRoll: TrackableFrame.Roll, configuration: TrackablePerFrameConfiguration): Boolean {
-		return firstRoll.pinsDowned.arePinsCleared()
-	}
+	override fun tracksRoll(firstRoll: TrackableFrame.Roll, configuration: TrackablePerFrameConfiguration): Boolean =
+		firstRoll.pinsDowned.arePinsCleared()
 
 	override fun supportsSource(source: TrackableFilter.Source): Boolean = when (source) {
 		is TrackableFilter.Source.Team -> true

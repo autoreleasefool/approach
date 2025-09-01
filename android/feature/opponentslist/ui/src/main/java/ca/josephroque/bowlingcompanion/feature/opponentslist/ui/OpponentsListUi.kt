@@ -2,10 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.opponentslist.ui
 
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 
-data class OpponentsListUiState(
-	val list: List<OpponentListItem>,
-	val opponentToArchive: OpponentListItem?,
-)
+data class OpponentsListUiState(val list: List<OpponentListItem>, val opponentToArchive: OpponentListItem?)
 
 sealed interface OpponentsListUiAction {
 	data object BackClicked : OpponentsListUiAction

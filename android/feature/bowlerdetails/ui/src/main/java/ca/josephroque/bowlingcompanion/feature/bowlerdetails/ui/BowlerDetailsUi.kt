@@ -35,7 +35,6 @@ sealed interface BowlerDetailsUiAction {
 	data class SortOrderClicked(val sortOrder: LeagueSortOrder) : BowlerDetailsUiAction
 
 	data class LeaguesListAction(val action: LeaguesListUiAction) : BowlerDetailsUiAction
-	data class StatisticsWidgetLayout(val action: StatisticsWidgetLayoutUiAction) :
-		BowlerDetailsUiAction
+	data class StatisticsWidgetLayout(val action: StatisticsWidgetLayoutUiAction) : BowlerDetailsUiAction
 	data class GearClicked(val id: GearID) : BowlerDetailsUiAction
 }

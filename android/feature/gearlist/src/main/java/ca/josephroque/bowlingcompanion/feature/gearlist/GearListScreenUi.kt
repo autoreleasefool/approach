@@ -8,8 +8,7 @@ import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
 sealed interface GearListScreenUiState {
 	data object Loading : GearListScreenUiState
 
-	data class Loaded(val gearList: GearListUiState, val topBar: GearListTopBarUiState) :
-		GearListScreenUiState
+	data class Loaded(val gearList: GearListUiState, val topBar: GearListTopBarUiState) : GearListScreenUiState
 }
 
 sealed interface GearListScreenUiAction {

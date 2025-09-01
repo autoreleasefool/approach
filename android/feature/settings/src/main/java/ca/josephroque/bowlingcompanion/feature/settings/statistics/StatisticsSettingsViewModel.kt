@@ -15,9 +15,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class StatisticsSettingsViewModel @Inject constructor(
-	private val userDataRepository: UserDataRepository,
-) : ApproachViewModel<StatisticsSettingsScreenEvent>() {
+class StatisticsSettingsViewModel @Inject constructor(private val userDataRepository: UserDataRepository) :
+	ApproachViewModel<StatisticsSettingsScreenEvent>() {
 
 	private val settingsState: Flow<StatisticsSettingsUiState> = userDataRepository.userData.map {
 		StatisticsSettingsUiState(

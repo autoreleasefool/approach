@@ -14,14 +14,6 @@ value class AchievementEventID(val value: UUID) : Parcelable {
 	}
 }
 
-data class AchievementEvent(
-	val id: AchievementEventID,
-	val title: String,
-	val isConsumed: Boolean,
-)
+data class AchievementEvent(val id: AchievementEventID, val title: String, val isConsumed: Boolean)
 
-data class AchievementEventCreate(
-	val id: AchievementEventID,
-	val title: String,
-	val isConsumed: Boolean,
-)
+data class AchievementEventCreate(val id: AchievementEventID, val title: String, val isConsumed: Boolean)

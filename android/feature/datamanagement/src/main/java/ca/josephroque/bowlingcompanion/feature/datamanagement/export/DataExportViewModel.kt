@@ -14,6 +14,7 @@ import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export.DataExpo
 import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export.DataExportUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlin.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +22,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Instant
 
 @HiltViewModel
 class DataExportViewModel @Inject constructor(

@@ -2,10 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scoreeditor
 
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 
-data class ScoreEditorUiState(
-	val score: Int,
-	val scoringMethod: GameScoringMethod,
-)
+data class ScoreEditorUiState(val score: Int, val scoringMethod: GameScoringMethod)
 
 sealed interface ScoreEditorUiAction {
 	data object SaveClicked : ScoreEditorUiAction

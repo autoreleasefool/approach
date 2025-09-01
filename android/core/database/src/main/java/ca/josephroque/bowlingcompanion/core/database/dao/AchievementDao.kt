@@ -8,8 +8,8 @@ import ca.josephroque.bowlingcompanion.core.database.model.AchievementCreateEnti
 import ca.josephroque.bowlingcompanion.core.database.model.AchievementEntity
 import ca.josephroque.bowlingcompanion.core.model.Achievement
 import ca.josephroque.bowlingcompanion.core.model.AchievementListItem
-import kotlinx.coroutines.flow.Flow
 import kotlin.time.Instant
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class AchievementDao {

@@ -36,6 +36,7 @@ import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayUiAction
 import ca.josephroque.bowlingcompanion.feature.quickplay.ui.QuickPlayUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -46,7 +47,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
 
 val QUICK_PLAY_BOWLER_RESULT_KEY = ResourcePickerResultKey("QuickPlayBowlerResultKey")
 val QUICK_PLAY_LEAGUE_RESULT_KEY = ResourcePickerResultKey("QuickPlayLeagueResultKey")

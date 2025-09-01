@@ -51,10 +51,7 @@ val TrackableFrame.secondRolls: List<TrackableFrame.Roll>
 		}
 	}
 
-data class RollPair(
-	val firstRoll: TrackableFrame.Roll,
-	val secondRoll: TrackableFrame.Roll,
-)
+data class RollPair(val firstRoll: TrackableFrame.Roll, val secondRoll: TrackableFrame.Roll)
 
 val TrackableFrame.rollPairs: List<RollPair>
 	get() {

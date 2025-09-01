@@ -6,9 +6,8 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-class OfflineFirstAcknowledgementsRepository @Inject constructor(
-	private val fileManager: FileManager,
-) : AcknowledgementsRepository {
+class OfflineFirstAcknowledgementsRepository @Inject constructor(private val fileManager: FileManager) :
+	AcknowledgementsRepository {
 	override fun getAcknowledgements(): Flow<List<Acknowledgement>> = flowOf(
 		fileManager.getAssets("acknowledgements")
 			.map { Pair(assetNameToAcknowledgementName(it), fileManager.getAsset("acknowledgements/$it")) }

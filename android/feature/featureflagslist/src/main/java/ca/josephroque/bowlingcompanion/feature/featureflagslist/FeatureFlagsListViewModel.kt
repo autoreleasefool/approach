@@ -16,9 +16,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 @HiltViewModel
-class FeatureFlagsListViewModel @Inject constructor(
-	private val featureFlagsClient: FeatureFlagsClient,
-) : ApproachViewModel<FeatureFlagsListScreenEvent>() {
+class FeatureFlagsListViewModel @Inject constructor(private val featureFlagsClient: FeatureFlagsClient) :
+	ApproachViewModel<FeatureFlagsListScreenEvent>() {
 	private val featureFlags = MutableStateFlow(
 		FeatureFlag.entries.map {
 			FeatureFlagState(it, featureFlagsClient.isEnabled(it))

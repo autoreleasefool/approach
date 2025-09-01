@@ -63,21 +63,14 @@ fun ChartLabel(content: ChartLabelContent, appearance: ChartLabelAppearance, mod
 	)
 }
 
-data class ChartLabelContent(
-	val icon: Painter,
-	val title: String,
-)
+data class ChartLabelContent(val icon: Painter, val title: String)
 
 data class ChartLabelAppearance(
 	val style: Style,
 	@param:ColorRes val foregroundColor: Int,
 	@param:ColorRes val backgroundColor: Int,
 ) {
-	enum class Style(
-		val iconSize: Dp,
-		val spacing: Dp,
-		val padding: Dp,
-	) {
+	enum class Style(val iconSize: Dp, val spacing: Dp, val padding: Dp) {
 		TITLE(
 			iconSize = 20.dp,
 			spacing = 8.dp,

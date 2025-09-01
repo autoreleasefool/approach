@@ -12,10 +12,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfigur
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSecondRoll
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.SecondRollStatistic
 
-data class RightThreesSparedStatistic(
-	var rightThrees: Int = 0,
-	var rightThreesSpared: Int = 0,
-) : TrackablePerSecondRoll, SecondRollStatistic {
+data class RightThreesSparedStatistic(var rightThrees: Int = 0, var rightThreesSpared: Int = 0) :
+	TrackablePerSecondRoll,
+	SecondRollStatistic {
 	override val id = StatisticID.RIGHT_THREES_SPARED
 	override val denominatorTitleResourceId: Int = R.string.statistic_title_right_threes
 	override val category = StatisticCategory.THREES

@@ -41,7 +41,4 @@ data class AveragingChartData(
 		get() = entries.firstOrNull()?.key
 }
 
-data class AveragingChartEntry(
-	val key: ChartEntryKey,
-	val value: Double,
-)
+data class AveragingChartEntry(val key: ChartEntryKey, val value: Double)

@@ -12,9 +12,7 @@ import kotlinx.coroutines.flow.onEach
 const val SERIES_FORM_RESULT_KEY = "SeriesFormResultKey"
 
 @HiltViewModel
-class SeriesFormResultViewModel @Inject constructor(
-	private val savedStateHandle: SavedStateHandle,
-) : ViewModel() {
+class SeriesFormResultViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
 	fun getSeriesID() = savedStateHandle
 		.getStateFlow<String?>(SERIES_FORM_RESULT_KEY, null)

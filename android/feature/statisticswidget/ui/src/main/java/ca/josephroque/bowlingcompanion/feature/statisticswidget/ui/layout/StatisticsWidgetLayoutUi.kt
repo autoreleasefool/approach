@@ -9,10 +9,7 @@ data class StatisticsWidgetLayoutUiState(
 	val widgets: List<StatisticsWidget>,
 	val widgetCharts: Map<StatisticsWidgetID, ChartContent>,
 ) {
-	data class ChartContent(
-		val chart: StatisticChartContent,
-		val modelProducer: ChartEntryModelProducer,
-	)
+	data class ChartContent(val chart: StatisticChartContent, val modelProducer: ChartEntryModelProducer)
 }
 
 sealed interface StatisticsWidgetLayoutUiAction {

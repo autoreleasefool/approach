@@ -8,9 +8,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatistic
 
-data class NumberOfGamesStatistic(
-	var numberOfGames: Int = 0,
-) : TrackablePerGame, CountingStatistic {
+data class NumberOfGamesStatistic(var numberOfGames: Int = 0) :
+	TrackablePerGame,
+	CountingStatistic {
 	override val id = StatisticID.NUMBER_OF_GAMES
 	override val category = StatisticCategory.OVERALL
 	override val isEligibleForNewLabel = false

@@ -174,10 +174,7 @@ data class ScoreableFramesEntity(
 	)
 	val frames: List<ScoreableFrameEntity>,
 ) {
-	data class Properties(
-		val id: GameID,
-		val index: Int,
-	)
+	data class Properties(val id: GameID, val index: Int)
 }
 
 data class ScoreableFrameEntity(

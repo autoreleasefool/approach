@@ -30,7 +30,7 @@ interface StatisticsDao {
 			WHERE teams.id = :teamId
 		""",
 	)
-	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+	@SuppressWarnings(RoomWarnings.Companion.QUERY_MISMATCH)
 	fun getTeamSourceDetails(teamId: TeamID): TrackableFilterSourceSummariesEntity
 
 	@Query(
@@ -42,7 +42,7 @@ interface StatisticsDao {
 			WHERE bowlers.id = :bowlerId
 		""",
 	)
-	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+	@SuppressWarnings(RoomWarnings.Companion.QUERY_MISMATCH)
 	fun getBowlerSourceDetails(bowlerId: BowlerID): TrackableFilterSourceSummariesEntity
 
 	@Query(
@@ -57,7 +57,7 @@ interface StatisticsDao {
 			WHERE leagues.id = :leagueId
 		""",
 	)
-	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+	@SuppressWarnings(RoomWarnings.Companion.QUERY_MISMATCH)
 	fun getLeagueSourceDetails(leagueId: LeagueID): TrackableFilterSourceSummariesEntity
 
 	@Query(
@@ -75,7 +75,7 @@ interface StatisticsDao {
 			WHERE series.id = :seriesId
 		""",
 	)
-	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+	@SuppressWarnings(RoomWarnings.Companion.QUERY_MISMATCH)
 	fun getSeriesSourceDetails(seriesId: SeriesID): TrackableFilterSourceSummariesEntity
 
 	@Query(
@@ -97,7 +97,7 @@ interface StatisticsDao {
 			WHERE games.id = :gameId
 		""",
 	)
-	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+	@SuppressWarnings(RoomWarnings.Companion.QUERY_MISMATCH)
 	fun getGameSourceDetails(gameId: GameID): TrackableFilterSourceSummariesEntity
 
 	@RawQuery(observedEntities = [SeriesEntity::class])

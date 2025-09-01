@@ -10,10 +10,9 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.FirstRollStatistic
 
-data class RightOfMiddleHitsStatistic(
-	var rightOfMiddleHits: Int = 0,
-	override var totalRolls: Int = 0,
-) : TrackablePerFirstRoll, FirstRollStatistic {
+data class RightOfMiddleHitsStatistic(var rightOfMiddleHits: Int = 0, override var totalRolls: Int = 0) :
+	TrackablePerFirstRoll,
+	FirstRollStatistic {
 	override val id = StatisticID.RIGHT_OF_MIDDLE_HITS
 	override val category = StatisticCategory.MIDDLE_HITS
 	override val isEligibleForNewLabel = false
@@ -26,9 +25,8 @@ data class RightOfMiddleHitsStatistic(
 			rightOfMiddleHits = value
 		}
 
-	override fun tracksRoll(firstRoll: TrackableFrame.Roll, configuration: TrackablePerFrameConfiguration): Boolean {
-		return firstRoll.pinsDowned.isHitRightOfMiddle()
-	}
+	override fun tracksRoll(firstRoll: TrackableFrame.Roll, configuration: TrackablePerFrameConfiguration): Boolean =
+		firstRoll.pinsDowned.isHitRightOfMiddle()
 
 	override fun supportsSource(source: TrackableFilter.Source): Boolean = when (source) {
 		is TrackableFilter.Source.Team -> true

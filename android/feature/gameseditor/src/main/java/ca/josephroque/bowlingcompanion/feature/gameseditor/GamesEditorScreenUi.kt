@@ -34,10 +34,7 @@ data class GamesEditorScreenAlertsUiState(
 
 data class HighestScorePossibleAlertUiState(val score: Int)
 
-data class GamesEditorScreenContentUiState(
-	val gamesEditor: GamesEditorUiState,
-	val topBar: GamesEditorTopBarUiState,
-)
+data class GamesEditorScreenContentUiState(val gamesEditor: GamesEditorUiState, val topBar: GamesEditorTopBarUiState)
 
 data class GamesEditorScreenBottomSheetContentUiState(
 	val gameDetails: GameDetailsUiState,
@@ -66,8 +63,7 @@ sealed interface GamesEditorScreenUiAction {
 	data class SeriesUpdated(val series: List<SeriesID>) : GamesEditorScreenUiAction
 	data class CurrentGameUpdated(val gameId: GameID) : GamesEditorScreenUiAction
 	data class SelectedBallUpdated(val ballId: GearID?) : GamesEditorScreenUiAction
-	data class ScoreUpdated(val score: Int, val scoringMethod: GameScoringMethod) :
-		GamesEditorScreenUiAction
+	data class ScoreUpdated(val score: Int, val scoringMethod: GameScoringMethod) : GamesEditorScreenUiAction
 }
 
 sealed interface GamesEditorScreenEvent {
@@ -78,13 +74,9 @@ sealed interface GamesEditorScreenEvent {
 	data class EditAlley(val alleyId: AlleyID?) : GamesEditorScreenEvent
 	data class EditLanes(val alleyId: AlleyID, val laneIds: Set<LaneID>) : GamesEditorScreenEvent
 	data class EditRolledBall(val ballId: GearID?) : GamesEditorScreenEvent
-	data class ShowGamesSettings(
-		val teamSeriesId: TeamSeriesID?,
-		val series: List<SeriesID>,
-		val currentGameId: GameID,
-	) : GamesEditorScreenEvent
+	data class ShowGamesSettings(val teamSeriesId: TeamSeriesID?, val series: List<SeriesID>, val currentGameId: GameID) :
+		GamesEditorScreenEvent
 	data class EditScore(val score: Int, val scoringMethod: GameScoringMethod) : GamesEditorScreenEvent
 	data class ShowStatistics(val filter: TrackableFilter) : GamesEditorScreenEvent
-	data class ShowBowlerScores(val series: List<SeriesID>, val gameIndex: Int) :
-		GamesEditorScreenEvent
+	data class ShowBowlerScores(val series: List<SeriesID>, val gameIndex: Int) : GamesEditorScreenEvent
 }
