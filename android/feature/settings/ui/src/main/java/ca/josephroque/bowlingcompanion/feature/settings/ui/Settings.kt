@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.settings.ui
 
 import android.annotation.SuppressLint
+import android.content.ClipData
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,20 +15,22 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.common.utils.sendEmail
 import ca.josephroque.bowlingcompanion.feature.settings.ui.components.Footer
 import ca.josephroque.bowlingcompanion.feature.settings.ui.components.Header
 import ca.josephroque.bowlingcompanion.feature.settings.ui.components.Link
 import ca.josephroque.bowlingcompanion.feature.settings.ui.components.NavigationItem
+import kotlinx.coroutines.launch
 
 @Composable
 fun Settings(state: SettingsUiState, onAction: (SettingsUiAction) -> Unit, modifier: Modifier = Modifier) {
@@ -241,7 +244,8 @@ private fun DevelopmentSection(onAction: (SettingsUiAction) -> Unit) {
 private fun AppInfoSection(versionName: String, versionCode: String) {
 	Header(titleResourceId = R.string.settings_item_app_info)
 
-	val clipboardManager = LocalClipboardManager.current
+	val coroutineScope = rememberCoroutineScope()
+	val clipboardManager = LocalClipboard.current
 	val versionString = stringResource(
 		R.string.settings_item_version_detail,
 		versionName,
@@ -252,7 +256,11 @@ private fun AppInfoSection(versionName: String, versionCode: String) {
 		horizontalArrangement = Arrangement.SpaceBetween,
 		modifier = Modifier
 			.fillMaxWidth()
-			.clickable(onClick = { clipboardManager.setText(AnnotatedString(versionString)) })
+			.clickable(onClick = {
+				coroutineScope.launch {
+					clipboardManager.setClipEntry(ClipEntry(ClipData.newPlainText(versionString, versionString)))
+				}
+			})
 			.padding(16.dp),
 	) {
 		Text(
