@@ -46,7 +46,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 val QUICK_PLAY_BOWLER_RESULT_KEY = ResourcePickerResultKey("QuickPlayBowlerResultKey")
 val QUICK_PLAY_LEAGUE_RESULT_KEY = ResourcePickerResultKey("QuickPlayLeagueResultKey")
@@ -251,6 +252,7 @@ class QuickPlayViewModel @Inject constructor(
 		}
 	}
 
+	@OptIn(ExperimentalTime::class)
 	private suspend fun startRecordingTeamSeries(
 		teamId: TeamID,
 		bowlerIds: List<BowlerID>,

@@ -2,8 +2,9 @@ package ca.josephroque.bowlingcompanion.core.model
 
 import android.os.Parcelable
 import java.util.UUID
-import kotlinx.datetime.Instant
 import kotlinx.parcelize.Parcelize
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @JvmInline
 @Parcelize
@@ -38,6 +39,7 @@ data class BowlerCreate(val id: BowlerID, val name: String, val kind: BowlerKind
 
 data class BowlerUpdate(val id: BowlerID, val name: String)
 
+@OptIn(ExperimentalTime::class)
 data class ArchivedBowler(
 	val id: BowlerID,
 	val name: String,

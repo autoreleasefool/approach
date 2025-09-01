@@ -24,7 +24,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
@@ -101,6 +102,7 @@ class MainActivityViewModel @Inject constructor(
 		analyticsClient.trackEvent(AppTabSwitched(destination.name))
 	}
 
+	@OptIn(ExperimentalTime::class)
 	private fun startObservingAchievements() {
 		viewModelScope.launch {
 			achievementsRepository.getLatestAchievement(Clock.System.now())

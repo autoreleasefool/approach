@@ -2,9 +2,10 @@ package ca.josephroque.bowlingcompanion.core.model
 
 import android.os.Parcelable
 import java.util.UUID
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.parcelize.Parcelize
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 object Game {
 	const val NUMBER_OF_FRAMES = 10
@@ -103,6 +104,7 @@ data class IndexedGame(val id: GameID, val index: Int)
 
 data class GameListItemBySeries(val seriesId: SeriesID, val id: GameID, val index: Int)
 
+@OptIn(ExperimentalTime::class)
 data class ArchivedGame(
 	val id: GameID,
 	val scoringMethod: GameScoringMethod,

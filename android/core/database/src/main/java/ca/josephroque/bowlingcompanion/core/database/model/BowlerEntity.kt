@@ -8,8 +8,10 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
-import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 @Entity(tableName = "bowlers")
 data class BowlerEntity(
 	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: BowlerID,
@@ -33,6 +35,7 @@ fun BowlerUpdate.asEntity() = BowlerUpdateEntity(
 	name = name,
 )
 
+@OptIn(ExperimentalTime::class)
 fun OpponentListItem.asEntity() = BowlerEntity(
 	id = id,
 	name = name,

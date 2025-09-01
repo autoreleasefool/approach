@@ -16,7 +16,8 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class OfflineFirstStatisticsWidgetsRepository @Inject constructor(
 	private val statisticsRepository: StatisticsRepository,
@@ -46,6 +47,7 @@ class OfflineFirstStatisticsWidgetsRepository @Inject constructor(
 		statisticsWidgetDao.deleteStatisticWidget(id)
 	}
 
+	@OptIn(ExperimentalTime::class)
 	override suspend fun getStatisticsWidgetChart(widget: StatisticsWidget): StatisticChartContent =
 		withContext(ioDispatcher) {
 			val statistic = statisticInstanceFromID(widget.statistic)

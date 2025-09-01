@@ -5,10 +5,12 @@ import ca.josephroque.bowlingcompanion.core.achievements.EarnableAchievement
 import ca.josephroque.bowlingcompanion.core.model.Achievement
 import ca.josephroque.bowlingcompanion.core.model.AchievementListItem
 import kotlinx.coroutines.flow.Flow
-import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 interface AchievementsRepository {
 	fun getEarnedAchievements(): Flow<List<AchievementListItem>>
+	@OptIn(ExperimentalTime::class)
 	fun getLatestAchievement(startDate: Instant): Flow<Achievement?>
 
 	suspend fun insertEvent(event: ConsumableAchievementEvent)

@@ -13,9 +13,11 @@ import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import ca.josephroque.bowlingcompanion.core.model.TrackableGame
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 @Entity(
 	tableName = "games",
 	foreignKeys = [
@@ -40,6 +42,7 @@ data class GameEntity(
 	@ColumnInfo(name = "durationMillis", defaultValue = "0") val durationMillis: Long = 0,
 )
 
+@OptIn(ExperimentalTime::class)
 fun GameCreate.asEntity(): GameEntity = GameEntity(
 	id = id,
 	seriesId = seriesId,

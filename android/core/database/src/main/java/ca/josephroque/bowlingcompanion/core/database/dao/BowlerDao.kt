@@ -18,7 +18,8 @@ import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesBowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
 import kotlinx.coroutines.flow.Flow
-import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @Dao
 abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
@@ -131,6 +132,7 @@ abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 	@Update
 	abstract fun updateBowlerEntity(bowler: BowlerEntity)
 
+	@OptIn(ExperimentalTime::class)
 	@Query("UPDATE bowlers SET archived_on = :archivedOn WHERE id IN (:bowlerIds)")
 	abstract fun archiveBowlers(bowlerIds: List<BowlerID>, archivedOn: Instant)
 

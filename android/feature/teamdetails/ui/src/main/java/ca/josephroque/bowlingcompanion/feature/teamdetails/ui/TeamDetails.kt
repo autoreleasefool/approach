@@ -51,13 +51,14 @@ import ca.josephroque.bowlingcompanion.core.model.charts.ui.SeriesChartData
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @Composable
 fun TeamDetails(
@@ -221,7 +222,7 @@ private fun MemberRow(name: String, modifier: Modifier = Modifier) {
 	}
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
 private fun EditSeriesDialog(date: LocalDate, onDateChanged: (LocalDate) -> Unit, onDismiss: () -> Unit) {
 	val initialSelection = remember(date) {

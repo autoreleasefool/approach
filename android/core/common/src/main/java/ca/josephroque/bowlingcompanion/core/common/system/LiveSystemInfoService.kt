@@ -4,7 +4,8 @@ import android.content.Context
 import android.os.Build
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 class LiveSystemInfoService @Inject constructor(@param:ApplicationContext private val context: Context) :
 	SystemInfoService {
@@ -19,6 +20,7 @@ class LiveSystemInfoService @Inject constructor(@param:ApplicationContext privat
 			context.packageManager.getPackageInfo(context.packageName, 0).versionCode.toString()
 		}
 
+	@OptIn(ExperimentalTime::class)
 	override val firstInstallTime: Instant
 		get() = Instant.fromEpochMilliseconds(context.packageManager.getPackageInfo(context.packageName, 0).firstInstallTime)
 }

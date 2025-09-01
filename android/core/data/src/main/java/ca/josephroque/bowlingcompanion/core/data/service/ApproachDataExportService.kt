@@ -17,7 +17,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class ApproachDataExportService @Inject constructor(
 	private val fileManager: FileManager,
@@ -37,6 +38,7 @@ class ApproachDataExportService @Inject constructor(
 			.listFiles()?.maxOfOrNull { it },
 	)
 
+	@OptIn(ExperimentalTime::class)
 	override val exportDestination: String
 		get() {
 			val currentDate = Clock.System.now().toLocalDate()

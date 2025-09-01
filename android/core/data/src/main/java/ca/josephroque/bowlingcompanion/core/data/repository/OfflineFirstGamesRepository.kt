@@ -34,9 +34,10 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.minus
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class OfflineFirstGamesRepository @Inject constructor(
 	private val bowlerDao: BowlerDao,
@@ -199,6 +200,7 @@ class OfflineFirstGamesRepository @Inject constructor(
 		}
 	}
 
+	@OptIn(ExperimentalTime::class)
 	override suspend fun archiveGame(gameId: GameID) = withContext(ioDispatcher) {
 		transactionRunner {
 			gameDao.archiveGame(gameId, archivedOn = Clock.System.now())
@@ -224,6 +226,7 @@ class OfflineFirstGamesRepository @Inject constructor(
 		}
 	}
 
+	@OptIn(ExperimentalTime::class)
 	override suspend fun lockStaleGames() = withContext(ioDispatcher) {
 		val currentDate = Clock.System.now().toLocalDate()
 		val staleDate = currentDate.minus(7, DateTimeUnit.DAY)

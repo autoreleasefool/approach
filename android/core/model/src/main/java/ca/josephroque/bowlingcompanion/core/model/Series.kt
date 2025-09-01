@@ -2,9 +2,10 @@ package ca.josephroque.bowlingcompanion.core.model
 
 import android.os.Parcelable
 import java.util.UUID
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.parcelize.Parcelize
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 object Series {
 	const val DEFAULT_NUMBER_OF_GAMES = 4
@@ -41,15 +42,15 @@ enum class SeriesItemSize {
 
 data class SeriesSummary(val id: SeriesID, val date: LocalDate)
 
-data class SeriesListItem(val properties: SeriesListProperties, val scores: List<Int>)
-
-data class SeriesListProperties(
-	val id: SeriesID,
-	val date: LocalDate,
-	val total: Int,
-	val preBowl: SeriesPreBowl,
-	val appliedDate: LocalDate?,
-)
+data class SeriesListItem(val properties: Properties, val scores: List<Int>) {
+	data class Properties(
+		val id: SeriesID,
+		val date: LocalDate,
+		val total: Int,
+		val preBowl: SeriesPreBowl,
+		val appliedDate: LocalDate?,
+	)
+}
 
 data class TrackableSeries(
 	val id: SeriesID,
@@ -58,6 +59,7 @@ data class TrackableSeries(
 	val date: LocalDate,
 )
 
+@OptIn(ExperimentalTime::class)
 data class ArchivedSeries(
 	val id: SeriesID,
 	val date: LocalDate,

@@ -20,9 +20,11 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.ShareableSeries
 import ca.josephroque.bowlingcompanion.core.model.TrackableSeries
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 @Entity(
 	tableName = "series",
 	foreignKeys = [
@@ -115,6 +117,7 @@ fun SeriesLeagueUpdate.asEntity(): SeriesLeagueUpdateEntity = SeriesLeagueUpdate
 	leagueId = leagueId,
 )
 
+@OptIn(ExperimentalTime::class)
 data class SeriesDetailsEntity(
 	@Embedded val properties: SeriesDetails.Properties,
 	@Embedded(prefix = "alley_") val alley: SeriesDetails.Alley?,
@@ -142,6 +145,7 @@ data class SeriesDetailsEntity(
 	)
 }
 
+@OptIn(ExperimentalTime::class)
 data class SeriesListEntity(
 	@Embedded
 	val properties: SeriesListProperties,
@@ -164,6 +168,7 @@ data class SeriesListEntity(
 	)
 }
 
+@OptIn(ExperimentalTime::class)
 data class ShareableSeriesEntity(
 	@Embedded
 	val properties: ShareableSeries.Properties,

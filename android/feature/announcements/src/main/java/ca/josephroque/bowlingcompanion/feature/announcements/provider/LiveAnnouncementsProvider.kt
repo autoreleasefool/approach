@@ -9,8 +9,9 @@ import ca.josephroque.bowlingcompanion.feature.announcements.ui.tenyears.TenYear
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
 import kotlinx.coroutines.flow.first
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 class LiveAnnouncementsProvider @Inject constructor(
 	private val featureFlagsClient: FeatureFlagsClient,
@@ -30,6 +31,7 @@ class LiveAnnouncementsProvider @Inject constructor(
 		}
 	}
 
+	@OptIn(ExperimentalTime::class)
 	private suspend fun shouldShowTenYearsAnnouncement(): Boolean {
 		val userData = userDataRepository.userData.first()
 

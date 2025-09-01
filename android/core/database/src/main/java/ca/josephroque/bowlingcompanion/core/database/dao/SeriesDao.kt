@@ -20,8 +20,9 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.TeamSeriesID
 import kotlinx.coroutines.flow.Flow
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @Dao
 abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
@@ -158,9 +159,11 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 	@Update(entity = SeriesEntity::class)
 	abstract fun updateSeriesLeague(series: SeriesLeagueUpdateEntity)
 
+	@OptIn(ExperimentalTime::class)
 	@Query("UPDATE series SET archived_on = :archivedOn WHERE id = :seriesId")
 	abstract fun archiveSeries(seriesId: SeriesID, archivedOn: Instant)
 
+	@OptIn(ExperimentalTime::class)
 	@Query(
 		"""
 			UPDATE series SET archived_on = :archivedOn WHERE id IN (

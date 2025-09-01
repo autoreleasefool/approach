@@ -2,9 +2,10 @@ package ca.josephroque.bowlingcompanion.core.model
 
 import android.os.Parcelable
 import java.util.UUID
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.parcelize.Parcelize
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 object League {
 	val NumberOfGamesRange = 1..40
@@ -50,6 +51,7 @@ data class LeagueListItem(
 	val average: Double?,
 )
 
+@OptIn(ExperimentalTime::class)
 data class ArchivedLeague(
 	val id: LeagueID,
 	val name: String,

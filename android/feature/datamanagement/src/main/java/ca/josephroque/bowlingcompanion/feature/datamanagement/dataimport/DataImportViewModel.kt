@@ -23,7 +23,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @HiltViewModel
 class DataImportViewModel @Inject constructor(
@@ -123,6 +124,7 @@ class DataImportViewModel @Inject constructor(
 		}
 	}
 
+	@OptIn(ExperimentalTime::class)
 	private fun getLatestImportDate() {
 		viewModelScope.launch {
 			dataImportService.getLatestBackup()
