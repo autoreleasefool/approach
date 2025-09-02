@@ -5,9 +5,9 @@ import ca.josephroque.bowlingcompanion.core.model.TeamMemberListItem
 
 data class TeamFormUiState(
 	val name: String = "",
-	@param:StringRes val nameErrorId: Int? = null,
+	@StringRes val nameErrorId: Int? = null,
 	val members: List<TeamMemberListItem> = emptyList(),
-	@param:StringRes val membersErrorId: Int? = null,
+	@StringRes val membersErrorId: Int? = null,
 
 	val isShowingDeleteDialog: Boolean = false,
 	val isDeleteButtonEnabled: Boolean = false,

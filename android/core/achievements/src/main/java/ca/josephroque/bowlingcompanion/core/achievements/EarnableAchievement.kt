@@ -43,8 +43,8 @@ interface ConsumableAchievementEvent {
 }
 
 enum class EarnableAchievementID(
-	@param:StringRes val titleResourceId: Int,
-	@param:DrawableRes val iconResourceId: Int,
+	@StringRes val titleResourceId: Int,
+	@DrawableRes val iconResourceId: Int,
 	val isEnabled: Boolean,
 	val isShownOnEarn: Boolean = true,
 ) {

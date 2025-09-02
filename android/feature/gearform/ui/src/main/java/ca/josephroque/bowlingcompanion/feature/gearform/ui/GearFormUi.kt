@@ -8,7 +8,7 @@ import ca.josephroque.bowlingcompanion.core.model.GearKind
 data class GearFormUiState(
 	val name: String = "",
 	val kind: GearKind = GearKind.BOWLING_BALL,
-	@param:StringRes val nameErrorId: Int? = null,
+	@StringRes val nameErrorId: Int? = null,
 	val owner: BowlerDetails? = null,
 	val avatar: Avatar = Avatar.default(),
 	val isAvatarLabelOverridden: Boolean = false,

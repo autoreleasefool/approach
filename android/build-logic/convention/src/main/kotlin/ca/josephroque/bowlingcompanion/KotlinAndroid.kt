@@ -63,6 +63,8 @@ private inline fun <reified T : KotlinBaseExtension> Project.configureKotlin() =
 			"-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
 			// Enable experimental datetime APIs
 			"-opt-in=kotlin.time.ExperimentalTime",
+			// Set param annotation target mode, the default in a future version of Kotlin
+			"-Xannotation-default-target=param-property",
 		)
 	}
 }

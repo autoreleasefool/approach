@@ -17,7 +17,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 class FivePinScoreKeeper @Inject constructor(
-	@param:Dispatcher(Default) private val defaultDispatcher: CoroutineDispatcher,
+	@Dispatcher(Default) private val defaultDispatcher: CoroutineDispatcher,
 ) : ScoreKeeper {
 	override suspend fun calculateHighestScorePossible(input: ScoreKeeperInput): Int = withContext(defaultDispatcher) {
 		calculateHighestScorePossibleInternal(input)

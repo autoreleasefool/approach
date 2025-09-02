@@ -8,7 +8,7 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import javax.inject.Inject
 
-class SystemFileManager @Inject constructor(@param:ApplicationContext private val context: Context) : FileManager {
+class SystemFileManager @Inject constructor(@ApplicationContext private val context: Context) : FileManager {
 	override val cacheDir: File
 		get() = context.cacheDir
 

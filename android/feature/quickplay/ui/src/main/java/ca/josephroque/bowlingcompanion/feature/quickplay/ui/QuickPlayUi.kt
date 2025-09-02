@@ -7,7 +7,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.Series
 
 data class QuickPlayTopBarUiState(
-	@param:StringRes val title: Int = R.string.quick_play,
+	@StringRes val title: Int = R.string.quick_play,
 	val formStyle: FormStyle = FormStyle.Normal,
 	val isAddBowlerEnabled: Boolean = false,
 ) {

@@ -67,8 +67,8 @@ data class ChartLabelContent(val icon: Painter, val title: String)
 
 data class ChartLabelAppearance(
 	val style: Style,
-	@param:ColorRes val foregroundColor: Int,
-	@param:ColorRes val backgroundColor: Int,
+	@ColorRes val foregroundColor: Int,
+	@ColorRes val backgroundColor: Int,
 ) {
 	enum class Style(val iconSize: Dp, val spacing: Dp, val padding: Dp) {
 		TITLE(
