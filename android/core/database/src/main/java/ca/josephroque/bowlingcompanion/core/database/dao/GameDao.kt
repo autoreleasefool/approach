@@ -116,8 +116,8 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 	@Query(
 		"""
 			SELECT
-				games.id AS id,
-				games.`index` AS `index`
+				games.id,
+				games.`index`
 			FROM games
 			WHERE games.series_id = :seriesId AND games.archived_on IS NULL
 			ORDER BY games.`index` ASC
@@ -128,8 +128,8 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 	@Query(
 		"""
 			SELECT
-				games.id AS id,
-				games.score AS score,
+				games.id,
+				games.score,
 				games.scoring_method AS scoringMethod,
 				games.archived_on AS archivedOn,
 				series.date AS seriesDate,
@@ -148,8 +148,8 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 	@Query(
 		"""
 			SELECT
-				games.id AS id,
-				games.`index` AS `index`,
+				games.id,
+				games.`index`,
 				series.date AS seriesDate,
 				bowlers.name AS bowlerName,
 				leagues.name AS leagueName,
@@ -167,8 +167,8 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 	@Query(
 		"""
 			SELECT
-				games.id AS id,
-				games.`index` AS `index`,
+				games.id,
+				games.`index`,
 				series.date AS seriesDate,
 				bowlers.name AS bowlerName,
 				leagues.name AS leagueName,
@@ -221,7 +221,7 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 		"""
 			UPDATE games
 			SET locked = 'LOCKED'
-			WHERE 
+			WHERE
 				games.locked = 'UNLOCKED' AND
 				games.series_id IN (
 					SELECT series.id

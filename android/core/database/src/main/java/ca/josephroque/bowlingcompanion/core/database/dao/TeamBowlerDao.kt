@@ -15,8 +15,8 @@ abstract class TeamBowlerDao : LegacyMigratingDao<TeamBowlerCrossRef> {
 	@Query(
 		"""
 			SELECT
-				bowlers.id as id,
-				bowlers.name as name
+				bowlers.id,
+				bowlers.name
 			FROM bowlers
 			WHERE bowlers.id IN (:ids)
 			ORDER BY bowlers.name

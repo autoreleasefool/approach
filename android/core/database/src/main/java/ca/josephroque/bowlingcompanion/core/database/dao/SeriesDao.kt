@@ -30,8 +30,8 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 	@Query(
 		"""
 			SELECT
-				series.id AS id,
-				series.'date' AS 'date',
+				series.id,
+				series.'date',
 				series.applied_date,
 				series.pre_bowl,
 				series.exclude_from_statistics,
@@ -59,8 +59,8 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 	@Query(
 		"""
 		SELECT
-		 series.id AS id,
-		 series.'date' AS 'date',
+		 series.id,
+		 series.'date',
 		 series.applied_date,
 		 series.pre_bowl,
 		 SUM(games.score) AS 'total',
@@ -110,8 +110,8 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 	@Query(
 		"""
 			SELECT
-				series.id AS id,
-				series.'date' AS 'date',
+				series.id,
+				series.'date',
 				series.archived_on AS archivedOn,
 				bowlers.name AS bowlerName,
 				leagues.name AS leagueName,
@@ -131,8 +131,8 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 	@Query(
 		"""
 		SELECT
-		 series.id AS id,
-		 series.'date' AS 'date',
+		 series.id,
+		 series.'date',
 		 SUM(games.score) AS 'total',
 		 leagues.name AS league_name,
 		 bowlers.name AS bowler_name
@@ -192,8 +192,8 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 
 	@Query(
 		"""
-			UPDATE series 
-			SET 
+			UPDATE series
+			SET
 				exclude_from_statistics = 'INCLUDE',
 				applied_date = :appliedDate
 			WHERE id = :seriesId

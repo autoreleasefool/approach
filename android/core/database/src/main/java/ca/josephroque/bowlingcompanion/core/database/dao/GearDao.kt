@@ -23,15 +23,15 @@ abstract class GearDao {
 		"""
 			SELECT
 				gear.id AS gearId,
-				gear.name AS name,
-				gear.kind AS kind,
-				gear.avatar as avatar,
+				gear.name,
+				gear.kind,
+				gear.avatar,
 				owner.name AS ownerName
 			FROM gear
 			JOIN bowler_preferred_gear
 				ON gear.id = bowler_preferred_gear.gear_id
 				AND bowler_preferred_gear.bowler_id = :bowlerId
-			LEFT JOIN bowlers AS owner 
+			LEFT JOIN bowlers AS owner
 				ON gear.owner_id = owner.id
 			ORDER BY gear.name ASC
 		""",
@@ -42,9 +42,9 @@ abstract class GearDao {
 		"""
 			SELECT
 				gear.id AS gearId,
-				gear.name AS name,
-				gear.kind AS kind,
-				gear.avatar as avatar,
+				gear.name,
+				gear.kind,
+				gear.avatar,
 				owner.name AS ownerName
 			FROM gear
 			JOIN game_gear
@@ -61,9 +61,9 @@ abstract class GearDao {
 		"""
 			SELECT
 				gear.id AS gearId,
-				gear.name AS name,
-				gear.kind AS kind,
-				gear.avatar as avatar,
+				gear.name,
+				gear.kind,
+				gear.avatar,
 				owner.name AS ownerName
 			FROM gear
 			LEFT JOIN bowlers AS owner
@@ -77,11 +77,11 @@ abstract class GearDao {
 	@Query(
 		"""
 			SELECT
-				gear.id AS id,
-				gear.name AS name,
-				gear.kind AS kind,
-				gear.avatar AS avatar,
-				gear.owner_id AS owner_id
+				gear.id,
+				gear.name,
+				gear.kind,
+				gear.avatar,
+				gear.owner_id
 			FROM gear WHERE gear.id = :id
 		""",
 	)
@@ -90,10 +90,10 @@ abstract class GearDao {
 	@Query(
 		"""
 			SELECT
-				gear.id As id,
-				gear.name AS name,
-				gear.kind AS kind,
-				gear.avatar AS avatar
+				gear.id,
+				gear.name,
+				gear.kind,
+				gear.avatar
 			FROM gear WHERE gear.id = :id
 		""",
 	)

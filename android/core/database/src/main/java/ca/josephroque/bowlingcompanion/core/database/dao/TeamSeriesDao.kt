@@ -21,8 +21,8 @@ abstract class TeamSeriesDao {
 	@Query(
 		"""
 			SELECT
-				team_series.id AS id,
-				team_series.`date` AS `date`,
+				team_series.id,
+				team_series.`date`,
 				SUM(games.score) AS total
 			FROM team_series
 			INNER JOIN team_series_series
@@ -45,9 +45,9 @@ abstract class TeamSeriesDao {
 	@Query(
 		"""
 			SELECT
-				team_series.`date` AS `date`,
+				team_series.`date`,
 				games.id AS game_id,
-				games.score AS score,
+				games.score,
 				games.`index` AS game_index,
 				games.archived_on IS NOT NULL AS game_is_archived,
 				bowlers.id AS bowler_id,
@@ -72,8 +72,8 @@ abstract class TeamSeriesDao {
 	@Query(
 		"""
 			SELECT
-			  team_series.id AS id,
-				team_series.`date` AS `date`,
+			  team_series.id,
+				team_series.`date`,
 				team_series.archived_on AS archivedOn,
 				teams.name AS teamName
 			FROM team_series

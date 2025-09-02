@@ -20,10 +20,10 @@ abstract class FrameDao : LegacyMigratingDao<FrameEntity> {
 		"""
 			SELECT
 				frames.game_id AS gameId,
-				frames.`index` AS `index`,
-				frames.roll0 AS roll0,
-				frames.roll1 AS roll1,
-				frames.roll2 AS roll2,
+				frames.`index`,
+				frames.roll0,
+				frames.roll1,
+				frames.roll2,
 				ball0.id AS ball0_id,
 				ball0.kind AS ball0_kind,
 				ball0.name AS ball0_name,
@@ -52,10 +52,10 @@ abstract class FrameDao : LegacyMigratingDao<FrameEntity> {
 	@Query(
 		"""
 			SELECT
-				frames.`index` AS `index`,
-				frames.roll0 AS roll0,
-				frames.roll1 AS roll1,
-				frames.roll2 AS roll2
+				frames.`index`,
+				frames.roll0,
+				frames.roll1,
+				frames.roll2
 			FROM frames
 			WHERE frames.game_id = :gameId
 			ORDER BY frames.`index` ASC
@@ -67,8 +67,8 @@ abstract class FrameDao : LegacyMigratingDao<FrameEntity> {
 	@Query(
 		"""
 			SELECT
-				games.id AS id,
-				games.`index` AS `index`
+				games.id,
+				games.`index`
 			FROM games
 			JOIN frames ON games.id = frames.game_id
 			WHERE games.series_id = :seriesId AND games.archived_on IS NULL

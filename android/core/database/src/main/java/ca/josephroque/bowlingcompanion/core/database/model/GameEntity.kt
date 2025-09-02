@@ -107,7 +107,7 @@ data class GameEditPropertiesEntity(
 		locked = locked,
 		scoringMethod = scoringMethod,
 		excludeFromStatistics = excludeFromStatistics,
-		durationMillis = durationMillis
+		durationMillis = durationMillis,
 	)
 }
 

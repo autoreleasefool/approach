@@ -24,8 +24,8 @@ abstract class LeagueDao : LegacyMigratingDao<LeagueEntity> {
 	@Query(
 		"""
 			SELECT
-				bowlers.id AS id,
-				bowlers.name AS name
+				bowlers.id,
+				bowlers.name
 			FROM leagues
 			JOIN bowlers ON leagues.bowler_id = bowlers.id
 			WHERE leagues.id = :leagueId
@@ -36,8 +36,8 @@ abstract class LeagueDao : LegacyMigratingDao<LeagueEntity> {
 	@Query(
 		"""
 			SELECT
-				leagues.id AS id,
-				leagues.name AS name
+				leagues.id,
+				leagues.name
 			FROM leagues
 			WHERE leagues.id = :leagueId
 
@@ -47,15 +47,15 @@ abstract class LeagueDao : LegacyMigratingDao<LeagueEntity> {
 
 	@Query(
 		"""
-		SELECT 
-		 id,
-		 name,
-		 recurrence,
-		 number_of_games AS numberOfGames,
-		 additional_pin_fall AS additionalPinFall,
-		 additional_games AS additionalGames,
-		 exclude_from_statistics AS excludeFromStatistics
-		FROM leagues 
+		SELECT
+		 leagues.id,
+		 leagues.name,
+		 leagues.recurrence,
+		 leagues.number_of_games AS numberOfGames,
+		 leagues.additional_pin_fall AS additionalPinFall,
+		 leagues.additional_games AS additionalGames,
+		 leagues.exclude_from_statistics AS excludeFromStatistics
+		FROM leagues
 		WHERE id = :leagueId
 	""",
 	)
@@ -64,9 +64,9 @@ abstract class LeagueDao : LegacyMigratingDao<LeagueEntity> {
 	@Query(
 		"""
 			SELECT
-				leagues.id AS id,
-				leagues.name AS name,
-				leagues.recurrence AS recurrence,
+				leagues.id,
+				leagues.name,
+				leagues.recurrence,
 				MAX(series.date) AS lastSeriesDate,
 				AVG(games.score) AS average
 			FROM leagues
@@ -79,8 +79,8 @@ abstract class LeagueDao : LegacyMigratingDao<LeagueEntity> {
 				AND (games.exclude_from_statistics = 'INCLUDE' OR games.exclude_from_statistics IS NULL)
 				AND (games.score > 0 OR games.score IS NULL)
 				AND games.archived_on IS NULL
-			WHERE 
-				leagues.bowler_id = :bowlerId 
+			WHERE
+				leagues.bowler_id = :bowlerId
 				AND leagues.archived_on IS NULL
 				AND (leagues.recurrence = :recurrence OR :recurrence IS NULL)
 			GROUP BY leagues.id
@@ -98,8 +98,8 @@ abstract class LeagueDao : LegacyMigratingDao<LeagueEntity> {
 	@Query(
 		"""
 			SELECT
-				leagues.id AS id,
-				leagues.name AS name,
+				leagues.id,
+				leagues.name,
 				leagues.archived_on AS archivedOn,
 				bowlers.name AS bowlerName,
 				COUNT(DISTINCT series.id) AS numberOfSeries,

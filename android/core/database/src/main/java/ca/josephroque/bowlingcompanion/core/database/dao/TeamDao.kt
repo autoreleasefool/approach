@@ -22,8 +22,8 @@ abstract class TeamDao : LegacyMigratingDao<TeamEntity> {
 	@Query(
 		"""
 			SELECT
-				teams.id AS id,
-				teams.name AS name,
+				teams.id,
+				teams.name,
 				AVG(games.score) as average,
 				MAX(series.date) as lastSeriesDate,
 				COALESCE(
@@ -41,7 +41,7 @@ abstract class TeamDao : LegacyMigratingDao<TeamEntity> {
 				ON team_bowler.team_id = teams.id
 			LEFT JOIN bowlers
 				ON bowlers.id = team_bowler.bowler_id
-			LEFT JOIN leagues 
+			LEFT JOIN leagues
 				ON leagues.bowler_id = bowlers.id
 				AND (leagues.exclude_from_statistics = 'INCLUDE' OR leagues.exclude_from_statistics IS NULL)
 				AND leagues.archived_on IS NULL
@@ -66,8 +66,8 @@ abstract class TeamDao : LegacyMigratingDao<TeamEntity> {
 	@Query(
 		"""
 			SELECT
-				teams.id as id,
-				teams.name as name
+				teams.id,
+				teams.name
 			FROM teams
 			WHERE teams.id = :teamId
 		""",
@@ -77,8 +77,8 @@ abstract class TeamDao : LegacyMigratingDao<TeamEntity> {
 	@Query(
 		"""
 			SELECT
-				teams.id as id,
-				teams.name as name
+				teams.id,
+				teams.name
 			FROM teams
 			JOIN team_series ON team_series.team_id = teams.id
 			WHERE team_series.id = :teamSeriesId
@@ -89,8 +89,8 @@ abstract class TeamDao : LegacyMigratingDao<TeamEntity> {
 	@Query(
 		"""
 			SELECT
-				bowlers.id as id,
-				bowlers.name as name
+				bowlers.id,
+				bowlers.name
 			FROM bowlers
 			JOIN team_bowler ON team_bowler.bowler_id = bowlers.id
 			WHERE team_bowler.team_id = :teamId

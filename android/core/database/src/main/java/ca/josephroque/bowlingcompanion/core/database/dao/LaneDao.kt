@@ -16,9 +16,9 @@ abstract class LaneDao {
 	@Query(
 		"""
 			SELECT
-				lanes.id AS id,
-				lanes.label AS label,
-				lanes.position AS position
+				lanes.id,
+				lanes.label,
+				lanes.position
 			FROM lanes
 			WHERE lanes.id IN (:ids)
 			ORDER BY lanes.label * 1 ASC
@@ -29,9 +29,9 @@ abstract class LaneDao {
 	@Query(
 		"""
 			SELECT
-				lanes.id AS id,
-				lanes.label AS label,
-				lanes.position AS position
+				lanes.id,
+				lanes.label,
+				lanes.position
 			FROM lanes
 			WHERE lanes.alley_id = :alleyId
 			ORDER BY lanes.label * 1 ASC
@@ -42,9 +42,9 @@ abstract class LaneDao {
 	@Query(
 		"""
 			SELECT
-				lanes.id AS id,
-				lanes.label AS label,
-				lanes.position AS position
+				lanes.id,
+				lanes.label,
+				lanes.position
 			FROM lanes
 			JOIN game_lanes ON game_lanes.lane_id = lanes.id
 			WHERE game_lanes.game_id = :gameId

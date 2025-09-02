@@ -26,8 +26,8 @@ abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 	@Query(
 		"""
 			SELECT
-				bowlers.id AS id,
-				bowlers.name AS name
+				bowlers.id,
+				bowlers.name
 			FROM bowlers
 			WHERE bowlers.id = :bowlerId
 		""",
@@ -38,8 +38,8 @@ abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 		"""
 			SELECT
 				series.id AS seriesId,
-			 	bowlers.id AS id,
-			 	bowlers.name AS name
+			 	bowlers.id,
+			 	bowlers.name
 			FROM series
 			JOIN leagues ON leagues.id = series.league_id
 			JOIN bowlers ON bowlers.id = leagues.bowler_id
@@ -51,10 +51,10 @@ abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 	@Query(
 		"""
 			SELECT
-				bowlers.id as id,
-				bowlers.name as name,
-				bowlers.kind as kind
-			FROM bowlers 
+				bowlers.id,
+				bowlers.name,
+				bowlers.kind
+			FROM bowlers
 			WHERE id = :bowlerId
 		""",
 	)
@@ -64,8 +64,8 @@ abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 	@Query(
 		"""
 			SELECT
-				bowlers.id AS id,
-				bowlers.name AS name,
+				bowlers.id,
+				bowlers.name,
 				AVG(games.score) as average,
 				MAX(series.date) as lastSeriesDate
 			FROM bowlers
@@ -94,9 +94,9 @@ abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 	@Query(
 		"""
 			SELECT
-				bowlers.id AS id,
-				bowlers.name AS name,
-				bowlers.kind AS kind
+				bowlers.id,
+				bowlers.name,
+				bowlers.kind
 			FROM bowlers
 			WHERE bowlers.archived_on IS NULL
 			ORDER BY bowlers.name ASC
@@ -107,8 +107,8 @@ abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 	@Query(
 		"""
 			SELECT
-				bowlers.id AS id,
-				bowlers.name AS name,
+				bowlers.id,
+				bowlers.name,
 				bowlers.archived_on AS archivedOn,
 				COUNT(DISTINCT leagues.id) AS numberOfLeagues,
 				COUNT(DISTINCT series.id) AS numberOfSeries,

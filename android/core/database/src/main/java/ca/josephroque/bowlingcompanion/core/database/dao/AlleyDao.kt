@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.Flow
 abstract class AlleyDao {
 	@Query(
 		"""
-			SELECT 
+			SELECT
 				alleys.id AS alleyId,
 				alleys.name AS name,
 				alleys.material AS material,
@@ -38,12 +38,12 @@ abstract class AlleyDao {
 	@Query(
 		"""
 			SELECT
-				alleys.id AS id,
-				alleys.name AS name,
-				alleys.material AS material,
-				alleys.pin_fall AS pin_fall,
-				alleys.mechanism AS mechanism,
-				alleys.pin_base AS pin_base
+				alleys.id,
+				alleys.name,
+				alleys.material,
+				alleys.pin_fall,
+				alleys.mechanism,
+				alleys.pin_base
 			FROM games
 			JOIN series ON series.id = games.series_id
 			JOIN alleys ON series.alley_id = alleys.id

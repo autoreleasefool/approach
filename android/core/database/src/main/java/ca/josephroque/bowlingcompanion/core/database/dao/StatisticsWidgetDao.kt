@@ -15,13 +15,13 @@ abstract class StatisticsWidgetDao {
 	@Query(
 		"""
 			SELECT
-				statistics_widget.id AS id,
-				statistics_widget.bowler_id AS bowler_id,
-				statistics_widget.league_id AS league_id,
-				statistics_widget.timeline AS timeline,
-				statistics_widget.statistic AS statistic,
-				statistics_widget.context AS context,
-				statistics_widget.priority AS priority
+				statistics_widget.id,
+				statistics_widget.bowler_id,
+				statistics_widget.league_id,
+				statistics_widget.timeline,
+				statistics_widget.statistic,
+				statistics_widget.context,
+				statistics_widget.priority
 			FROM statistics_widget
 			WHERE statistics_widget.context = :context
 			ORDER BY statistics_widget.priority ASC
