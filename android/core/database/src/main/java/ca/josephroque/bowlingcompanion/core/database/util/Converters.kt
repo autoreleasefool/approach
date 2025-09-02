@@ -1,7 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.database.util
 
 import androidx.room.TypeConverter
-import ca.josephroque.bowlingcompanion.core.database.model.FrameEntity
+import ca.josephroque.bowlingcompanion.core.database.model.FrameRollEntity
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
@@ -32,8 +32,8 @@ class LocalDateConverter {
 
 class RollConverter {
 	@TypeConverter
-	fun stringToRoll(value: String?): FrameEntity.Roll? = value?.let { FrameEntity.Roll.fromBitString(it) }
+	fun stringToRoll(value: String?): FrameRollEntity? = value?.let { FrameRollEntity.fromBitString(it) }
 
 	@TypeConverter
-	fun rollToString(roll: FrameEntity.Roll?): String? = roll?.toBitString()
+	fun rollToString(roll: FrameRollEntity?): String? = roll?.toBitString()
 }

@@ -20,10 +20,10 @@ abstract class MatchPlayDao : LegacyMigratingDao<MatchPlayEntity> {
 	@Query(
 		"""
 		SELECT
-		  match_plays.id AS id,
-			match_plays.opponent_id AS opponentId,
-			match_plays.opponent_score AS opponentScore,
-			match_plays.result AS result
+		  match_plays.id,
+			match_plays.opponent_id,
+			match_plays.opponent_score,
+			match_plays.result
 		FROM match_plays 
 		WHERE game_id = :gameId
 		""",

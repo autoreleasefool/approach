@@ -39,6 +39,7 @@ import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyTeamBowl
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.asMatchPlay
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
 import ca.josephroque.bowlingcompanion.core.database.model.FrameEntity
+import ca.josephroque.bowlingcompanion.core.database.model.FrameRollEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueEntity
 import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayEntity
@@ -934,9 +935,9 @@ class SQLiteMigrationService @Inject constructor(
 				FrameEntity(
 					gameId = gameId,
 					index = legacyFrame.ordinal - 1,
-					roll0 = FrameEntity.Roll.fromBitString(rolls[0]),
-					roll1 = FrameEntity.Roll.fromBitString(rolls[1]),
-					roll2 = FrameEntity.Roll.fromBitString(rolls[2]),
+					roll0 = FrameRollEntity.fromBitString(rolls[0]),
+					roll1 = FrameRollEntity.fromBitString(rolls[1]),
+					roll2 = FrameRollEntity.fromBitString(rolls[2]),
 					ball0 = null,
 					ball1 = null,
 					ball2 = null,

@@ -14,7 +14,9 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
 import ca.josephroque.bowlingcompanion.core.model.AlleyUpdate
+import ca.josephroque.bowlingcompanion.core.model.LaneID
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
+import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import java.util.UUID
 
 @Entity(
@@ -76,14 +78,13 @@ fun AlleyCreate.asEntity(): AlleyCreateEntity = AlleyCreateEntity(
 )
 
 data class AlleyUpdateEntity(
-	@Embedded
-	val properties: AlleyUpdate.Properties,
+	@Embedded val properties: AlleyUpdatePropertiesEntity,
 	@Relation(
 		parentColumn = "id",
 		entityColumn = "alley_id",
 		entity = LaneEntity::class,
 	)
-	val lanes: List<LaneListItem>,
+	val lanes: List<AlleyUpdateLaneEntity>,
 ) {
 	fun asModel(): AlleyUpdate = AlleyUpdate(
 		id = properties.id,
@@ -92,8 +93,30 @@ data class AlleyUpdateEntity(
 		pinFall = properties.pinFall,
 		mechanism = properties.mechanism,
 		pinBase = properties.pinBase,
-		lanes = lanes,
+		lanes = lanes.map(AlleyUpdateLaneEntity::asModel),
 	)
+}
+
+data class AlleyUpdatePropertiesEntity(
+	val id: AlleyID,
+	val name: String,
+	val material: AlleyMaterial?,
+	@ColumnInfo(name = "pin_fall") val pinFall: AlleyPinFall?,
+	val mechanism: AlleyMechanism?,
+	@ColumnInfo(name = "pin_base") val pinBase: AlleyPinBase?,
+) {
+	fun asModel() = AlleyUpdate.Properties(
+		id = id,
+		name = name,
+		material = material,
+		pinFall = pinFall,
+		mechanism = mechanism,
+		pinBase = pinBase,
+	)
+}
+
+data class AlleyUpdateLaneEntity(val id: LaneID, val label: String, val position: LanePosition) {
+	fun asModel() = LaneListItem(id = id, label = label, position = position)
 }
 
 data class AlleyDetailsUpdateEntity(

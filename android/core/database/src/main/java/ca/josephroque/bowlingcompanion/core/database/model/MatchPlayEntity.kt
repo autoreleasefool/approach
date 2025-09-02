@@ -58,9 +58,9 @@ fun MatchPlayCreate.asEntity(): MatchPlayCreateEntity = MatchPlayCreateEntity(
 )
 
 data class MatchPlayUpdateEntity(
-	@Embedded val properties: MatchPlayUpdate.Properties,
+	@Embedded val properties: MatchPlayUpdateEntityProperties,
 	@Relation(
-		parentColumn = "opponentId",
+		parentColumn = "opponent_id",
 		entityColumn = "id",
 		entity = BowlerEntity::class,
 	) val opponent: BowlerSummary?,
@@ -72,6 +72,13 @@ data class MatchPlayUpdateEntity(
 		result = properties.result,
 	)
 }
+
+data class MatchPlayUpdateEntityProperties(
+	val id: MatchPlayID,
+	@ColumnInfo(name = "opponent_id") val opponentId: BowlerID?,
+	@ColumnInfo(name = "opponent_score") val opponentScore: Int?,
+	val result: MatchPlayResult?,
+)
 
 data class MatchPlayDetailsUpdateEntity(
 	val id: MatchPlayID,

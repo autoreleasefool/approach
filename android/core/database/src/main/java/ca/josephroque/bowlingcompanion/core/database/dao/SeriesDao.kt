@@ -32,10 +32,10 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 			SELECT
 				series.id AS id,
 				series.'date' AS 'date',
-				series.applied_date AS appliedDate,
-				series.pre_bowl AS preBowl,
-				series.exclude_from_statistics AS excludeFromStatistics,
-				COUNT(games.id) AS numberOfGames,
+				series.applied_date,
+				series.pre_bowl,
+				series.exclude_from_statistics,
+				COUNT(games.id) AS number_of_games,
 				SUM(games.score) AS 'total',
 				leagues.id AS league_id,
 				leagues.name as league_name,
@@ -61,8 +61,8 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 		SELECT
 		 series.id AS id,
 		 series.'date' AS 'date',
-		 series.applied_date AS appliedDate,
-		 series.pre_bowl AS preBowl,
+		 series.applied_date,
+		 series.pre_bowl,
 		 SUM(games.score) AS 'total',
 		 COALESCE(series.applied_date, series.'date') AS orderingDate
 		FROM series
@@ -134,8 +134,8 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 		 series.id AS id,
 		 series.'date' AS 'date',
 		 SUM(games.score) AS 'total',
-		 leagues.name AS leagueName,
-		 bowlers.name AS bowlerName
+		 leagues.name AS league_name,
+		 bowlers.name AS bowler_name
 		FROM series
 		LEFT JOIN leagues
 			ON leagues.id = series.league_id

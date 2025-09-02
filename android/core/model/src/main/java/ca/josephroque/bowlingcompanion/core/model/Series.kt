@@ -41,15 +41,15 @@ enum class SeriesItemSize {
 
 data class SeriesSummary(val id: SeriesID, val date: LocalDate)
 
-data class SeriesListItem(val properties: SeriesListProperties, val scores: List<Int>)
-
-data class SeriesListProperties(
-	val id: SeriesID,
-	val date: LocalDate,
-	val total: Int,
-	val preBowl: SeriesPreBowl,
-	val appliedDate: LocalDate?,
-)
+data class SeriesListItem(val properties: Properties, val scores: List<Int>) {
+	data class Properties(
+		val id: SeriesID,
+		val date: LocalDate,
+		val total: Int,
+		val preBowl: SeriesPreBowl,
+		val appliedDate: LocalDate?,
+	)
+}
 
 data class TrackableSeries(val id: SeriesID, val numberOfGames: Int, val total: Int, val date: LocalDate)
 

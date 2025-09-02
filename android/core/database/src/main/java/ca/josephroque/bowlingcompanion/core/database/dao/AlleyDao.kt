@@ -56,12 +56,12 @@ abstract class AlleyDao {
 	@Query(
 		"""
 			SELECT
-				alleys.id AS id,
-				alleys.name AS name,
-				alleys.material AS material,
-				alleys.pin_fall AS pinFall,
-				alleys.mechanism AS mechanism,
-				alleys.pin_base AS pinBase
+				alleys.id,
+				alleys.name,
+				alleys.material,
+				alleys.pin_fall,
+				alleys.mechanism,
+				alleys.pin_base
 			FROM alleys
 			LEFT JOIN lanes ON lanes.alley_id = alleys.id
 			WHERE alleys.id = :alleyId

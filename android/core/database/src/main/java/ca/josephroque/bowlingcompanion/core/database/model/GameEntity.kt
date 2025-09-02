@@ -5,13 +5,18 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameCreate
 import ca.josephroque.bowlingcompanion.core.model.GameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.LeagueID
+import ca.josephroque.bowlingcompanion.core.model.MatchPlayID
+import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 import ca.josephroque.bowlingcompanion.core.model.SeriesID
+import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.TrackableGame
 import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
@@ -56,7 +61,7 @@ data class TrackableGameEntity(
 	val index: Int,
 	val score: Int,
 	val date: LocalDate,
-	@Embedded(prefix = "match_play_") val matchPlay: TrackableGame.MatchPlay?,
+	@Embedded(prefix = "match_play_") val matchPlay: TrackableGameMatchPlayEntity?,
 ) {
 	fun asModel(): TrackableGame = TrackableGame(
 		seriesId = this.seriesId,
@@ -64,22 +69,67 @@ data class TrackableGameEntity(
 		index = this.index,
 		score = this.score,
 		date = this.date,
-		matchPlay = this.matchPlay,
+		matchPlay = this.matchPlay?.asModel(),
 	)
 }
 
+data class TrackableGameMatchPlayEntity(val id: MatchPlayID, val result: MatchPlayResult?) {
+	fun asModel() = TrackableGame.MatchPlay(id = id, result = result)
+}
+
 data class GameEditEntity(
-	@Embedded val properties: GameEdit.Properties,
-	@Embedded(prefix = "series_") val series: GameEdit.Series,
-	@Embedded(prefix = "league_") val league: GameEdit.League,
-	@Embedded(prefix = "bowler_") val bowler: GameEdit.Bowler,
+	@Embedded val properties: GameEditPropertiesEntity,
+	@Embedded(prefix = "series_") val series: GameEditSeriesEntity,
+	@Embedded(prefix = "league_") val league: GameEditLeagueEntity,
+	@Embedded(prefix = "bowler_") val bowler: GameEditBowlerEntity,
 ) {
-	fun asModel(): GameEdit = GameEdit(
-		properties = this.properties,
-		series = this.series,
-		league = this.league,
-		bowler = this.bowler,
+	fun asModel() = GameEdit(
+		properties = this.properties.asModel(),
+		series = this.series.asModel(),
+		league = this.league.asModel(),
+		bowler = this.bowler.asModel(),
 	)
+}
+
+data class GameEditPropertiesEntity(
+	val id: GameID,
+	val index: Int,
+	val score: Int,
+	val locked: GameLockState,
+	@ColumnInfo(name = "scoring_method") val scoringMethod: GameScoringMethod,
+	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
+	val durationMillis: Long,
+) {
+	fun asModel() = GameEdit.Properties(
+		id = id,
+		index = index,
+		score = score,
+		locked = locked,
+		scoringMethod = scoringMethod,
+		excludeFromStatistics = excludeFromStatistics,
+		durationMillis = durationMillis
+	)
+}
+
+data class GameEditSeriesEntity(
+	val id: SeriesID,
+	val date: LocalDate,
+	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
+	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
+) {
+	fun asModel() = GameEdit.Series(id = id, date = date, preBowl = preBowl, excludeFromStatistics = excludeFromStatistics)
+}
+
+data class GameEditLeagueEntity(
+	val id: LeagueID,
+	val name: String,
+	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
+) {
+	fun asModel() = GameEdit.League(id = id, name = name, excludeFromStatistics = excludeFromStatistics)
+}
+
+data class GameEditBowlerEntity(val id: BowlerID, val name: String) {
+	fun asModel() = GameEdit.Bowler(id = id, name = name)
 }
 
 data class ShareableGameEntity(
