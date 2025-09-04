@@ -184,9 +184,7 @@ private fun HelpSection(versionName: String, versionCode: String, onAction: (Set
 }
 
 @Composable
-private fun DataSection(
-	onAction: (SettingsUiAction) -> Unit,
-) {
+private fun DataSection(onAction: (SettingsUiAction) -> Unit) {
 	Header(titleResourceId = R.string.settings_item_data)
 
 	NavigationItem(

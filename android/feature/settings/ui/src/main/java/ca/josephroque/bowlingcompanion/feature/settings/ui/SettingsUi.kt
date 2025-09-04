@@ -1,10 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.settings.ui
 
-data class SettingsUiState(
-	val isDevelopmentModeEnabled: Boolean,
-	val versionName: String,
-	val versionCode: String,
-)
+data class SettingsUiState(val isDevelopmentModeEnabled: Boolean, val versionName: String, val versionCode: String)
 
 sealed interface SettingsUiAction {
 	data object OpponentsClicked : SettingsUiAction

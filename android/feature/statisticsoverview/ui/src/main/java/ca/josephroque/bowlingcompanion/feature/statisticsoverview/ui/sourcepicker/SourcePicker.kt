@@ -17,20 +17,18 @@ fun SourcePicker(state: SourcePickerUiState, onAction: (SourcePickerUiAction) ->
 	Column(
 		modifier = modifier.padding(bottom = 16.dp),
 	) {
-		if (state.isTeamsEnabled) {
-			PickableResourceCard(
-				resourceName = stringResource(R.string.statistics_filter_team),
-				selectedName = when (state.source) {
-					is TrackableFilter.SourceSummaries.Team -> state.source.team.name
-					is TrackableFilter.SourceSummaries.Bowler, null -> stringResource(
-						ca.josephroque.bowlingcompanion.core.designsystem.R.string.none,
-					)
-				},
-				onClick = { onAction(SourcePickerUiAction.TeamClicked) },
-			)
+		PickableResourceCard(
+			resourceName = stringResource(R.string.statistics_filter_team),
+			selectedName = when (state.source) {
+				is TrackableFilter.SourceSummaries.Team -> state.source.team.name
+				is TrackableFilter.SourceSummaries.Bowler, null -> stringResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.string.none,
+				)
+			},
+			onClick = { onAction(SourcePickerUiAction.TeamClicked) },
+		)
 
-			HorizontalDivider(thickness = 8.dp)
-		}
+		HorizontalDivider(thickness = 8.dp)
 
 		PickableResourceCard(
 			resourceName = stringResource(R.string.statistics_filter_bowler),
