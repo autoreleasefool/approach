@@ -39,46 +39,37 @@ fun Overview(
 	modifier: Modifier = Modifier,
 	contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
-	if (state.isTeamsEnabled) {
-		Column(modifier = modifier) {
-			TabRow(
-				selectedTabIndex = state.tab.ordinal,
-				containerColor = Color.Transparent,
-				indicator = { tabPositions ->
-					OverviewTabIndicator(
-						modifier = Modifier.tabIndicatorOffset(tabPositions[state.tab.ordinal]),
-					)
-				},
-				modifier = Modifier.padding(bottom = 16.dp),
-			) {
-				OverviewTab.entries.forEach {
-					Tab(
-						selected = it == state.tab,
-						onClick = { onAction(OverviewUiAction.TabClicked(it)) },
-						text = {
-							Text(
-								text = when (it) {
-									OverviewTab.BOWLERS -> stringResource(R.string.bowler_list_title)
-									OverviewTab.TEAMS -> stringResource(R.string.team_list_title)
-								},
-								style = MaterialTheme.typography.titleMedium,
-							)
-						},
-					)
-				}
+	Column(modifier = modifier) {
+		TabRow(
+			selectedTabIndex = state.tab.ordinal,
+			containerColor = Color.Transparent,
+			indicator = { tabPositions ->
+				OverviewTabIndicator(
+					modifier = Modifier.tabIndicatorOffset(tabPositions[state.tab.ordinal]),
+				)
+			},
+			modifier = Modifier.padding(bottom = 16.dp),
+		) {
+			OverviewTab.entries.forEach {
+				Tab(
+					selected = it == state.tab,
+					onClick = { onAction(OverviewUiAction.TabClicked(it)) },
+					text = {
+						Text(
+							text = when (it) {
+								OverviewTab.BOWLERS -> stringResource(R.string.bowler_list_title)
+								OverviewTab.TEAMS -> stringResource(R.string.team_list_title)
+							},
+							style = MaterialTheme.typography.titleMedium,
+						)
+					},
+				)
 			}
-
-			OverviewTabContents(
-				state = state,
-				onAction = onAction,
-				contentPadding = contentPadding,
-			)
 		}
-	} else {
+
 		OverviewTabContents(
 			state = state,
 			onAction = onAction,
-			modifier = modifier,
 			contentPadding = contentPadding,
 		)
 	}
@@ -103,16 +94,6 @@ private fun OverviewTabContents(
 						StatisticsWidgetLayout(
 							state = layout,
 							onAction = { onAction(OverviewUiAction.StatisticsWidgetLayout(it)) },
-							modifier = Modifier
-								.padding(horizontal = 16.dp)
-								.padding(bottom = 16.dp),
-						)
-					}
-
-					if (!state.isTeamsEnabled) {
-						Text(
-							text = stringResource(R.string.bowler_list_title),
-							style = MaterialTheme.typography.titleLarge,
 							modifier = Modifier
 								.padding(horizontal = 16.dp)
 								.padding(bottom = 16.dp),

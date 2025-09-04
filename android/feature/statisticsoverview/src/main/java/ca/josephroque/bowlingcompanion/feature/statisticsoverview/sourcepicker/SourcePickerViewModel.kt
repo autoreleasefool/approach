@@ -5,8 +5,6 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.di.ApplicationScop
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
-import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
-import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.LeagueID
@@ -37,7 +35,6 @@ val SOURCE_PICKER_GAME_RESULT_KEY = ResourcePickerResultKey("SourcePickerGameRes
 class SourcePickerViewModel @Inject constructor(
 	private val statisticsRepository: StatisticsRepository,
 	private val userDataRepository: UserDataRepository,
-	featureFlagsClient: FeatureFlagsClient,
 	@ApplicationScope private val externalScope: CoroutineScope,
 ) : ApproachViewModel<SourcePickerScreenEvent>() {
 	private var didLoadDefaultSource = false
@@ -49,7 +46,6 @@ class SourcePickerViewModel @Inject constructor(
 			statisticsRepository.getSourceDetails(it)
 		}
 	}
-	private val isTeamsEnabled = featureFlagsClient.isEnabled(FeatureFlag.TEAMS)
 
 	val uiState = sourceSummaries
 		.map { source ->
@@ -58,7 +54,6 @@ class SourcePickerViewModel @Inject constructor(
 					isApplyEnabled = source != null,
 				),
 				sourcePicker = SourcePickerUiState(
-					isTeamsEnabled = isTeamsEnabled,
 					source = source,
 				),
 			)

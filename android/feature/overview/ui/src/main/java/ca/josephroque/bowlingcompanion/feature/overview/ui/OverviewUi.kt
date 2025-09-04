@@ -15,7 +15,6 @@ enum class OverviewTab {
 }
 
 data class OverviewUiState(
-	val isTeamsEnabled: Boolean,
 	val tab: OverviewTab,
 	val widgets: StatisticsWidgetLayoutUiState?,
 	val teamsList: TeamsListUiState,

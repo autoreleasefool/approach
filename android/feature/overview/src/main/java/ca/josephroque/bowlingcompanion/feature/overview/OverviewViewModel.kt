@@ -172,7 +172,6 @@ class OverviewViewModel @Inject constructor(
 		isShowingSwipeHint,
 	) { selectedTab, bowlersListState, teamsListState, widgets, isShowingSwipeHint ->
 		OverviewUiState(
-			isTeamsEnabled = featureFlagsClient.isEnabled(FeatureFlag.TEAMS),
 			tab = selectedTab,
 			widgets = widgets,
 			teamsList = teamsListState,

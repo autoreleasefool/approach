@@ -3,7 +3,6 @@ package ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepick
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 
 data class SourcePickerUiState(
-	val isTeamsEnabled: Boolean = false,
 	val source: TrackableFilter.SourceSummaries? = null,
 )
 

@@ -32,7 +32,6 @@ enum class FeatureFlag(
 	REORDER_GAMES("ReorderGames", "2025-07-13", RolloutStage.RELEASE),
 	SHARING_GAMES("SharingGames", "2024-11-03", RolloutStage.RELEASE),
 	SHARING_SERIES("SharingSeries", "2024-11-03", RolloutStage.RELEASE),
-	TEAMS("Teams", "2024-08-16", RolloutStage.RELEASE),
 }
 
 internal fun FeatureFlag.isEnabled(): Boolean = if (BuildConfig.DEBUG) {
