@@ -45,7 +45,7 @@ fun Settings(state: SettingsUiState, onAction: (SettingsUiAction) -> Unit, modif
 			HorizontalDivider()
 		}
 
-		MainSection(isAchievementsEnabled = state.isAchievementsEnabled, onAction = onAction)
+		MainSection(onAction = onAction)
 
 		HorizontalDivider()
 
@@ -107,7 +107,7 @@ private fun DevelopmentModeSection(onAction: (SettingsUiAction) -> Unit) {
 }
 
 @Composable
-private fun MainSection(isAchievementsEnabled: Boolean, onAction: (SettingsUiAction) -> Unit) {
+private fun MainSection(onAction: (SettingsUiAction) -> Unit) {
 	NavigationItem(
 		titleResourceId = R.string.settings_item_opponents_title,
 		descriptionResourceId = R.string.settings_item_opponents_description,
@@ -120,13 +120,11 @@ private fun MainSection(isAchievementsEnabled: Boolean, onAction: (SettingsUiAct
 		onClick = { onAction(SettingsUiAction.StatisticsSettingsClicked) },
 	)
 
-	if (isAchievementsEnabled) {
-		NavigationItem(
-			titleResourceId = R.string.settings_item_achievements_title,
-			descriptionResourceId = R.string.settings_item_achievements_description,
-			onClick = { onAction(SettingsUiAction.AchievementsClicked) },
-		)
-	}
+	NavigationItem(
+		titleResourceId = R.string.settings_item_achievements_title,
+		descriptionResourceId = R.string.settings_item_achievements_description,
+		onClick = { onAction(SettingsUiAction.AchievementsClicked) },
+	)
 }
 
 @Composable

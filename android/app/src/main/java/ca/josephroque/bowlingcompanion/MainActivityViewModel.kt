@@ -9,8 +9,6 @@ import ca.josephroque.bowlingcompanion.core.analytics.trackable.app.AppTabSwitch
 import ca.josephroque.bowlingcompanion.core.data.repository.AchievementsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
-import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
-import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
 import ca.josephroque.bowlingcompanion.ui.ApproachAppUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +30,6 @@ class MainActivityViewModel @Inject constructor(
 	private val analyticsClient: AnalyticsClient,
 	private val gamesRepository: GamesRepository,
 	private val userDataRepository: UserDataRepository,
-	featureFlagsClient: FeatureFlagsClient,
 ) : ViewModel() {
 	private val isLaunchComplete: MutableStateFlow<Boolean> = MutableStateFlow(false)
 	private val observingAchievementsLock = Mutex()
@@ -62,20 +59,18 @@ class MainActivityViewModel @Inject constructor(
 		)
 
 	init {
-		if (featureFlagsClient.isEnabled(FeatureFlag.ACHIEVEMENTS)) {
-			viewModelScope.launch {
-				userDataRepository.userData
-					.collect { userData ->
-						if (!userData.isOnboardingComplete) return@collect
+		viewModelScope.launch {
+			userDataRepository.userData
+				.collect { userData ->
+					if (!userData.isOnboardingComplete) return@collect
 
-						observingAchievementsLock.withLock {
-							if (isObservingAchievements) return@withLock
-							isObservingAchievements = true
+					observingAchievementsLock.withLock {
+						if (isObservingAchievements) return@withLock
+						isObservingAchievements = true
 
-							startObservingAchievements()
-						}
+						startObservingAchievements()
 					}
-			}
+				}
 		}
 	}
 

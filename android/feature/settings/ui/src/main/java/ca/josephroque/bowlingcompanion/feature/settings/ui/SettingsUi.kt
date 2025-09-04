@@ -3,7 +3,6 @@ package ca.josephroque.bowlingcompanion.feature.settings.ui
 data class SettingsUiState(
 	val isDataImportsEnabled: Boolean,
 	val isDataExportsEnabled: Boolean,
-	val isAchievementsEnabled: Boolean,
 	val isDevelopmentModeEnabled: Boolean,
 	val versionName: String,
 	val versionCode: String,
