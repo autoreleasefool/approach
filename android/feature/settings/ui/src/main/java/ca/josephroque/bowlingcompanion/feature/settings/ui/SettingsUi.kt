@@ -1,15 +1,10 @@
 package ca.josephroque.bowlingcompanion.feature.settings.ui
 
 data class SettingsUiState(
-	val isDataImportsEnabled: Boolean,
-	val isDataExportsEnabled: Boolean,
 	val isDevelopmentModeEnabled: Boolean,
 	val versionName: String,
 	val versionCode: String,
-) {
-	val isDataSectionVisible: Boolean
-		get() = isDataImportsEnabled || isDataExportsEnabled
-}
+)
 
 sealed interface SettingsUiAction {
 	data object OpponentsClicked : SettingsUiAction

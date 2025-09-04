@@ -36,10 +36,7 @@ class SettingsViewModel @Inject constructor(
 ) : ApproachViewModel<SettingsScreenEvent>() {
 	private val settingsState: MutableStateFlow<SettingsUiState> = MutableStateFlow(
 		SettingsUiState(
-			isDataImportsEnabled = featureFlagsClient.isEnabled(FeatureFlag.DATA_IMPORT),
-			isDataExportsEnabled = featureFlagsClient.isEnabled(FeatureFlag.DATA_EXPORT),
 			isDevelopmentModeEnabled = featureFlagsClient.isEnabled(FeatureFlag.DEVELOPER_MODE),
-			isAchievementsEnabled = featureFlagsClient.isEnabled(FeatureFlag.ACHIEVEMENTS),
 			versionName = systemInfoService.versionName,
 			versionCode = systemInfoService.versionCode,
 		),

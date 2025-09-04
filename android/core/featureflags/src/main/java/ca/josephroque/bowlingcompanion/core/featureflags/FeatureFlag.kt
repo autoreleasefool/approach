@@ -22,8 +22,6 @@ enum class FeatureFlag(
 	override val isOverridable: Boolean = true,
 ) : Feature {
 	DEVELOPER_MODE("DevelopmentMode", "2024-08-23", RolloutStage.DEVELOPMENT, isOverridable = false),
-	DATA_EXPORT("DataExport", "2023-10-12", RolloutStage.RELEASE),
-	DATA_IMPORT("DataImport", "2023-10-13", RolloutStage.RELEASE),
 	HIGHEST_SCORE_POSSIBLE("HighestScorePossible", "2024-08-14", RolloutStage.RELEASE),
 	MANUAL_SERIES_FORM("ManualSeriesForm", "2024-03-28", RolloutStage.RELEASE),
 	MANUAL_TEAM_SERIES_FORM("ManualTeamSeriesForm", "2024-08-30", RolloutStage.DEVELOPMENT),

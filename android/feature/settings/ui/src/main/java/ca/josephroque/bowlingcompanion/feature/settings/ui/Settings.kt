@@ -61,15 +61,9 @@ fun Settings(state: SettingsUiState, onAction: (SettingsUiAction) -> Unit, modif
 
 		HorizontalDivider()
 
-		if (state.isDataSectionVisible) {
-			DataSection(
-				isDataImportsEnabled = state.isDataImportsEnabled,
-				isDataExportsEnabled = state.isDataExportsEnabled,
-				onAction = onAction,
-			)
+		DataSection(onAction = onAction)
 
-			HorizontalDivider()
-		}
+		HorizontalDivider()
 
 		DevelopmentSection(onAction = onAction)
 
@@ -191,25 +185,19 @@ private fun HelpSection(versionName: String, versionCode: String, onAction: (Set
 
 @Composable
 private fun DataSection(
-	isDataImportsEnabled: Boolean,
-	isDataExportsEnabled: Boolean,
 	onAction: (SettingsUiAction) -> Unit,
 ) {
 	Header(titleResourceId = R.string.settings_item_data)
 
-	if (isDataImportsEnabled) {
-		NavigationItem(
-			titleResourceId = R.string.settings_item_import_data,
-			onClick = { onAction(SettingsUiAction.DataImportSettingsClicked) },
-		)
-	}
+	NavigationItem(
+		titleResourceId = R.string.settings_item_import_data,
+		onClick = { onAction(SettingsUiAction.DataImportSettingsClicked) },
+	)
 
-	if (isDataExportsEnabled) {
-		NavigationItem(
-			titleResourceId = R.string.settings_item_export_data,
-			onClick = { onAction(SettingsUiAction.DataExportSettingsClicked) },
-		)
-	}
+	NavigationItem(
+		titleResourceId = R.string.settings_item_export_data,
+		onClick = { onAction(SettingsUiAction.DataExportSettingsClicked) },
+	)
 }
 
 @SuppressLint("LocalContextResourcesRead")
