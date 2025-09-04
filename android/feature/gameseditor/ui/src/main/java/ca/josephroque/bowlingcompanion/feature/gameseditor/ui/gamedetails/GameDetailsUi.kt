@@ -70,7 +70,6 @@ data class GameDetailsUiState(
 	data class ScoringMethodCardUiState(
 		val score: Int = 0,
 		val scoringMethod: GameScoringMethod = GameScoringMethod.BY_FRAME,
-		val isShowingHighestPossibleScoreButton: Boolean = false,
 	)
 }
 

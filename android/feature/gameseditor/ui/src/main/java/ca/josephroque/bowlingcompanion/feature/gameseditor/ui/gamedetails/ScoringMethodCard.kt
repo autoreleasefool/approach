@@ -81,22 +81,20 @@ internal fun ScoringMethodCard(
 			},
 		)
 
-		if (state.isShowingHighestPossibleScoreButton) {
-			NavigationButton(
-				title = stringResource(R.string.game_editor_strike_out_title),
-				subtitle = stringResource(R.string.game_editor_strike_out_subtitle),
-				icon = {
-					Icon(
-						imageVector = Icons.Default.Info,
-						contentDescription = null,
-						tint = MaterialTheme.colorScheme.onSurface,
-						modifier = Modifier.size(24.dp),
-					)
-				},
-				onClick = { onAction(GameDetailsUiAction.ShowHighestPossibleScoreClicked) },
-				modifier = Modifier.padding(top = 8.dp),
-			)
-		}
+		NavigationButton(
+			title = stringResource(R.string.game_editor_strike_out_title),
+			subtitle = stringResource(R.string.game_editor_strike_out_subtitle),
+			icon = {
+				Icon(
+					imageVector = Icons.Default.Info,
+					contentDescription = null,
+					tint = MaterialTheme.colorScheme.onSurface,
+					modifier = Modifier.size(24.dp),
+				)
+			},
+			onClick = { onAction(GameDetailsUiAction.ShowHighestPossibleScoreClicked) },
+			modifier = Modifier.padding(top = 8.dp),
+		)
 	}
 }
 
@@ -108,7 +106,6 @@ private fun ScoringMethodCardPreview() {
 			state = GameDetailsUiState.ScoringMethodCardUiState(
 				score = 234,
 				scoringMethod = GameScoringMethod.BY_FRAME,
-				isShowingHighestPossibleScoreButton = true,
 			),
 			onAction = {},
 		)

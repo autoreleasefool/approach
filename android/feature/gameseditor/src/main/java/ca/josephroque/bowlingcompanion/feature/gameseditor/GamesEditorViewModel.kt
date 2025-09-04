@@ -627,9 +627,6 @@ class GamesEditorViewModel @Inject constructor(
 						scoringMethod = it.scoringMethod.copy(
 							score = gameDetails.properties.score,
 							scoringMethod = gameDetails.properties.scoringMethod,
-							isShowingHighestPossibleScoreButton = featureFlagsClient.isEnabled(
-								FeatureFlag.HIGHEST_SCORE_POSSIBLE,
-							),
 						),
 						gameProperties = it.gameProperties.copy(
 							locked = gameDetails.properties.locked,
