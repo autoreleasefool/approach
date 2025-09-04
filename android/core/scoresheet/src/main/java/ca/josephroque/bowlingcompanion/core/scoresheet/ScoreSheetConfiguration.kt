@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.core.scoresheet
 
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
+import ca.josephroque.bowlingcompanion.core.model.Game
 
 enum class FramePosition {
 	TOP,
@@ -20,6 +21,7 @@ enum class GameIndexPosition {
 data class ScoreSheetConfiguration(
 	val style: Style = Style.PLAIN,
 	val framePosition: Set<FramePosition> = setOf(FramePosition.BOTTOM),
+	val frameRange: IntRange = 0.rangeUntil(Game.NUMBER_OF_FRAMES),
 	val scorePosition: Set<ScorePosition> = setOf(ScorePosition.END),
 	val gameIndexPosition: Set<GameIndexPosition> = emptySet(),
 	val scrollEnabled: Boolean = true,

@@ -122,7 +122,7 @@ private fun Header(
 			horizontalArrangement = Arrangement.spacedBy(8.dp),
 			verticalAlignment = Alignment.CenterVertically,
 		) {
-			configuration.labels(games).forEach {
+			configuration.labels(games, includeSeriesDetails = true).forEach {
 				ChartLabel(
 					content = it,
 					appearance = configuration.plainChartLabel(),

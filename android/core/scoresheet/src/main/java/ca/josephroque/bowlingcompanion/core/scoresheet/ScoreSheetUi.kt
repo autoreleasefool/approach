@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.scoresheet
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
+import ca.josephroque.bowlingcompanion.core.model.ScoringFrame
 import ca.josephroque.bowlingcompanion.core.model.ScoringGame
 
 data class ScoreSheetUiState(
@@ -15,6 +16,9 @@ data class ScoreSheetUiState(
 			fun none() = Selection(frameIndex = -1, rollIndex = -1)
 		}
 	}
+
+	val framesToRender: List<ScoringFrame> =
+		game?.frames?.filter { configuration.frameRange.contains(it.index) } ?: emptyList()
 }
 
 data class ScoreSheetListItem(val bowler: BowlerSummary, val league: LeagueSummary, val scoreSheet: ScoreSheetUiState)

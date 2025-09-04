@@ -4,15 +4,26 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,9 +32,11 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.CheckBoxRow
 import ca.josephroque.bowlingcompanion.core.designsystem.components.CollapsibleSection
 import ca.josephroque.bowlingcompanion.core.designsystem.components.SectionHeader
 import ca.josephroque.bowlingcompanion.core.model.GameID
+import ca.josephroque.bowlingcompanion.core.model.IndexedGame
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.R
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.components.AppearanceSegmentedButton
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.components.FilterItem
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.components.LayoutSegmentedButton
 
 @Composable
 fun GamesSharingConfiguration(
@@ -36,8 +49,13 @@ fun GamesSharingConfiguration(
 
 		HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
 
+		StyleSection(state = state, onAction = onAction)
+
+		HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
+
 		if (state.isGameIncluded.size > 1) {
 			GamesSection(state = state, onAction = onAction)
+
 			HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
 		}
 
@@ -64,12 +82,16 @@ private fun HeaderSection(
 			imageVector = Icons.Default.DateRange,
 		)
 
-		FilterItem(
-			selected = state.isSeriesDetailChecked,
-			title = R.string.sharing_games_modifier_summary,
-			onClick = { onAction(GamesSharingConfigurationUiAction.IsSeriesDetailCheckedToggled(!state.isSeriesDetailChecked)) },
-			imageVector = Icons.Default.DateRange,
-		)
+		if (state.layout != GamesSharingConfigurationUiState.Layout.Vertical) {
+			FilterItem(
+				selected = state.isSeriesDetailChecked,
+				title = R.string.sharing_games_modifier_summary,
+				onClick = {
+					onAction(GamesSharingConfigurationUiAction.IsSeriesDetailCheckedToggled(!state.isSeriesDetailChecked))
+				},
+				imageVector = Icons.Default.DateRange,
+			)
+		}
 
 		FilterItem(
 			selected = state.isBowlerNameChecked,
@@ -88,7 +110,89 @@ private fun HeaderSection(
 }
 
 @Composable
+private fun StyleSection(
+	state: GamesSharingConfigurationUiState,
+	onAction: (GamesSharingConfigurationUiAction) -> Unit,
+) {
+	SectionHeader(title = stringResource(R.string.sharing_games_layout))
+
+	LayoutSegmentedButton(
+		selected = state.layout,
+		onLayoutChanged = { onAction(GamesSharingConfigurationUiAction.LayoutChanged(it)) },
+	)
+}
+
+@Composable
 private fun GamesSection(
+	state: GamesSharingConfigurationUiState,
+	onAction: (GamesSharingConfigurationUiAction) -> Unit,
+) {
+	when (state.layout) {
+		GamesSharingConfigurationUiState.Layout.Vertical -> SingleGamePicker(
+			state = state,
+			onAction = onAction,
+		)
+		GamesSharingConfigurationUiState.Layout.Horizontal -> MultiGamesPicker(
+			state = state,
+			onAction = onAction,
+		)
+	}
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SingleGamePicker(
+	state: GamesSharingConfigurationUiState,
+	onAction: (GamesSharingConfigurationUiAction) -> Unit,
+) {
+	SectionHeader(title = stringResource(R.string.sharing_games_modifier_section_games))
+
+	var expanded by remember { mutableStateOf(false) }
+
+	ExposedDropdownMenuBox(
+		expanded = expanded,
+		onExpandedChange = { expanded = it },
+		modifier = Modifier.padding(horizontal = 16.dp),
+	) {
+		OutlinedTextField(
+			readOnly = true,
+			value = stringResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.string.game_with_ordinal,
+				(state.singleGame?.index ?: 0) + 1,
+			),
+			onValueChange = {},
+			trailingIcon = {
+				ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+			},
+			colors = ExposedDropdownMenuDefaults.textFieldColors(),
+			modifier = Modifier
+				.menuAnchor(type = MenuAnchorType.PrimaryEditable)
+				.fillMaxWidth(),
+		)
+
+		ExposedDropdownMenu(
+			expanded = expanded,
+			onDismissRequest = { expanded = false },
+		) {
+			state.isGameIncluded.forEach {
+				DropdownMenuItem(
+					text = {
+						Text(
+							stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.game_with_ordinal, it.index + 1),
+						)
+					},
+					onClick = {
+						onAction(GamesSharingConfigurationUiAction.SingleGameChanged(it.gameId))
+						expanded = false
+					},
+				)
+			}
+		}
+	}
+}
+
+@Composable
+private fun MultiGamesPicker(
 	state: GamesSharingConfigurationUiState,
 	onAction: (GamesSharingConfigurationUiAction) -> Unit,
 ) {
@@ -141,6 +245,8 @@ private fun GamesSharingConfigurationPreview() {
 	Surface {
 		GamesSharingConfiguration(
 			state = GamesSharingConfigurationUiState(
+				layout = GamesSharingConfigurationUiState.Layout.Vertical,
+				singleGame = IndexedGame(GameID.randomID(), 0),
 				isGameIncluded = listOf(
 					GamesSharingConfigurationUiState.IncludedGame(
 						gameId = GameID.randomID(),

@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
@@ -38,9 +38,10 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.modifiers.bottomBorder
 import ca.josephroque.bowlingcompanion.core.designsystem.modifiers.endBorder
 import ca.josephroque.bowlingcompanion.core.designsystem.modifiers.startBorder
+import ca.josephroque.bowlingcompanion.core.designsystem.modifiers.topBorder
+import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.ScoringFrame
 import ca.josephroque.bowlingcompanion.core.model.ScoringRoll
-import ca.josephroque.bowlingcompanion.core.model.isFirstFrame
 import ca.josephroque.bowlingcompanion.core.model.isFirstRoll
 import ca.josephroque.bowlingcompanion.core.model.isLastRoll
 import ca.josephroque.bowlingcompanion.core.model.stub.ScoringStub
@@ -82,6 +83,73 @@ fun ScoreSheet(state: ScoreSheetUiState, onAction: (ScoreSheetUiAction) -> Unit,
 }
 
 @Composable
+fun VerticalScoreSheet(
+	state: ScoreSheetUiState,
+	onAction: (ScoreSheetUiAction) -> Unit,
+	modifier: Modifier = Modifier,
+) {
+	BoxWithConstraints(
+		modifier = modifier.width(120.dp * 3f),
+	) {
+		val cellWidth = if (state.configuration.relativeContainerSizing) {
+			if (this.maxWidth >= 600.dp) maxWidth / 5f else maxWidth / 3f
+		} else {
+			120.dp
+		}
+
+		Column {
+			listOf(
+				0.rangeUntil(3),
+				3.rangeUntil(6),
+				6.rangeUntil(9),
+				9.rangeUntil(10),
+			).forEach { frameRange ->
+				Row(modifier = Modifier.height(100.dp)) {
+					Box {
+						ScoreSheetRow(
+							state = state.copy(
+								configuration = state.configuration.copy(
+									frameRange = frameRange,
+									framePosition = setOf(FramePosition.TOP),
+									scorePosition = emptySet(),
+								),
+							),
+							onAction = onAction,
+							cellWidth = cellWidth,
+						)
+
+						Box(
+							modifier = Modifier
+								.topBorder(width = 2.dp, color = colorResource(state.configuration.style.borderColor))
+								.matchParentSize(),
+						)
+					}
+
+					if (frameRange.contains(Game.FrameIndices.last)) {
+						Box {
+							ScoreCell(
+								score = state.game?.score ?: 0,
+								border = null,
+								style = state.configuration.style,
+								modifier = Modifier
+									.width(cellWidth * 2),
+							)
+
+							Box(
+								modifier = Modifier
+									.startBorder(width = 2.dp, color = colorResource(state.configuration.style.borderColor))
+									.topBorder(width = 2.dp, color = colorResource(state.configuration.style.borderColor))
+									.matchParentSize(),
+							)
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@Composable
 fun LazyScoreSheet(
 	state: ScoreSheetUiState,
 	cellWidth: Dp,
@@ -109,52 +177,53 @@ fun LazyScoreSheet(
 			item {
 				ScoreCell(
 					score = state.game?.score ?: 0,
-					position = ScorePosition.START,
+					border = ScorePosition.START,
 					style = state.configuration.style,
 					modifier = Modifier.width(cellWidth),
 				)
 			}
 		}
 
-		if (state.game?.frames != null) {
-			items(
-				items = state.game.frames,
-				key = { it.index },
-			) { frame ->
-				val isFrameSelected = state.selection.frameIndex == frame.index
+		itemsIndexed(
+			items = state.framesToRender,
+			key = { _, frame -> frame.index },
+		) { renderIndex, frame ->
+			val previousFrame = state.framesToRender.getOrNull(renderIndex - 1)
+			val isFrameSelected = state.selection.frameIndex == frame.index
 
-				Column(
-					modifier = Modifier.width(cellWidth),
-				) {
-					if (state.configuration.framePosition.contains(FramePosition.TOP)) {
-						RailCell(
-							frameIndex = frame.index,
-							style = state.configuration.style,
-							isSelected = isFrameSelected,
-							includingBottomBorder = true,
-							modifier = Modifier.fillMaxWidth(),
-						)
-					}
-
-					RollCells(
-						modifier = Modifier.fillMaxWidth(),
-						frame = frame,
+			Column(
+				modifier = Modifier.width(cellWidth),
+			) {
+				if (state.configuration.framePosition.contains(FramePosition.TOP)) {
+					RailCell(
+						frameIndex = frame.index,
 						style = state.configuration.style,
-						isFrameSelected = isFrameSelected,
-						selectedRollIndex = state.selection.rollIndex,
-					) {
-						onAction(ScoreSheetUiAction.RollClicked(frame.index, it))
-					}
-
-					FrameCell(
-						frame = frame,
-						config = state.configuration,
 						isSelected = isFrameSelected,
-						previousFrame = state.game.frames.getOrNull(frame.index - 1),
+						includingBottomBorder = true,
+						includingStartBorder = previousFrame != null,
 						modifier = Modifier.fillMaxWidth(),
-					) {
-						onAction(ScoreSheetUiAction.FrameClicked(frame.index))
-					}
+					)
+				}
+
+				RollCells(
+					modifier = Modifier.fillMaxWidth(),
+					frame = frame,
+					hasPriorFrame = previousFrame != null,
+					style = state.configuration.style,
+					isFrameSelected = isFrameSelected,
+					selectedRollIndex = state.selection.rollIndex,
+				) {
+					onAction(ScoreSheetUiAction.RollClicked(frame.index, it))
+				}
+
+				FrameCell(
+					frame = frame,
+					config = state.configuration,
+					isSelected = isFrameSelected,
+					previousFrame = previousFrame,
+					modifier = Modifier.fillMaxWidth(),
+				) {
+					onAction(ScoreSheetUiAction.FrameClicked(frame.index))
 				}
 			}
 		}
@@ -163,7 +232,7 @@ fun LazyScoreSheet(
 			item {
 				ScoreCell(
 					score = state.game?.score ?: 0,
-					position = ScorePosition.END,
+					border = ScorePosition.END,
 					style = state.configuration.style,
 					modifier = Modifier.width(cellWidth),
 				)
@@ -191,13 +260,14 @@ fun ScoreSheetRow(
 		if (state.configuration.scorePosition.contains(ScorePosition.START)) {
 			ScoreCell(
 				score = state.game?.score ?: 0,
-				position = ScorePosition.START,
+				border = ScorePosition.START,
 				style = state.configuration.style,
 				modifier = Modifier.width(cellWidth),
 			)
 		}
 
-		state.game?.frames?.forEach { frame ->
+		state.framesToRender.forEachIndexed { renderIndex, frame ->
+			val previousFrame = state.framesToRender.getOrNull(renderIndex - 1)
 			val isFrameSelected = state.selection.frameIndex == frame.index
 
 			Column(
@@ -209,6 +279,7 @@ fun ScoreSheetRow(
 						style = state.configuration.style,
 						isSelected = isFrameSelected,
 						includingBottomBorder = true,
+						includingStartBorder = previousFrame != null,
 						modifier = Modifier.fillMaxWidth(),
 					)
 				}
@@ -216,6 +287,7 @@ fun ScoreSheetRow(
 				RollCells(
 					modifier = Modifier.fillMaxWidth(),
 					frame = frame,
+					hasPriorFrame = previousFrame != null,
 					style = state.configuration.style,
 					isFrameSelected = isFrameSelected,
 					selectedRollIndex = state.selection.rollIndex,
@@ -227,7 +299,7 @@ fun ScoreSheetRow(
 					frame = frame,
 					config = state.configuration,
 					isSelected = isFrameSelected,
-					previousFrame = state.game.frames.getOrNull(frame.index - 1),
+					previousFrame = previousFrame,
 					modifier = Modifier.fillMaxWidth(),
 				) {
 					onAction(ScoreSheetUiAction.FrameClicked(frame.index))
@@ -238,7 +310,7 @@ fun ScoreSheetRow(
 		if (state.configuration.scorePosition.contains(ScorePosition.END)) {
 			ScoreCell(
 				score = state.game?.score ?: 0,
-				position = ScorePosition.END,
+				border = ScorePosition.END,
 				style = state.configuration.style,
 				modifier = Modifier.width(cellWidth),
 			)
@@ -250,6 +322,7 @@ fun ScoreSheetRow(
 private fun RollCells(
 	modifier: Modifier = Modifier,
 	frame: ScoringFrame,
+	hasPriorFrame: Boolean,
 	style: ScoreSheetConfiguration.Style,
 	isFrameSelected: Boolean,
 	selectedRollIndex: Int,
@@ -262,7 +335,7 @@ private fun RollCells(
 			RollCell(
 				roll = roll,
 				isSelected = isFrameSelected && selectedRollIndex == roll.index,
-				isFirstFrame = frame.isFirstFrame(),
+				hasPriorFrame = hasPriorFrame,
 				style = style,
 				onClick = { onClick(roll.index) },
 				modifier = Modifier.weight(1f),
@@ -276,7 +349,7 @@ private fun RollCell(
 	modifier: Modifier = Modifier,
 	roll: ScoringRoll,
 	isSelected: Boolean,
-	isFirstFrame: Boolean,
+	hasPriorFrame: Boolean,
 	style: ScoreSheetConfiguration.Style,
 	onClick: () -> Unit,
 ) {
@@ -304,7 +377,7 @@ private fun RollCell(
 				},
 			)
 			.then(
-				if (!isFirstFrame && roll.isFirstRoll()) {
+				if (hasPriorFrame && roll.isFirstRoll()) {
 					Modifier.startBorder(
 						2.dp,
 						colorResource(style.borderColor),
@@ -356,7 +429,7 @@ private fun FrameCell(
 				),
 			)
 			.then(
-				if (frame.isFirstFrame()) {
+				if (previousFrame == null) {
 					Modifier
 				} else {
 					Modifier.startBorder(
@@ -393,6 +466,7 @@ private fun FrameCell(
 				style = config.style,
 				isSelected = isSelected,
 				includingBottomBorder = false,
+				includingStartBorder = previousFrame != null,
 				modifier = Modifier.fillMaxWidth(),
 			)
 		}
@@ -405,6 +479,7 @@ private fun RailCell(
 	frameIndex: Int,
 	isSelected: Boolean,
 	includingBottomBorder: Boolean,
+	includingStartBorder: Boolean,
 	style: ScoreSheetConfiguration.Style,
 ) {
 	Box(
@@ -419,20 +494,20 @@ private fun RailCell(
 				),
 			)
 			.then(
-				if (!includingBottomBorder) {
-					Modifier
-				} else {
+				if (includingBottomBorder) {
 					Modifier.bottomBorder(2.dp, colorResource(style.borderColor))
+				} else {
+					Modifier
 				},
 			)
 			.then(
-				if (frameIndex == 0) {
-					Modifier
-				} else {
+				if (includingStartBorder) {
 					Modifier.startBorder(
 						2.dp,
 						colorResource(style.borderColor),
 					)
+				} else {
+					Modifier
 				},
 			)
 			.padding(vertical = 4.dp),
@@ -476,7 +551,7 @@ private fun GameIndexCell(index: Int, style: ScoreSheetConfiguration.Style, modi
 @Composable
 private fun ScoreCell(
 	score: Int,
-	position: ScorePosition,
+	border: ScorePosition?,
 	style: ScoreSheetConfiguration.Style,
 	modifier: Modifier = Modifier,
 ) {
@@ -485,9 +560,10 @@ private fun ScoreCell(
 		modifier = modifier
 			.background(colorResource(style.backgroundColor))
 			.then(
-				when (position) {
+				when (border) {
 					ScorePosition.START -> Modifier.endBorder(4.dp, colorResource(style.borderColor))
 					ScorePosition.END -> Modifier.startBorder(4.dp, colorResource(style.borderColor))
+					null -> Modifier
 				},
 			)
 			.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -542,11 +618,32 @@ private fun ScoreSheetPreview(
 
 @Preview
 @Composable
+private fun VerticalScoreSheetPreview() {
+	Surface {
+		VerticalScoreSheet(
+			state = ScoreSheetUiState(
+				configuration = ScoreSheetConfiguration(
+					relativeContainerSizing = false,
+					scrollEnabled = false,
+					scorePosition = setOf(ScorePosition.END),
+					gameIndexPosition = emptySet(),
+					style = ScoreSheetConfiguration.Style.PLAIN,
+				),
+				selection = ScoreSheetUiState.Selection(frameIndex = -1, rollIndex = -1),
+				game = ScoringStub.stub(),
+			),
+			onAction = {},
+		)
+	}
+}
+
+@Preview
+@Composable
 private fun ScoreCellPreview() {
 	Surface {
 		ScoreCell(
 			score = 300,
-			position = ScorePosition.END,
+			border = ScorePosition.END,
 			style = ScoreSheetConfiguration.Style.PLAIN,
 			modifier = Modifier
 				.height(100.dp)

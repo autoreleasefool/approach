@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
 import ca.josephroque.bowlingcompanion.core.model.GameID
+import ca.josephroque.bowlingcompanion.core.model.IndexedGame
 import ca.josephroque.bowlingcompanion.core.model.ShareableGame
 import ca.josephroque.bowlingcompanion.core.scoresheet.FramePosition
 import ca.josephroque.bowlingcompanion.core.scoresheet.GameIndexPosition
@@ -18,6 +19,7 @@ import ca.josephroque.bowlingcompanion.core.scoresheet.ScorePosition
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetConfiguration
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.R
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingAppearance
+import ca.josephroque.bowlingcompanion.feature.sharing.ui.SharingAppearance.Light
 import ca.josephroque.bowlingcompanion.feature.sharing.ui.components.ChartLabelContent
 
 data class GamesSharingConfigurationUiState(
@@ -26,10 +28,24 @@ data class GamesSharingConfigurationUiState(
 	val isBowlerNameChecked: Boolean = false,
 	val isLeagueNameChecked: Boolean = false,
 	val isGameIncluded: List<IncludedGame> = emptyList(),
+	val singleGame: IndexedGame? = null,
+	val layout: Layout = Layout.Horizontal,
 	val style: ScoreSheetConfiguration.Style = ScoreSheetConfiguration.Style.PLAIN,
 	val appearance: SharingAppearance = SharingAppearance.Light,
 ) {
 	data class IncludedGame(val gameId: GameID, val index: Int, val isGameIncluded: Boolean)
+
+	enum class Layout {
+		Vertical,
+		Horizontal,
+		;
+
+		@Composable
+		fun title(): String = when (this) {
+			Vertical -> stringResource(R.string.sharing_games_layout_vertical)
+			Horizontal -> stringResource(R.string.sharing_games_layout_horizontal)
+		}
+	}
 
 	val scoreSheetConfiguration: ScoreSheetConfiguration
 		get() = ScoreSheetConfiguration(
@@ -51,7 +67,7 @@ data class GamesSharingConfigurationUiState(
 	}
 
 	@Composable
-	fun labels(games: List<ShareableGame>): List<ChartLabelContent> {
+	fun labels(games: List<ShareableGame>, includeSeriesDetails: Boolean = false): List<ChartLabelContent> {
 		val labels = mutableListOf<ChartLabelContent>()
 		when {
 			isSeriesDateChecked -> {
@@ -86,7 +102,7 @@ data class GamesSharingConfigurationUiState(
 			else -> Unit
 		}
 
-		if (isSeriesDetailChecked) {
+		if (isSeriesDetailChecked && includeSeriesDetails) {
 			val total = games.sumOf { it.score.score ?: 0 }
 			labels.add(
 				ChartLabelContent(
@@ -134,6 +150,24 @@ data class GamesSharingConfigurationUiState(
 			copy(isGameIncluded = isGameIncluded.toMutableList().apply { set(gameIndex, updatedGame) })
 		}
 		is GamesSharingConfigurationUiAction.AppearanceChanged -> copy(appearance = action.appearance)
+		is GamesSharingConfigurationUiAction.SingleGameChanged -> copy(
+			singleGame = isGameIncluded
+				.firstOrNull { it.gameId == action.gameId }
+				?.let { IndexedGame(it.gameId, it.index) },
+		)
+		is GamesSharingConfigurationUiAction.LayoutChanged -> copy(
+			layout = action.layout,
+			singleGame = if (isGameIncluded.any { it.gameId == singleGame?.id }) {
+				singleGame
+			} else {
+				isGameIncluded
+					.firstOrNull { it.isGameIncluded }
+					?.let { IndexedGame(it.gameId, it.index) }
+					?: isGameIncluded
+						.firstOrNull()
+						?.let { IndexedGame(it.gameId, it.index) }
+			},
+		)
 	}
 }
 
@@ -144,4 +178,6 @@ sealed interface GamesSharingConfigurationUiAction {
 	data class IsLeagueNameCheckedToggled(val isLeagueNameChecked: Boolean) : GamesSharingConfigurationUiAction
 	data class IsGameIncludedToggled(val gameId: GameID, val isGameIncluded: Boolean) : GamesSharingConfigurationUiAction
 	data class AppearanceChanged(val appearance: SharingAppearance) : GamesSharingConfigurationUiAction
+	data class SingleGameChanged(val gameId: GameID) : GamesSharingConfigurationUiAction
+	data class LayoutChanged(val layout: GamesSharingConfigurationUiState.Layout) : GamesSharingConfigurationUiAction
 }
