@@ -26,7 +26,6 @@ data class SeriesFormUiState(
 	val manualScores: List<Int>,
 	val isPreBowlSectionVisible: Boolean,
 	val isPreBowlFormEnabled: Boolean,
-	val isManualSeriesEnabled: Boolean,
 	val isMovingSeriesEnabled: Boolean,
 ) {
 	val hasLeagueChanged: Boolean

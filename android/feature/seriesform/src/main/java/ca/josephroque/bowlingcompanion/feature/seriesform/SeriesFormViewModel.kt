@@ -140,7 +140,6 @@ class SeriesFormViewModel @Inject constructor(
 						isUsingPreBowl = false,
 						isCreatingManualSeries = false,
 						manualScores = emptyList(),
-						isManualSeriesEnabled = featureFlags.isEnabled(FeatureFlag.MANUAL_TEAM_SERIES_FORM),
 						isMovingSeriesEnabled = false,
 					),
 					topBar = SeriesFormTopBarUiState(
@@ -170,7 +169,6 @@ class SeriesFormViewModel @Inject constructor(
 						isUsingPreBowl = false,
 						isCreatingManualSeries = false,
 						manualScores = emptyList(),
-						isManualSeriesEnabled = featureFlags.isEnabled(FeatureFlag.MANUAL_SERIES_FORM),
 						isMovingSeriesEnabled = false,
 					),
 					topBar = SeriesFormTopBarUiState(
@@ -208,7 +206,6 @@ class SeriesFormViewModel @Inject constructor(
 						isPreBowlFormEnabled = featureFlags.isEnabled(FeatureFlag.PRE_BOWL_FORM),
 						isCreatingManualSeries = false,
 						manualScores = emptyList(),
-						isManualSeriesEnabled = false,
 						isMovingSeriesEnabled = when (league.recurrence) {
 							LeagueRecurrence.ONCE -> false
 							LeagueRecurrence.REPEATING -> featureFlags.isEnabled(FeatureFlag.MOVING_SERIES_BETWEEN_LEAGUES)

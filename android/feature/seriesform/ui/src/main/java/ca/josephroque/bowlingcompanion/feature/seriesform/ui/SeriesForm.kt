@@ -87,19 +87,17 @@ fun SeriesForm(state: SeriesFormUiState, onAction: (SeriesFormUiAction) -> Unit,
 
 			HorizontalDivider()
 
-			if (state.isManualSeriesEnabled) {
-				ManualSeriesSection(
-					isCreatingManualSeries = state.isCreatingManualSeries,
-					manualScores = state.manualScores,
-					onManualScoreChanged = { index, score ->
-						onAction(SeriesFormUiAction.ManualScoreChanged(index, score))
-					},
-					onIsCreatingManualSeriesChanged = {
-						onAction(SeriesFormUiAction.IsCreatingManualSeriesChanged(it))
-					},
-					modifier = Modifier.padding(top = 16.dp),
-				)
-			}
+			ManualSeriesSection(
+				isCreatingManualSeries = state.isCreatingManualSeries,
+				manualScores = state.manualScores,
+				onManualScoreChanged = { index, score ->
+					onAction(SeriesFormUiAction.ManualScoreChanged(index, score))
+				},
+				onIsCreatingManualSeriesChanged = {
+					onAction(SeriesFormUiAction.IsCreatingManualSeriesChanged(it))
+				},
+				modifier = Modifier.padding(top = 16.dp),
+			)
 
 			HorizontalDivider()
 
@@ -433,7 +431,6 @@ private fun SeriesFormPreview() {
 				isPreBowlFormEnabled = true,
 				isCreatingManualSeries = true,
 				manualScores = listOf(100, 200),
-				isManualSeriesEnabled = false,
 				isMovingSeriesEnabled = true,
 			),
 			onAction = {},
