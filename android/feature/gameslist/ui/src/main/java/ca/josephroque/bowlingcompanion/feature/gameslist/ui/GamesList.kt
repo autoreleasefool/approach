@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
+import ca.josephroque.bowlingcompanion.core.designsystem.images.imageNotFound
 import ca.josephroque.bowlingcompanion.core.model.GameID
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.ReorderableGameListItem
@@ -92,7 +93,7 @@ fun GamesList(
 			item {
 				DefaultEmptyState(
 					title = R.string.game_list_empty_title,
-					icon = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.not_found,
+					icon = imageNotFound(),
 					message = R.string.game_list_empty_message,
 					action = EmptyStateAction(
 						title = R.string.game_list_add,

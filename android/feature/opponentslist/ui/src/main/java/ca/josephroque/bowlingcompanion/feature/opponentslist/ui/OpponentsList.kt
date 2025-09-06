@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.list.footer
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.opponentsList
+import ca.josephroque.bowlingcompanion.feature.opponentslist.ui.images.imageOpponentsListEmptyState
 
 @Composable
 fun OpponentsList(
@@ -28,7 +29,7 @@ fun OpponentsList(
 			item {
 				DefaultEmptyState(
 					title = R.string.opponent_list_empty_title,
-					icon = R.drawable.opponent_list_empty_state,
+					icon = imageOpponentsListEmptyState(),
 					message = R.string.opponent_list_empty_message,
 					action = EmptyStateAction(
 						title = R.string.opponent_list_add,

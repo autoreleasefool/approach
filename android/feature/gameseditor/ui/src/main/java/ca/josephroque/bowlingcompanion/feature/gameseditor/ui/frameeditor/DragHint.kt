@@ -31,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -108,7 +107,7 @@ private fun DragHintAnimation(modifier: Modifier = Modifier) {
 			Icon(
 				painter = painterResource(R.drawable.ic_swipe),
 				contentDescription = stringResource(R.string.cd_swipe_indicator),
-				tint = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_200),
+				tint = MaterialTheme.colorScheme.secondary,
 				modifier = Modifier
 					.size(64.dp)
 					.offset { IntOffset(xOffset.dp.roundToPx(), 0) }

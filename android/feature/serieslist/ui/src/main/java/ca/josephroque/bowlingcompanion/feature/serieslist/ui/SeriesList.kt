@@ -18,6 +18,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.HeaderAction
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
+import ca.josephroque.bowlingcompanion.core.designsystem.images.imageSeriesListEmptyState
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.charts.ui.SeriesChartData
 import ca.josephroque.bowlingcompanion.core.model.charts.ui.SeriesChartRow
@@ -44,7 +45,7 @@ fun SeriesList(
 			item {
 				DefaultEmptyState(
 					title = R.string.series_list_empty_title,
-					icon = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.series_list_empty_state,
+					icon = imageSeriesListEmptyState(),
 					message = R.string.series_list_empty_message,
 					action = EmptyStateAction(
 						title = R.string.series_list_add,

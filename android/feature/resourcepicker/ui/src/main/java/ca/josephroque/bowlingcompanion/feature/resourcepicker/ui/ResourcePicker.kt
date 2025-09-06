@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import ca.josephroque.bowlingcompanion.core.designsystem.components.CheckBoxRow
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.images.imageResourcePickerEmptyState
 
 @Composable
 fun ResourcePicker(
@@ -21,7 +22,7 @@ fun ResourcePicker(
 			item {
 				DefaultEmptyState(
 					title = R.string.resource_picker_empty_title,
-					icon = R.drawable.resource_picker_empty_state,
+					icon = imageResourcePickerEmptyState(),
 					message = R.string.resource_picker_empty_message,
 					action = EmptyStateAction(
 						title = R.string.resource_picker_empty_action,

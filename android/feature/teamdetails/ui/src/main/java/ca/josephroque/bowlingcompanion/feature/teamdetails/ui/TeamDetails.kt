@@ -42,6 +42,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialo
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionHeader
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
+import ca.josephroque.bowlingcompanion.core.designsystem.images.imageSeriesListEmptyState
 import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.TeamMemberListItem
@@ -117,7 +118,7 @@ fun TeamDetails(
 			item {
 				DefaultEmptyState(
 					title = R.string.team_details_series_empty_title,
-					icon = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.series_list_empty_state,
+					icon = imageSeriesListEmptyState(),
 					message = R.string.team_details_series_empty_message,
 					action = EmptyStateAction(
 						title = R.string.team_details_add_series,

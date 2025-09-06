@@ -26,6 +26,7 @@ import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.gearList
 import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiAction
 import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiState
+import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.images.imageLeaguesListEmptyState
 import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.leaguesList
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayout
 
@@ -104,7 +105,7 @@ private fun LazyListScope.bowlerLeaguesList(state: LeaguesListUiState, onAction:
 				} else {
 					ca.josephroque.bowlingcompanion.feature.leagueslist.ui.R.string.league_list_empty_filters_message
 				},
-				icon = ca.josephroque.bowlingcompanion.feature.leagueslist.ui.R.drawable.league_list_empty_state,
+				icon = imageLeaguesListEmptyState(),
 				modifier = Modifier.padding(bottom = 16.dp),
 			)
 		}

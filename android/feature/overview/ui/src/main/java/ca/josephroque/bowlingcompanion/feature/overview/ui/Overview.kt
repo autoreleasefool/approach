@@ -156,7 +156,7 @@ private fun SwipeHint(onAction: (OverviewUiAction) -> Unit) {
 				Icon(
 					imageVector = Icons.Default.Info,
 					contentDescription = null,
-					tint = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
+					tint = MaterialTheme.colorScheme.secondary,
 				)
 
 				Column(

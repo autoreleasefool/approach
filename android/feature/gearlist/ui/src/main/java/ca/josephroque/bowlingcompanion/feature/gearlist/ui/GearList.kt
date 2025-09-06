@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.state.Defaul
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.GearRow
+import ca.josephroque.bowlingcompanion.feature.gearlist.ui.images.imageGearListEmptyState
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -34,7 +35,7 @@ fun GearList(state: GearListUiState, onAction: (GearListUiAction) -> Unit, modif
 			item {
 				DefaultEmptyState(
 					title = R.string.gear_list_empty_title,
-					icon = R.drawable.gear_list_empty_state,
+					icon = imageGearListEmptyState(),
 					message = R.string.gear_list_empty_message,
 					action = EmptyStateAction(
 						title = R.string.gear_list_add,

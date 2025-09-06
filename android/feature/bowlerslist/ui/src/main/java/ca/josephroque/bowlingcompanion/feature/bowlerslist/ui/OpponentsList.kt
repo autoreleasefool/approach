@@ -21,6 +21,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
+import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.images.imageBowlersListEmptyState
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -44,7 +45,7 @@ fun OpponentsList(
 			item {
 				DefaultEmptyState(
 					title = R.string.opponent_list_empty_title,
-					icon = R.drawable.bowler_list_empty_state,
+					icon = imageBowlersListEmptyState(),
 					message = R.string.opponent_list_empty_message,
 					action = EmptyStateAction(
 						title = R.string.opponent_list_add,

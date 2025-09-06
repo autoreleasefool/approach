@@ -21,6 +21,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueID
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.ui.LeagueRow
+import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.images.imageLeaguesListEmptyState
 import kotlinx.datetime.LocalDate
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
@@ -45,7 +46,7 @@ fun LeaguesList(
 			item {
 				DefaultEmptyState(
 					title = R.string.league_list_empty_title,
-					icon = R.drawable.league_list_empty_state,
+					icon = imageLeaguesListEmptyState(),
 					message = R.string.league_list_empty_message,
 					action = EmptyStateAction(
 						title = R.string.league_list_add,

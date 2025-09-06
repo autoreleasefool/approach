@@ -37,6 +37,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticListEntry
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticListEntryGroup
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.components.FilterDetails
+import ca.josephroque.bowlingcompanion.feature.statisticsdetails.images.imageStatisticsListEmptyState
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.ui.R
 
 @Composable
@@ -54,7 +55,7 @@ fun StatisticsDetailsList(
 			item {
 				MutedEmptyState(
 					title = R.string.statistics_list_empty_title,
-					icon = R.drawable.statistics_list_empty_state,
+					icon = imageStatisticsListEmptyState(),
 					message = R.string.statistics_list_empty_message,
 					modifier = Modifier
 						.padding(vertical = 16.dp),

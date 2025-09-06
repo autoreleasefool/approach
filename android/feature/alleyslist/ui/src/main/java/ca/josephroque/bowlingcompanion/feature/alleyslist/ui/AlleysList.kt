@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.state.Defaul
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.AlleyRow
+import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.images.imageAlleysListEmptyState
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -34,7 +35,7 @@ fun AlleysList(state: AlleysListUiState, onAction: (AlleysListUiAction) -> Unit,
 			item {
 				DefaultEmptyState(
 					title = R.string.alleys_list_empty_title,
-					icon = R.drawable.alleys_list_empty_state,
+					icon = imageAlleysListEmptyState(),
 					message = R.string.alleys_list_empty_message,
 					action = EmptyStateAction(
 						title = R.string.alley_list_add,

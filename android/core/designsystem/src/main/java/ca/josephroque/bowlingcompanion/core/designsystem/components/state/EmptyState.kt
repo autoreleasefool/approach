@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.core.designsystem.components.state
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -28,7 +27,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun MutedEmptyState(
 	@StringRes title: Int,
-	@DrawableRes icon: Int,
+	icon: ImageVector,
 	@StringRes message: Int,
 	modifier: Modifier = Modifier,
 ) {
@@ -40,7 +39,7 @@ fun MutedEmptyState(
 			.padding(horizontal = 16.dp),
 	) {
 		Image(
-			painter = painterResource(icon),
+			imageVector = icon,
 			contentDescription = null,
 			modifier = Modifier
 				.widthIn(max = 160.dp)
@@ -68,14 +67,14 @@ data class EmptyStateAction(@StringRes val title: Int, val onClick: () -> Unit)
 @Composable
 fun DefaultEmptyState(
 	@StringRes title: Int,
-	@DrawableRes icon: Int,
+	icon: ImageVector,
 	@StringRes message: Int,
 	action: EmptyStateAction? = null,
 ) {
 	EmptyState(
 		icon = {
 			Image(
-				painter = painterResource(icon),
+				imageVector = icon,
 				contentDescription = null,
 				modifier = Modifier
 					.fillMaxSize()

@@ -14,7 +14,9 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.MutedEmptyState
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.onboarding.AccessoriesOnboarding
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.alleysList
+import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.images.imageAlleysListEmptyState
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.gearList
+import ca.josephroque.bowlingcompanion.feature.gearlist.ui.images.imageGearListEmptyState
 
 @Composable
 fun Accessories(state: AccessoriesUiState, onAction: (AccessoriesUiAction) -> Unit, modifier: Modifier = Modifier) {
@@ -39,7 +41,7 @@ fun Accessories(state: AccessoriesUiState, onAction: (AccessoriesUiAction) -> Un
 					MutedEmptyState(
 						title = R.string.accessory_list_alley_empty_title,
 						message = R.string.accessory_list_alley_empty_message,
-						icon = ca.josephroque.bowlingcompanion.feature.alleyslist.ui.R.drawable.alleys_list_empty_state,
+						icon = imageAlleysListEmptyState(),
 						modifier = Modifier.padding(bottom = 16.dp),
 					)
 				}
@@ -80,7 +82,7 @@ fun Accessories(state: AccessoriesUiState, onAction: (AccessoriesUiAction) -> Un
 					MutedEmptyState(
 						title = R.string.accessory_list_gear_empty_title,
 						message = R.string.accessory_list_gear_empty_message,
-						icon = ca.josephroque.bowlingcompanion.feature.gearlist.ui.R.drawable.gear_list_empty_state,
+						icon = imageGearListEmptyState(),
 						modifier = Modifier.padding(bottom = 16.dp),
 					)
 				}

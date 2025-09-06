@@ -19,6 +19,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.state.Defaul
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.EmptyStateAction
 import ca.josephroque.bowlingcompanion.core.model.TeamListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.TeamRow
+import ca.josephroque.bowlingcompanion.feature.teamslist.ui.images.imageTeamsListEmptyState
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -46,7 +47,7 @@ fun TeamsList(
 			item {
 				DefaultEmptyState(
 					title = R.string.team_list_empty_title,
-					icon = R.drawable.team_list_empty_state,
+					icon = imageTeamsListEmptyState(),
 					message = R.string.team_list_empty_message,
 					action = EmptyStateAction(
 						title = R.string.team_list_add,
